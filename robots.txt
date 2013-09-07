@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://simonsalykov.github.io//github/sitemap.xml 

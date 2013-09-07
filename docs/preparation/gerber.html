@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Preparation - Gerber files - cirQWizard</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://simonsalykov.github.io//github/docs/preparation/gerber.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/stylesheets/syntax/syntax.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    body {
+      padding-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    img {
+      max-width: 100%;
+    }
+    .sharing, .meta, .pager {
+      margin: 20px 0px 20px 0px;
+    }
+    .page-footer p {
+      text-align: center;
+    }
+  </style>
+  <script src="/javascripts/libs/jquery.js"></script>
+  <script src="/javascripts/libs/modernizr-2.0.js"></script>
+  <script src="/javascripts/libs/bootstrap.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="cirQWizard" type="application/atom+xml">
+  
+  
+
+</head>
+
+<body   >
+  <nav role="navigation"><div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <a class="brand" href="/">cirQWizard</a>
+
+      <div class="nav-collapse">
+        <ul class="nav">
+  <li><a href="/features/milling.html">Features</a></li>
+  <li><a href="/docs/intro.html">Documentation</a></li>
+  <li><a href="/downloads">Downloads</a></li>
+  <li><a href="/forum">Forum</a></li>
+</ul>
+
+
+        <ul class="nav pull-right" data-subscription="rss">
+          <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+          
+        </ul>
+
+        
+          <form class="pull-right navbar-search" action="http://google.com/search" method="get">
+            <fieldset role="search">
+              <input type="hidden" name="q" value="site:simonsalykov.github.io//github" />
+              <input class="search-query" type="text" name="q" results="0" placeholder="Search"/>
+            </fieldset>
+          </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+</nav>
+  <div class="container">
+    <div class="row-fluid">
+      
+<aside class="sidebar-nav span3">
+    
+    <section>
+    <header class="page-header">
+        <h1 class="entry-title">&nbsp;</h1>
+    </header>
+    <ul>
+        
+        
+        <li><a href="/docs/intro.html">Introduction</a></li>
+        
+        
+        
+        
+        
+        
+        
+        <li><a href="/docs/first_start.html">First start</a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <li><a href="/docs/preparation/gerber.html">Preparation - Gerber files</a></li>
+        
+        
+        
+        <li><a href="/docs/preparation/file_selection.html">Preparation - File selection</a></li>
+        
+        
+        
+        <li><a href="/docs/preparation/pcb_orientation.html">Preparation - PCB orientation</a></li>
+        
+        
+        
+        <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
+        
+        
+        
+        <li><a href="/docs/preparation/operations_selection.html">Preparation - Operations selection</a></li>
+        
+        
+        
+        <li><a href="/docs/operations/milling.html">Operations - Insulation milling</a></li>
+        
+        
+        
+        <li><a href="/docs/operations/drilling.html">Operations - Drilling</a></li>
+        
+        
+        
+        <li><a href="/docs/operations/contour_milling.html">Operations - Contour milling</a></li>
+        
+        
+        
+        <li><a href="/docs/operations/dispensing.html">Operations - Dispensing</a></li>
+        
+        
+        
+        <li><a href="/docs/operations/placement.html">Operations - Components placement</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/application.html">Settings - Application</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/machine.html">Settings - Machine</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/insulation_milling.html">Settings - Insulation milling</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/drilling.html">Settings - Drilling</a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <li><a href="/docs/settings/contour_milling.html">Settings - Contour milling</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/dispensing.html">Settings - Dispensing</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/placement.html">Settings - Component placement</a></li>
+        
+        
+        
+        <li><a href="/docs/firmware.html">Firmware reflashing</a></li>
+        
+        
+    </ul>
+</section>
+    
+</aside>
+
+
+<article role="article" class="span9">
+
+  
+  <header class="page-header">
+    <h1 class="entry-title">Preparation - Gerber Files</h1>
+    
+  </header>
+  
+  <p>In order to use cirQWizard to produce a printed circuit board, you need to export your <span class="caps">PCB</span> design in Gerber format for traces, contour and soldering paste layer and in Excellon format for drilling layer. If <span class="caps">SMD</span> components placement is intended, you will also need to export &#8220;centroid&#8221; data from your <span class="caps">CAD</span> software, which tells which component is located where.</p>
+<p>Here is a list of a complete set of files, covering production data of <span class="caps">PCB</span>:</p>
+<table class="table table-bordered ">
+	<tr>
+		<th>File extension </th>
+		<th>Description </th>
+		<th>Format </th>
+	</tr>
+	<tr>
+		<td> *.cmp </td>
+		<td> Traces, top layer </td>
+		<td> Gerber RS274X </td>
+	</tr>
+	<tr>
+		<td> *.ncl </td>
+		<td> Contur milling </td>
+		<td> Gerber RS274X </td>
+	</tr>
+	<tr>
+		<td> *.crc </td>
+		<td> Soldering paste, top layer </td>
+		<td> Gerber RS274X </td>
+	</tr>
+	<tr>
+		<td> *.sol </td>
+		<td> Traces, bottom layer </td>
+		<td> Gerber RS274X </td>
+	</tr>
+	<tr>
+		<td> *.drd </td>
+		<td> Drilling file </td>
+		<td> Excellon </td>
+	</tr>
+	<tr>
+		<td> *.mnt </td>
+		<td> <span class="caps">SMD</span> component placement data </td>
+		<td> <span class="caps">ASCII</span> data</td>
+	</tr>
+</table>
+<h3>Example of data export for Eagle <span class="caps">CAD</span></h3>
+<p>To simplify export from Eagle <span class="caps">CAD</span>, you can download a file with Eagle <span class="caps">CAM</span> Processor configuration settings: <a href="/downloads/cqw-gerb274x.cam">cqw-gerb274x.cam</a>. This way you won&#8217;t have to enter all the settings manually.</p>
+<p>Run a <span class="caps">CAM</span> processor from a window with board layout or schematics. To do this select <strong>File &#8594; <span class="caps">CAM</span> Processor</strong> menu item:<br />
+<img src="/images/docs/preparation/open_cam.png" alt="" /></p>
+<p>In <span class="caps">CAM</span> Processor window you need to choose <strong>File &#8594; Open &#8594; Job</strong> menu item and select <strong>cqw-gerb274x.cam</strong> file, which you have downloaded earlier. After that press <strong>Process Job</strong> button. This will generate all required gerber and Excellon files in the same directory where your schematics and layout files are. You can now close <span class="caps">CAM</span> processor window.<br />
+<img src="/images/docs/preparation/open_job.png" alt="" /><br />
+<img src="/images/docs/preparation/proc_job.png" alt="" /></p>
+<h3>Exporting centroid files from Eagle <span class="caps">CAD</span></h3>
+<p>Choose <strong>File &#8594; Run <span class="caps">ULP</span></strong> menu item from a window with board layout or schematics.<br />
+<img src="/images/docs/preparation/run_ulp.png" alt="" /></p>
+<p>In the dialog navigate to <strong>ulp</strong> directory of <strong>your Eagle <span class="caps">CAD</span> installation</strong> and select <strong>mountsmd.ulp</strong> file.<br />
+<img src="/images/docs/preparation/mount_smd.png" alt="" /></p>
+<h3>Exporting gerber and centroid files from other <span class="caps">CAD</span> packages</h3>
+<p>Other <span class="caps">CAD</span> packages have similar export procedures for generating Gerber, Excellon and centroid files. You can contribute to the project by documenting the export process on the <span class="caps">CAD</span> software of your choice.</p>
+  
+    <footer>
+      
+      
+        <div class="sharing">
+  
+  
+  
+</div>
+
+      
+      
+    </footer>
+  
+</article>
+
+    </div>
+  </div>
+  <footer role="contentinfo" class="page-footer"><hr>
+<p>
+  The content of this site is subject to <a href="http://www.gnu.org/licenses/fdl.html">GFDL</a> license.
+  <span class="credit">The site is powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

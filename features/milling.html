@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>cirQWizard - cirQWizard</title>
+  <title>Insulation milling - cirQWizard</title>
   <meta name="author" content="Your Name">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://simonsalykov.github.io//github">
+  <link rel="canonical" href="http://simonsalykov.github.io//github/features/milling.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -50,7 +50,7 @@
 
 </head>
 
-<body   class="no-sidebar"  >
+<body   >
   <nav role="navigation"><div class="navbar navbar-inverse">
   <div class="navbar-inner">
     <div class="container">
@@ -92,18 +92,118 @@
   <div class="container">
     <div class="row-fluid">
       
+<aside class="sidebar-nav span3">
+    
+    <section>
+    <header class="page-header">
+        <h1 class="entry-title">&nbsp;</h1>
+    </header>
+    <ul>
+        
+        
+        
+        
+        <li><a href="/features/milling.html">Insulation milling</a></li>
+        
+        
+        
+        <li><a href="/features/drilling.html">Drilling</a></li>
+        
+        
+        
+        
+        
+        <li><a href="/features/contour_milling.html">Contour milling</a></li>
+        
+        
+        
+        <li><a href="/features/dispensing.html">Dispensing</a></li>
+        
+        
+        
+        <li><a href="/features/pp.html">Components placement</a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </ul>
+</section>
+    
+</aside>
 
-<article role="article" class="span12">
+
+<article role="article" class="span9">
 
   
   <header class="page-header">
-    <h1 class="entry-title">cirQWizard</h1>
+    <h1 class="entry-title">Insulation Milling</h1>
     
   </header>
   
-  <p>cirQWizard is a cross-platform open source software designed to control <span class="caps">PCB</span> prototyping machines. It&#8217;s much more than Gerber to GCode converter &#8211; not only it creates a GCode to mill traces, drill holes, dispense solder paste and place components, it also guides a user through all these processes.</p>
-<p>As it is, it&#8217;s perfectly matched to work with <a href="http://cirqoid.com">Cirqoid</a> machines. But, being open source and having modular architecture, can be adapted to any machine of your choice. Downloadable binaries for Mac OS X, Linux and Windows! Supports all EDAs capable of exporting Gerber and Excellon files.</p>
-<p>Check out illustrated <a href="/features/milling.html">features</a> list!</p>
+  <p>Taking a Gerber file as an input, the software generates the tool paths to do insulation milling. The software lets you choose your tool diameter and corresponding feed:<br />
+<img src="/images/screenshots/top_traces_zoom_fit.png" alt="" /></p>
+<p>Layouts can be zoomed in and out to spot all of the details of the tool paths.<br />
+<img src="/images/screenshots/top_traces_zoom_in.png" alt="" /></p>
+<p>If you need some degree of manual control, you can choose which traces are going to be milled, and which not:<br />
+<img src="/images/screenshots/top_traces_selection.png" alt="" /></p>
+<p>If you want to make sure what exactly is going to happen, you can look at the G-Code generated for the selected tool paths.<br />
+<img src="/images/screenshots/top_traces_gcode.png" alt="" /></p>
+<p>When you are ready to go, the software sends the G-Code straight to your machine:<br />
+<img src="/images/screenshots/top_traces_execution.png" alt="" /></p>
+<p>When it comes to milling the bottom side of the <span class="caps">PCB</span>, the software does all the necessary calculates itself &#8211; you only need to turn the board face down:<br />
+<img src="/images/screenshots/bottom_traces_zoom_fit.png" alt="" /></p>
   
     <footer>
       

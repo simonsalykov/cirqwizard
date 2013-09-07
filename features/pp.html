@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>cirQWizard - cirQWizard</title>
+  <title>Components placement - cirQWizard</title>
   <meta name="author" content="Your Name">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://simonsalykov.github.io//github">
+  <link rel="canonical" href="http://simonsalykov.github.io//github/features/pp.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -50,7 +50,7 @@
 
 </head>
 
-<body   class="no-sidebar"  >
+<body   >
   <nav role="navigation"><div class="navbar navbar-inverse">
   <div class="navbar-inner">
     <div class="container">
@@ -92,18 +92,112 @@
   <div class="container">
     <div class="row-fluid">
       
+<aside class="sidebar-nav span3">
+    
+    <section>
+    <header class="page-header">
+        <h1 class="entry-title">&nbsp;</h1>
+    </header>
+    <ul>
+        
+        
+        
+        
+        <li><a href="/features/milling.html">Insulation milling</a></li>
+        
+        
+        
+        <li><a href="/features/drilling.html">Drilling</a></li>
+        
+        
+        
+        
+        
+        <li><a href="/features/contour_milling.html">Contour milling</a></li>
+        
+        
+        
+        <li><a href="/features/dispensing.html">Dispensing</a></li>
+        
+        
+        
+        <li><a href="/features/pp.html">Components placement</a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </ul>
+</section>
+    
+</aside>
 
-<article role="article" class="span12">
+
+<article role="article" class="span9">
 
   
   <header class="page-header">
-    <h1 class="entry-title">cirQWizard</h1>
+    <h1 class="entry-title">Components Placement</h1>
     
   </header>
   
-  <p>cirQWizard is a cross-platform open source software designed to control <span class="caps">PCB</span> prototyping machines. It&#8217;s much more than Gerber to GCode converter &#8211; not only it creates a GCode to mill traces, drill holes, dispense solder paste and place components, it also guides a user through all these processes.</p>
-<p>As it is, it&#8217;s perfectly matched to work with <a href="http://cirqoid.com">Cirqoid</a> machines. But, being open source and having modular architecture, can be adapted to any machine of your choice. Downloadable binaries for Mac OS X, Linux and Windows! Supports all EDAs capable of exporting Gerber and Excellon files.</p>
-<p>Check out illustrated <a href="/features/milling.html">features</a> list!</p>
+  <p>For this operation software needs centroid files to be provided as an input. Software starts with an overview of what is going to be placed:<br />
+<img src="/images/screenshots/placement_overview.png" alt="" /></p>
+<p>Then the software goes through all component types you use and invites you to put a reel or tape with required components on a panel:<br />
+<img src="/images/screenshots/placement_feeder_selection.png" alt="" /></p>
+<p>Then, component placement screen gives you all the controls you need to pick the components from a reel (or tape) and place them on your board. The software automatically calculates pick up and placement positions and component orientation, based on the panel information and centroid file data &#8211; you don&#8217;t have to remember which component goes where in which orientation:<br />
+<img src="/images/screenshots/placement_operation.png" alt="" /></p>
   
     <footer>
       

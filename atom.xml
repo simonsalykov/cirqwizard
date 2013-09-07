@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[cirQWizard]]></title>
+  <link href="http://simonsalykov.github.io//github/atom.xml" rel="self"/>
+  <link href="http://simonsalykov.github.io//github/"/>
+  <updated>2013-09-07T13:45:08+02:00</updated>
+  <id>http://simonsalykov.github.io//github/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[test post]]></title>
+    <link href="http://simonsalykov.github.io//github/blog/2013/07/29/test-post/"/>
+    <updated>2013-07-29T18:47:00+02:00</updated>
+    <id>http://simonsalykov.github.io//github/blog/2013/07/29/test-post</id>
+    <content type="html"><![CDATA[<p>A content of a test post.</p>]]></content>
+  </entry>
+  
+</feed>
