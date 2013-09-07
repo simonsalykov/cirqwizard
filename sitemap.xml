@@ -2,137 +2,137 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://simonsalykov.github.io//github/blog/2013/07/29/test-post/</loc>
-        <lastmod>2013-08-05T14:52:49+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/blog/archives/</loc>
-        <lastmod>2013-08-05T15:45:14+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/blog/</loc>
-        <lastmod>2013-08-05T14:52:49+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/firmware.html</loc>
-        <lastmod>2013-08-23T14:01:09+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/first_start.html</loc>
-        <lastmod>2013-08-23T11:43:53+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/intro.html</loc>
-        <lastmod>2013-08-23T11:30:42+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/operations/contour_milling.html</loc>
-        <lastmod>2013-08-23T12:55:35+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/operations/dispensing.html</loc>
-        <lastmod>2013-08-23T13:07:37+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/operations/drilling.html</loc>
-        <lastmod>2013-08-23T12:43:32+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/operations/milling.html</loc>
-        <lastmod>2013-08-23T12:24:06+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/operations/placement.html</loc>
-        <lastmod>2013-08-23T13:50:59+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/preparation/file_selection.html</loc>
-        <lastmod>2013-08-23T11:57:59+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/preparation/gerber.html</loc>
-        <lastmod>2013-08-23T11:51:47+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/preparation/homing.html</loc>
-        <lastmod>2013-08-17T00:16:36+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://simonsalykov.github.io//github/docs/preparation/operations_selection.html
         </loc>
-        <lastmod>2013-08-23T12:00:23+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/preparation/pcb_orientation.html</loc>
-        <lastmod>2013-08-23T11:58:48+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/application.html</loc>
-        <lastmod>2013-08-20T20:18:22+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/contour_milling.html</loc>
-        <lastmod>2013-08-23T13:58:09+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/dispensing.html</loc>
-        <lastmod>2013-08-23T13:59:28+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/drilling.html</loc>
-        <lastmod>2013-08-23T13:56:31+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/insulation_milling.html</loc>
-        <lastmod>2013-08-20T19:52:37+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/machine.html</loc>
-        <lastmod>2013-08-20T19:31:54+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/docs/settings/placement.html</loc>
-        <lastmod>2013-08-20T20:50:29+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/downloads/</loc>
-        <lastmod>2013-09-07T13:38:16+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/features/contour_milling.html</loc>
-        <lastmod>2013-08-06T11:27:31+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/features/dispensing.html</loc>
-        <lastmod>2013-08-30T16:14:15+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/features/drilling.html</loc>
-        <lastmod>2013-08-06T11:23:58+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/features/</loc>
-        <lastmod>2013-08-05T16:02:42+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/features/milling.html</loc>
-        <lastmod>2013-08-21T15:01:30+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/features/pp.html</loc>
-        <lastmod>2013-08-30T15:33:19+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/forum/</loc>
-        <lastmod>2013-09-07T13:00:24+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/</loc>
-        <lastmod>2013-08-05T14:52:49+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/</loc>
-        <lastmod>2013-08-30T15:45:16+02:00</lastmod>
+        <lastmod>2013-09-07T14:27:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://simonsalykov.github.io//github/robots.txt</loc>
