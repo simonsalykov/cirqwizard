@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.PCBPlacementController">
+  <children>
+    <Label fx:id="header" layoutX="109.0" layoutY="141.0" styleClass="h1" text="Put PCB on the machine bed." />
+    <VBox id="VBox" fx:id="radioButtonsBox" alignment="CENTER_LEFT" layoutX="127.0" layoutY="261.0" spacing="5.0">
+      <children>
+        <RadioButton fx:id="smallPCB" mnemonicParsing="false" onAction="#updateComponents" text="I am using small PCB">
+          <toggleGroup>
+            <ToggleGroup fx:id="pcbSize" />
+          </toggleGroup>
+        </RadioButton>
+        <RadioButton fx:id="largePCB" mnemonicParsing="false" onAction="#updateComponents" text="I am using large PCB" toggleGroup="$pcbSize" />
+      </children>
+    </VBox>
+    <Button fx:id="moveAwayButton" layoutX="393.0" layoutY="267.0" mnemonicParsing="false" onAction="#moveAway" text="Move machine head away" />
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
+        <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
+      </children>
+    </HBox>
+    <Label fx:id="topTracesText" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE UP right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth." wrapText="true" />
+    <Label fx:id="bottomTracesText" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth." wrapText="true" />
+    <Label id="bottomTracesText" fx:id="drillingText" alignment="TOP_LEFT" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE UP on the SPACER." wrapText="true" />
+    <Label id="bottomTracesText" fx:id="calibrationPCBText" alignment="TOP_LEFT" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put calibration PCB to the front of the machine bed." wrapText="true" />
+    <Label id="header" fx:id="calibrationHeader" layoutX="109.0" layoutY="141.0" styleClass="h1" text="Put calibration PCB on the machine bed." />
+    <Label fx:id="errorMessage" layoutX="127.0" layoutY="392.0" styleClass="error-message" text="This laminate is too small for this PCB in selected orientation!" visible="false" />
+  </children>
+</AnchorPane>

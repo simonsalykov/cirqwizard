@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.FirmwareController">
+  <children>
+    <Label layoutY="50.0" styleClass="h1" text="Reflashing firmware" AnchorPane.leftAnchor="51.0" />
+    <Label layoutY="118.0" text="This allows you to flash a new firmware to the controller. After starting reflash process, please do not interrupt it, do not close the application or disconnect the controller. Doing so may render the device unusable." wrapText="true" AnchorPane.leftAnchor="91.0" AnchorPane.rightAnchor="91.0" />
+    <Label fx:id="firmwareVersion" layoutY="213.0" prefWidth="400.0" text="Current firmware: v0.1.9" AnchorPane.leftAnchor="91.0" />
+    <Button layoutX="644.0" layoutY="531.0" mnemonicParsing="false" onAction="#goBack" text="Go back" />
+    <VBox id="VBox" fx:id="fileSelectionBox" layoutX="91.0" layoutY="309.0" spacing="15.0">
+      <children>
+        <HBox id="HBox" alignment="CENTER" prefWidth="317.0" spacing="5.0">
+          <children>
+            <Label text="Firmware file:" />
+            <TextField fx:id="selectedFile" prefWidth="151.0" HBox.hgrow="SOMETIMES" />
+            <Button mnemonicParsing="false" onAction="#selectFile" text="..." />
+          </children>
+        </HBox>
+        <CheckBox fx:id="emergencyReflashCheckbox" mnemonicParsing="false" text="Unbrick mode" />
+        <Button fx:id="flashButton" mnemonicParsing="false" onAction="#flash" prefWidth="137.0" text="Flash" />
+      </children>
+    </VBox>
+    <VBox id="VBox" fx:id="progressBarBox" alignment="CENTER" layoutX="77.0" layoutY="350.0" spacing="15.0" visible="false">
+      <children>
+        <ProgressBar fx:id="flashProgress" prefHeight="26.0" prefWidth="618.0" progress="0.0" />
+        <Label fx:id="flashStatusLabel" alignment="CENTER" prefWidth="531.0" text="Flash OK" />
+      </children>
+    </VBox>
+  </children>
+</AnchorPane>

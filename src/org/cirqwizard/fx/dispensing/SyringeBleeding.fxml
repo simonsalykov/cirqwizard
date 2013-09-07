@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.dispensing.SyringeBleedingController">
+  <children>
+    <HBox id="HBox" alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
+        <Button id="continueButton" contentDisplay="LEFT" defaultButton="true" focusTraversable="true" maxHeight="-1.0" maxWidth="-1.0" minWidth="-1.0" mnemonicParsing="false" onAction="#next" prefWidth="-1.0" text="Continue" visible="true" />
+      </children>
+    </HBox>
+    <Label layoutX="49.0" layoutY="90.0" styleClass="h1" text="Now we need to get paste out of syringe" />
+    <Label layoutX="95.0" layoutY="146.0" prefHeight="44.0" prefWidth="529.0" text="Click the button below to push the paste down the syringe. Keep on clicking until you get a little bit of paste out of needle." wrapText="true" />
+    <Button layoutX="95.0" layoutY="217.0" mnemonicParsing="false" onAction="#dispense" text="Push" />
+  </children>
+</AnchorPane>

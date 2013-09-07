@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.pp.ComponentPlacementController">
+  <children>
+    <Label fx:id="header" layoutX="50.0" layoutY="56.0" styleClass="h1" text="Placing component" />
+    <TitledPane fx:id="pickupPane" animated="false" collapsible="false" layoutX="49.0" layoutY="280.0" prefHeight="256.0" text="Pickup">
+      <content>
+        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+            <HBox id="HBox" alignment="CENTER" layoutX="53.0" layoutY="15.0" spacing="5.0">
+              <children>
+                <Label text="X" />
+                <RealNumberTextField fx:id="pickupX" onAction="#pickupLocationUpdated" prefWidth="75.0" />
+              </children>
+            </HBox>
+            <HBox id="HBox" alignment="CENTER" layoutX="53.0" layoutY="51.0" spacing="5.0">
+              <children>
+                <Label text="Y" />
+                <RealNumberTextField fx:id="pickupY" onAction="#pickupLocationUpdated" prefWidth="75.0" />
+              </children>
+            </HBox>
+            <VBox id="VBox" alignment="CENTER" layoutX="31.0" layoutY="88.0" prefWidth="140.0" spacing="5.0">
+              <children>
+                <Button mnemonicParsing="false" onAction="#gotoPickup" prefWidth="140.0" text="Go to pickup" />
+                <Button mnemonicParsing="false" onAction="#pickup" prefWidth="140.0" text="Pickup">
+                  <VBox.margin>
+                    <Insets />
+                  </VBox.margin>
+                </Button>
+                <Button id="пщещ" fx:id="gotoTargetButton" mnemonicParsing="false" onAction="#gotoTarget" prefWidth="140.0" text="Go to target" />
+                <Separator prefWidth="200.0" />
+                <Button id="pikcupNGo" fx:id="pickupNGoButton" mnemonicParsing="false" onAction="#pickupAndGo" prefWidth="140.0" text="Pickup&amp;go" />
+              </children>
+            </VBox>
+          </children>
+        </AnchorPane>
+      </content>
+    </TitledPane>
+    <TitledPane fx:id="placementPane" animated="false" collapsible="false" layoutX="309.0" layoutY="280.0" minWidth="164.0" prefHeight="173.0" prefWidth="183.0" text="Placement offsets">
+      <content>
+        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+            <VBox id="VBox" alignment="CENTER" prefHeight="181.0" prefWidth="201.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <GridPane>
+                  <children>
+                    <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label text="Angle" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <RealNumberTextField fx:id="placementX" onAction="#placementLocationUpdated" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField fx:id="placementY" onAction="#placementLocationUpdated" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <RealNumberTextField fx:id="placementAngle" onAction="#placementLocationUpdated" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="40.0" />
+                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="70.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                  <VBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </VBox.margin>
+                </GridPane>
+                <Button mnemonicParsing="false" onAction="#place" text="Place" />
+              </children>
+            </VBox>
+          </children>
+        </AnchorPane>
+      </content>
+    </TitledPane>
+    <TitledPane animated="false" collapsible="false" layoutX="547.0" layoutY="280.0" prefHeight="173.0" text="Manual control">
+      <content>
+        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+            <VBox id="VBox" alignment="CENTER" layoutX="26.0" layoutY="17.0" spacing="15.0">
+              <children>
+                <HBox id="HBox" alignment="CENTER" spacing="5.0">
+                  <children>
+                    <Label text="Z position" />
+                    <RealNumberTextField fx:id="manualZ" onAction="#manualZUpdated" prefWidth="75.0" />
+                  </children>
+                </HBox>
+                <Button mnemonicParsing="false" onAction="#moveHeadAway" prefWidth="160.0" text="Move head away" />
+                <Button mnemonicParsing="false" onAction="#vacuumOff" prefWidth="160.0" text="Vacuum off" />
+              </children>
+            </VBox>
+          </children>
+        </AnchorPane>
+      </content>
+    </TitledPane>
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
+        <Button id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
+      </children>
+    </HBox>
+    <HBox id="HBox" alignment="CENTER" layoutX="53.0" layoutY="177.0" spacing="5.0">
+      <children>
+        <Label text="Component being placed" />
+        <ComboBox fx:id="componentName" prefWidth="200.0">
+          <items>
+            <FXCollections fx:factory="observableArrayList">
+              <String fx:value="Item 1" />
+              <String fx:value="Item 2" />
+              <String fx:value="Item 3" />
+            </FXCollections>
+          </items>
+        </ComboBox>
+      </children>
+    </HBox>
+    <TitledPane animated="false" collapsible="false" layoutX="551.0" layoutY="128.0" minWidth="136.0" prefHeight="116.0" prefWidth="160.0" text="Target">
+      <content>
+        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+            <GridPane prefHeight="181.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <Label text="Angle" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <RealNumberTextField fx:id="targetX" disable="true" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <RealNumberTextField fx:id="targetY" disable="true" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <RealNumberTextField fx:id="targetAngle" disable="true" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+              </children>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="60.0" />
+                <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="70.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+          </children>
+        </AnchorPane>
+      </content>
+    </TitledPane>
+  </children>
+</AnchorPane>

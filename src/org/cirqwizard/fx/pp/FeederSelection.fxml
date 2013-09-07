@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.pp.FeederSelectionController">
+  <children>
+    <Label fx:id="header" layoutX="57.0" layoutY="64.0" styleClass="h1" text="Placing component" />
+    <Label layoutX="93.0" layoutY="161.0" prefHeight="67.0" prefWidth="555.0" text="Put a reel with components on a components panel and select components panel size, row on the panel and components pitch in the reel below. If you don't want to place this component, just click Continue." wrapText="true" />
+    <Button layoutX="93.0" layoutY="251.0" mnemonicParsing="false" onAction="#moveHeadAway" text="Move head away" />
+    <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="337.0" text="Components panel">
+      <content>
+        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="94.0" prefWidth="116.0">
+          <children>
+            <VBox id="VBox" layoutX="14.0" layoutY="14.0" spacing="5.0">
+              <children>
+                <RadioButton id="feeder08" fx:id="smallFeeder" mnemonicParsing="false" onAction="#updateRows" text="0-8">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="feeder" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton id="feeder0912" fx:id="mediumFeeder" mnemonicParsing="false" onAction="#updateRows" text="9-12" toggleGroup="$feeder" />
+                <RadioButton id="feeder1215" fx:id="largeFeeder" mnemonicParsing="false" onAction="#updateRows" text="12-15" toggleGroup="$feeder" />
+              </children>
+            </VBox>
+          </children>
+        </AnchorPane>
+      </content>
+    </TitledPane>
+    <Label layoutX="225.0" layoutY="384.0" text="Row" />
+    <ComboBox fx:id="row" layoutX="272.0" layoutY="383.0">
+      <items>
+        <FXCollections fx:factory="observableArrayList">
+          <String fx:value="Item 1" />
+          <String fx:value="Item 2" />
+          <String fx:value="Item 3" />
+        </FXCollections>
+      </items>
+    </ComboBox>
+    <Label layoutX="225.0" layoutY="427.0" text="Component pitch" />
+    <RealNumberTextField fx:id="pitch" layoutX="371.0" layoutY="426.0" prefWidth="60.0" />
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
+        <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
+      </children>
+    </HBox>
+    <Label id="ComponentsCount" fx:id="countOfComponents" layoutX="93.0" layoutY="124.0" text="You will need 1 such component(s)" />
+  </children>
+</AnchorPane>

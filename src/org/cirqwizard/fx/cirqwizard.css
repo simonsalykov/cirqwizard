@@ -1,0 +1,129 @@
+.hyperlink  {
+    -fx-text-fill: blue;
+    -fx-underline: true;
+    -fx-border-width: 0;
+    -fx-font-size: 16;
+}
+
+.main-pane {
+    -fx-background-color:  #f0f0f0;
+}
+
+.label {
+    -fx-font-size: 16;
+}
+
+.h1 {
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+}
+
+.pcb-top-trace {
+    -fx-stroke: red;
+    -fx-fill: red;
+}
+
+.pcb-bottom-trace {
+    -fx-stroke: blue;
+    -fx-fill: blue;
+}
+
+.pcb-solder-pad {
+    -fx-stroke: navy;
+    -fx-fill: navy;
+}
+
+.check-box {
+    -fx-font-size: 16;
+}
+
+.radio-button {
+    -fx-font-size: 16;
+}
+
+.button {
+    -fx-font-size: 16;
+}
+
+.titled-pane {
+    -fx-font-size: 16;
+}
+
+.pcb-top-toolpath {
+    -fx-stroke: #191970;
+    -fx-fill: transparent;
+}
+
+.pcb-bottom-toolpath {
+    -fx-stroke: #191970;
+    -fx-fill: transparent;
+}
+
+.pcb-drill-point {
+    -fx-stroke-width: 1;
+    -fx-stroke: transparent;
+    -fx-fill: black;
+}
+
+.pcb-contour-milling {
+    -fx-stroke: magenta;
+    -fx-fill: transparent;
+}
+
+.pcb-syringe-toolpath {
+    -fx-stroke: gold;
+    -fx-fill: transparent;
+}
+
+.pcb {
+    -fx-background-color: #ddfbdd;
+}
+
+.pcb-selection-rect {
+    -fx-stroke: black;
+    -fx-fill: transparent;
+}
+
+.pcb-disabled {
+     -fx-stroke: #dcdcdc;
+}
+
+.pcb-selection {
+    -fx-stroke: cyan;
+}
+
+.pcb-frame {
+    -fx-stroke: black;
+    -fx-stroke-width: 0.15;
+    -fx-fill: transparent;
+}
+
+.pcb-veil {
+    -fx-background-color: rgba(0, 0, 0, 0.4);
+}
+
+.pcb-popup-pane {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: white;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+.pcb-popup-pane-header {
+    -fx-background-color: #e0e0e0;
+    -fx-border-width: 0;
+    -fx-border-radius: 4;
+}
+
+.error-message {
+   -fx-text-fill: red;
+}
+
+.validation-error {
+    -fx-background-color: #FF3333!important;
+    -fx-text-fill: white!important;
+}
+
+#licensePane {
+     -fx-padding: 0 30 0 30;
+ }

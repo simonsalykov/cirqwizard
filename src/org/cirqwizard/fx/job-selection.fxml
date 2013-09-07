@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.JobSelectionController">
+  <children>
+    <Label layoutX="77.0" layoutY="109.0" styleClass="h1" text="Tell me what you want to do:" />
+    <VBox id="VBox" alignment="CENTER_LEFT" layoutX="130.0" layoutY="161.0" spacing="5.0">
+      <children>
+        <CheckBox fx:id="topTraces" mnemonicParsing="false" onAction="#updateContext" text="Mill top layer insulation" />
+        <CheckBox fx:id="bottomTraces" mnemonicParsing="false" onAction="#updateContext" text="Mill bottom layer insulation" />
+        <CheckBox fx:id="drilling" mnemonicParsing="false" onAction="#updateContext" text="Drill holes" />
+        <CheckBox fx:id="contour" mnemonicParsing="false" onAction="#updateContext" text="Mill contour" />
+        <CheckBox fx:id="paste" mnemonicParsing="false" onAction="#updateContext" text="Dispense paste" />
+        <CheckBox fx:id="placing" mnemonicParsing="false" onAction="#updateContext" text="Place components" />
+      </children>
+    </VBox>
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
+        <Button defaultButton="true" fx:id="continueButton" mnemonicParsing="false" onAction="#next" text="Continue" />
+      </children>
+    </HBox>
+    <Label fx:id="errorMessage" layoutX="77.0" layoutY="392.0" styleClass="error-message" text="" visible="false" />
+    <Hyperlink fx:id="linkToSettings" layoutX="77.0" layoutY="417.0" onAction="#showSettings" text="Go to Settings" visible="false" />
+  </children>
+</AnchorPane>

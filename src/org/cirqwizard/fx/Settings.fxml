@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.SettingsController">
+  <children>
+    <Label layoutX="51.0" layoutY="31.0" styleClass="h1" text="Settings" />
+    <Button layoutX="644.0" layoutY="531.0" mnemonicParsing="false" onAction="#goBack" text="Go back" />
+    <TabPane layoutX="65.0" layoutY="98.0" prefHeight="386.0" prefWidth="668.0" tabClosingPolicy="UNAVAILABLE">
+      <tabs>
+        <Tab text="Machine">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="130.0" prefWidth="200.0">
+              <children>
+                <GridPane alignment="CENTER_LEFT" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label text="Y axis difference" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Reference pin X" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label text="Reference pin Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <RealNumberTextField fx:id="yAxisDiff" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField fx:id="referencePinX" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <RealNumberTextField fx:id="referencePinY" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label text="Small PCB width" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label text="Large PCB width" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <RealNumberTextField fx:id="smallPCBWidth" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <RealNumberTextField fx:id="largePCBWidth" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label text="Far away Y" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <RealNumberTextField fx:id="farAwayY" prefWidth="64.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints fillWidth="true" hgrow="SOMETIMES" maxWidth="160.0" minWidth="10.0" prefWidth="160.0" />
+                    <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="80.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Insulation milling">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane prefHeight="240.0" prefWidth="249.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <RealNumberTextField id="tracesSpeedDiameter" fx:id="tracesToolDiameter" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField fx:id="tracesFeedXY" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <RealNumberTextField fx:id="tracesFeedZ" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <RealNumberTextField fx:id="tracesSpeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <RealNumberTextField fx:id="tracesClearance" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <RealNumberTextField id="tracesHeight" fx:id="tracesSafetyHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <RealNumberTextField fx:id="tracesZOffset" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <RealNumberTextField fx:id="tracesWorkingHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                    <Label text="Tool diameter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Feed XY" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label text="Speed" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label text="Clearance" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <Label text="Safety height" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <Label text="Feed Z" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label text="Z offset" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <Label text="Working height" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Drilling">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane prefHeight="180.0" prefWidth="210.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label text="Feed" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Speed" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <RealNumberTextField fx:id="drillingFeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField fx:id="drillingSpeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <Label text="Clearance" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label text="Safety height" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <RealNumberTextField fx:id="drillingClearance" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <RealNumberTextField id="drillingHeight" fx:id="drillingSafetyHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <RealNumberTextField fx:id="drillingZOffset" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <RealNumberTextField fx:id="drillingWorkingHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <Label text="Working height" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <Label text="Z offset" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Contour milling">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane prefHeight="210.0" prefWidth="210.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label text="Feed XY" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Speed" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <RealNumberTextField fx:id="contourFeedXY" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField fx:id="contourFeedZ" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <RealNumberTextField fx:id="contourSpeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <Label text="Clearance" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label text="Safety height" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <RealNumberTextField fx:id="contourClearance" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <RealNumberTextField id="contourHeight" fx:id="contourSafetyHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <Label text="Feed Z" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label text="Working height" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <RealNumberTextField fx:id="contourZOffset" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <RealNumberTextField fx:id="contourWorkingHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label text="Z offset" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Dispensing">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <children>
+                    <Label text="Needle diameter" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Prefeed pause" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label text="Postfeed pause" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label text="Feed" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label text="Clearance" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <Label text="Z offset" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <Label text="Working height" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                    <RealNumberTextField fx:id="dispensingNeedleDiameter" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField id="dispenserPrefeedPause" fx:id="dispensingPrefeedPause" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <RealNumberTextField id="dispensingCloseDuration1" fx:id="dispensingPostfeedPause" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <RealNumberTextField id="dispenserFeed" fx:id="dispensingFeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <RealNumberTextField id="dispenserClearance" fx:id="dispensingClearance" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <RealNumberTextField fx:id="dispensingZOffset" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <RealNumberTextField id="dispenserWorkingHeight" fx:id="dispensingWorkingHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                    <Label text="Bleeding duration" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                    <RealNumberTextField fx:id="dispensingBleedingDuration" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Pick&amp;Place">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane layoutX="5.0" layoutY="5.0">
+                  <children>
+                    <Label text="Pickup height" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label text="Move height" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <Label text="Rotation feed" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <RealNumberTextField fx:id="ppPickupHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <RealNumberTextField fx:id="ppMoveHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <RealNumberTextField fx:id="ppRotationFeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Applicaton">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <GridPane layoutX="5.0" layoutY="5.0">
+                  <children>
+                    <Label prefWidth="90.0" text="Serial port" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <ComboBox id="serialPort" fx:id="serialPortComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                      <items>
+                        <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Item 1" />
+                          <String fx:value="Item 2" />
+                          <String fx:value="Item 3" />
+                        </FXCollections>
+                      </items>
+                    </ComboBox>
+                    <Label text="Log level" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <ComboBox id="logLevel" fx:id="logLevelComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                      <items>
+                        <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="OFF" />
+                          <String fx:value="SEVERE" />
+                          <String fx:value="WARNING" />
+                          <String fx:value="INFO" />
+                          <String fx:value="CONFIG" />
+                          <String fx:value="FINE" />
+                          <String fx:value="FINER" />
+                          <String fx:value="FINEST" />
+                          <String fx:value="ALL" />
+                        </FXCollections>
+                      </items>
+                    </ComboBox>
+                  </children>
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="110.0" />
+                    <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="160.0" minWidth="10.0" prefWidth="160.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                </GridPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </children>
+</AnchorPane>
