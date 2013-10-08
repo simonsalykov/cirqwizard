@@ -144,8 +144,16 @@ public class GerberParser
             parseApertureDefinition(parameter.substring(2));
         else if (parameter.startsWith("OF") || parameter.startsWith("IP"))
             LoggerFactory.getApplicationLogger().log(Level.FINE, "Ignoring obsolete gerber parameter");
+        else if (parameter.startsWith("FS"))
+            parseCoordinateFormatSpecification(parameter.substring(parameter.indexOf("X")));
         else
             throw new GerberParsingException("Unknown parameter: " + parameter);
+    }
+
+    private void parseCoordinateFormatSpecification(String str)
+    {
+        integerPlaces = Integer.parseInt(str.substring(1, 2));
+        decimalPlaces = Integer.parseInt(str.substring(2, 3));
     }
 
     private void parseApertureDefinition(String str) throws GerberParsingException
@@ -225,8 +233,13 @@ public class GerberParser
 
     private RealNumber convertCoordinates(String str)
     {
-        RealNumber d = new RealNumber(str.substring(0, integerPlaces));
-        d = d.add(new RealNumber(str.substring(integerPlaces)).divide(MathUtil.pow(new RealNumber(10), decimalPlaces)));
+        int validIntPlaces = str.length() >= (integerPlaces + decimalPlaces) ? integerPlaces : (str.length() - decimalPlaces);
+        RealNumber d = new RealNumber("0");
+
+        if(validIntPlaces > 0)
+            d = new RealNumber(str.substring(0, validIntPlaces));
+
+        d = d.add(new RealNumber(str.substring(validIntPlaces)).divide(MathUtil.pow(new RealNumber(10), decimalPlaces)));
         return d.multiply(unitConversionRatio);
     }
 
