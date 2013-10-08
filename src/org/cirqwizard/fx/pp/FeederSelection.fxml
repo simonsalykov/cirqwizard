@@ -9,7 +9,6 @@
 <?import javafx.scene.paint.*?>
 
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
-<?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.pp.FeederSelectionController">
   <children>
