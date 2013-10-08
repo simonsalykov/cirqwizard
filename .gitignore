@@ -1,0 +1,7 @@
+build/
+dist/
+deploy/
+out/
+.idea/
+*.bak
+*.iml

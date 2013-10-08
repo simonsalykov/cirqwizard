@@ -16,8 +16,10 @@ package org.cirqwizard.fx.services;
 
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
+import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
@@ -97,6 +99,22 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         -edgeOffset + flashX, -centerOffset + flashY,
                         edgeOffset + flashX, -centerOffset + flashY,
                         centerOffset + flashX, -edgeOffset + flashY );
+                polygon.setStrokeWidth(0);
+                return polygon;
+            }
+            else if (flash.getAperture() instanceof PolygonalAperture)
+            {
+                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
+                Polygon polygon = new Polygon();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+
+                for (Point p : aperture.getPoints())
+                {
+                    polygon.getPoints().add(p.getX().doubleValue() + flashX);
+                    polygon.getPoints().add(p.getY().doubleValue() + flashY);
+                }
+
                 polygon.setStrokeWidth(0);
                 return polygon;
             }
