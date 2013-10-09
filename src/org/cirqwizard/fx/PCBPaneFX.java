@@ -222,6 +222,7 @@ public class PCBPaneFX extends Region
                 double flashX = flash.getX().doubleValue();
                 double flashY = flash.getY().doubleValue();
 
+                g.beginPath();
                 g.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
                 for (int i = 1; i < points.size(); i++)
                     g.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
