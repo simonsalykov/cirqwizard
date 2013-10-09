@@ -18,10 +18,13 @@ import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.geom.Line;
+import org.cirqwizard.geom.PolygonUtils;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.math.VectorMath;
 import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -273,7 +276,7 @@ public class Raster
                 double flashY = flash.getY().doubleValue();
                 Path2D polygon = new GeneralPath();
 
-                points = expandPolygon(new ArrayList<Point>(points.subList(0, points.size() - 1)), inflation);
+                points = PolygonUtils.expandPolygon(new ArrayList<Point>(points.subList(0, points.size() - 1)), inflation);
                 polygon.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
                 for (int i = 1; i < points.size(); i++)
                     polygon.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
@@ -282,90 +285,6 @@ public class Raster
             }
         }
     }
-
-    private Point vecUnit(Point v)
-    {
-        double len = Math.sqrt(v.getX().doubleValue() * v.getX().doubleValue() + v.getY().doubleValue() * v.getY().doubleValue());
-        return new Point(v.getX().divide(new RealNumber(len)), v.getY().divide(new RealNumber(len)));
-    }
-
-    private Point vecMul(Point v, double s)
-    {
-        return new Point(new RealNumber(v.getX().doubleValue() * s), new RealNumber(v.getY().doubleValue() * s));
-    }
-
-    private double vecDot(Point v1, Point v2)
-    {
-        return v1.getX().doubleValue() * v2.getX().doubleValue() + v1.getY().doubleValue() * v2.getY().doubleValue();
-    }
-
-    private Point vecRot90CW(Point v)
-    {
-        return new Point(v.getY(), v.getX().negate());
-    }
-
-    private Point vecRot90CCW(Point v)
-    {
-        return new Point(v.getY().negate(), v.getX());
-    }
-
-    private Point intersectionPoint(Point[] line1, Point[] line2)
-    {
-        double a1 = line1[1].getX().doubleValue() - line1[0].getX().doubleValue();
-        double b1 = line2[0].getX().doubleValue() - line2[1].getX().doubleValue();
-        double c1 = line2[0].getX().doubleValue() - line1[0].getX().doubleValue();
-
-        double a2 = line1[1].getY().doubleValue() - line1[0].getY().doubleValue();
-        double b2 = line2[0].getY().doubleValue() - line2[1].getY().doubleValue();
-        double c2 = line2[0].getY().doubleValue() - line1[0].getY().doubleValue();
-
-        double t = (b1*c2 - b2*c1) / (a2*b1 - a1*b2);
-
-        return new Point(new RealNumber(line1[0].getX().doubleValue() + t * (line1[1].getX().doubleValue() - line1[0].getX().doubleValue())),
-                new RealNumber(line1[0].getY().doubleValue() + t * (line1[1].getY().doubleValue() - line1[0].getY().doubleValue())));
-    }
-
-    private boolean polyIsCw(Point[] p)
-    {
-        return vecDot( vecRot90CW(new Point(p[1].getX().subtract(p[0].getX()),  p[1].getY().subtract(p[0].getY()))),
-                new Point(p[2].getX().subtract(p[1].getX()),  p[2].getY().subtract(p[1].getY()))) >= 0;
-    }
-
-    private ArrayList<Point> expandPolygon(ArrayList<Point> p, double distance)
-    {
-        ArrayList<Point> expanded = new ArrayList<Point>();
-        Point d01, d12;
-
-        for (int i = 0; i < p.size(); ++i)
-        {
-            Point pt0 = p.get(i > 0 ? i - 1 : p.size() - 1);
-            Point pt1 = p.get(i);
-            Point pt2 = p.get((i < p.size() - 1) ? i + 1 : 0);
-
-            Point v01 = new Point(pt1.getX().subtract(pt0.getX()), pt1.getY().subtract(pt0.getY()));
-            Point v12 = new Point(pt2.getX().subtract(pt1.getX()), pt2.getY().subtract(pt1.getY()));
-
-            if (polyIsCw(p.toArray(new Point[p.size()])))
-            {
-                d01 = vecMul(vecUnit(vecRot90CCW(v01)), distance);
-                d12 = vecMul(vecUnit(vecRot90CCW(v12)), distance);
-            }
-            else
-            {
-                d01 = vecMul(vecUnit(vecRot90CW(v01)), distance);
-                d12 = vecMul(vecUnit(vecRot90CW(v12)), distance);
-            }
-
-            Point ptx0  = new Point(pt0.getX().add(d01.getX()), pt0.getY().add(d01.getY()));
-            Point ptx10 = new Point(pt1.getX().add(d01.getX()), pt1.getY().add(d01.getY()));
-            Point ptx12 = new Point(pt1.getX().add(d12.getX()), pt1.getY().add(d12.getY()));
-            Point ptx2  = new Point(pt2.getX().add(d12.getX()), pt2.getY().add(d12.getY()));
-
-            expanded.add(intersectionPoint(new Point[]{ptx0, ptx10}, new Point[]{ptx12, ptx2}));
-        }
-        return expanded;
-    }
-
 
     private int fill(int x, int y, int fillColor)
     {
