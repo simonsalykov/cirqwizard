@@ -98,14 +98,12 @@ public class Settings
         private static final String TRACES_CLEARANCE = "5";
         private static final String TRACES_SAFETY_HEIGHT = "2";
         private static final String TRACES_WORKING_HEIGHT = "-0.05";
-        private static final String TRACES_Z_OFFSET = "-15";
 
         private static final String DRILLING_FEED = "200";
         private static final String DRILLING_SPEED = "1390";
         private static final String DRILLING_CLEARANCE = "5";
         private static final String DRILLING_SAFETY_HEIGHT = "2";
         private static final String DRILLING_WORKING_HEIGHT = "-2.5";
-        private static final String DRILLING_Z_OFFSET = "-11";
 
         private static final String CONTOUR_FEED_XY = "300";
         private static final String CONTOUR_FEED_Z = "200";
@@ -113,7 +111,6 @@ public class Settings
         private static final String CONTOUR_CLEARANCE = "5";
         private static final String CONTOUR_SAFETY_HEIGHT = "2";
         private static final String CONTOUR_WORKING_HEIGHT = "-2";
-        private static final String CONTOUR_Z_OFFSET = "-11";
 
         private static final String DISPENSING_NEEDLE_DIAMETER = "0.4";
         private static final String DISPENSING_PREFEED_PAUSE = "0.1";
@@ -122,7 +119,6 @@ public class Settings
         private static final String DISPENSING_CLEARANCE = "5";
         private static final String DISPENSING_WORKING_HEIGHT = "0";
         private static final String DISPENSING_BLEEDING_DURATION = "0.5";
-        private static final String DISPENSING_Z_OFFSET = "-7.7";
 
         private static final String PP_PICKUP_HEIGHT = "-14.2";
         private static final String PP_MOVE_HEIGHT = "0.8";
@@ -301,7 +297,7 @@ public class Settings
 
     public String getDefaultTracesZOffset()
     {
-        return preferences.get(PropertyNames.TRACES_DEFAULT_Z_OFFSET, DefaultValues.TRACES_Z_OFFSET);
+        return preferences.get(PropertyNames.TRACES_DEFAULT_Z_OFFSET, "");
     }
 
     public void setDefaultTracesZOFfset(String offset)
@@ -363,7 +359,7 @@ public class Settings
 
     public String getDefaultDrillingZOffset()
     {
-        return preferences.get(PropertyNames.DRILLING_Z_OFFSET, DefaultValues.DRILLING_Z_OFFSET);
+        return preferences.get(PropertyNames.DRILLING_Z_OFFSET, "");
     }
 
     public void setDefaultDrillingZOffset(String offset)
@@ -435,7 +431,7 @@ public class Settings
 
     public String getDefaultContourZOffset()
     {
-        return preferences.get(PropertyNames.CONTOUR_Z_OFFSET, DefaultValues.CONTOUR_Z_OFFSET);
+        return preferences.get(PropertyNames.CONTOUR_Z_OFFSET, "");
     }
 
     public void setDefaultContourZOffset(String offset)
@@ -496,7 +492,7 @@ public class Settings
 
     public String getDefaultDispensingZOffset()
     {
-        return preferences.get(PropertyNames.DISPENSING_Z_OFFSET, DefaultValues.DISPENSING_Z_OFFSET);
+        return preferences.get(PropertyNames.DISPENSING_Z_OFFSET, "");
     }
 
     public void setDefaultDispensingZOffset(String offset)
