@@ -16,8 +16,10 @@ package org.cirqwizard.fx;
 
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
+import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
@@ -41,6 +43,7 @@ import javafx.scene.shape.*;
 import javafx.scene.transform.Transform;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -209,6 +212,21 @@ public class PCBPaneFX extends Region
                 g.lineTo(-edgeOffset + x, -centerOffset + y);
                 g.lineTo(edgeOffset + x, -centerOffset + y);
                 g.lineTo(centerOffset + x, -edgeOffset + y);
+                g.closePath();
+                g.fill();
+            }
+            else if (flash.getAperture() instanceof PolygonalAperture)
+            {
+                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
+                ArrayList<Point> points = aperture.getPoints();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+
+                g.beginPath();
+                g.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
+                for (int i = 1; i < points.size(); i++)
+                    g.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
+
                 g.closePath();
                 g.fill();
             }

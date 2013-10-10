@@ -14,10 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard;
 
-import org.cirqwizard.appertures.Aperture;
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.appertures.*;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.MathUtil;
@@ -39,8 +37,10 @@ public class GerberParser
 {
     private String filename;
     private ArrayList<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
+    private ArrayList<Point> polygonPoints = new ArrayList<Point>();
 
     private boolean parameterMode = false;
+    private boolean polygonMode = false;
     private HashMap<Integer, Aperture> apertures = new HashMap<Integer, Aperture>();
 
     private static final RealNumber MM_RATIO = new RealNumber(1);
@@ -69,7 +69,16 @@ public class GerberParser
         FLASH
     }
 
+    private enum PolygonStage
+    {
+        BEGIN,
+        DRAWING,
+        CLOSING,
+        CLOSED
+    }
+
     private ExposureMode exposureMode = ExposureMode.OFF;
+    private PolygonStage polygonStage = PolygonStage.CLOSED;
 
     private Aperture aperture = null;
 
@@ -249,6 +258,10 @@ public class GerberParser
         {
             switch (dataBlock.getG())
             {
+                case 36: polygonMode = true;
+                         polygonStage = PolygonStage.BEGIN; break;
+                case 37: polygonStage = PolygonStage.CLOSING; break;
+                case 54: break;
                 case 70: unitConversionRatio = INCHES_RATIO; break;
                 case 71: unitConversionRatio = MM_RATIO; break;
                 default:
@@ -276,7 +289,19 @@ public class GerberParser
         if (dataBlock.getY() != null)
             newY = dataBlock.getY();
 
-        if (aperture != null)
+        if (polygonMode)
+        {
+            switch (polygonStage)
+            {
+                case BEGIN: polygonPoints = new ArrayList<Point>();
+                     polygonStage = PolygonStage.DRAWING; break;
+                case DRAWING: polygonPoints.add(new Point(newX, newY)); break;
+                case CLOSING: elements.add(new Flash(new RealNumber(0), new RealNumber(0), new PolygonalAperture(polygonPoints)));
+                     polygonMode = false;
+                     polygonStage = PolygonStage.CLOSED; break;
+            }
+        }
+        else if (aperture != null)
         {
             if(exposureMode == ExposureMode.FLASH)
                 elements.add(new Flash(newX, newY, aperture));

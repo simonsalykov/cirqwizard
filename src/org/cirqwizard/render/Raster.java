@@ -16,11 +16,15 @@ package org.cirqwizard.render;
 
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
+import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.geom.Line;
+import org.cirqwizard.geom.PolygonUtils;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.math.VectorMath;
 import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -28,6 +32,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.*;
+import org.cirqwizard.geom.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
@@ -263,9 +268,23 @@ public class Raster
                 polygon.lineTo(centerOffset + flashX, -edgeOffset + flashY);
                 g.fill(polygon);
             }
+            else if (flash.getAperture() instanceof PolygonalAperture)
+            {
+                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
+                ArrayList<org.cirqwizard.geom.Point> points = aperture.getPoints();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+                Path2D polygon = new GeneralPath();
+
+                points = PolygonUtils.expandPolygon(new ArrayList<Point>(points.subList(0, points.size() - 1)), inflation);
+                polygon.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
+                for (int i = 1; i < points.size(); i++)
+                    polygon.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
+
+                g.fill(polygon);
+            }
         }
     }
-
 
     private int fill(int x, int y, int fillColor)
     {
