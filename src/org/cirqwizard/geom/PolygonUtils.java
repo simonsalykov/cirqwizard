@@ -21,9 +21,9 @@ import java.util.ArrayList;
 
 public class PolygonUtils
 {
-    public static boolean polyIsCw(ArrayList<Point> p)
+    public static boolean isPolygonClockwise(ArrayList<Point> p)
     {
-        return VectorMath.vecDot(VectorMath.vecRot90CW(new Point(p.get(1).getX().subtract(p.get(0).getX()), p.get(1).getY().subtract(p.get(0).getY()))),
+        return VectorMath.dotProduct(VectorMath.rotateClockwise(new Point(p.get(1).getX().subtract(p.get(0).getX()), p.get(1).getY().subtract(p.get(0).getY()))),
                 new Point(p.get(2).getX().subtract(p.get(1).getX()), p.get(2).getY().subtract(p.get(1).getY()))).greaterOrEqualTo(0);
     }
 
@@ -41,15 +41,15 @@ public class PolygonUtils
             Point v01 = new Point(pt1.getX().subtract(pt0.getX()), pt1.getY().subtract(pt0.getY()));
             Point v12 = new Point(pt2.getX().subtract(pt1.getX()), pt2.getY().subtract(pt1.getY()));
 
-            if (polyIsCw(p))
+            if (isPolygonClockwise(p))
             {
-                d01 = VectorMath.vecMul(VectorMath.vecUnit(VectorMath.vecRot90CCW(v01)), distance);
-                d12 = VectorMath.vecMul(VectorMath.vecUnit(VectorMath.vecRot90CCW(v12)), distance);
+                d01 = VectorMath.scalarMultiply(VectorMath.unitVector(VectorMath.rotateCounterclockwise(v01)), distance);
+                d12 = VectorMath.scalarMultiply(VectorMath.unitVector(VectorMath.rotateCounterclockwise(v12)), distance);
             }
             else
             {
-                d01 = VectorMath.vecMul(VectorMath.vecUnit(VectorMath.vecRot90CW(v01)), distance);
-                d12 = VectorMath.vecMul(VectorMath.vecUnit(VectorMath.vecRot90CW(v12)), distance);
+                d01 = VectorMath.scalarMultiply(VectorMath.unitVector(VectorMath.rotateClockwise(v01)), distance);
+                d12 = VectorMath.scalarMultiply(VectorMath.unitVector(VectorMath.rotateClockwise(v12)), distance);
             }
 
             Line l1 = new Line(new Point(pt0.getX().add(d01.getX()), pt0.getY().add(d01.getY())),

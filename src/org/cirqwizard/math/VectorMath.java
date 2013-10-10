@@ -19,27 +19,27 @@ import org.cirqwizard.geom.Point;
 
 public class VectorMath
 {
-    public static Point vecMul(Point v, double s)
+    public static Point scalarMultiply(Point v, double s)
     {
         return new Point(new RealNumber(v.getX().doubleValue() * s), new RealNumber(v.getY().doubleValue() * s));
     }
 
-    public static RealNumber vecDot(Point v1, Point v2)
+    public static RealNumber dotProduct(Point v1, Point v2)
     {
         return v1.getX().multiply(v2.getX()).add(v1.getY().multiply(v2.getY()));
     }
 
-    public static Point vecRot90CW(Point v)
+    public static Point rotateClockwise(Point v)
     {
         return new Point(v.getY(), v.getX().negate());
     }
 
-    public static Point vecRot90CCW(Point v)
+    public static Point rotateCounterclockwise(Point v)
     {
         return new Point(v.getY().negate(), v.getX());
     }
 
-    public static Point vecUnit(Point v)
+    public static Point unitVector(Point v)
     {
         RealNumber len = new RealNumber(Math.sqrt(v.getX().multiply(v.getX()).add(v.getY().multiply(v.getY())).doubleValue()));
         return new Point(v.getX().divide(len), v.getY().divide(len));
