@@ -233,8 +233,12 @@ public class GerberParser
 
     private RealNumber convertCoordinates(String str)
     {
-        int validIntPlaces = str.length() >= (integerPlaces + decimalPlaces) ? integerPlaces : (str.length() - decimalPlaces);
         RealNumber d = new RealNumber("0");
+
+        if(str.equals("0"))
+            return d;
+
+        int validIntPlaces = str.length() >= (integerPlaces + decimalPlaces) ? integerPlaces : (str.length() - decimalPlaces);
 
         if(validIntPlaces > 0)
             d = new RealNumber(str.substring(0, validIntPlaces));
