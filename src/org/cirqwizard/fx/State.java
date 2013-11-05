@@ -504,8 +504,7 @@ public enum State
                 @Override
                 public State getNextState(Context context)
                 {
-                    context.setG54Z(null);
-                    return CALIBRATION_PCB_PLACEMENT;
+                    return INSERTING_SYRINGE;
                 }
 
                 @Override
@@ -520,20 +519,6 @@ public enum State
                     if (context.isTopTracesSelected())
                         return context.getG54Z() == null ? INSERTING_CUTTER_FOR_TOP_TRACES : MILLING_TOP_INSULATION;
                     return JOB_SELECTION;
-                }
-            },
-    CALIBRATION_PCB_PLACEMENT(SceneEnum.PCBPlacement)
-            {
-                @Override
-                public State getNextState(Context context)
-                {
-                    return INSERTING_SYRINGE;
-                }
-
-                @Override
-                public State getPrevState(Context context)
-                {
-                    return PCB_PLACEMENT_FOR_DISPENSING;
                 }
             },
     INSERTING_SYRINGE(SceneEnum.Message)

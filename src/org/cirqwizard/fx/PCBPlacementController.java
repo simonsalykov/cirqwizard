@@ -32,13 +32,11 @@ public class PCBPlacementController extends SceneController
     @FXML private Button moveAwayButton;
 
     @FXML private Label header;
-    @FXML private Label calibrationHeader;
 
     @FXML private Label errorMessage;
     @FXML private Label topTracesText;
     @FXML private Label bottomTracesText;
     @FXML private Label drillingText;
-    @FXML private Label calibrationPCBText;
 
     @Override
     public Parent getView()
@@ -57,12 +55,10 @@ public class PCBPlacementController extends SceneController
             largePCB.setSelected(true);
 
         header.setVisible(false);
-        calibrationHeader.setVisible(false);
         topTracesText.setVisible(false);
         errorMessage.setVisible(false);
         bottomTracesText.setVisible(false);
         drillingText.setVisible(false);
-        calibrationPCBText.setVisible(false);
         State state = getMainApplication().getState();
         switch (state)
         {
@@ -81,11 +77,6 @@ public class PCBPlacementController extends SceneController
                 header.setVisible(true);
                 drillingText.setVisible(true);
             break;
-            case CALIBRATION_PCB_PLACEMENT:
-                calibrationHeader.setVisible(true);
-                calibrationPCBText.setVisible(true);
-            break;
-
         }
 
         if (state == State.PCB_PLACEMENT_FOR_TOP_TRACES ||

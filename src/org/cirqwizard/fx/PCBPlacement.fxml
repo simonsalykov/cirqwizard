@@ -30,8 +30,6 @@
     <Label fx:id="topTracesText" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE UP right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth." wrapText="true" />
     <Label fx:id="bottomTracesText" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth." wrapText="true" />
     <Label id="bottomTracesText" fx:id="drillingText" alignment="TOP_LEFT" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE UP on the SPACER." wrapText="true" />
-    <Label id="bottomTracesText" fx:id="calibrationPCBText" alignment="TOP_LEFT" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put calibration PCB to the front of the machine bed." wrapText="true" />
-    <Label id="header" fx:id="calibrationHeader" layoutX="109.0" layoutY="141.0" styleClass="h1" text="Put calibration PCB on the machine bed." />
     <Label fx:id="errorMessage" layoutX="127.0" layoutY="392.0" styleClass="error-message" text="This laminate is too small for this PCB in selected orientation!" visible="false" />
   </children>
 </AnchorPane>
