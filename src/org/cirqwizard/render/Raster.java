@@ -110,6 +110,7 @@ public class Raster
                     CannyEdgeDetector detector = new CannyEdgeDetector();
                     detector.setLowThreshold(0.5f);
                     detector.setHighThreshold(1.0f);
+                    detector.setGaussianKernelWidth(8);
                     detector.setSourceImage(window.getBufferedImage());
                     detector.process();
                     t = System.currentTimeMillis() - t;

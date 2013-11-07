@@ -276,7 +276,6 @@ public class CannyEdgeDetector
         readLuminance();
         t = System.currentTimeMillis() - t;
         System.out.println("luminance reading: " + t);
-        if (contrastNormalized) normalizeContrast();
         t = System.currentTimeMillis();
         computeGradients(gaussianKernelRadius, gaussianKernelWidth);
         t = System.currentTimeMillis() - t;
@@ -345,28 +344,28 @@ public class CannyEdgeDetector
 
         long t = System.currentTimeMillis();
         //perform convolution in x and y directions
-        for (int x = initX; x < maxX; x++)
-        {
-            for (int y = initY; y < maxY; y += width)
-            {
-                int index = x + y;
-                float sumX = data[index] * kernel[0];
-                float sumY = sumX;
-                int xOffset = 1;
-                int yOffset = width;
-                for (; xOffset < kwidth; )
-                {
-                    sumY += kernel[xOffset] * (data[index - yOffset] + data[index + yOffset]);
-                    sumX += kernel[xOffset] * (data[index - xOffset] + data[index + xOffset]);
-                    yOffset += width;
-                    xOffset++;
-                }
-
-                yConv[index] = sumY;
-                xConv[index] = sumX;
-            }
-
-        }
+//        for (int x = initX; x < maxX; x++)
+//        {
+//            for (int y = initY; y < maxY; y += width)
+//            {
+//                int index = x + y;
+//                float sumX = data[index] * kernel[0];
+//                float sumY = sumX;
+//                int xOffset = 1;
+//                int yOffset = width;
+//                for (; xOffset < kwidth; )
+//                {
+//                    sumY += kernel[xOffset] * (data[index - yOffset] + data[index + yOffset]);
+//                    sumX += kernel[xOffset] * (data[index - xOffset] + data[index + xOffset]);
+//                    yOffset += width;
+//                    xOffset++;
+//                }
+//
+//                yConv[index] = sumY;
+//                xConv[index] = sumX;
+//            }
+//
+//        }
         t = System.currentTimeMillis() - t;
         System.out.println("convolution: " + t);
 
@@ -378,9 +377,10 @@ public class CannyEdgeDetector
                 float sum = 0f;
                 int index = x + y;
                 for (int i = 1; i < kwidth; i++)
-                    sum += diffKernel[i] * (yConv[index - i] - yConv[index + i]);
+                    sum += diffKernel[i] * (data[index - i] - data[index + i]);
+//                    sum += diffKernel[i] * (yConv[index - i] - yConv[index + i]);
 
-                xGradient[index] = sum * sum;
+                xGradient[index] = sum;
             }
 
         }
@@ -394,11 +394,11 @@ public class CannyEdgeDetector
                 int yOffset = width;
                 for (int i = 1; i < kwidth; i++)
                 {
-                    sum += diffKernel[i] * (xConv[index - yOffset] - xConv[index + yOffset]);
+                    sum += diffKernel[i] * (data[index - yOffset] - data[index + yOffset]);
                     yOffset += width;
                 }
 
-                yGradient[index] = sum * sum;
+                yGradient[index] = sum;
             }
 
         }
@@ -429,15 +429,23 @@ public class CannyEdgeDetector
                 float gradMag = hypot(xGrad, yGrad);
 
                 //perform non-maximal supression
+//                float nMag = hypot(xGradient[indexN], yGradient[indexN]);
+//                float sMag = hypot(xGradient[indexS], yGradient[indexS]);
+//                float wMag = hypot(xGradient[indexW], yGradient[indexW]);
+//                float eMag = hypot(xGradient[indexE], yGradient[indexE]);
+//                float neMag = hypot(xGradient[indexNE], yGradient[indexNE]);
+//                float seMag = hypot(xGradient[indexSE], yGradient[indexSE]);
+//                float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
+//                float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
                 float tmp;
                 /*
-                 * An explanation of what's happening here, for those who want
+				 * An explanation of what's happening here, for those who want
 				 * to understand the source: This performs the "non-maximal
 				 * supression" phase of the Canny edge detection in which we
 				 * need to compare the gradient magnitude to that in the
 				 * direction of the gradient; only if the value is a local
 				 * maximum do we consider the point as an edge candidate.
-				 * 
+				 *
 				 * We need to break the comparison into a number of different
 				 * cases depending on the gradient direction so that the
 				 * appropriate values can be used. To avoid computing the
@@ -450,13 +458,13 @@ public class CannyEdgeDetector
 				 * the geometry required to accurately interpolate the magnitude
 				 * of gradient function at those points has an identical
 				 * geometry (upto right-angled-rotation/reflection).
-				 * 
+				 *
 				 * When comparing the central gradient to the two interpolated
 				 * values, we avoid performing any divisions by multiplying both
 				 * sides of each inequality by the greater of the two partial
 				 * derivatives. The common comparand is stored in a temporary
 				 * variable (3) and reused in the mirror case (4).
-				 * 
+				 *
 				 */
 
                 boolean b;
@@ -535,9 +543,7 @@ public class CannyEdgeDetector
     //simple approximations such as Math.abs(x) + Math.abs(y) and they work fine.
     private float hypot(float x, float y)
     {
-//        return x + y;
-        return (float) Math.sqrt(x + y);
-//        return (float) Math.hypot(x, y);
+        return (float) Math.hypot(x, y);
     }
 
     private float gaussian(float x, float sigma)
@@ -607,84 +613,17 @@ public class CannyEdgeDetector
     private void readLuminance()
     {
         int type = sourceImage.getType();
-        if (type == BufferedImage.TYPE_INT_RGB || type == BufferedImage.TYPE_INT_ARGB)
-        {
-            int[] pixels = (int[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
-            for (int i = 0; i < picsize; i++)
-            {
-                int p = pixels[i];
-                int r = (p & 0xff0000) >> 16;
-                int g = (p & 0xff00) >> 8;
-                int b = p & 0xff;
-                data[i] = luminance(r, g, b);
-            }
-        }
-        else if (type == BufferedImage.TYPE_BYTE_GRAY)
+        if (type == BufferedImage.TYPE_BYTE_BINARY)
         {
             byte[] pixels = (byte[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
             for (int i = 0; i < picsize; i++)
             {
-                data[i] = (pixels[i] & 0xff);
-            }
-        }
-        else if (type == BufferedImage.TYPE_USHORT_GRAY)
-        {
-            short[] pixels = (short[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
-            for (int i = 0; i < picsize; i++)
-            {
-                data[i] = (pixels[i] & 0xffff) / 256;
-            }
-        }
-        else if (type == BufferedImage.TYPE_3BYTE_BGR)
-        {
-            byte[] pixels = (byte[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
-            int offset = 0;
-            for (int i = 0; i < picsize; i++)
-            {
-                int b = pixels[offset++] & 0xff;
-                int g = pixels[offset++] & 0xff;
-                int r = pixels[offset++] & 0xff;
-                data[i] = luminance(r, g, b);
-            }
-        }
-        else if (type == BufferedImage.TYPE_BYTE_BINARY)
-        {
-            byte[] pixels = (byte[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
-            for (int i = 0; i < picsize; i++)
-            {
-                data[i] = pixels[i] == 0 ? 0 : 0xff;
+                data[i] = pixels[i] == 0 ? 0 : (byte) 0xff;
             }
         }
         else
         {
             throw new IllegalArgumentException("Unsupported image type: " + type);
-        }
-    }
-
-    private void normalizeContrast()
-    {
-        int[] histogram = new int[256];
-        for (int i = 0; i < data.length; i++)
-        {
-            histogram[data[i]]++;
-        }
-        int[] remap = new int[256];
-        int sum = 0;
-        int j = 0;
-        for (int i = 0; i < histogram.length; i++)
-        {
-            sum += histogram[i];
-            int target = sum * 255 / picsize;
-            for (int k = j + 1; k <= target; k++)
-            {
-                remap[k] = i;
-            }
-            j = target;
-        }
-
-        for (int i = 0; i < data.length; i++)
-        {
-            data[i] = remap[data[i]];
         }
     }
 
