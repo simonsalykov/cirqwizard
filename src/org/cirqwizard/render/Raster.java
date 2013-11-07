@@ -92,7 +92,45 @@ public class Raster
 
     public java.util.List<Toolpath> trace()
     {
-        render();
+        int windowSize = 5 * resolution;
+
+        for (int x = 0; x < width; x += windowSize)
+        {
+            for (int y = 0; y < height; y += windowSize)
+            {
+                try
+                {
+                    int windowWidth = Math.min(windowSize, width - x);
+                    int windowHeight = Math.min(windowSize, height - y);
+                    long t = System.currentTimeMillis();
+                    RasterWindow window = renderWindow(new PointI(x, y), windowWidth, windowHeight);
+                    t = System.currentTimeMillis() - t;
+                    System.out.println("render time: " + t);
+                    t = System.currentTimeMillis();
+                    CannyEdgeDetector detector = new CannyEdgeDetector();
+                    detector.setLowThreshold(0.5f);
+                    detector.setHighThreshold(1.0f);
+                    detector.setSourceImage(window.getBufferedImage());
+                    detector.process();
+                    t = System.currentTimeMillis() - t;
+                    System.out.println("canny: " + t);
+                    t = System.currentTimeMillis();
+//                window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
+                    ImageIO.write(detector.getEdgesImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
+                    t = System.currentTimeMillis() - t;
+                    System.out.println("save time: " + t);
+                }
+                catch (Throwable e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
+        return segments;
+
+/*        render();
         final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
         PointI[] p;
         lastCleared = new PointI(0, 0);
@@ -104,7 +142,7 @@ public class Raster
             if (perimeter >= MIN_PERIMETER)
                 segments.addAll(new Tracer(Raster.this, p[1].x - 1, p[1].y, getPixel(p[1].x, p[1].y), traceProgress, perimeter * 10).trace(new RealNumber(inflation * 2)));
         }
-        return segments;
+        return segments;*/
     }
 
     public DoubleProperty generationProgressProperty()
@@ -188,11 +226,10 @@ public class Raster
     private RasterWindow renderWindow(PointI lowerLeftCorner, int width, int height)
     {
         int[] cmap = {0x00000000, 0x00ffffff, 0x0000ff00, 0xffffffff};
-        IndexColorModel icm = new IndexColorModel(2, 3, cmap, 0, false, 3, DataBuffer.TYPE_BYTE);
-        BufferedImage window = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY, icm);
+        BufferedImage window = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
 
         Graphics2D g = window.createGraphics();
-        g.setBackground(Color.GREEN);
+        g.setBackground(Color.BLACK);
         g.clearRect(0, 0, width, height);
         for (GerberPrimitive primitive : primitives)
             renderPrimitive(window.createGraphics(), primitive, inflation, false, lowerLeftCorner);
@@ -381,19 +418,6 @@ public class Raster
             e.printStackTrace();
         }
     }
-
-//    public void saveWindow(String file)
-//    {
-//        System.out.println("windowLeftCorner: " + windowLowerLeftCorner);
-//        try
-//        {
-//            ImageIO.write(window, "png", new File(file));
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
 
     public static enum RenderingHint {ROW, COLUMN, SQUARE}
 

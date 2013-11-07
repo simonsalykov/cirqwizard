@@ -14,7 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.render;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 
 public class RasterWindow
@@ -57,4 +60,23 @@ public class RasterWindow
     {
         return windowLowerLeftCorner != null ? windowLowerLeftCorner.hashCode() : 0;
     }
+
+    public BufferedImage getBufferedImage()
+    {
+        return window;
+    }
+
+    public void save(String file)
+    {
+        System.out.println("windowLeftCorner: " + windowLowerLeftCorner);
+        try
+        {
+            ImageIO.write(window, "png", new File(file));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 }

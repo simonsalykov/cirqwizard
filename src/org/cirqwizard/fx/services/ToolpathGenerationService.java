@@ -87,11 +87,14 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 Layer layer = getLayer();
                 if (layer instanceof TraceLayer)
                 {
-                    Raster raster = new Raster(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1, 2000, Double.valueOf(toolDiameter.getValue()) / 2);
+                    Raster raster = new Raster(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1, 1000, Double.valueOf(toolDiameter.getValue()) / 2);
                     TraceLayer traceLayer = (TraceLayer) layer;
                     traceProgressProperty.bind(raster.traceProgressProperty());
                     overallProgressProperty.bind(raster.generationProgressProperty());
+                    long t = System.currentTimeMillis();
                     traceLayer.generateToolpaths(raster, new RealNumber(toolDiameter.getValue()));
+                    t = System.currentTimeMillis() - t;
+                    System.out.println("generation time: " + t);
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {
