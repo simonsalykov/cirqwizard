@@ -287,10 +287,10 @@ public class CannyEdgeDetector
         t = System.currentTimeMillis() - t;
         System.out.println("hysteresis: " + t);
         t = System.currentTimeMillis();
-        thresholdEdges();
+        byte[] b = thresholdEdges();
         t = System.currentTimeMillis() - t;
         System.out.println("thresholding: " + t);
-        writeEdges(data);
+        writeEdges(b);
     }
 
     // private utility methods
@@ -597,17 +597,14 @@ public class CannyEdgeDetector
         }
     }
 
-    private void thresholdEdges()
+    private byte[] thresholdEdges()
     {
+        byte[] output = new byte[picsize];
         for (int i = 0; i < picsize; i++)
         {
-            data[i] = data[i] > 0 ? -1 : 0xff000000;
+            output[i] = data[i] > 0 ? (byte) 1 : 0;
         }
-    }
-
-    private int luminance(float r, float g, float b)
-    {
-        return Math.round(0.299f * r + 0.587f * g + 0.114f * b);
+        return output;
     }
 
     private void readLuminance()
@@ -627,14 +624,14 @@ public class CannyEdgeDetector
         }
     }
 
-    private void writeEdges(int pixels[])
+    private void writeEdges(byte pixels[])
     {
         //NOTE: There is currently no mechanism for obtaining the edge data
         //in any other format other than an INT_ARGB type BufferedImage.
         //This may be easily remedied by providing alternative accessors.
         if (edgesImage == null)
         {
-            edgesImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            edgesImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
         }
         edgesImage.getWritableTile(0, 0).setDataElements(0, 0, width, height, pixels);
     }
