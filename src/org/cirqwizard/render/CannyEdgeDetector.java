@@ -1,6 +1,11 @@
 package org.cirqwizard.render;
 
+import com.nativelibs4java.opencl.*;
+import com.nativelibs4java.util.IOUtils;
+import org.bridj.Pointer;
+
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -50,6 +55,7 @@ public class CannyEdgeDetector
     private int height;
     private int width;
     private int picsize;
+    private byte[] sourceData;
     private int[] data;
     private int[] magnitude;
     private BufferedImage sourceImage;
@@ -299,6 +305,7 @@ public class CannyEdgeDetector
     {
         if (data == null || picsize != data.length)
         {
+            sourceData = new byte[picsize];
             data = new int[picsize];
             magnitude = new int[picsize];
 
@@ -369,39 +376,43 @@ public class CannyEdgeDetector
         t = System.currentTimeMillis() - t;
         System.out.println("convolution: " + t);
 
+        CLContext context = JavaCL.createBestContext();
+        CLQueue queue = context.createDefaultQueue();
+
+        Pointer<Byte> sourceDataPointer = Pointer.pointerToBytes(sourceData);
+        Pointer<Float> diffKernelPointer = Pointer.pointerToFloats(diffKernel);
+        CLBuffer<Byte> inputBuffer = context.createByteBuffer(CLMem.Usage.Input, sourceDataPointer);
+        CLBuffer<Float> diffKernelBuffer = context.createFloatBuffer(CLMem.Usage.Input, diffKernelPointer);
+
+        CLBuffer<Float> xGradientsOut = context.createFloatBuffer(CLMem.Usage.Output, picsize);
+        CLBuffer<Float> yGradientsOut = context.createFloatBuffer(CLMem.Usage.Output, picsize);
+
+        String src = null;
+        try
+        {
+            src = IOUtils.readText(this.getClass().getResource("opencl_test.cl"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        CLProgram program = context.createProgram(src);
+
         t = System.currentTimeMillis();
-        for (int x = initX; x < maxX; x++)
-        {
-            for (int y = initY; y < maxY; y += width)
-            {
-                float sum = 0f;
-                int index = x + y;
-                for (int i = 1; i < kwidth; i++)
-                    sum += diffKernel[i] * (data[index - i] - data[index + i]);
-//                    sum += diffKernel[i] * (yConv[index - i] - yConv[index + i]);
 
-                xGradient[index] = sum;
-            }
+        CLKernel xGradientsKernel = program.createKernel("calculate_x_gradients");
+        xGradientsKernel.setArgs(inputBuffer, initX, maxX, kwidth - 1, height - (kwidth - 1), width, kwidth, diffKernelBuffer, xGradientsOut);
+        CLEvent xGradientsEvent = xGradientsKernel.enqueueNDRange(queue, new int[] { maxX, height - (kwidth - 1) });
 
-        }
+        CLKernel yGradientsKernel = program.createKernel("calculate_y_gradients");
+        yGradientsKernel.setArgs(inputBuffer, kwidth, width - kwidth, kwidth - 1, height - (kwidth - 1), width, kwidth, diffKernelBuffer, yGradientsOut);
+        CLEvent yGradientsEvent = yGradientsKernel.enqueueNDRange(queue, new int[] { maxX, height - (kwidth - 1) });
 
-        for (int x = kwidth; x < width - kwidth; x++)
-        {
-            for (int y = initY; y < maxY; y += width)
-            {
-                float sum = 0.0f;
-                int index = x + y;
-                int yOffset = width;
-                for (int i = 1; i < kwidth; i++)
-                {
-                    sum += diffKernel[i] * (data[index - yOffset] - data[index + yOffset]);
-                    yOffset += width;
-                }
+        Pointer<Float> xOutPtr = xGradientsOut.read(queue, xGradientsEvent); // blocks until add_floats finished
+        Pointer<Float> yOutPtr = yGradientsOut.read(queue, yGradientsEvent); // blocks until add_floats finished
+        xGradient = xOutPtr.getFloats();
+        yGradient = yOutPtr.getFloats();
 
-                yGradient[index] = sum;
-            }
-
-        }
         t = System.currentTimeMillis() - t;
         System.out.println("gradients: " + t);
 
@@ -615,6 +626,7 @@ public class CannyEdgeDetector
             byte[] pixels = (byte[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
             for (int i = 0; i < picsize; i++)
             {
+                sourceData[i] = pixels[i] == 0 ? 0 : (byte) 1;
                 data[i] = pixels[i] == 0 ? 0 : (byte) 0xff;
             }
         }
