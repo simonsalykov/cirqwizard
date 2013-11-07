@@ -41,6 +41,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 public class Raster
@@ -67,7 +71,9 @@ public class Raster
 
     private int[] dummyArray = new int[1];
 
-    public Raster(double width, double height, int resolution, double inflation)
+    private RealNumber toolDiameter;
+
+    public Raster(double width, double height, int resolution, double inflation, RealNumber toolDiameter)
     {
         int[] cmap = {0x00000000, 0x00ffffff, 0x0000ff00, 0xffffffff};
         IndexColorModel icm = new IndexColorModel(2, 3, cmap, 0, false, 3, DataBuffer.TYPE_BYTE);
@@ -77,6 +83,7 @@ public class Raster
         this.height = (int)(height * resolution);
         this.inflation = inflation;
         this.resolution = resolution;
+        this.toolDiameter = toolDiameter;
     }
 
     public void addPrimitive(GerberPrimitive primitive)
@@ -94,10 +101,14 @@ public class Raster
     {
         int windowSize = 5 * resolution;
 
+        final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
+
+        int i = 0;
         for (int x = 0; x < width; x += windowSize)
         {
             for (int y = 0; y < height; y += windowSize)
             {
+                generationProgress.set((double)(y * windowSize + x * height) / (width * height));
                 try
                 {
                     int windowWidth = Math.min(windowSize, width - x);
@@ -110,14 +121,23 @@ public class Raster
                     CannyEdgeDetector detector = new CannyEdgeDetector();
                     detector.setLowThreshold(0.5f);
                     detector.setHighThreshold(1.0f);
-                    detector.setGaussianKernelWidth(8);
+                    detector.setGaussianKernelWidth(6);
                     detector.setSourceImage(window.getBufferedImage());
                     detector.process();
                     t = System.currentTimeMillis() - t;
                     System.out.println("canny: " + t);
+                    if (i < 5)
+                    {
+                        ImageIO.write(detector.getEdgesImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
+                        i++;
+                    }
                     t = System.currentTimeMillis();
+//                    if (i < 5)
+//                    {
+                        segments.addAll(new Tracer(this, detector.getOutput(), x, y, windowWidth, windowHeight, toolDiameter).process());
+//                        i++;
+//                    }
 //                window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
-                    ImageIO.write(detector.getEdgesImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
                     t = System.currentTimeMillis() - t;
                     System.out.println("save time: " + t);
                 }
@@ -128,7 +148,6 @@ public class Raster
             }
         }
 
-        final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
         return segments;
 
 /*        render();
@@ -154,64 +173,6 @@ public class Raster
     public DoubleProperty traceProgressProperty()
     {
         return traceProgress;
-    }
-
-    public int getPixel(int x, int y)
-    {
-        return getPixel(x, y, RenderingHint.SQUARE);
-    }
-
-    public int getPixel(int x, int y, RenderingHint hint)
-    {
-        PointI p = new PointI(x, y);
-        RasterWindow window = null;
-        for (RasterWindow w : windows)
-        {
-            if (w.contains(p))
-            {
-                window = w;
-                break;
-            }
-        }
-        if (window != null)
-        {
-            windows.remove(window);
-            windows.addFirst(window);
-            return window.getPixel(p);
-        }
-
-        int windowWidth = 1000;
-        int windowHeight = 1000;
-        switch (hint)
-        {
-            case COLUMN:
-                windowWidth = 100;
-                windowHeight = 20000;
-            break;
-            case ROW:
-                windowWidth = 20000;
-                windowHeight = 100;
-            break;
-        }
-        PointI windowCorner = new PointI(x - windowWidth / 2, y - windowHeight / 2);
-        if (windowCorner.x + windowWidth > width)
-            windowCorner.x = width - windowWidth + 1;
-        if (windowCorner.y + windowHeight > height)
-            windowCorner.y = height - windowHeight + 1;
-        windowCorner.x = Math.max(0, windowCorner.x);
-        windowCorner.y = Math.max(0, windowCorner.y);
-        RasterWindow w = renderWindow(windowCorner, windowWidth, windowHeight);
-        windows.addFirst(w);
-        while (windows.size() > WINDOWS_CACHE_SIZE)
-            windows.removeLast();
-
-        return w.getPixel(p);
-    }
-
-    public void setPixel(int x, int y, int value)
-    {
-        dummyArray[0] = value;
-        preview.getRaster().setPixel(x, y, dummyArray);
     }
 
     public java.util.List<RealNumber> getRadii()
@@ -377,35 +338,6 @@ public class Raster
         }
 
         return perimeter;
-    }
-
-    private PointI[] findNonEmptyPixel()
-    {
-        WritableRaster r = preview.getRaster();
-        for (; lastCleared.y < preview.getHeight(); lastCleared.y++)
-            for (lastCleared.x = 0; lastCleared.x < preview.getWidth(); lastCleared.x++)
-                if (r.getPixel(lastCleared.x, lastCleared.y, (int[])null)[0] != 0)
-                {
-                    int color = r.getPixel(lastCleared.x, lastCleared.y, (int[])null)[0];
-                    int y0 = lastCleared.y * PREVIEW_RESOLUTION_FACTOR - PREVIEW_RESOLUTION_FACTOR * 3;
-                    y0 = Math.max(0, y0);
-                    int x0 = lastCleared.x * PREVIEW_RESOLUTION_FACTOR - PREVIEW_RESOLUTION_FACTOR * 3;
-                    x0 = Math.max(0, x0);
-                    int yMax = Math.min(height, y0 + PREVIEW_RESOLUTION_FACTOR * 6);
-                    int xMax = Math.min(width, x0 + PREVIEW_RESOLUTION_FACTOR * 6);
-                    for (int y1 = y0; y1 < yMax; y1++)
-                    {
-                        boolean isOutside = false;
-                        for (int x1 = x0; x1 < xMax; x1++)
-                        {
-                            if (!isOutside)
-                                isOutside = getPixel(x1, y1) != color;
-                            else if (getPixel(x1, y1) == color)
-                                return new PointI[] {new PointI(lastCleared.x, lastCleared.y), new PointI(x1, y1)};
-                        }
-                    }
-                }
-        return null;
     }
 
     public void saveTo(String file)

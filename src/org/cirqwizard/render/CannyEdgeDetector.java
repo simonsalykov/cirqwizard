@@ -58,6 +58,7 @@ public class CannyEdgeDetector
     private byte[] sourceData;
     private int[] data;
     private int[] magnitude;
+    private byte[] output;
     private BufferedImage sourceImage;
     private BufferedImage edgesImage;
 
@@ -66,11 +67,6 @@ public class CannyEdgeDetector
     private float highThreshold;
     private int gaussianKernelWidth;
     private boolean contrastNormalized;
-
-    private float[] xConv;
-    private float[] yConv;
-    private float[] xGradient;
-    private float[] yGradient;
 
     // constructors
 
@@ -126,6 +122,7 @@ public class CannyEdgeDetector
 
     public BufferedImage getEdgesImage()
     {
+        writeEdges(output);
         return edgesImage;
     }
 
@@ -270,6 +267,11 @@ public class CannyEdgeDetector
         this.contrastNormalized = contrastNormalized;
     }
 
+    public byte[] getOutput()
+    {
+        return output;
+    }
+
     // methods
 
     public void process()
@@ -293,10 +295,9 @@ public class CannyEdgeDetector
         t = System.currentTimeMillis() - t;
         System.out.println("hysteresis: " + t);
         t = System.currentTimeMillis();
-        byte[] b = thresholdEdges();
+        output = thresholdEdges();
         t = System.currentTimeMillis() - t;
         System.out.println("thresholding: " + t);
-        writeEdges(b);
     }
 
     // private utility methods
@@ -305,14 +306,7 @@ public class CannyEdgeDetector
     {
         if (data == null || picsize != data.length)
         {
-            sourceData = new byte[picsize];
             data = new int[picsize];
-            magnitude = new int[picsize];
-
-            xConv = new float[picsize];
-            yConv = new float[picsize];
-            xGradient = new float[picsize];
-            yGradient = new float[picsize];
         }
     }
 
@@ -349,36 +343,7 @@ public class CannyEdgeDetector
         int initY = width * (kwidth - 1);
         int maxY = width * (height - (kwidth - 1));
 
-        long t = System.currentTimeMillis();
-        //perform convolution in x and y directions
-//        for (int x = initX; x < maxX; x++)
-//        {
-//            for (int y = initY; y < maxY; y += width)
-//            {
-//                int index = x + y;
-//                float sumX = data[index] * kernel[0];
-//                float sumY = sumX;
-//                int xOffset = 1;
-//                int yOffset = width;
-//                for (; xOffset < kwidth; )
-//                {
-//                    sumY += kernel[xOffset] * (data[index - yOffset] + data[index + yOffset]);
-//                    sumX += kernel[xOffset] * (data[index - xOffset] + data[index + xOffset]);
-//                    yOffset += width;
-//                    xOffset++;
-//                }
-//
-//                yConv[index] = sumY;
-//                xConv[index] = sumX;
-//            }
-//
-//        }
-        t = System.currentTimeMillis() - t;
-        System.out.println("convolution: " + t);
-
-        CLContext context = JavaCL.createBestContext();
-        CLQueue queue = context.createDefaultQueue();
-
+        CLContext context = OpenCLUtil.getContext();
         Pointer<Byte> sourceDataPointer = Pointer.pointerToBytes(sourceData);
         Pointer<Float> diffKernelPointer = Pointer.pointerToFloats(diffKernel);
         CLBuffer<Byte> inputBuffer = context.createByteBuffer(CLMem.Usage.Input, sourceDataPointer);
@@ -387,18 +352,11 @@ public class CannyEdgeDetector
         CLBuffer<Float> xGradientsOut = context.createFloatBuffer(CLMem.Usage.InputOutput, picsize);
         CLBuffer<Float> yGradientsOut = context.createFloatBuffer(CLMem.Usage.InputOutput, picsize);
 
-        String src = null;
-        try
-        {
-            src = IOUtils.readText(this.getClass().getResource("opencl_test.cl"));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        CLProgram program = context.createProgram(src);
 
-        t = System.currentTimeMillis();
+        long t = System.currentTimeMillis();
+
+        CLQueue queue = OpenCLUtil.getQueue();
+        CLProgram program = OpenCLUtil.getProgram();
 
         CLKernel xGradientsKernel = program.createKernel("calculate_x_gradients");
         xGradientsKernel.setArgs(inputBuffer, initX, maxX, kwidth - 1, height - (kwidth - 1), width, kwidth, diffKernelBuffer, xGradientsOut);
@@ -410,8 +368,6 @@ public class CannyEdgeDetector
 
         Pointer<Float> xOutPtr = xGradientsOut.read(queue, xGradientsEvent);
         Pointer<Float> yOutPtr = yGradientsOut.read(queue, yGradientsEvent);
-        xGradient = xOutPtr.getFloats();
-        yGradient = yOutPtr.getFloats();
 
         sourceDataPointer.release();
 
@@ -431,113 +387,13 @@ public class CannyEdgeDetector
         Pointer<Integer> magnitudePtr = magnitudeOut.read(queue, magnitudeEvent);
         magnitude = magnitudePtr.getInts();
 
-/*
+        xGradientsOut.release();
+        yGradientsOut.release();
+        magnitudePtr.release();
 
-        for (int x = initX; x < maxX; x++)
-        {
-            for (int y = initY; y < maxY; y += width)
-            {
-                int index = x + y;
-                int indexN = index - width;
-                int indexS = index + width;
-                int indexW = index - 1;
-                int indexE = index + 1;
-                int indexNW = indexN - 1;
-                int indexNE = indexN + 1;
-                int indexSW = indexS - 1;
-                int indexSE = indexS + 1;
-
-                float xGrad = xGradient[index];
-                float yGrad = yGradient[index];
-                float gradMag = hypot(xGrad, yGrad);
-
-                //perform non-maximal supression
-//                float nMag = hypot(xGradient[indexN], yGradient[indexN]);
-//                float sMag = hypot(xGradient[indexS], yGradient[indexS]);
-//                float wMag = hypot(xGradient[indexW], yGradient[indexW]);
-//                float eMag = hypot(xGradient[indexE], yGradient[indexE]);
-//                float neMag = hypot(xGradient[indexNE], yGradient[indexNE]);
-//                float seMag = hypot(xGradient[indexSE], yGradient[indexSE]);
-//                float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
-//                float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
-                float tmp;
-                boolean b;
-                if (xGrad * yGrad <= 0f)
-                {
-                    if (Math.abs(xGrad) >= Math.abs(yGrad))
-                    {
-                        float wMag = hypot(xGradient[indexW], yGradient[indexW]);
-                        float eMag = hypot(xGradient[indexE], yGradient[indexE]);
-                        float neMag = hypot(xGradient[indexNE], yGradient[indexNE]);
-                        float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
-
-                        tmp = Math.abs(xGrad * gradMag);
-                        b = tmp >= Math.abs(yGrad * neMag - (xGrad + yGrad) * eMag)
-                                && tmp > Math.abs(yGrad * swMag - (xGrad + yGrad) * wMag);
-                    }
-                    else
-                    {
-                        float nMag = hypot(xGradient[indexN], yGradient[indexN]);
-                        float sMag = hypot(xGradient[indexS], yGradient[indexS]);
-                        float neMag = hypot(xGradient[indexNE], yGradient[indexNE]);
-                        float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
-
-                        tmp = Math.abs(yGrad * gradMag);
-                        b = tmp >= Math.abs(xGrad * neMag - (yGrad + xGrad) * nMag)
-                                && tmp > Math.abs(xGrad * swMag - (yGrad + xGrad) * sMag);
-                    }
-                }
-                else
-                {
-                    if (Math.abs(xGrad) >= Math.abs(yGrad))
-                    {
-                        float wMag = hypot(xGradient[indexW], yGradient[indexW]);
-                        float eMag = hypot(xGradient[indexE], yGradient[indexE]);
-                        float seMag = hypot(xGradient[indexSE], yGradient[indexSE]);
-                        float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
-
-                        tmp = Math.abs(xGrad * gradMag);
-                        b = tmp >= Math.abs(yGrad * seMag + (xGrad - yGrad) * eMag)
-                                && tmp > Math.abs(yGrad * nwMag + (xGrad - yGrad) * wMag);
-                    }
-                    else
-                    {
-                        float nMag = hypot(xGradient[indexN], yGradient[indexN]);
-                        float sMag = hypot(xGradient[indexS], yGradient[indexS]);
-                        float seMag = hypot(xGradient[indexSE], yGradient[indexSE]);
-                        float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
-
-                        tmp = Math.abs(yGrad * gradMag);
-                        b = tmp >= Math.abs(xGrad * seMag + (yGrad - xGrad) * sMag)
-                                && tmp > Math.abs(xGrad * nwMag + (yGrad - xGrad) * nMag);
-                    }
-                }
-
-                if (b)
-                {
-                    magnitude[index] = gradMag >= MAGNITUDE_LIMIT ? MAGNITUDE_MAX : (int) (MAGNITUDE_SCALE * gradMag);
-                    //NOTE: The orientation of the edge is not employed by this
-                    //implementation. It is a simple matter to compute it at
-                    //this point as: Math.atan2(yGrad, xGrad);
-                }
-                else
-                {
-                    magnitude[index] = 0;
-                }
-            }
-        }
-*/
         t = System.currentTimeMillis() - t;
         System.out.println("suppression: " + t);
 
-    }
-
-    //NOTE: It is quite feasible to replace the implementation of this method
-    //with one which only loosely approximates the hypot function. I've tested
-    //simple approximations such as Math.abs(x) + Math.abs(y) and they work fine.
-    private float hypot(float x, float y)
-    {
-        return (float) Math.hypot(x, y);
     }
 
     private float gaussian(float x, float sigma)
@@ -606,12 +462,7 @@ public class CannyEdgeDetector
         int type = sourceImage.getType();
         if (type == BufferedImage.TYPE_BYTE_BINARY)
         {
-            byte[] pixels = (byte[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
-            for (int i = 0; i < picsize; i++)
-            {
-                sourceData[i] = pixels[i] == 0 ? 0 : (byte) 1;
-                data[i] = pixels[i] == 0 ? 0 : (byte) 0xff;
-            }
+            sourceData = (byte[]) sourceImage.getData().getDataElements(0, 0, width, height, null);
         }
         else
         {

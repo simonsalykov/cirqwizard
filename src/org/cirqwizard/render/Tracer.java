@@ -50,6 +50,14 @@ public class Tracer
     private Raster raster;
     private int color;
 
+    private byte[] windowData;
+
+    private int xOffset;
+    private int yOffset;
+    private int width;
+    private int height;
+    private RealNumber toolDiameter;
+
     private PointI start;
     private PointI current;
 
@@ -62,20 +70,40 @@ public class Tracer
     private DoubleProperty progressProperty;
     private int perimeterLength;
 
-    public Tracer(Raster raster, int x, int y, int color, DoubleProperty progressProperty, int perimeterLength)
+    public Tracer(Raster raster, byte[] windowData, int xOffset, int yOffset, int width, int height, RealNumber toolDiameter)
     {
         this.raster = raster;
-        this.color = color;
-        this.progressProperty = progressProperty;
-        this.perimeterLength = perimeterLength;
-        current = new PointI(x, y);
-        start = new PointI(x, y);
-        currentSegment = new Segment(start, start);
-        direction = Direction.NORTH;
+        this.windowData = windowData;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+        this.width = width;
+        this.height = height;
+        this.toolDiameter = toolDiameter;
     }
 
-    public List<Toolpath> trace(RealNumber toolDiameter)
+    public List<Toolpath> process()
     {
+        ArrayList<Toolpath> result = new ArrayList<Toolpath>();
+
+        for (int y = height - 1; y >= 0; y--)
+        {
+            for (int x = width - 1; x >= 0; x--)
+            {
+                int index = x + y * width;
+                if (windowData[index] != 0)
+                    result.addAll(trace(x, y));
+            }
+        }
+
+        return result;
+    }
+
+    private List<Toolpath> trace(int x, int y)
+    {
+        current = new PointI(x, y);
+        currentSegment = new Segment(current, current);
+        direction = Direction.EAST;
+
         int segmentCounter = 0;
         lastPoints = new LinkedList<PointI>();
         LinkedList<PointI> segmentPoints = new LinkedList<PointI>();
@@ -86,47 +114,23 @@ public class Tracer
         ArrayList<Toolpath> result = new ArrayList<Toolpath>();
 
         lastDirection = null;
-        int directionCounter = 0;
         int fuse = 0;
 
         Logger logger = LoggerFactory.getApplicationLogger();
 
         do
         {
-            if (raster.getPixel(current.x, current.y) == color)
-            {
-                logger.log(Level.FINE, "rendering glitch type #1 at " + current + "/ " + raster.getPixel(current.x, current.y) + " / " + color);
-                int[] offsets = direction.getOffsets()[2];
-                while (raster.getPixel(current.x, current.y) == color)
-                    current = new PointI(current.x + offsets[0], current.y + offsets[1]);
-                logger.log(Level.FINE, "glitch corrected to " + current);
-            }
-            if (!validatePosition())
-            {
-                logger.log(Level.FINE, "rendering glitch type #2 at " + current);
-                int[] offsets = direction.getOffsets()[0];
-                while (raster.getPixel(current.x + offsets[0], current.y + offsets[1]) != color)
-                    current = new PointI(current.x + offsets[0], current.y + offsets[1]);
-                logger.log(Level.FINE, "glitch corrected to " + current);
-            }
             if (fuse++ > FUSE_COUNTER)
             {
                 StringBuffer str = new StringBuffer("Tracing algorithm failed. Exiting with emergency break. Last points were:\n");
                 for (PointI p : lastPoints)
-                    str.append(p + " / " + raster.getPixel(p.x, p.y) + " / " + color + "\n");
+                    str.append(p + "\n");
                 logger.log(Level.SEVERE, str.toString());
                 break;
             }
 
-            progressProperty.setValue((double)fuse / perimeterLength);
-
-            if (direction == lastDirection)
-                directionCounter++;
-            else
-            {
-                directionCounter = 0;
+            if (direction != lastDirection)
                 lastDirection = direction;
-            }
 
             lastPoints.addLast(current);
             int sampleCount = segmentCounter <= INITIAL_SAMPLE_COUNT ? INITIAL_SAMPLE_COUNT : SAMPLE_COUNT;
@@ -234,18 +238,24 @@ public class Tracer
                 }
             }
 
-            try
+            windowData[current.x + current.y * width] = 0;
+
+            boolean hasContinuation = false;
+            for (Direction d : directions)
             {
-                current = getNextPoint(directionCounter);
+                PointI p = getNextPoint(current, d);
+                if (windowData[p.x + p.y * width] != 0)
+                {
+                    direction = d;
+                    current = p;
+                    hasContinuation = true;
+                    break;
+                }
             }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                LoggerFactory.logException("This should be handled in a better way", e);
+            if (!hasContinuation)
                 break;
-            }
         }
-        while (!current.equals(start));
-        result.add(getToolpath(toolDiameter, arcCenter, radius));
+        while (current.x >= 0 && current.x < width && current.y >= 0 && current.y < height);
 
         return result;
     }
@@ -253,13 +263,16 @@ public class Tracer
     private Toolpath getToolpath(RealNumber toolDiameter, PointI arcCenter, double radius)
     {
         Point start = new Point(new RealNumber(currentSegment.getStart().x), new RealNumber(currentSegment.getStart().y));
+        start = start.add(new Point(xOffset, yOffset));
         start = start.divide(new RealNumber(raster.getResolution()));
         Point end = new Point(new RealNumber(currentSegment.getEnd().x), new RealNumber(currentSegment.getEnd().y));
+        end = end.add(new Point(xOffset, yOffset));
         end = end.divide(new RealNumber(raster.getResolution()));
 
         if (arcCenter == null)
             return new LinearToolpath(toolDiameter, start, end);
         Point center = new Point(new RealNumber(arcCenter.x), new RealNumber(arcCenter.y));
+        center = center.add(new Point(xOffset, yOffset));
         center = center.divide(new RealNumber(raster.getResolution()));
         return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(radius).divide(raster.getResolution()), true);
     }
@@ -368,69 +381,36 @@ public class Tracer
         return new PointI[] {new PointI((int)cx1, (int)cy1), new PointI((int)cx2, (int)cy2)};
     }
 
-    private PointI getNextPoint(int directionCounter)
+    private PointI getNextPoint(PointI p, Direction direction)
     {
-        Raster.RenderingHint hint = Raster.RenderingHint.SQUARE;
-        if (directionCounter > 1000)
-            hint = direction == Direction.NORTH || direction == Direction.SOUTH ? Raster.RenderingHint.COLUMN : Raster.RenderingHint.ROW;
-        int[][] offsets = direction.getOffsets();
-        for (int i = 0; i < offsets.length; i++)
-            if (raster.getPixel(current.x + offsets[i][0], current.y + offsets[i][1], hint) != color)
-            {
-                direction = direction.rotate(i);
-                return new PointI(current.x + offsets[i][0], current.y + offsets[i][1]);
-            }
-        return null;
+        switch (direction)
+        {
+            case NORTH: return new PointI(p.x, p.y + 1);
+            case NORTH_EAST: return new PointI(p.x + 1, p.y + 1);
+            case EAST: return new PointI(p.x + 1, p.y);
+            case SOUTH_EAST: return new PointI(p.x + 1, p.y - 1);
+            case SOUTH: return new PointI(p.x, p.y - 1);
+            case SOUTH_WEST: return new PointI(p.x - 1, p.y - 1);
+            case WEST: return new PointI(p.x - 1, p.y);
+            case NORTH_WEST: return new PointI(p.x - 1, p.y + 1);
+        }
+        throw new IllegalArgumentException("Illegal direction: " + direction);
     }
 
-    private boolean validatePosition()
-    {
-        if (lastDirection == null || lastPoints.size() == 0)
-            return true;
-        int[][] offsets = lastDirection.getOffsets();
-        PointI lastPoint = lastPoints.getLast();
-        for (int i = 0; i < offsets.length; i++)
-            if (raster.getPixel(lastPoint.x + offsets[i][0], lastPoint.y + offsets[i][1]) != color)
-                return direction == lastDirection.rotate(i) && current.equals(new PointI(lastPoint.x + offsets[i][0], lastPoint.y + offsets[i][1]));
-        return false;
-    }
-
-
-    private static Direction[] directions = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+    private static Direction[] directions = {Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST,
+        Direction.NORTH, Direction.NORTH_EAST};
 
     private static enum Direction
     {
 
-        NORTH(0, new int[][] {{1, 0}, {0, 1}, {-1, 0}, {0, -1}}),
-        EAST(1, new int[][] {{0, -1}, {1, 0}, {0, 1}, {-1, 0}}),
-        SOUTH(2, new int[][] {{-1, 0}, {0, -1}, {1, 0}, {0, 1}}),
-        WEST(3, new int[][] {{0, 1}, {-1, 0}, {0, -1}, {1, 0}});
-
-        private int index;
-        private int[][] offsets;
-
-        Direction(int index, int[][] offsets)
-        {
-            this.index = index;
-            this.offsets = offsets;
-        }
-
-        public int[][] getOffsets()
-        {
-            return offsets;
-        }
-
-        public Direction rotate(int i)
-        {
-            int ind = index + 1 - i;
-            if (ind < 0)
-                ind += directions.length;
-            if (ind >= directions.length)
-                ind = ind % directions.length;
-            return directions[ind];
-        }
-
-
+        NORTH,
+        NORTH_EAST ,
+        EAST,
+        SOUTH_EAST,
+        SOUTH,
+        SOUTH_WEST,
+        WEST,
+        NORTH_WEST;
 
     }
 }
