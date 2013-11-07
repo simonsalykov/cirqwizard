@@ -116,8 +116,8 @@ public class Raster
                     @Override
                     public void run()
                     {
-                        generationProgress.set((double)(_y * windowSize + _x * height) / ((double)width * height));
-//                        System.out.println("x: " + _x + ", y: " + _y + ", width: " + width + ", height: + " + height + ", wh: " + width * height + ", c: " + (double)(_y * windowSize + _x * height) + " @ " + generationProgress.getValue());
+                        generationProgress.set(((double)_y * windowSize + (double)_x * height) / ((double)width * height));
+                        System.out.println("x: " + _x + ", y: " + _y + ", width: " + width + ", height: + " + height + ", wh: " + ((double)width * height) + ", c: " + (double)(_y * windowSize + _x * height) + " @ " + generationProgress.getValue());
                     }
                 });
                 try
