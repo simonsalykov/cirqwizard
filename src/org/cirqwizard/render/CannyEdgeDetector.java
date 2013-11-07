@@ -384,8 +384,8 @@ public class CannyEdgeDetector
         CLBuffer<Byte> inputBuffer = context.createByteBuffer(CLMem.Usage.Input, sourceDataPointer);
         CLBuffer<Float> diffKernelBuffer = context.createFloatBuffer(CLMem.Usage.Input, diffKernelPointer);
 
-        CLBuffer<Float> xGradientsOut = context.createFloatBuffer(CLMem.Usage.Output, picsize);
-        CLBuffer<Float> yGradientsOut = context.createFloatBuffer(CLMem.Usage.Output, picsize);
+        CLBuffer<Float> xGradientsOut = context.createFloatBuffer(CLMem.Usage.InputOutput, picsize);
+        CLBuffer<Float> yGradientsOut = context.createFloatBuffer(CLMem.Usage.InputOutput, picsize);
 
         String src = null;
         try
@@ -408,10 +408,12 @@ public class CannyEdgeDetector
         yGradientsKernel.setArgs(inputBuffer, kwidth, width - kwidth, kwidth - 1, height - (kwidth - 1), width, kwidth, diffKernelBuffer, yGradientsOut);
         CLEvent yGradientsEvent = yGradientsKernel.enqueueNDRange(queue, new int[] { maxX, height - (kwidth - 1) });
 
-        Pointer<Float> xOutPtr = xGradientsOut.read(queue, xGradientsEvent); // blocks until add_floats finished
-        Pointer<Float> yOutPtr = yGradientsOut.read(queue, yGradientsEvent); // blocks until add_floats finished
+        Pointer<Float> xOutPtr = xGradientsOut.read(queue, xGradientsEvent);
+        Pointer<Float> yOutPtr = yGradientsOut.read(queue, yGradientsEvent);
         xGradient = xOutPtr.getFloats();
         yGradient = yOutPtr.getFloats();
+
+        sourceDataPointer.release();
 
         t = System.currentTimeMillis() - t;
         System.out.println("gradients: " + t);
@@ -421,6 +423,16 @@ public class CannyEdgeDetector
         maxX = width - kwidth;
         initY = width * kwidth;
         maxY = width * (height - kwidth);
+
+        CLBuffer<Integer> magnitudeOut = context.createIntBuffer(CLMem.Usage.Output, picsize);
+        CLKernel magnitudeKernel = program.createKernel("calculate_magnitude");
+        magnitudeKernel.setArgs(xGradientsOut, yGradientsOut, initX, maxX, kwidth, height - kwidth , width, magnitudeOut);
+        CLEvent magnitudeEvent = magnitudeKernel.enqueueNDRange(queue, new int[] { maxX, height - kwidth});
+        Pointer<Integer> magnitudePtr = magnitudeOut.read(queue, magnitudeEvent);
+        magnitude = magnitudePtr.getInts();
+
+/*
+
         for (int x = initX; x < maxX; x++)
         {
             for (int y = initY; y < maxY; y += width)
@@ -449,35 +461,6 @@ public class CannyEdgeDetector
 //                float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
 //                float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
                 float tmp;
-                /*
-				 * An explanation of what's happening here, for those who want
-				 * to understand the source: This performs the "non-maximal
-				 * supression" phase of the Canny edge detection in which we
-				 * need to compare the gradient magnitude to that in the
-				 * direction of the gradient; only if the value is a local
-				 * maximum do we consider the point as an edge candidate.
-				 *
-				 * We need to break the comparison into a number of different
-				 * cases depending on the gradient direction so that the
-				 * appropriate values can be used. To avoid computing the
-				 * gradient direction, we use two simple comparisons: first we
-				 * check that the partial derivatives have the same sign (1)
-				 * and then we check which is larger (2). As a consequence, we
-				 * have reduced the problem to one of four identical cases that
-				 * each test the central gradient magnitude against the values at
-				 * two points with 'identical support'; what this means is that
-				 * the geometry required to accurately interpolate the magnitude
-				 * of gradient function at those points has an identical
-				 * geometry (upto right-angled-rotation/reflection).
-				 *
-				 * When comparing the central gradient to the two interpolated
-				 * values, we avoid performing any divisions by multiplying both
-				 * sides of each inequality by the greater of the two partial
-				 * derivatives. The common comparand is stored in a temporary
-				 * variable (3) and reused in the mirror case (4).
-				 *
-				 */
-
                 boolean b;
                 if (xGrad * yGrad <= 0f)
                 {
@@ -489,7 +472,7 @@ public class CannyEdgeDetector
                         float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
 
                         tmp = Math.abs(xGrad * gradMag);
-                        b = tmp >= Math.abs(yGrad * neMag - (xGrad + yGrad) * eMag) /*(3)*/
+                        b = tmp >= Math.abs(yGrad * neMag - (xGrad + yGrad) * eMag)
                                 && tmp > Math.abs(yGrad * swMag - (xGrad + yGrad) * wMag);
                     }
                     else
@@ -500,7 +483,7 @@ public class CannyEdgeDetector
                         float swMag = hypot(xGradient[indexSW], yGradient[indexSW]);
 
                         tmp = Math.abs(yGrad * gradMag);
-                        b = tmp >= Math.abs(xGrad * neMag - (yGrad + xGrad) * nMag) /*(3)*/
+                        b = tmp >= Math.abs(xGrad * neMag - (yGrad + xGrad) * nMag)
                                 && tmp > Math.abs(xGrad * swMag - (yGrad + xGrad) * sMag);
                     }
                 }
@@ -514,7 +497,7 @@ public class CannyEdgeDetector
                         float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
 
                         tmp = Math.abs(xGrad * gradMag);
-                        b = tmp >= Math.abs(yGrad * seMag + (xGrad - yGrad) * eMag) /*(3)*/
+                        b = tmp >= Math.abs(yGrad * seMag + (xGrad - yGrad) * eMag)
                                 && tmp > Math.abs(yGrad * nwMag + (xGrad - yGrad) * wMag);
                     }
                     else
@@ -525,7 +508,7 @@ public class CannyEdgeDetector
                         float nwMag = hypot(xGradient[indexNW], yGradient[indexNW]);
 
                         tmp = Math.abs(yGrad * gradMag);
-                        b = tmp >= Math.abs(xGrad * seMag + (yGrad - xGrad) * sMag) /*(3)*/
+                        b = tmp >= Math.abs(xGrad * seMag + (yGrad - xGrad) * sMag)
                                 && tmp > Math.abs(xGrad * nwMag + (yGrad - xGrad) * nMag);
                     }
                 }
@@ -543,7 +526,7 @@ public class CannyEdgeDetector
                 }
             }
         }
-
+*/
         t = System.currentTimeMillis() - t;
         System.out.println("suppression: " + t);
 

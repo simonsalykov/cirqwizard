@@ -92,16 +92,6 @@ public class Raster
 
     public java.util.List<Toolpath> trace()
     {
-        try
-        {
-            new OpenCLtest().test();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-
         int windowSize = 5 * resolution;
 
         for (int x = 0; x < width; x += windowSize)
