@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.render;
 
+import javafx.application.Platform;
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.PolygonalAperture;
@@ -99,7 +100,7 @@ public class Raster
 
     public java.util.List<Toolpath> trace()
     {
-        int windowSize = 5 * resolution;
+        final int windowSize = 2 * resolution;
 
         final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
 
@@ -108,7 +109,17 @@ public class Raster
         {
             for (int y = 0; y < height; y += windowSize)
             {
-                generationProgress.set((double)(y * windowSize + x * height) / (width * height));
+                final int _x = x;
+                final int _y = y;
+                Platform.runLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        generationProgress.set((double)(_y * windowSize + _x * height) / ((double)width * height));
+//                        System.out.println("x: " + _x + ", y: " + _y + ", width: " + width + ", height: + " + height + ", wh: " + width * height + ", c: " + (double)(_y * windowSize + _x * height) + " @ " + generationProgress.getValue());
+                    }
+                });
                 try
                 {
                     int windowWidth = Math.min(windowSize, width - x);
@@ -119,27 +130,28 @@ public class Raster
                     System.out.println("render time: " + t);
                     t = System.currentTimeMillis();
                     CannyEdgeDetector detector = new CannyEdgeDetector();
-                    detector.setLowThreshold(0.5f);
+                    detector.setLowThreshold(0.1f);
                     detector.setHighThreshold(1.0f);
-                    detector.setGaussianKernelWidth(6);
+                    detector.setGaussianKernelWidth(16);
                     detector.setSourceImage(window.getBufferedImage());
                     detector.process();
                     t = System.currentTimeMillis() - t;
-                    System.out.println("canny: " + t);
-                    if (i < 5)
+//                    System.out.println("canny: " + t);
+                    if (i < 0)
                     {
+                        window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
                         ImageIO.write(detector.getEdgesImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
                         i++;
                     }
                     t = System.currentTimeMillis();
 //                    if (i < 5)
 //                    {
+                    if (detector.getOutput() != null)
                         segments.addAll(new Tracer(this, detector.getOutput(), x, y, windowWidth, windowHeight, toolDiameter).process());
 //                        i++;
 //                    }
-//                window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
                     t = System.currentTimeMillis() - t;
-                    System.out.println("save time: " + t);
+//                    System.out.println("save time: " + t);
                 }
                 catch (Throwable e)
                 {

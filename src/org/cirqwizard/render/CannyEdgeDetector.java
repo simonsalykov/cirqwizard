@@ -283,21 +283,35 @@ public class CannyEdgeDetector
         long t = System.currentTimeMillis();
         readLuminance();
         t = System.currentTimeMillis() - t;
-        System.out.println("luminance reading: " + t);
+//        System.out.println("luminance reading: " + t);
+
+        byte firstLuminance = sourceData[0];
+        boolean containsData = false;
+        for (byte b : sourceData)
+        {
+            if (b != firstLuminance)
+            {
+                containsData = true;
+                break;
+            }
+        }
+        if (!containsData)
+            return;
+
         t = System.currentTimeMillis();
         computeGradients(gaussianKernelRadius, gaussianKernelWidth);
         t = System.currentTimeMillis() - t;
-        System.out.println("GRADIENTS: " + t);
+//        System.out.println("GRADIENTS: " + t);
         int low = Math.round(lowThreshold * MAGNITUDE_SCALE);
         int high = Math.round(highThreshold * MAGNITUDE_SCALE);
         t = System.currentTimeMillis();
         performHysteresis(low, high);
         t = System.currentTimeMillis() - t;
-        System.out.println("hysteresis: " + t);
+//        System.out.println("hysteresis: " + t);
         t = System.currentTimeMillis();
         output = thresholdEdges();
         t = System.currentTimeMillis() - t;
-        System.out.println("thresholding: " + t);
+//        System.out.println("thresholding: " + t);
     }
 
     // private utility methods
@@ -372,7 +386,7 @@ public class CannyEdgeDetector
         sourceDataPointer.release();
 
         t = System.currentTimeMillis() - t;
-        System.out.println("gradients: " + t);
+//        System.out.println("gradients: " + t);
 
         t = System.currentTimeMillis();
         initX = kwidth;
@@ -392,7 +406,7 @@ public class CannyEdgeDetector
         magnitudePtr.release();
 
         t = System.currentTimeMillis() - t;
-        System.out.println("suppression: " + t);
+//        System.out.println("suppression: " + t);
 
     }
 
