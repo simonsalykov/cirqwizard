@@ -19,6 +19,7 @@ import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.PolygonUtils;
 import org.cirqwizard.gerber.Flash;
@@ -26,6 +27,8 @@ import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.math.VectorMath;
+import org.cirqwizard.toolpath.CircularToolpath;
+import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -52,8 +55,6 @@ public class Raster
 {
     private static final int PREVIEW_RESOLUTION_FACTOR = 10;
 
-    private static final int MIN_PERIMETER = 40;    // Minimum feature to be considered should measure 0.1mm x 0.1mm or similar
-
     private BufferedImage preview;
     private int width;
     private int height;
@@ -62,15 +63,9 @@ public class Raster
     private double inflation;
     private ArrayList<GerberPrimitive> primitives = new ArrayList<GerberPrimitive>();
     private ArrayList<RealNumber> radii = new ArrayList<RealNumber>();
-    private PointI lastCleared;
-
-    private static final int WINDOWS_CACHE_SIZE = 1;
-    private LinkedList<RasterWindow> windows = new LinkedList<RasterWindow>();
 
     private DoubleProperty generationProgress = new SimpleDoubleProperty();
     private DoubleProperty traceProgress = new SimpleDoubleProperty();
-
-    private int[] dummyArray = new int[1];
 
     private RealNumber toolDiameter;
 
@@ -104,8 +99,7 @@ public class Raster
 
         final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
 
-        int i = 0;
-        ExecutorService pool = Executors.newFixedThreadPool(16);
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int x = 0; x < width; x += windowSize)
         {
             for (int y = 0; y < height; y += windowSize)
@@ -131,30 +125,15 @@ public class Raster
 
                             int windowWidth = Math.min(windowSize, width - _x);
                             int windowHeight = Math.min(windowSize, height - _y);
-                            long t = System.currentTimeMillis();
                             RasterWindow window = renderWindow(new PointI(_x, _y), windowWidth, windowHeight);
-                            t = System.currentTimeMillis() - t;
-                            System.out.println("render time: " + t);
-                            t = System.currentTimeMillis();
                             SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
                             detector.process();
-                            t = System.currentTimeMillis() - t;
-                            System.out.println("canny: " + t);
-                            t = System.currentTimeMillis();
-//                            if (i < 0)
-//                            {
-//                                window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
-//                                ImageIO.write(detector.getOutputImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
-//                                i++;
-//                            }
-//                    if (i < 5)
-//                    {
                             if (detector.getOutput() != null)
-                                segments.addAll(new Tracer(Raster.this, detector.getOutput(), _x, _y, windowWidth, windowHeight, toolDiameter).process());
-//                        i++;
-//                    }
-                            t = System.currentTimeMillis() - t;
-                            System.out.println("save time: " + t);
+                            {
+                                java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter).process();
+                                Point offset = new Point(_x, _y);
+                                segments.addAll(translateToolpaths(toolpaths, offset));
+                            }
                         }
                         catch (Throwable e)
                         {
@@ -176,20 +155,38 @@ public class Raster
         }
 
         return segments;
+    }
 
-/*        render();
-        final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
-        PointI[] p;
-        lastCleared = new PointI(0, 0);
-        generationProgress.setValue(0);
-        while ((p = findNonEmptyPixel()) != null)
+    private java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset)
+    {
+        ArrayList<Toolpath> result = new ArrayList<Toolpath>();
+        for (Toolpath toolpath : toolpaths)
         {
-            generationProgress.setValue((double) p[0].y / preview.getHeight());
-            int perimeter = fill(p[0].x, p[0].y, 0);
-            if (perimeter >= MIN_PERIMETER)
-                segments.addAll(new Tracer(Raster.this, p[1].x - 1, p[1].y, getPixel(p[1].x, p[1].y), traceProgress, perimeter * 10).trace(new RealNumber(inflation * 2)));
+            if (toolpath instanceof LinearToolpath)
+            {
+                LinearToolpath lt = (LinearToolpath) toolpath;
+                Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset);
+                Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset);
+                result.add(new LinearToolpath(((LinearToolpath) toolpath).getToolDiameter(), start, end));
+            }
+            else if (toolpath instanceof CircularToolpath)
+            {
+                CircularToolpath ct = (CircularToolpath) toolpath;
+                Arc arc = (Arc) ct.getCurve();
+                Point start = translateWindowCoordiantes(ct.getCurve().getFrom(), offset);
+                Point end = translateWindowCoordiantes(ct.getCurve().getTo(), offset);
+                Point center = translateWindowCoordiantes(arc.getCenter(), offset);
+                RealNumber radius = arc.getRadius().divide(resolution);
+                result.add(new CircularToolpath(ct.getToolDiameter(), start, end, center, radius, arc.isClockwise()));
+            }
         }
-        return segments;*/
+
+        return result;
+    }
+
+    private Point translateWindowCoordiantes(Point point, Point windowOffset)
+    {
+        return new Point(point.getX(), point.getY()).add(windowOffset).divide(new RealNumber(resolution));
     }
 
     public DoubleProperty generationProgressProperty()
@@ -224,16 +221,6 @@ public class Raster
             renderPrimitive(window.createGraphics(), primitive, inflation, false, lowerLeftCorner);
 
         return new RasterWindow(window, lowerLeftCorner);
-    }
-
-    private void render()
-    {
-        Graphics2D g = preview.createGraphics();
-        g.setBackground(Color.GREEN);
-        g.clearRect(0, 0, preview.getWidth(), preview.getHeight());
-        for (GerberPrimitive primitive : primitives)
-            renderPrimitive(preview.createGraphics(), primitive, inflation, true, null);
-        fill(0, 0, 0);
     }
 
     private void renderPrimitive(Graphics2D g, GerberPrimitive primitive, double inflation, boolean renderPreview, PointI lowerLeftCorner)
@@ -312,61 +299,6 @@ public class Raster
         }
     }
 
-    private int fill(int x, int y, int fillColor)
-    {
-        WritableRaster r = preview.getRaster();
-        int sampleColor = r.getPixel(x, y, (int[])null)[0];
-        if (sampleColor == fillColor)
-            return 0;
-        LinkedList<PointI> queue = new LinkedList<PointI>();
-        queue.add(new PointI(x, y));
-
-        int y1;
-        boolean spanLeft, spanRight;
-        int perimeter = 0;
-        while (!queue.isEmpty())
-        {
-            PointI p = queue.removeFirst();
-            y1 = p.y;
-            while (y1 >= 0 && r.getPixel(p.x, y1, dummyArray)[0] == sampleColor)
-                y1--;
-            y1++;
-            spanLeft = false;
-            spanRight = false;
-            while (y1 < preview.getHeight() && r.getPixel(p.x, y1, dummyArray)[0] == sampleColor)
-            {
-                dummyArray[0] = fillColor;
-                r.setPixel(p.x, y1, dummyArray);
-                if (!spanLeft && p.x > 0 && r.getPixel(p.x - 1, y1, dummyArray)[0] == sampleColor)
-                {
-                    queue.addFirst(new PointI(p.x - 1, y1));
-                    spanLeft = true;
-                }
-                else if (spanLeft && p.x > 0 && r.getPixel(p.x - 1, y1, dummyArray)[0] != sampleColor)
-                {
-                    spanLeft = false;
-                    perimeter++;
-                }
-
-                if (!spanRight && p.x < preview.getWidth() - 1 && r.getPixel(p.x + 1, y1, dummyArray)[0] == sampleColor)
-                {
-                    queue.addFirst(new PointI(p.x + 1, y1));
-                    spanRight = true;
-                }
-                else if (spanRight && p.x < preview.getWidth() - 1 && r.getPixel(p.x + 1, y1, dummyArray)[0] != sampleColor)
-                {
-                    spanRight = false;
-                    perimeter++;
-                }
-
-                y1++;
-            }
-            perimeter += 2;
-        }
-
-        return perimeter;
-    }
-
     public void saveTo(String file)
     {
         try
@@ -378,7 +310,5 @@ public class Raster
             e.printStackTrace();
         }
     }
-
-    public static enum RenderingHint {ROW, COLUMN, SQUARE}
 
 }

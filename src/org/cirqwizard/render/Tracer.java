@@ -48,34 +48,21 @@ public class Tracer
                                                                             // in case there's a closely matching arc
 
     private Raster raster;
-    private int color;
 
     private byte[] windowData;
 
-    private int xOffset;
-    private int yOffset;
     private int width;
     private int height;
     private RealNumber toolDiameter;
 
-    private PointI start;
     private PointI current;
-
-    private Direction direction;
-    private Direction lastDirection;
-    private LinkedList<PointI> lastPoints;
 
     private Segment currentSegment;
 
-    private DoubleProperty progressProperty;
-    private int perimeterLength;
-
-    public Tracer(Raster raster, byte[] windowData, int xOffset, int yOffset, int width, int height, RealNumber toolDiameter)
+    public Tracer(Raster raster, byte[] windowData, int width, int height, RealNumber toolDiameter)
     {
         this.raster = raster;
         this.windowData = windowData;
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
         this.width = width;
         this.height = height;
         this.toolDiameter = toolDiameter;
@@ -102,10 +89,10 @@ public class Tracer
     {
         current = new PointI(x, y);
         currentSegment = new Segment(current, current);
-        direction = Direction.EAST;
+        Direction direction = Direction.EAST;
 
         int segmentCounter = 0;
-        lastPoints = new LinkedList<PointI>();
+        LinkedList<PointI> lastPoints = new LinkedList<PointI>();
         LinkedList<PointI> segmentPoints = new LinkedList<PointI>();
         double angle = 0;
         PointI arcCenter = null;
@@ -113,7 +100,7 @@ public class Tracer
 
         ArrayList<Toolpath> result = new ArrayList<Toolpath>();
 
-        lastDirection = null;
+        Direction lastDirection = null;
         int fuse = 0;
 
         Logger logger = LoggerFactory.getApplicationLogger();
@@ -191,8 +178,8 @@ public class Tracer
 
                         if (toolpath instanceof LinearToolpath)
                         {
-                            double arcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().multiply(raster.getResolution()).getValue().intValue(), prevArc.getCenter().getY().multiply(raster.getResolution()).getValue().intValue()),
-                                    prevArc.getRadius().multiply(raster.getResolution()).doubleValue());
+                            double arcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()),
+                                    prevArc.getRadius().doubleValue());
                             double ratio = arcDeviation / calculateSegmentDeviation(segmentPoints);
                             if (ratio < 1 || (segmentPoints.size() < 1.5 * INITIAL_SAMPLE_COUNT && ratio < 5))
                                 merge = true;
@@ -205,8 +192,8 @@ public class Tracer
                                 merge = true;
                             else
                             {
-                                double prevArcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().multiply(raster.getResolution()).getValue().intValue(), prevArc.getCenter().getY().multiply(raster.getResolution()).getValue().intValue()),
-                                        prevArc.getRadius().multiply(raster.getResolution()).doubleValue());
+                                double prevArcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()),
+                                        prevArc.getRadius().doubleValue());
                                 if (prevArcDeviation / calculateArcDeviation(segmentPoints, arcCenter, radius) < 5)
                                     merge = true;
                             }
@@ -215,17 +202,17 @@ public class Tracer
                         if (merge)
                         {
                             result.remove(result.size() - 1);
-                            PointI[] newCenters = calculateArcCenters(new PointI(prevArc.getFrom().getX().multiply(raster.getResolution()).getValue().intValue(), prevArc.getFrom().getY().multiply(raster.getResolution()).getValue().intValue()),
+                            PointI[] newCenters = calculateArcCenters(new PointI(prevArc.getFrom().getX().getValue().intValue(), prevArc.getFrom().getY().getValue().intValue()),
                                     current,
-                                    prevArc.getRadius().multiply(raster.getResolution()).doubleValue());
-                            PointI ac = new PointI(prevArc.getCenter().getX().multiply(raster.getResolution()).getValue().intValue(), prevArc.getCenter().getY().multiply(raster.getResolution()).getValue().intValue());
+                                    prevArc.getRadius().doubleValue());
+                            PointI ac = new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue());
                             double e0 = Math.sqrt((newCenters[0].x - ac.x) * (newCenters[0].x - ac.x) + (newCenters[0].y - ac.y) * (newCenters[0].y - ac.y));
                             double e1 = Math.sqrt((newCenters[1].x - ac.x) * (newCenters[1].x - ac.x) + (newCenters[1].y - ac.y) * (newCenters[1].y - ac.y));
                             RealNumber centersDistanceThreshold = prevArc.getRadius().multiply(new RealNumber("0.4"));
-                            arcCenter = new PointI(prevArc.getCenter().getX().multiply(raster.getResolution()).getValue().intValue(), prevArc.getCenter().getY().multiply(raster.getResolution()).getValue().intValue());
-                            if (Math.min(e0, e1) < centersDistanceThreshold.doubleValue() * raster.getResolution())
+                            arcCenter = new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue());
+                            if (Math.min(e0, e1) < centersDistanceThreshold.doubleValue())
                                 arcCenter = e0 < e1 ? newCenters[0] : newCenters[1];
-                            Point newCenter = new Point(new RealNumber(arcCenter.x).divide(raster.getResolution()), new RealNumber(arcCenter.y).divide(raster.getResolution()));
+                            Point newCenter = new Point(arcCenter.x, arcCenter.y);
                             toolpath = new CircularToolpath(toolDiameter, prev.getCurve().getFrom(), ((CuttingToolpath)toolpath).getCurve().getTo(), newCenter, prevArc.getRadius(), true);
                         }
                     }
@@ -264,18 +251,12 @@ public class Tracer
     private Toolpath getToolpath(RealNumber toolDiameter, PointI arcCenter, double radius)
     {
         Point start = new Point(new RealNumber(currentSegment.getStart().x), new RealNumber(currentSegment.getStart().y));
-        start = start.add(new Point(xOffset, yOffset));
-        start = start.divide(new RealNumber(raster.getResolution()));
         Point end = new Point(new RealNumber(currentSegment.getEnd().x), new RealNumber(currentSegment.getEnd().y));
-        end = end.add(new Point(xOffset, yOffset));
-        end = end.divide(new RealNumber(raster.getResolution()));
 
         if (arcCenter == null)
             return new LinearToolpath(toolDiameter, start, end);
         Point center = new Point(new RealNumber(arcCenter.x), new RealNumber(arcCenter.y));
-        center = center.add(new Point(xOffset, yOffset));
-        center = center.divide(new RealNumber(raster.getResolution()));
-        return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(radius).divide(raster.getResolution()), true);
+        return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(radius), true);
     }
 
     private double calculateAngle(PointI start, PointI end)
