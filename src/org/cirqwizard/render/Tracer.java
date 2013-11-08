@@ -256,6 +256,7 @@ public class Tracer
                 break;
         }
         while (current.x >= 0 && current.x < width && current.y >= 0 && current.y < height);
+        result.add(getToolpath(toolDiameter, arcCenter, radius));
 
         return result;
     }

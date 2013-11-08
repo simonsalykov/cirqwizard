@@ -100,64 +100,79 @@ public class Raster
 
     public java.util.List<Toolpath> trace()
     {
-        final int windowSize = 2 * resolution;
+        final int windowSize = 5 * resolution;
 
         final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
 
         int i = 0;
+        ExecutorService pool = Executors.newFixedThreadPool(16);
         for (int x = 0; x < width; x += windowSize)
         {
             for (int y = 0; y < height; y += windowSize)
             {
                 final int _x = x;
                 final int _y = y;
-                Platform.runLater(new Runnable()
+                pool.submit(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        generationProgress.set(((double)_y * windowSize + (double)_x * height) / ((double)width * height));
-                        System.out.println("x: " + _x + ", y: " + _y + ", width: " + width + ", height: + " + height + ", wh: " + ((double)width * height) + ", c: " + (double)(_y * windowSize + _x * height) + " @ " + generationProgress.getValue());
-                    }
-                });
-                try
-                {
-                    int windowWidth = Math.min(windowSize, width - x);
-                    int windowHeight = Math.min(windowSize, height - y);
-                    long t = System.currentTimeMillis();
-                    RasterWindow window = renderWindow(new PointI(x, y), windowWidth, windowHeight);
-                    t = System.currentTimeMillis() - t;
-                    System.out.println("render time: " + t);
-                    t = System.currentTimeMillis();
-                    CannyEdgeDetector detector = new CannyEdgeDetector();
-                    detector.setLowThreshold(0.1f);
-                    detector.setHighThreshold(1.0f);
-                    detector.setGaussianKernelWidth(16);
-                    detector.setSourceImage(window.getBufferedImage());
-                    detector.process();
-                    t = System.currentTimeMillis() - t;
-//                    System.out.println("canny: " + t);
-                    if (i < 0)
-                    {
-                        window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
-                        ImageIO.write(detector.getEdgesImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
-                        i++;
-                    }
-                    t = System.currentTimeMillis();
+                        try
+                        {
+                            Platform.runLater(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    generationProgress.set(((double)_y * windowSize + (double)_x * height) / ((double)width * height));
+                                    System.out.println("x: " + _x + ", y: " + _y + ", width: " + width + ", height: + " + height + ", wh: " + ((double)width * height) + ", c: " + (double)(_y * windowSize + _x * height) + " @ " + generationProgress.getValue());
+                                }
+                            });
+
+                            int windowWidth = Math.min(windowSize, width - _x);
+                            int windowHeight = Math.min(windowSize, height - _y);
+                            long t = System.currentTimeMillis();
+                            RasterWindow window = renderWindow(new PointI(_x, _y), windowWidth, windowHeight);
+                            t = System.currentTimeMillis() - t;
+                            System.out.println("render time: " + t);
+                            t = System.currentTimeMillis();
+                            SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
+                            detector.process();
+                            t = System.currentTimeMillis() - t;
+                            System.out.println("canny: " + t);
+                            t = System.currentTimeMillis();
+//                            if (i < 0)
+//                            {
+//                                window.save("/Users/simon/tmp/cw/win-" + x + "_" + y + ".png");
+//                                ImageIO.write(detector.getOutputImage(), "png", new File("/Users/simon/tmp/cw/win-ed-" + x + "_" + y + ".png"));
+//                                i++;
+//                            }
 //                    if (i < 5)
 //                    {
-                    if (detector.getOutput() != null)
-                        segments.addAll(new Tracer(this, detector.getOutput(), x, y, windowWidth, windowHeight, toolDiameter).process());
+                            if (detector.getOutput() != null)
+                                segments.addAll(new Tracer(Raster.this, detector.getOutput(), _x, _y, windowWidth, windowHeight, toolDiameter).process());
 //                        i++;
 //                    }
-                    t = System.currentTimeMillis() - t;
-//                    System.out.println("save time: " + t);
-                }
-                catch (Throwable e)
-                {
-                    e.printStackTrace();
-                }
+                            t = System.currentTimeMillis() - t;
+                            System.out.println("save time: " + t);
+                        }
+                        catch (Throwable e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
+        }
+
+        try
+        {
+            pool.shutdown();
+            pool.awaitTermination(10, TimeUnit.DAYS);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return segments;
