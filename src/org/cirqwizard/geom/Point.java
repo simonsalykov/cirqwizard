@@ -69,6 +69,11 @@ public class Point
         return new Point(x.divide(scalar), y.divide(scalar));
     }
 
+    public Point round()
+    {
+        return new Point(x.round(2), y.round(2));
+    }
+
     @Override
     public String toString()
     {
@@ -84,11 +89,14 @@ public class Point
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Point point = (Point) o;
+        return equals((Point) o, MathUtil.MICRON.doubleValue());
+    }
 
-        double x = this.x.doubleValue() - point.x.doubleValue();
-        double y = this.y.doubleValue() - point.y.doubleValue();
-        return Math.sqrt(x * x + y * y) < MathUtil.MICRON.doubleValue();
+    public boolean equals(Point o, double precision)
+    {
+        double x = this.x.doubleValue() - o.x.doubleValue();
+        double y = this.y.doubleValue() - o.y.doubleValue();
+        return Math.sqrt(x * x + y * y) < precision;
     }
 
     @Override

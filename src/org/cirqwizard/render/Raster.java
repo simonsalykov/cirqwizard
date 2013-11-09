@@ -19,15 +19,16 @@ import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
-import org.cirqwizard.geom.Arc;
-import org.cirqwizard.geom.Line;
-import org.cirqwizard.geom.PolygonUtils;
+import org.cirqwizard.geom.*;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.math.VectorMath;
 import org.cirqwizard.toolpath.CircularToolpath;
+import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.DoubleProperty;
@@ -36,7 +37,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.*;
-import org.cirqwizard.geom.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
@@ -44,6 +44,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,6 +55,8 @@ import java.util.concurrent.TimeUnit;
 public class Raster
 {
     private static final int PREVIEW_RESOLUTION_FACTOR = 10;
+
+    private static final double MERGE_PRECISION_THRESHOLD = 0.01;
 
     private BufferedImage preview;
     private int width;
@@ -154,7 +157,7 @@ public class Raster
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        return segments;
+        return mergeToolpaths(segments);
     }
 
     private java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset)
@@ -162,6 +165,8 @@ public class Raster
         ArrayList<Toolpath> result = new ArrayList<Toolpath>();
         for (Toolpath toolpath : toolpaths)
         {
+            if (((CuttingToolpath)toolpath).getCurve().getFrom().equals(((CuttingToolpath)toolpath).getCurve().getTo()))
+                continue;
             if (toolpath instanceof LinearToolpath)
             {
                 LinearToolpath lt = (LinearToolpath) toolpath;
@@ -187,6 +192,19 @@ public class Raster
     private Point translateWindowCoordiantes(Point point, Point windowOffset)
     {
         return new Point(point.getX(), point.getY()).add(windowOffset).divide(new RealNumber(resolution));
+    }
+
+    private java.util.List<Toolpath> mergeToolpaths(ArrayList<Toolpath> toolpaths)
+    {
+        System.out.println("merge: " + toolpaths.size());
+
+        long t = System.currentTimeMillis();
+        toolpaths = (ArrayList<Toolpath>) new ToolpathMerger(toolpaths).merge();
+        t = System.currentTimeMillis() - t;
+
+        System.out.println("merged: " + toolpaths.size() + "(" + t + ")");
+
+        return toolpaths;
     }
 
     public DoubleProperty generationProgressProperty()

@@ -109,6 +109,16 @@ public class RealNumber
         return new RealNumber(value.negate());
     }
 
+    public RealNumber abs()
+    {
+        return new RealNumber(value.abs());
+    }
+
+    public RealNumber round(int decimalPlaces)
+    {
+        return new RealNumber(value.setScale(decimalPlaces, RoundingMode.HALF_UP));
+    }
+
     public String toString()
     {
         return format.format(value);

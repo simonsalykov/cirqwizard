@@ -97,4 +97,13 @@ public class Line extends Curve
 
         return new Point(line1.getX1().add(t.multiply(line1.getX2().subtract(line1.getX1()))), line1.getY1().add(t.multiply(line1.getY2().subtract(line1.getY1()))));
     }
+
+    @Override
+    public String toString()
+    {
+        return "Line{" +
+                "from=" + getFrom() +
+                ", to=" + getTo() +
+                '}';
+    }
 }

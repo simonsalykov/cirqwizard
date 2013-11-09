@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.render;
 
 import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
@@ -218,6 +219,11 @@ public class Tracer
                     }
 
                     result.add(toolpath);
+                    if (toolpath instanceof LinearToolpath)
+                    {
+                        Line l = (Line) ((LinearToolpath)toolpath).getCurve();
+                        System.out.println("@@ " + l.getFrom().distanceTo(l.getTo()));
+                    }
                     currentSegment = new Segment(current, current);
                     segmentPoints.clear();
                     arcCenter = null;
@@ -243,7 +249,16 @@ public class Tracer
                 break;
         }
         while (current.x >= 0 && current.x < width && current.y >= 0 && current.y < height);
-        result.add(getToolpath(toolDiameter, arcCenter, radius));
+        if (segmentCounter > 10)
+        {
+            result.add(getToolpath(toolDiameter, arcCenter, radius));
+            Toolpath toolpath = result.get(result.size() - 1);
+            if (toolpath instanceof LinearToolpath)
+            {
+                Line l = (Line) ((LinearToolpath)toolpath).getCurve();
+                System.out.println("## " + l.getFrom().distanceTo(l.getTo()) + " / " + segmentCounter);
+            }
+        }
 
         return result;
     }
