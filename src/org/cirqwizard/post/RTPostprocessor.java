@@ -17,6 +17,7 @@ package org.cirqwizard.post;
 import org.cirqwizard.math.RealNumber;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 
 public class RTPostprocessor implements Postprocessor
@@ -26,7 +27,15 @@ public class RTPostprocessor implements Postprocessor
     private RealNumber z;
     private RealNumber feed;
 
-    private final static DecimalFormat format = new DecimalFormat("0.###");
+    private DecimalFormat format;
+
+    public RTPostprocessor()
+    {
+        format = new DecimalFormat("0.###");
+        DecimalFormatSymbols customPoint = new DecimalFormatSymbols();
+        customPoint.setDecimalSeparator('.');
+        format.setDecimalFormatSymbols(customPoint);
+    }
 
     @Override
     public void home(StringBuilder str, RealNumber yDiff)
