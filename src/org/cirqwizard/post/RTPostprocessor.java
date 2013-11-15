@@ -42,7 +42,7 @@ public class RTPostprocessor implements Postprocessor
     {
         str.append("G28");
         if (yDiff != null)
-            str.append(" Y").append(yDiff);
+            str.append(" Y").append(formatCoordinate(yDiff));
         str.append('\n');
     }
 
