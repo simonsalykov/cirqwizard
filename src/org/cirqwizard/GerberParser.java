@@ -233,18 +233,10 @@ public class GerberParser
 
     private RealNumber convertCoordinates(String str)
     {
-        RealNumber d = new RealNumber("0");
+        str = String.format("%" + (integerPlaces + decimalPlaces) + "s", str).replace(' ', '0');
+        str = str.substring(0, integerPlaces) + "." + str.substring(integerPlaces, str.length());
 
-        if(str.equals("0"))
-            return d;
-
-        int validIntPlaces = str.length() >= (integerPlaces + decimalPlaces) ? integerPlaces : (str.length() - decimalPlaces);
-
-        if(validIntPlaces > 0)
-            d = new RealNumber(str.substring(0, validIntPlaces));
-
-        d = d.add(new RealNumber(str.substring(validIntPlaces)).divide(MathUtil.pow(new RealNumber(10), decimalPlaces)));
-        return d.multiply(unitConversionRatio);
+        return new RealNumber(str).multiply(unitConversionRatio);
     }
 
     private void processDataBlock(DataBlock dataBlock) throws GerberParsingException
