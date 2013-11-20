@@ -146,8 +146,18 @@ public class GerberParser
             LoggerFactory.getApplicationLogger().log(Level.FINE, "Ignoring obsolete gerber parameter");
         else if (parameter.startsWith("FS"))
             parseCoordinateFormatSpecification(parameter.substring(parameter.indexOf("X")));
+        else if (parameter.startsWith("MO"))
+            parseMeasurementUnits(parameter.substring(2, parameter.length()));
         else
             throw new GerberParsingException("Unknown parameter: " + parameter);
+    }
+
+    private void parseMeasurementUnits(String str)
+    {
+        if (str.equals("IN"))
+            unitConversionRatio = INCHES_RATIO;
+        else if (str.equals("MM"))
+            unitConversionRatio = MM_RATIO;
     }
 
     private void parseCoordinateFormatSpecification(String str)
