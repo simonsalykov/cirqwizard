@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
  * User: simon
  * Date: 08/11/13
  * Time: 02:33
- * To change this template use File | Settings | File Templates.
  */
 public class SimpleEdgeDetector
 {
@@ -29,35 +28,20 @@ public class SimpleEdgeDetector
     public void process()
     {
         output = new byte[sourceData.length];
-//        ExecutorService pool = Executors.newFixedThreadPool(16);
         for (int y = 1; y < height - 1; y++)
         {
             final int _y = y;
-//            pool.submit(new Runnable()
-//            {
-//                @Override
-//                public void run()
-//                {
-                    for (int x = 1; x < width - 1; x++)
-                    {
-                        int index = _y * width + x;
-                        if (sourceData[index] == 0 &&
-                                (sourceData[index - 1] != 0 || sourceData[index + 1] != 0 || sourceData[index - width] != 0 || sourceData[index + width] != 0 ||
-                                        sourceData[index - 1 - width] != 0 || sourceData[index + 1 - width] != 0 || sourceData[index - 1 + width] != 0 || sourceData[index + 1 + width] != 0))
-                            output[index] = 1;
-                    }
-//                }
-//            });
+            for (int x = 1; x < width - 1; x++)
+            {
+                int index = _y * width + x;
+//                if (sourceData[index] == 0 &&
+//                        (sourceData[index - 1] != 0 || sourceData[index + 1] != 0 || sourceData[index - width] != 0 || sourceData[index + width] != 0 ||
+//                                sourceData[index - 1 - width] != 0 || sourceData[index + 1 - width] != 0 || sourceData[index - 1 + width] != 0 || sourceData[index + 1 + width] != 0))
+                if (sourceData[index] == 0 &&
+                        (sourceData[index - 1] != 0 || sourceData[index + 1] != 0 || sourceData[index - width] != 0 || sourceData[index + width] != 0))
+                    output[index] = 1;
+            }
         }
-//        try
-//        {
-//            pool.shutdown();
-//            pool.awaitTermination(10, TimeUnit.DAYS);
-//        }
-//        catch (InterruptedException e)
-//        {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
     }
 
     public byte[] getOutput()

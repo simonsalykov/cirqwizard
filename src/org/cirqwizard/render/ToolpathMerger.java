@@ -10,10 +10,7 @@ import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,73 +30,98 @@ public class ToolpathMerger
     public List<Toolpath> merge()
     {
         HashMap<Point, ArrayList<Toolpath>> map = getVerticesMap(toolpaths);
-        ToolpathsGraph graph = new ToolpathsGraph();
-        for (Toolpath t : toolpaths)
-            graph.addVertex(t);
+
+        ArrayList<Point> vertices = new ArrayList<Point>(map.keySet());
+        Collections.sort(vertices, new Comparator<Point>()
+        {
+            @Override
+            public int compare(Point o1, Point o2)
+            {
+                return o1.getX().compareTo(o2.getX()) != 0 ? o1.getX().compareTo(o2.getX()) : o1.getY().compareTo(o2.getY());
+            }
+        });
+        for (Point p : vertices)
+            System.out.println("%% " + p + " [" + map.get(p).size() + "]");
+
+        ArrayList<Toolpath> toBeRemoved = new ArrayList<Toolpath>();
+        HashMap<Toolpath, Toolpath> replacements = new HashMap<Toolpath, Toolpath>();
+
         for (Point p : map.keySet())
         {
-            ArrayList<Toolpath> toolpaths = map.get(p);
-            for (int i = 0; i < toolpaths.size(); i++)
-                for (int j = i + 1; j < toolpaths.size(); j++)
-                    graph.addEdge(toolpaths.get(i), toolpaths.get(j));
-        }
-
-        ArrayList<ArrayList<Toolpath>> chains = new ArrayList<ArrayList<Toolpath>>();
-        LinkedList<Toolpath> toolpathsToProcess = new LinkedList<Toolpath>(toolpaths);
-        while (!toolpathsToProcess.isEmpty())
-        {
-            ArrayList<Toolpath> chain = new ArrayList<Toolpath>();
-            Toolpath prev = null;
-            for (Toolpath t : graph.traverse(toolpathsToProcess.getFirst()))
+            ArrayList<Toolpath> toMerge = map.get(p);
+            for (int i = 0; i < toMerge.size(); i++)
             {
-                boolean merged = false;
-                if (prev != null)
+                for (int j = i + 1; j < toMerge.size(); j++)
                 {
-                    if (t instanceof LinearToolpath && prev instanceof LinearToolpath)
+                    Toolpath t1 = toMerge.get(i);
+                    Toolpath t2 = toMerge.get(j);
+
+//                    if (replacements.get(t1) != null)
+//                        t1 = replacements.get(t1);
+//                    if (replacements.get(t2) != null)
+//                        t2 = replacements.get(t2);
+//                    if (t1 == t2)
+//                        continue;
+
+                    if (t1 instanceof LinearToolpath && t2 instanceof LinearToolpath)
                     {
-                        Line prevLine = (Line) ((LinearToolpath) prev).getCurve();
-                        Line line = (Line) ((LinearToolpath) t).getCurve();
-                        if (!line.getFrom().equals(prevLine.getTo(), 0.02))
-                            line = line.reverse();
-                        if (line.getFrom().equals(prevLine.getTo(), 0.02))
+                        Line l1 = (Line) ((LinearToolpath) t1).getCurve();
+                        Line l2 = (Line) ((LinearToolpath) t2).getCurve();
+                        boolean l1Inversed = false;
+                        if (!l1.getTo().equals(p, 0.02))
                         {
-                            if (prevLine.angleToX().subtract(line.angleToX()).abs().compareTo(MathUtil.PI.divide(60)) < 0)
+                            l1 = l1.reverse();
+                            l1Inversed = true;
+                        }
+                        if (!l2.getFrom().equals(p, 0.02))
+                            l2 = l2.reverse();
+                        if (l2.getFrom().equals(l1.getTo(), 0.02))
+                        {
+                            if (l1.angleToX().subtract(l2.angleToX()).abs().compareTo(MathUtil.PI.divide(60)) < 0)// ||
+//                                    l1.angleToX().subtract(l2.angleToX()).abs().subtract(MathUtil.PI).abs().compareTo(MathUtil.PI.divide(60)) < 0)
                             {
-                                System.out.println("merging " + prevLine + " and " + line);
-                                prevLine.setTo(line.getTo());
-                                merged = true;
+                                System.out.println("merging " + l1 + " and " + l2);
+                                if (l1Inversed)
+                                    ((LinearToolpath) t1).getCurve().setFrom(l2.getTo());
+                                else
+                                    ((LinearToolpath) t1).getCurve().setTo(l2.getTo());
+//                                l1.setTo(l2.getTo());
+                                toBeRemoved.add(t2);
+                                map.get(l2.getTo().round()).remove(t2);
+                                map.get(l2.getTo().round()).add(t1);
+                                replacements.put(t2, t1);
+                                break;
+                            }
+                            else
+                                System.out.println("NOT merging " + l1 + " and " + l2);
+                        }
+                        else
+                            System.out.println("WTH: " + l1 + " and " + l2);
+                    }
+                    else if (t1 instanceof CircularToolpath && t2 instanceof CircularToolpath)
+                    {
+                        Arc a1 = (Arc) ((CircularToolpath) t1).getCurve();
+                        Arc a2 = (Arc) ((CircularToolpath) t2).getCurve();
+                        if (a1.getTo().equals(a2.getFrom(), 0.02))
+                        {
+                            if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius().doubleValue() - a2.getRadius().doubleValue()) < 0.05)
+                            {
+                                System.out.println("merging " + a1 + " and " + a2);
+                                a1.setTo(a2.getTo());
+                                toBeRemoved.add(t2);
+                                replacements.put(t2, t1);
+                                break;
                             }
                         }
                     }
-                    else if (t instanceof CircularToolpath && prev instanceof CircularToolpath)
-                    {
-                        Arc prevArc = (Arc) ((CircularToolpath) prev).getCurve();
-                        Arc arc = (Arc) ((CircularToolpath) t).getCurve();
-                        if (prevArc.getTo().equals(arc.getFrom(), 0.02))
-                        {
-                            if (prevArc.getCenter().equals(arc.getCenter(), 0.05) && Math.abs(prevArc.getRadius().doubleValue() - arc.getRadius().doubleValue()) < 0.05)
-                            {
-                                System.out.println("merging " + prevArc + " and " + arc);
-                                prevArc.setTo(arc.getTo());
-                                merged = true;
-                            }
-                        }
-                    }
+
                 }
-                if (!merged)
-                {
-                    chain.add(t);
-                    prev = t;
-                }
-                toolpathsToProcess.remove(t);
             }
-            chains.add(chain);
         }
-        System.out.println("chains: " + chains.size());
 
         ArrayList<Toolpath> result = new ArrayList<Toolpath>();
-        for (ArrayList<Toolpath> at : chains)
-            for (Toolpath t : at)
+        for (Toolpath t : toolpaths)
+            if (!toBeRemoved.contains(t))
                 result.add(t);
 
         return result;
@@ -131,44 +153,6 @@ public class ToolpathMerger
         }
 
         return map;
-    }
-
-    private static class ToolpathsGraph
-    {
-        private ArrayList<Toolpath> vertices = new ArrayList<Toolpath>();
-        private ArrayList<ArrayList<Integer>> edges = new ArrayList<ArrayList<Integer>>();
-
-        public void addVertex(Toolpath t)
-        {
-            vertices.add(t);
-            edges.add(new ArrayList<Integer>());
-        }
-
-        public void addEdge(Toolpath vertex1, Toolpath vertex2)
-        {
-            int index1 = vertices.indexOf(vertex1);
-            int index2 = vertices.indexOf(vertex2);
-            if (!edges.get(index1).contains(vertex2))
-                edges.get(index1).add(index2);
-            if (!edges.get(index2).contains(vertex1))
-                edges.get(index2).add(index1);
-        }
-
-        public List<Toolpath> traverse(Toolpath toolpath)
-        {
-            ArrayList<Toolpath> result = new ArrayList<Toolpath>();
-            _traverse(vertices.indexOf(toolpath), new boolean[vertices.size()], result);
-            return result;
-        }
-
-        private void _traverse(int index, boolean[] visited, ArrayList<Toolpath> result)
-        {
-            visited[index] = true;
-            result.add(vertices.get(index));
-            for (int i : edges.get(index))
-                if (!visited[i])
-                    _traverse(i, visited, result);
-        }
     }
 
 }

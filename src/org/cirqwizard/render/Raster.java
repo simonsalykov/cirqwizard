@@ -173,6 +173,7 @@ public class Raster
                 Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset);
                 Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset);
                 result.add(new LinearToolpath(((LinearToolpath) toolpath).getToolDiameter(), start, end));
+                System.out.println(((CuttingToolpath)result.get(result.size() - 1)).getCurve());
             }
             else if (toolpath instanceof CircularToolpath)
             {

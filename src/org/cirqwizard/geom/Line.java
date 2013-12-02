@@ -104,6 +104,7 @@ public class Line extends Curve
         return "Line{" +
                 "from=" + getFrom() +
                 ", to=" + getTo() +
+                ", ang=" + angleToX() +
                 '}';
     }
 }
