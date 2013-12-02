@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.scene.control.CheckBox;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -40,6 +41,7 @@ public class XYOffsetsController extends SceneController implements Initializabl
     @FXML private Label offsetErrorLabel;
 
     @FXML private Button continueButton;
+    @FXML private CheckBox ignoreCheckBox;
 
 
     private final static double REFERENCE_PIN_POSITION_ON_LAMINATE = 5;
@@ -83,6 +85,14 @@ public class XYOffsetsController extends SceneController implements Initializabl
                 getMainApplication().getContext().setG54Y(s2);
             }
         });
+        ignoreCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
+            {
+                checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y());
+            }
+        });
     }
 
     @Override
@@ -104,14 +114,17 @@ public class XYOffsetsController extends SceneController implements Initializabl
         double laminateY = Double.parseDouble(getMainApplication().getSettings().getMachineReferencePinY()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
         double xOffsetToPcb = xOffset - laminateX;
         double yOffsetToPcb  = yOffset - laminateY;
-        if (((xOffsetToPcb >= 0) && (xOffsetToPcb + context.getBoardWidth() <= context.getPcbSize().getWidth())) &&
-            ((yOffsetToPcb >= 0) && (yOffsetToPcb + context.getBoardHeight() <= context.getPcbSize().getHeight())))
+
+        if (((xOffsetToPcb >= 0) && (yOffsetToPcb >= 0) && context.getPcbSize().checkFit(xOffsetToPcb + context.getBoardWidth(), yOffsetToPcb + context.getBoardHeight())) || ignoreCheckBox.isSelected())
         {
-            offsetErrorLabel.setVisible(false);
+            offsetErrorLabel.setVisible(ignoreCheckBox.isSelected());
             continueButton.setDisable(false);
+            ignoreCheckBox.setVisible(ignoreCheckBox.isSelected());
         }
         else
         {
+            ignoreCheckBox.setSelected(false);
+            ignoreCheckBox.setVisible(true);
             offsetErrorLabel.setVisible(true);
             continueButton.setDisable(true);
         }

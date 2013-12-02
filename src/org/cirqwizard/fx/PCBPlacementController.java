@@ -38,6 +38,8 @@ public class PCBPlacementController extends SceneController
     @FXML private Label bottomTracesText;
     @FXML private Label drillingText;
 
+    private static final double PCB_SIZE_CHECK_TOLERANCE = 0.1;
+
     @Override
     public Parent getView()
     {
@@ -101,7 +103,7 @@ public class PCBPlacementController extends SceneController
     private boolean checkSelectedPcbSize()
     {
         Context context = getMainApplication().getContext();
-        return context.getBoardWidth() <= context.getPcbSize().getWidth() && context.getBoardHeight() <= context.getPcbSize().getHeight();
+        return context.getPcbSize().checkFit(context.getBoardWidth(), context.getBoardHeight());
     }
 
     public void updateComponents()

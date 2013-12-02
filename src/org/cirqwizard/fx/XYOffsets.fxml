@@ -6,10 +6,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
-
+<?import org.cirqwizard.fx.controls.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.XYOffsetsController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.XYOffsetsController">
   <children>
     <Label layoutX="33.0" layoutY="70.0" styleClass="h1" text="Now we need to establish X and Y offsets" />
     <Label layoutX="81.0" layoutY="117.0" prefHeight="45.0" prefWidth="638.0" text="X and Y offsets are the distances from corresponding axes zero positions to the lower left corner of the board to be cut." wrapText="true" />
@@ -56,5 +56,6 @@
       </children>
     </HBox>
     <Label fx:id="offsetErrorLabel" layoutX="192.0" layoutY="225.0" styleClass="error-message" text="The PCB is not going to fit in the laminate with selected offsets!" visible="false" />
+    <CheckBox fx:id="ignoreCheckBox" layoutX="192.0" layoutY="247.0" mnemonicParsing="false" text="Ignore this error. I know what I'm doing." visible="false" />
   </children>
 </AnchorPane>
