@@ -37,20 +37,26 @@ public class PCBSizeTest
     }
 
     @Test
-    public void tesPCBSizeEqualToLaminate()
+    public void testPCBSizeEqualToLaminate()
     {
         assertTrue(largePcb.checkFit(100, 160));
     }
 
     @Test
-    public void tesPCBWidthEqualToLaminate()
+    public void testPCBWidthEqualToLaminate()
     {
         assertTrue(largePcb.checkFit(100, 50));
     }
 
     @Test
-    public void tesPCBHeightEqualToLaminate()
+    public void testPCBHeightEqualToLaminate()
     {
         assertTrue(largePcb.checkFit(50, 160));
+    }
+
+    @Test
+    public void testPCBSizeCheckTolerance()
+    {
+        assertTrue(largePcb.checkFit(100.1, 160.1));
     }
 }
