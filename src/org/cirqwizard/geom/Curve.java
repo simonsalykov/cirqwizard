@@ -40,6 +40,8 @@ public abstract class Curve
         this.to = to;
     }
 
+    public abstract Curve reverse();
+
     @Override
     public boolean equals(Object o)
     {

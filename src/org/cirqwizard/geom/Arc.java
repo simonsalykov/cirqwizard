@@ -34,6 +34,11 @@ public class Arc extends Curve
         this.radius = radius;
         this.clockwise = clockwise;
 
+        updateAngles();
+    }
+
+    private void updateAngles()
+    {
         start = new Line(center, from).angleToX();
         if (to.equals(from))
             angle = MathUtil.TWO_PI;
@@ -57,6 +62,26 @@ public class Arc extends Curve
         if (theta.lessThan(0))
             theta = theta.add(MathUtil.TWO_PI);
         return theta;
+    }
+
+    @Override
+    public Curve reverse()
+    {
+        return new Arc(to, from, center, radius, !clockwise);
+    }
+
+    @Override
+    public void setFrom(Point from)
+    {
+        super.setFrom(from);
+        updateAngles();
+    }
+
+    @Override
+    public void setTo(Point to)
+    {
+        super.setTo(to);
+        updateAngles();
     }
 
     public Point getCenter()
