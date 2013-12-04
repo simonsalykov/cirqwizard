@@ -122,7 +122,6 @@ public class Raster
                                 public void run()
                                 {
                                     generationProgress.set(((double)_y * windowSize + (double)_x * height) / ((double)width * height));
-                                    System.out.println("x: " + _x + ", y: " + _y + ", width: " + width + ", height: + " + height + ", wh: " + ((double)width * height) + ", c: " + (double)(_y * windowSize + _x * height) + " @ " + generationProgress.getValue());
                                 }
                             });
 
@@ -130,10 +129,12 @@ public class Raster
                             int windowHeight = Math.min(windowSize, height - _y);
                             RasterWindow window = renderWindow(new PointI(_x, _y), windowWidth, windowHeight);
                             SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
+                            window = null; // Helping GC to reclaim memory consumed by rendered image
                             detector.process();
                             if (detector.getOutput() != null)
                             {
                                 java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter).process();
+                                detector = null;  // Helping GC to reclaim memory consumed by processed image
                                 Point offset = new Point(_x, _y);
                                 segments.addAll(translateToolpaths(toolpaths, offset));
                             }
@@ -173,7 +174,6 @@ public class Raster
                 Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset);
                 Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset);
                 result.add(new LinearToolpath(((LinearToolpath) toolpath).getToolDiameter(), start, end));
-                System.out.println(((CuttingToolpath)result.get(result.size() - 1)).getCurve());
             }
             else if (toolpath instanceof CircularToolpath)
             {

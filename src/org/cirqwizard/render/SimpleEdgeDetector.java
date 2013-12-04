@@ -34,9 +34,6 @@ public class SimpleEdgeDetector
             for (int x = 1; x < width - 1; x++)
             {
                 int index = _y * width + x;
-//                if (sourceData[index] == 0 &&
-//                        (sourceData[index - 1] != 0 || sourceData[index + 1] != 0 || sourceData[index - width] != 0 || sourceData[index + width] != 0 ||
-//                                sourceData[index - 1 - width] != 0 || sourceData[index + 1 - width] != 0 || sourceData[index - 1 + width] != 0 || sourceData[index + 1 + width] != 0))
                 if (sourceData[index] == 0 &&
                         (sourceData[index - 1] != 0 || sourceData[index + 1] != 0 || sourceData[index - width] != 0 || sourceData[index + width] != 0))
                     output[index] = 1;

@@ -219,11 +219,6 @@ public class Tracer
                     }
 
                     result.add(toolpath);
-                    if (toolpath instanceof LinearToolpath)
-                    {
-                        Line l = (Line) ((LinearToolpath)toolpath).getCurve();
-                        System.out.println("@@ " + l.getFrom().distanceTo(l.getTo()));
-                    }
                     currentSegment = new Segment(current, current);
                     segmentPoints.clear();
                     arcCenter = null;
@@ -250,15 +245,7 @@ public class Tracer
         }
         while (current.x >= 0 && current.x < width && current.y >= 0 && current.y < height);
         if (segmentCounter > 10)
-        {
             result.add(getToolpath(toolDiameter, arcCenter, radius));
-            Toolpath toolpath = result.get(result.size() - 1);
-            if (toolpath instanceof LinearToolpath)
-            {
-                Line l = (Line) ((LinearToolpath)toolpath).getCurve();
-                System.out.println("## " + l.getFrom().distanceTo(l.getTo()) + " / " + segmentCounter);
-            }
-        }
 
         return result;
     }
