@@ -45,9 +45,9 @@ public class Tracer
     private static final double SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN = 1; // As above, in case segment in question follows an arc
     private static final int    SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT = (int)(INITIAL_SAMPLE_COUNT * 1.5);
                                                                             // Limitiation of previous constant scope (in samples from segment's start)
-    private static final int    SEGMENT_FOLLOWING_ARC_CLOSE_MATCH_LIMIT = INITIAL_SAMPLE_COUNT * 2;
-                                                                            // Length of segment in samples from the start, when deviation is suppressed
-                                                                            // in case there's a closely matching arc
+
+    private static final double LOW_UNCERTAINTY_THRESHOLD = 0.3;   // Arcs with uncertainty lower than that are processed as arcs
+    private static final double HIGH_UNCERTAINTY_THRESHOLD = 2;     // Arcs with uncertainty higher than that are processed as segments
 
     private Raster raster;
 
@@ -100,8 +100,7 @@ public class Tracer
         LinkedList<PointI> lastPoints = new LinkedList<PointI>();
         LinkedList<PointI> segmentPoints = new LinkedList<PointI>();
         double angle = 0;
-        PointI arcCenter = null;
-        double radius = 0;
+        MatchedArc matchedArc = null;
 
         ArrayList<Toolpath> result = new ArrayList<Toolpath>();
 
@@ -133,101 +132,86 @@ public class Tracer
             segmentCounter++;
             currentSegment.setEnd(current);
             boolean previousToolpathIsArc = result.size() > 0 && result.get(result.size() - 1) instanceof CircularToolpath;
+
+            boolean restart = false;
+
             if (segmentCounter == INITIAL_SAMPLE_COUNT)
-            {
                 angle = calculateAngle(currentSegment.getStart(), current);
-                double segmentDeviation = calculateSegmentDeviation(lastPoints);
-                if (segmentDeviation > 1)
-                {
-                    Object[] arc = fitArc(toolDiameter, lastPoints, segmentDeviation, DEVIATION_MARGIN);
-                    arcCenter = (PointI) arc[0];
-                    if (arcCenter != null)
-                        radius = (Double) arc[1];
-                }
-            }
-            else if (segmentCounter > INITIAL_SAMPLE_COUNT)
+            else if (segmentCounter >= INITIAL_SAMPLE_COUNT)
             {
-                boolean restart = false;
-                if (arcCenter == null)
+                if (matchedArc == null || (matchedArc.getUncertainty() > LOW_UNCERTAINTY_THRESHOLD &&
+                        matchedArc.getUncertainty() < HIGH_UNCERTAINTY_THRESHOLD))
                 {
-                    if (Math.abs(calculateAngle(lastPoints.getFirst(), lastPoints.getLast()) - angle) > ANGULAR_THRESHOLD)
+                    double segmentDeviation = calculateSegmentDeviation(segmentPoints);
+                    double margin = DEVIATION_MARGIN;
+                    if (segmentCounter < SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT && previousToolpathIsArc)
+                        margin = SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN;
+                    matchedArc = fitArc(toolDiameter, segmentPoints, segmentDeviation, margin);
+                }
+
+                if (matchedArc.getUncertainty() < LOW_UNCERTAINTY_THRESHOLD)
+                    restart = calculateSegmentDeviation(lastPoints) < calculateArcDeviation(lastPoints, matchedArc.getCenter(), matchedArc.getRadius());
+                else if (matchedArc.getUncertainty() > HIGH_UNCERTAINTY_THRESHOLD)
+                    restart = Math.abs(calculateAngle(lastPoints.getFirst(), lastPoints.getLast()) - angle) > ANGULAR_THRESHOLD;
+
+            }
+
+            if (restart)
+            {
+                Toolpath toolpath = getToolpath(toolDiameter, matchedArc);
+                if (previousToolpathIsArc)
+                {
+                    CircularToolpath prev = (CircularToolpath) result.get(result.size() - 1);
+                    Arc prevArc = (Arc) prev.getCurve();
+                    boolean merge = false;
+
+                    if (toolpath instanceof LinearToolpath)
                     {
-                        double segmentDeviation = calculateSegmentDeviation(segmentPoints);
-                        if (segmentDeviation > 1)
-                        {
-                            double margin = DEVIATION_MARGIN;
-                            if (segmentCounter < SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT && previousToolpathIsArc)
-                                margin = SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN;
-                            Object[] arc = fitArc(toolDiameter, segmentPoints, segmentDeviation, margin);
-                            arcCenter = (PointI) arc[0];
-                            if (arcCenter != null)
-                                radius = (Double) arc[1];
-                            else if (segmentCounter > SEGMENT_FOLLOWING_ARC_CLOSE_MATCH_LIMIT || !((Boolean)arc[2]))
-                                restart = true;
-                        }
+                        double arcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()),
+                                prevArc.getRadius().doubleValue());
+                        double ratio = arcDeviation / calculateSegmentDeviation(segmentPoints);
+                        if (ratio < 1 || (segmentPoints.size() < 1.5 * INITIAL_SAMPLE_COUNT && ratio < 5))
+                            merge = true;
+                    }
+                    if (toolpath instanceof CircularToolpath)
+                    {
+                        Arc arc = (Arc)((CircularToolpath)toolpath).getCurve();
+                        RealNumber centersDistanceThreshold = arc.getRadius().multiply(new RealNumber("0.4"));
+                        if (prevArc.getCenter().distanceTo(arc.getCenter()).lessOrEqualTo(centersDistanceThreshold) && prevArc.getRadius().equals(arc.getRadius()))
+                            merge = true;
                         else
-                            restart = true;
+                        {
+                            double prevArcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()),
+                                    prevArc.getRadius().doubleValue());
+                            if (prevArcDeviation / calculateArcDeviation(segmentPoints, matchedArc.getCenter(), matchedArc.getRadius()) < 5)
+                                merge = true;
+                        }
                     }
-                }
-                else if (calculateSegmentDeviation(lastPoints) < calculateArcDeviation(lastPoints, arcCenter, radius))
-                    restart = true;
 
-                if (restart)
-                {
-                    Toolpath toolpath = getToolpath(toolDiameter, arcCenter, radius);
-                    if (previousToolpathIsArc)
+                    if (merge)
                     {
-                        CircularToolpath prev = (CircularToolpath) result.get(result.size() - 1);
-                        Arc prevArc = (Arc) prev.getCurve();
-                        boolean merge = false;
-
-                        if (toolpath instanceof LinearToolpath)
-                        {
-                            double arcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()),
-                                    prevArc.getRadius().doubleValue());
-                            double ratio = arcDeviation / calculateSegmentDeviation(segmentPoints);
-                            if (ratio < 1 || (segmentPoints.size() < 1.5 * INITIAL_SAMPLE_COUNT && ratio < 5))
-                                merge = true;
-                        }
-                        if (toolpath instanceof CircularToolpath)
-                        {
-                            Arc arc = (Arc)((CircularToolpath)toolpath).getCurve();
-                            RealNumber centersDistanceThreshold = arc.getRadius().multiply(new RealNumber("0.4"));
-                            if (prevArc.getCenter().distanceTo(arc.getCenter()).lessOrEqualTo(centersDistanceThreshold) && prevArc.getRadius().equals(arc.getRadius()))
-                                merge = true;
-                            else
-                            {
-                                double prevArcDeviation = calculateArcDeviation(segmentPoints, new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()),
-                                        prevArc.getRadius().doubleValue());
-                                if (prevArcDeviation / calculateArcDeviation(segmentPoints, arcCenter, radius) < 5)
-                                    merge = true;
-                            }
-                        }
-
-                        if (merge)
-                        {
-                            result.remove(result.size() - 1);
-                            PointI[] newCenters = calculateArcCenters(new PointI(prevArc.getFrom().getX().getValue().intValue(), prevArc.getFrom().getY().getValue().intValue()),
-                                    current,
-                                    prevArc.getRadius().doubleValue());
-                            PointI ac = new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue());
-                            double e0 = Math.sqrt((newCenters[0].x - ac.x) * (newCenters[0].x - ac.x) + (newCenters[0].y - ac.y) * (newCenters[0].y - ac.y));
-                            double e1 = Math.sqrt((newCenters[1].x - ac.x) * (newCenters[1].x - ac.x) + (newCenters[1].y - ac.y) * (newCenters[1].y - ac.y));
-                            RealNumber centersDistanceThreshold = prevArc.getRadius().multiply(new RealNumber("0.4"));
-                            arcCenter = new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue());
-                            if (Math.min(e0, e1) < centersDistanceThreshold.doubleValue())
-                                arcCenter = e0 < e1 ? newCenters[0] : newCenters[1];
-                            Point newCenter = new Point(arcCenter.x, arcCenter.y);
-                            toolpath = new CircularToolpath(toolDiameter, prev.getCurve().getFrom(), ((CuttingToolpath)toolpath).getCurve().getTo(), newCenter, prevArc.getRadius(), prevArc.isClockwise());
-                        }
+                        result.remove(result.size() - 1);
+                        PointI[] newCenters = calculateArcCenters(new PointI(prevArc.getFrom().getX().getValue().intValue(), prevArc.getFrom().getY().getValue().intValue()),
+                                current,
+                                prevArc.getRadius().doubleValue());
+                        PointI ac = new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue());
+                        double e0 = Math.sqrt((newCenters[0].x - ac.x) * (newCenters[0].x - ac.x) + (newCenters[0].y - ac.y) * (newCenters[0].y - ac.y));
+                        double e1 = Math.sqrt((newCenters[1].x - ac.x) * (newCenters[1].x - ac.x) + (newCenters[1].y - ac.y) * (newCenters[1].y - ac.y));
+                        RealNumber centersDistanceThreshold = prevArc.getRadius().multiply(new RealNumber("0.4"));
+                        matchedArc.setCenter(new PointI(prevArc.getCenter().getX().getValue().intValue(), prevArc.getCenter().getY().getValue().intValue()));
+                        matchedArc.setUncertainty(1);
+                        if (Math.min(e0, e1) < centersDistanceThreshold.doubleValue())
+                            matchedArc.setCenter(e0 < e1 ? newCenters[0] : newCenters[1]);
+                        Point newCenter = new Point(matchedArc.getCenter().x, matchedArc.getCenter().y);
+                        toolpath = new CircularToolpath(toolDiameter, prev.getCurve().getFrom(), ((CuttingToolpath)toolpath).getCurve().getTo(), newCenter, prevArc.getRadius(), prevArc.isClockwise());
                     }
-
-                    result.add(toolpath);
-                    currentSegment = new Segment(current, current);
-                    segmentPoints.clear();
-                    arcCenter = null;
-                    segmentCounter = 0;
                 }
+
+                result.add(toolpath);
+                currentSegment = new Segment(current, current);
+                segmentPoints.clear();
+                matchedArc = null;
+                segmentCounter = 0;
             }
 
             windowData[current.x + current.y * width] = 0;
@@ -249,24 +233,24 @@ public class Tracer
         }
         while (current.x >= 0 && current.x < width && current.y >= 0 && current.y < height);
         if (segmentCounter > 10)
-            result.add(getToolpath(toolDiameter, arcCenter, radius));
+            result.add(getToolpath(toolDiameter, matchedArc));
 
         return result;
     }
 
-    private Toolpath getToolpath(RealNumber toolDiameter, PointI arcCenter, double radius)
+    private Toolpath getToolpath(RealNumber toolDiameter, MatchedArc matchedArc)
     {
         Point start = new Point(new RealNumber(currentSegment.getStart().x), new RealNumber(currentSegment.getStart().y));
         Point end = new Point(new RealNumber(currentSegment.getEnd().x), new RealNumber(currentSegment.getEnd().y));
 
-        if (arcCenter == null)
+        if (matchedArc == null || matchedArc.getUncertainty() > HIGH_UNCERTAINTY_THRESHOLD)
             return new LinearToolpath(toolDiameter, start, end);
 
-        Point center = new Point(new RealNumber(arcCenter.x), new RealNumber(arcCenter.y));
+        Point center = new Point(new RealNumber(matchedArc.getCenter().x), new RealNumber(matchedArc.getCenter().y));
         RealNumber startAngle = new Line(center, start).angleToX();
         RealNumber endAngle = new Line(center, end).angleToX();
         boolean clockwise = startAngle.subtract(endAngle).compareTo(new RealNumber(0)) > 0;
-        return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(radius), clockwise);
+        return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(matchedArc.getRadius()), clockwise);
     }
 
     private double calculateAngle(PointI start, PointI end)
@@ -287,16 +271,14 @@ public class Tracer
         return Math.sqrt(deviation);
     }
 
-    private Object[] fitArc(RealNumber toolDiameter, LinkedList<PointI> points, double segmentDeviation, double margin)
+    private MatchedArc fitArc(RealNumber toolDiameter, LinkedList<PointI> points, double segmentDeviation, double margin)
     {
         PointI start = points.getFirst();
         PointI end = points.getLast();
 
-        double minDeviation = segmentDeviation;
+        double minDeviation = Double.MAX_VALUE;
         PointI bestFit = null;
         double bestRadius = 0;
-
-        boolean closeMatch = false;
 
         // Go through known apertures first
         for (Flash flash : circularFlashes)
@@ -312,11 +294,12 @@ public class Tracer
             }
         }
 
-        if (minDeviation < segmentDeviation)
-            return new Object[] {bestFit, bestRadius, true};
+        double deviationsRatio = minDeviation / segmentDeviation;
+
+        if (deviationsRatio < HIGH_UNCERTAINTY_THRESHOLD)
+            return new MatchedArc(bestFit, bestRadius, deviationsRatio);
 
         double segmentAngle = Math.atan2(points.getLast().y - points.getFirst().y, points.getLast().x - points.getFirst().x);
-
 
         for (RealNumber r : raster.getRadii())
         {
@@ -337,8 +320,6 @@ public class Tracer
             }
 
             double d = calculateArcDeviation(points, center, radius);
-            if (d < segmentDeviation)
-                closeMatch = true;
             if (d * margin < segmentDeviation && d < minDeviation)
             {
                 minDeviation = d;
@@ -346,7 +327,8 @@ public class Tracer
                 bestRadius = radius;
             }
         }
-        return new Object[] {bestFit, bestRadius, closeMatch};
+
+        return new MatchedArc(bestFit, bestRadius, minDeviation / segmentDeviation);
     }
 
     private double calculateArcDeviation(LinkedList<PointI> points, PointI center, double radius)
@@ -411,7 +393,6 @@ public class Tracer
 
     private static enum Direction
     {
-
         NORTH,
         NORTH_EAST ,
         EAST,
