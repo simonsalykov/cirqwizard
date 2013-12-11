@@ -66,6 +66,7 @@ public class Raster
     private double inflation;
     private ArrayList<GerberPrimitive> primitives = new ArrayList<GerberPrimitive>();
     private ArrayList<RealNumber> radii = new ArrayList<RealNumber>();
+    private ArrayList<Flash> circularFlashes = new ArrayList<>();
 
     private DoubleProperty generationProgress = new SimpleDoubleProperty();
     private DoubleProperty traceProgress = new SimpleDoubleProperty();
@@ -91,7 +92,9 @@ public class Raster
         if (primitive.getAperture() instanceof CircularAperture)
         {
             CircularAperture aperture = (CircularAperture) primitive.getAperture();
-            if (!radii.contains(aperture.getDiameter().divide(2).multiply(resolution)))
+            if (primitive instanceof Flash)
+                circularFlashes.add((Flash) primitive);
+            else if (!radii.contains(aperture.getDiameter().divide(2).multiply(resolution)))
                 radii.add(aperture.getDiameter().divide(2).multiply(resolution));
         }
     }
@@ -133,8 +136,15 @@ public class Raster
                             detector.process();
                             if (detector.getOutput() != null)
                             {
-                                java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter).process();
                                 Point offset = new Point(_x, _y);
+                                ArrayList<Flash> translatedFlashes = new ArrayList<>();
+                                for (Flash flash : circularFlashes)
+                                {
+                                    Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
+                                    translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter().divide(2).multiply(resolution))));
+                                }
+
+                                java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter, translatedFlashes).process();
                                 segments.addAll(translateToolpaths(toolpaths, offset));
                             }
                         }
@@ -173,7 +183,6 @@ public class Raster
                 Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset);
                 Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset);
                 result.add(new LinearToolpath(((LinearToolpath) toolpath).getToolDiameter(), start, end));
-                System.out.println(((CuttingToolpath)result.get(result.size() - 1)).getCurve());
             }
             else if (toolpath instanceof CircularToolpath)
             {
@@ -193,6 +202,11 @@ public class Raster
     private Point translateWindowCoordiantes(Point point, Point windowOffset)
     {
         return new Point(point.getX(), point.getY()).add(windowOffset).divide(new RealNumber(resolution));
+    }
+
+    private Point translateToWindowCoordinates(Point point, Point windowOffset)
+    {
+        return new Point(point.getX(), point.getY()).multiply(new RealNumber(resolution)).subtract(windowOffset);
     }
 
     private java.util.List<Toolpath> mergeToolpaths(ArrayList<Toolpath> toolpaths)

@@ -30,18 +30,6 @@ public class ToolpathMerger
     {
         HashMap<Point, ArrayList<Toolpath>> map = getVerticesMap(toolpaths);
 
-        ArrayList<Point> vertices = new ArrayList<Point>(map.keySet());
-        Collections.sort(vertices, new Comparator<Point>()
-        {
-            @Override
-            public int compare(Point o1, Point o2)
-            {
-                return o1.getX().compareTo(o2.getX()) != 0 ? o1.getX().compareTo(o2.getX()) : o1.getY().compareTo(o2.getY());
-            }
-        });
-        for (Point p : vertices)
-            System.out.println("%% " + p + " [" + map.get(p).size() + "]");
-
         ArrayList<Toolpath> toBeRemoved = new ArrayList<Toolpath>();
 
         for (Point p : map.keySet())
@@ -95,7 +83,7 @@ public class ToolpathMerger
                             if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius().doubleValue() - a2.getRadius().doubleValue()) < 0.05)
                             {
                                 System.out.println("Merging " + a1 + " and " + a2);
-                                merge = true;
+//                                merge = true;
                             }
                         }
                     }
