@@ -256,7 +256,7 @@ public class PCBPaneFX extends Region
             g.strokeArc(arc.getCenter().getX().doubleValue()- arc.getRadius().doubleValue(),
                     arc.getCenter().getY().doubleValue() - arc.getRadius().doubleValue(),
                     arc.getRadius().doubleValue() * 2, arc.getRadius().doubleValue() * 2,
-                    -Math.toDegrees(arc.getStart().doubleValue()), Math.toDegrees(arc.getAngle().doubleValue()), ArcType.OPEN);
+                    -Math.toDegrees(arc.getStart().doubleValue()), Math.toDegrees(arc.getAngle().doubleValue()) * (arc.isClockwise() ? 1 : -1), ArcType.OPEN);
         }
         else if (toolpath instanceof DrillPoint)
         {

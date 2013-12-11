@@ -103,7 +103,7 @@ public class Raster
     {
         final int windowSize = 5 * resolution;
 
-        final ArrayList<Toolpath> segments = new ArrayList<Toolpath>();
+        final ArrayList<Toolpath> segments = new ArrayList<>();
 
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int x = 0; x < width; x += windowSize)
@@ -128,25 +128,26 @@ public class Raster
                                 }
                             });
 
+                            Point offset = new Point(_x, _y);
+                            ArrayList<Flash> translatedFlashes = new ArrayList<>();
+                            for (Flash flash : circularFlashes)
+                            {
+                                Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
+                                translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter().divide(2).multiply(resolution))));
+                            }
+
                             int windowWidth = Math.min(windowSize, width - _x);
                             int windowHeight = Math.min(windowSize, height - _y);
                             RasterWindow window = renderWindow(new PointI(_x, _y), windowWidth, windowHeight);
+//                            window.save("/Users/simon/tmp/cw/win-" + _x + "-" + _y + ".png");
                             SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
                             window = null; // Helping GC to reclaim memory consumed by rendered image
                             detector.process();
+//                            ImageIO.write(detector.getOutputImage(), "PNG", new File("/Users/simon/tmp/cw/edg-" + _x + "-" + _y + ".png"));
                             if (detector.getOutput() != null)
                             {
-                                java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter).process();
-                                detector = null;  // Helping GC to reclaim memory consumed by processed image
-                                Point offset = new Point(_x, _y);
-                                ArrayList<Flash> translatedFlashes = new ArrayList<>();
-                                for (Flash flash : circularFlashes)
-                                {
-                                    Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
-                                    translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter().divide(2).multiply(resolution))));
-                                }
-
                                 java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter, translatedFlashes).process();
+                                detector = null;  // Helping GC to reclaim memory consumed by processed image
                                 segments.addAll(translateToolpaths(toolpaths, offset));
                             }
                         }
@@ -174,7 +175,7 @@ public class Raster
 
     private java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset)
     {
-        ArrayList<Toolpath> result = new ArrayList<Toolpath>();
+        ArrayList<Toolpath> result = new ArrayList<>();
         for (Toolpath toolpath : toolpaths)
         {
             if (((CuttingToolpath)toolpath).getCurve().getFrom().equals(((CuttingToolpath)toolpath).getCurve().getTo()))

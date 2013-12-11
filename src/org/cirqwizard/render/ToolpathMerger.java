@@ -81,10 +81,7 @@ public class ToolpathMerger
                         if (a1.getTo().equals(a2.getFrom(), 0.02))
                         {
                             if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius().doubleValue() - a2.getRadius().doubleValue()) < 0.05)
-                            {
-                                System.out.println("Merging " + a1 + " and " + a2);
-//                                merge = true;
-                            }
+                                merge = true;
                         }
                     }
 

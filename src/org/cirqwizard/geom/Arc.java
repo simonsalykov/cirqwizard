@@ -130,6 +130,8 @@ public class Arc extends Curve
                 ", center=" + center +
                 ", radius=" + radius +
                 ", clockwise=" + clockwise +
+                ", start=" + getStart() +
+                ", end=" + getEnd(false) +
                 '}';
     }
 }

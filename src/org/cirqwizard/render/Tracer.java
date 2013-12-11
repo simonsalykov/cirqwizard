@@ -42,7 +42,7 @@ public class Tracer
 
     private static final double DEVIATION_MARGIN = 3;                       // Margin, by which arc's standard deviation should beat segment's
                                                                             // standard deviation in order to choose arc over segment
-    private static final double SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN = 3; // As above, in case segment in question follows an arc
+    private static final double SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN = 1; // As above, in case segment in question follows an arc
     private static final int    SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT = (int)(INITIAL_SAMPLE_COUNT * 1.5);
                                                                             // Limitiation of previous constant scope (in samples from segment's start)
     private static final int    SEGMENT_FOLLOWING_ARC_CLOSE_MATCH_LIMIT = INITIAL_SAMPLE_COUNT * 2;
@@ -304,7 +304,7 @@ public class Tracer
             PointI center = new PointI(flash.getX().getValue().intValue(), flash.getY().getValue().intValue());
             double radius = ((CircularAperture)flash.getAperture()).getDiameter().doubleValue() + toolDiameter.multiply(raster.getResolution()).divide(2).doubleValue();
             double deviation = calculateArcDeviation(points, center, radius);
-            if (deviation < minDeviation && deviation * margin < segmentDeviation)
+            if (deviation < minDeviation)
             {
                 minDeviation = deviation;
                 bestFit = center;
@@ -313,10 +313,7 @@ public class Tracer
         }
 
         if (minDeviation < segmentDeviation)
-        {
-            System.out.println("Flash matched with deviation " + minDeviation + " vs " + segmentDeviation + " - " + bestFit + " / " + bestRadius);
             return new Object[] {bestFit, bestRadius, true};
-        }
 
         double segmentAngle = Math.atan2(points.getLast().y - points.getFirst().y, points.getLast().x - points.getFirst().x);
 
