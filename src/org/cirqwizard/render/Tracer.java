@@ -14,16 +14,17 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.render;
 
+import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
-import javafx.beans.property.DoubleProperty;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,7 +42,7 @@ public class Tracer
 
     private static final double DEVIATION_MARGIN = 3;                       // Margin, by which arc's standard deviation should beat segment's
                                                                             // standard deviation in order to choose arc over segment
-    private static final double SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN = 1; // As above, in case segment in question follows an arc
+    private static final double SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN = 3; // As above, in case segment in question follows an arc
     private static final int    SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT = (int)(INITIAL_SAMPLE_COUNT * 1.5);
                                                                             // Limitiation of previous constant scope (in samples from segment's start)
     private static final int    SEGMENT_FOLLOWING_ARC_CLOSE_MATCH_LIMIT = INITIAL_SAMPLE_COUNT * 2;
@@ -60,13 +61,16 @@ public class Tracer
 
     private Segment currentSegment;
 
-    public Tracer(Raster raster, byte[] windowData, int width, int height, RealNumber toolDiameter)
+    private ArrayList<Flash> circularFlashes;
+
+    public Tracer(Raster raster, byte[] windowData, int width, int height, RealNumber toolDiameter, ArrayList<Flash> circularFlashes)
     {
         this.raster = raster;
         this.windowData = windowData;
         this.width = width;
         this.height = height;
         this.toolDiameter = toolDiameter;
+        this.circularFlashes = circularFlashes;
     }
 
     public List<Toolpath> process()
@@ -214,7 +218,7 @@ public class Tracer
                             if (Math.min(e0, e1) < centersDistanceThreshold.doubleValue())
                                 arcCenter = e0 < e1 ? newCenters[0] : newCenters[1];
                             Point newCenter = new Point(arcCenter.x, arcCenter.y);
-                            toolpath = new CircularToolpath(toolDiameter, prev.getCurve().getFrom(), ((CuttingToolpath)toolpath).getCurve().getTo(), newCenter, prevArc.getRadius(), true);
+                            toolpath = new CircularToolpath(toolDiameter, prev.getCurve().getFrom(), ((CuttingToolpath)toolpath).getCurve().getTo(), newCenter, prevArc.getRadius(), prevArc.isClockwise());
                         }
                     }
 
@@ -257,8 +261,12 @@ public class Tracer
 
         if (arcCenter == null)
             return new LinearToolpath(toolDiameter, start, end);
+
         Point center = new Point(new RealNumber(arcCenter.x), new RealNumber(arcCenter.y));
-        return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(radius), true);
+        RealNumber startAngle = new Line(center, start).angleToX();
+        RealNumber endAngle = new Line(center, end).angleToX();
+        boolean clockwise = startAngle.subtract(endAngle).compareTo(new RealNumber(0)) > 0;
+        return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(radius), clockwise);
     }
 
     private double calculateAngle(PointI start, PointI end)
@@ -289,6 +297,26 @@ public class Tracer
         double bestRadius = 0;
 
         boolean closeMatch = false;
+
+        // Go through known apertures first
+        for (Flash flash : circularFlashes)
+        {
+            PointI center = new PointI(flash.getX().getValue().intValue(), flash.getY().getValue().intValue());
+            double radius = ((CircularAperture)flash.getAperture()).getDiameter().doubleValue() + toolDiameter.multiply(raster.getResolution()).divide(2).doubleValue();
+            double deviation = calculateArcDeviation(points, center, radius);
+            if (deviation < minDeviation && deviation * margin < segmentDeviation)
+            {
+                minDeviation = deviation;
+                bestFit = center;
+                bestRadius = radius;
+            }
+        }
+
+        if (minDeviation < segmentDeviation)
+        {
+            System.out.println("Flash matched with deviation " + minDeviation + " vs " + segmentDeviation + " - " + bestFit + " / " + bestRadius);
+            return new Object[] {bestFit, bestRadius, true};
+        }
 
         double segmentAngle = Math.atan2(points.getLast().y - points.getFirst().y, points.getLast().x - points.getFirst().x);
 

@@ -64,6 +64,11 @@ public class Point
         return new Point(this.x.subtract(p.getX()), this.y.subtract(p.getY()));
     }
 
+    public Point multiply(RealNumber scalar)
+    {
+        return new Point(this.x.multiply(scalar), this.y.multiply(scalar));
+    }
+
     public Point divide(RealNumber scalar)
     {
         return new Point(x.divide(scalar), y.divide(scalar));
