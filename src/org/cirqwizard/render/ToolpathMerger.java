@@ -4,6 +4,7 @@ import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -28,9 +29,11 @@ public class ToolpathMerger
 
     public List<Toolpath> merge()
     {
+        double comparisonThreshold = Math.PI / 60;  // 3 degrees
+
         HashMap<Point, ArrayList<Toolpath>> map = getVerticesMap(toolpaths);
 
-        ArrayList<Toolpath> toBeRemoved = new ArrayList<Toolpath>();
+        ArrayList<Toolpath> toBeRemoved = new ArrayList<>();
 
         for (Point p : map.keySet())
         {
@@ -68,7 +71,28 @@ public class ToolpathMerger
                         Line l2 = (Line) c2;
                         if (l2.getFrom().equals(l1.getTo(), 0.02))
                         {
-                            double comparisonThreshold = Math.PI / 60;  // 3 degrees
+                            if (l1.getFrom().equals(l2.getTo())) // Removing duplicate segments
+                            {
+                                toBeRemoved.add(t2);
+                                map.get(c2.getTo().round()).remove(t2);
+                                continue;
+                            }
+                            else if (l1.angleToX().subtract(l2.angleToX()).abs().subtract(MathUtil.PI).abs().doubleValue() < comparisonThreshold) // Removing overlapping segments
+                            {
+                                if (l1.length().compareTo(l2.length()) > 0)
+                                {
+                                    toBeRemoved.add(t2);
+                                    map.get(c2.getTo().round()).remove(t2);
+                                    continue;
+                                }
+                                else
+                                {
+                                    toBeRemoved.add(t1);
+                                    map.get(c2.getTo().round()).remove(t1);
+                                    break;
+                                }
+                            }
+
                             double angleDifference = l1.angleToX().subtract(l2.angleToX()).abs().doubleValue();
                             while (angleDifference >= Math.PI - comparisonThreshold)
                                 angleDifference -= Math.PI;
@@ -108,7 +132,7 @@ public class ToolpathMerger
             }
         }
 
-        ArrayList<Toolpath> result = new ArrayList<Toolpath>();
+        ArrayList<Toolpath> result = new ArrayList<>();
         for (Toolpath t : toolpaths)
             if (!toBeRemoved.contains(t))
                 result.add(t);
@@ -118,7 +142,7 @@ public class ToolpathMerger
 
     private HashMap<Point, ArrayList<Toolpath>> getVerticesMap(List<Toolpath> toolpaths)
     {
-        HashMap<Point, ArrayList<Toolpath>> map = new HashMap<Point, ArrayList<Toolpath>>();
+        HashMap<Point, ArrayList<Toolpath>> map = new HashMap<>();
         for (Toolpath t : toolpaths)
         {
             Point from = ((CuttingToolpath)t).getCurve().getFrom().round();
@@ -127,7 +151,7 @@ public class ToolpathMerger
             ArrayList<Toolpath> list = map.get(from);
             if (list == null)
             {
-                list = new ArrayList<Toolpath>();
+                list = new ArrayList<>();
                 map.put(from, list);
             }
             list.add(t);
@@ -135,7 +159,7 @@ public class ToolpathMerger
             list = map.get(to);
             if (list == null)
             {
-                list = new ArrayList<Toolpath>();
+                list = new ArrayList<>();
                 map.put(to, list);
             }
             list.add(t);

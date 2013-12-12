@@ -102,6 +102,7 @@ public class Raster
     public java.util.List<Toolpath> trace()
     {
         final int windowSize = 5 * resolution;
+        final int windowsOverlap = 5;
 
         final ArrayList<Toolpath> segments = new ArrayList<>();
 
@@ -110,8 +111,8 @@ public class Raster
         {
             for (int y = 0; y < height; y += windowSize)
             {
-                final int _x = x;
-                final int _y = y;
+                final int _x = x > windowsOverlap ? x - windowsOverlap : x;
+                final int _y = y > windowsOverlap ? y - windowsOverlap : y;
                 pool.submit(new Runnable()
                 {
                     @Override
@@ -136,8 +137,8 @@ public class Raster
                                 translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter().divide(2).multiply(resolution))));
                             }
 
-                            int windowWidth = Math.min(windowSize, width - _x);
-                            int windowHeight = Math.min(windowSize, height - _y);
+                            int windowWidth = Math.min(windowSize + 2 * windowsOverlap, width - _x);
+                            int windowHeight = Math.min(windowSize + 2 * windowsOverlap, height - _y);
                             RasterWindow window = renderWindow(new PointI(_x, _y), windowWidth, windowHeight);
 //                            window.save("/Users/simon/tmp/cw/win-" + _x + "-" + _y + ".png");
                             SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());

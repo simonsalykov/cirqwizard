@@ -83,6 +83,11 @@ public class Line extends Curve
         return angleToX;
     }
 
+    public RealNumber length()
+    {
+        return from.distanceTo(to);
+    }
+
     public static Point intersectionPoint(Line line1, Line line2)
     {
         RealNumber a1 = line1.getX2().subtract(line1.getX1());

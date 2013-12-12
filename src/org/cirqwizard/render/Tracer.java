@@ -219,6 +219,8 @@ public class Tracer
             for (Direction d : directions)
             {
                 PointI p = getNextPoint(current, d);
+                if (p.x < 0 || p.x >= width || p.y < 0 || p.y >= height)
+                    continue;
                 if (windowData[p.x + p.y * width] != 0)
                 {
                     direction = d;
