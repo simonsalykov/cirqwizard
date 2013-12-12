@@ -16,7 +16,6 @@ package org.cirqwizard.render;
 
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.geom.Arc;
-import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.logging.LoggerFactory;
@@ -158,7 +157,7 @@ public class Tracer
 
             if (restart)
             {
-                Toolpath toolpath = getToolpath(toolDiameter, matchedArc);
+                Toolpath toolpath = getToolpath(toolDiameter, matchedArc, calculateAngle(lastPoints.get(0), current), lastPoints.get(0));
                 if (previousToolpathIsArc)
                 {
                     CircularToolpath prev = (CircularToolpath) result.get(result.size() - 1);
@@ -233,12 +232,12 @@ public class Tracer
         }
         while (current.x >= 0 && current.x < width && current.y >= 0 && current.y < height);
         if (segmentCounter > 10)
-            result.add(getToolpath(toolDiameter, matchedArc));
+            result.add(getToolpath(toolDiameter, matchedArc, calculateAngle(lastPoints.get(0), current), lastPoints.get(0)));
 
         return result;
     }
 
-    private Toolpath getToolpath(RealNumber toolDiameter, MatchedArc matchedArc)
+    private Toolpath getToolpath(RealNumber toolDiameter, MatchedArc matchedArc, double heading, PointI headingStartPoint)
     {
         Point start = new Point(new RealNumber(currentSegment.getStart().x), new RealNumber(currentSegment.getStart().y));
         Point end = new Point(new RealNumber(currentSegment.getEnd().x), new RealNumber(currentSegment.getEnd().y));
@@ -247,9 +246,15 @@ public class Tracer
             return new LinearToolpath(toolDiameter, start, end);
 
         Point center = new Point(new RealNumber(matchedArc.getCenter().x), new RealNumber(matchedArc.getCenter().y));
-        RealNumber startAngle = new Line(center, start).angleToX();
-        RealNumber endAngle = new Line(center, end).angleToX();
-        boolean clockwise = startAngle.subtract(endAngle).compareTo(new RealNumber(0)) > 0;
+
+        double centerAngle = calculateAngle(headingStartPoint, matchedArc.getCenter());
+        double headingCenterAngle = heading - centerAngle;
+        if (headingCenterAngle < -Math.PI)
+            headingCenterAngle += Math.PI * 2;
+        if (headingCenterAngle > Math.PI)
+            headingCenterAngle -= Math.PI * 2;
+
+        boolean clockwise = headingCenterAngle > 0;
         return new CircularToolpath(toolDiameter, start, end, center, new RealNumber(matchedArc.getRadius()), clockwise);
     }
 
@@ -394,14 +399,13 @@ public class Tracer
     private static enum Direction
     {
         NORTH,
-        NORTH_EAST ,
+        NORTH_EAST,
         EAST,
         SOUTH_EAST,
         SOUTH,
         SOUTH_WEST,
         WEST,
         NORTH_WEST;
-
     }
 }
 
