@@ -80,7 +80,6 @@ public class MachiningController extends SceneController implements Initializabl
     @FXML private Label timeElapsedLabel;
 
     @FXML private BorderPane generationPane;
-    @FXML private ProgressBar traceProgressBar;
     @FXML private ProgressBar overallProgressBar;
     @FXML private Button stopGenerationButton;
 
@@ -233,7 +232,7 @@ public class MachiningController extends SceneController implements Initializabl
     {
         Context context = getMainApplication().getContext();
         State state = getMainApplication().getState();
-        service = new ToolpathGenerationService(getMainApplication(), traceProgressBar.progressProperty(), overallProgressBar.progressProperty());
+        service = new ToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty());
         serialService = new SerialInterfaceService(getMainApplication());
         mouseHandler.setService(service);
         generationPane.visibleProperty().bind(service.runningProperty());

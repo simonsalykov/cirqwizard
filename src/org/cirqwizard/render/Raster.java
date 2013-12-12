@@ -15,24 +15,24 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.render;
 
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.PolygonalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
-import org.cirqwizard.geom.*;
+import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.geom.PolygonUtils;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.math.MathUtil;
+import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.math.VectorMath;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -40,23 +40,18 @@ import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
 public class Raster
 {
     private static final int PREVIEW_RESOLUTION_FACTOR = 10;
-
-    private static final double MERGE_PRECISION_THRESHOLD = 0.01;
 
     private BufferedImage preview;
     private int width;
@@ -69,7 +64,6 @@ public class Raster
     private ArrayList<Flash> circularFlashes = new ArrayList<>();
 
     private DoubleProperty generationProgress = new SimpleDoubleProperty();
-    private DoubleProperty traceProgress = new SimpleDoubleProperty();
 
     private RealNumber toolDiameter;
 
@@ -104,7 +98,7 @@ public class Raster
         final int windowSize = 5 * resolution;
         final int windowsOverlap = 5;
 
-        final ArrayList<Toolpath> segments = new ArrayList<>();
+        final Vector<Toolpath> segments = new Vector<>();
 
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int x = 0; x < width; x += windowSize)
@@ -140,11 +134,9 @@ public class Raster
                             int windowWidth = Math.min(windowSize + 2 * windowsOverlap, width - _x);
                             int windowHeight = Math.min(windowSize + 2 * windowsOverlap, height - _y);
                             RasterWindow window = renderWindow(new PointI(_x, _y), windowWidth, windowHeight);
-//                            window.save("/Users/simon/tmp/cw/win-" + _x + "-" + _y + ".png");
                             SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
                             window = null; // Helping GC to reclaim memory consumed by rendered image
                             detector.process();
-//                            ImageIO.write(detector.getOutputImage(), "PNG", new File("/Users/simon/tmp/cw/edg-" + _x + "-" + _y + ".png"));
                             if (detector.getOutput() != null)
                             {
                                 java.util.List<Toolpath> toolpaths = new Tracer(Raster.this, detector.getOutput(), windowWidth, windowHeight, toolDiameter, translatedFlashes).process();
@@ -154,7 +146,7 @@ public class Raster
                         }
                         catch (Throwable e)
                         {
-                            e.printStackTrace();
+                            LoggerFactory.logException("Error while generating tool paths", e);
                         }
                     }
                 });
@@ -213,12 +205,12 @@ public class Raster
         return new Point(point.getX(), point.getY()).multiply(new RealNumber(resolution)).subtract(windowOffset);
     }
 
-    private java.util.List<Toolpath> mergeToolpaths(ArrayList<Toolpath> toolpaths)
+    private java.util.List<Toolpath> mergeToolpaths(java.util.List<Toolpath> toolpaths)
     {
         System.out.println("merge: " + toolpaths.size());
 
         long t = System.currentTimeMillis();
-        toolpaths = (ArrayList<Toolpath>) new ToolpathMerger(toolpaths).merge();
+        toolpaths = new ToolpathMerger(toolpaths).merge();
         t = System.currentTimeMillis() - t;
 
         System.out.println("merged: " + toolpaths.size() + "(" + t + ")");
@@ -229,11 +221,6 @@ public class Raster
     public DoubleProperty generationProgressProperty()
     {
         return generationProgress;
-    }
-
-    public DoubleProperty traceProgressProperty()
-    {
-        return traceProgress;
     }
 
     public java.util.List<RealNumber> getRadii()

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import org.cirqwizard.fx.*?>
-<?import org.cirqwizard.fx.PCBPane?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
@@ -10,55 +8,57 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
+<?import org.cirqwizard.fx.*?>
+<?import org.cirqwizard.fx.PCBPane?>
+<?import org.cirqwizard.fx.controls.*?>
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 <?scenebuilder-classpath-element ../../../../../../out/production/cirqwizard?>
 
-<?import org.cirqwizard.fx.controls.RealNumberTextField?>
-
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.machining.MachiningController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.machining.MachiningController">
   <children>
     <StackPane prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <AnchorPane id="AnchorPane" prefHeight="563.0" prefWidth="780.0">
           <children>
-              <TitledPane fx:id="offsetsPane" animated="false" expanded="false" minWidth="89.0" prefWidth="168.0" text="Offsets" AnchorPane.rightAnchor="231.0" AnchorPane.topAnchor="10.0">
-                  <content>
-                      <AnchorPane id="Content" minWidth="0.0" prefWidth="200.0">
+            <TitledPane fx:id="offsetsPane" animated="false" expanded="false" minWidth="89.0" prefWidth="168.0" text="Offsets" AnchorPane.rightAnchor="231.0" AnchorPane.topAnchor="10.0">
+              <content>
+                <AnchorPane id="Content" minWidth="0.0" prefWidth="200.0">
+                  <children>
+                    <VBox minHeight="0.0">
+                      <children>
+                        <GridPane prefWidth="163.0">
                           <children>
-                              <VBox minHeight="0.0">
-                                  <children>
-                                      <GridPane prefWidth="163.0">
-                                          <children>
-                                              <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                                              <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                                              <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                                              <RealNumberTextField fx:id="g54X" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="0">
-                                                  <GridPane.margin>
-                                                      <Insets right="5.0" />
-                                                  </GridPane.margin>
-                                              </RealNumberTextField>
-                                              <RealNumberTextField fx:id="g54Y" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
-                                              <RealNumberTextField fx:id="g54Z" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                                          </children>
-                                          <columnConstraints>
-                                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="94.0" />
-                                              <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="69.0" />
-                                          </columnConstraints>
-                                          <rowConstraints>
-                                              <RowConstraints maxHeight="55.0" minHeight="-Infinity" prefHeight="29.0" vgrow="SOMETIMES" />
-                                              <RowConstraints maxHeight="69.0" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
-                                          </rowConstraints>
-                                          <VBox.margin>
-                                              <Insets bottom="2.0" top="4.0" />
-                                          </VBox.margin>
-                                      </GridPane>
-                                  </children>
-                              </VBox>
+                            <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                            <RealNumberTextField fx:id="g54X" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="0">
+                              <GridPane.margin>
+                                <Insets right="5.0" />
+                              </GridPane.margin>
+                            </RealNumberTextField>
+                            <RealNumberTextField fx:id="g54Y" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+                            <RealNumberTextField fx:id="g54Z" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                           </children>
-                      </AnchorPane>
-                  </content>
-              </TitledPane>
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="94.0" />
+                            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="69.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="55.0" minHeight="-Infinity" prefHeight="29.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="69.0" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                          <VBox.margin>
+                            <Insets bottom="2.0" top="4.0" />
+                          </VBox.margin>
+                        </GridPane>
+                      </children>
+                    </VBox>
+                  </children>
+                </AnchorPane>
+              </content>
+            </TitledPane>
             <TitledPane fx:id="miscPane" animated="false" expanded="false" prefHeight="120.0" prefWidth="216.0" text="Misc" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
@@ -207,13 +207,10 @@
         </BorderPane>
         <BorderPane fx:id="generationPane" prefHeight="200.0" prefWidth="600.0">
           <center>
-            <AnchorPane id="" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" styleClass="pcb-popup-pane">
+            <AnchorPane id="" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="175.0" prefWidth="600.0" styleClass="pcb-popup-pane">
               <children>
-                <ProgressBar id="traceProgress" fx:id="traceProgressBar" layoutX="32.0" layoutY="73.0" prefHeight="25.0" prefWidth="500.0" progress="0.0" />
-                <ProgressBar id="overallProgress" fx:id="overallProgressBar" layoutX="32.0" layoutY="146.0" prefHeight="25.0" prefWidth="500.0" progress="0.0" />
-                <Label layoutX="29.0" layoutY="37.0" text="Trace generation" />
-                <Label layoutX="29.0" layoutY="116.0" text="Overall progress" />
-                <Button fx:id="stopGenerationButton" layoutX="262.0" layoutY="198.0" mnemonicParsing="false" onAction="#stopGeneration" text="Stop" />
+                <ProgressBar id="overallProgress" fx:id="overallProgressBar" layoutX="50.0" layoutY="44.0" prefHeight="25.0" prefWidth="500.0" progress="0.0" />
+                <Button fx:id="stopGenerationButton" layoutX="275.0" layoutY="119.0" mnemonicParsing="false" onAction="#stopGeneration" text="Stop" />
               </children>
             </AnchorPane>
           </center>

@@ -39,15 +39,13 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 {
     private Property<String> toolDiameter = new SimpleObjectProperty<String>();
     private MainApplication mainApplication;
-    private DoubleProperty traceProgressProperty;
     private DoubleProperty overallProgressProperty;
     private Context context;
 
-    public ToolpathGenerationService(MainApplication mainApplication, DoubleProperty traceProgressProperty, DoubleProperty overallProgressProperty)
+    public ToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty)
     {
         this.mainApplication = mainApplication;
         this.context = mainApplication.getContext();
-        this.traceProgressProperty = traceProgressProperty;
         this.overallProgressProperty = overallProgressProperty;
     }
 
@@ -90,7 +88,6 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     Raster raster = new Raster(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1, 1000,
                             Double.valueOf(toolDiameter.getValue()) / 2, new RealNumber(toolDiameter.getValue()));
                     TraceLayer traceLayer = (TraceLayer) layer;
-                    traceProgressProperty.bind(raster.traceProgressProperty());
                     overallProgressProperty.bind(raster.generationProgressProperty());
                     long t = System.currentTimeMillis();
                     traceLayer.generateToolpaths(raster, new RealNumber(toolDiameter.getValue()));
