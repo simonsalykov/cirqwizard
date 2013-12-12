@@ -37,6 +37,8 @@ public class ToolpathMerger
             ArrayList<Toolpath> toMerge = map.get(p);
             for (int i = 0; i < toMerge.size(); i++)
             {
+                boolean merge = false;
+
                 for (int j = i + 1; j < toMerge.size(); j++)
                 {
                     Toolpath t1 = toMerge.get(i);
@@ -48,6 +50,9 @@ public class ToolpathMerger
                     Curve c1 = ((CuttingToolpath)t1).getCurve();
                     Curve c2 = ((CuttingToolpath)t2).getCurve();
 
+                    if (t1 == t2)
+                        continue;
+
                     boolean l1Inversed = false;
                     if (!c1.getTo().equals(p, 0.02))
                     {
@@ -57,7 +62,6 @@ public class ToolpathMerger
                     if (!c2.getFrom().equals(p, 0.02))
                         c2 = c2.reverse();
 
-                    boolean merge = false;
                     if (t1 instanceof LinearToolpath && t2 instanceof LinearToolpath)
                     {
                         Line l1 = (Line) c1;
@@ -78,7 +82,7 @@ public class ToolpathMerger
                     {
                         Arc a1 = (Arc) c1;
                         Arc a2 = (Arc) c2;
-                        if (a1.getTo().equals(a2.getFrom(), 0.02))
+                        if (a1.getTo().equals(a2.getFrom(), 0.02) && a1.isClockwise() == a2.isClockwise())
                         {
                             if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius().doubleValue() - a2.getRadius().doubleValue()) < 0.05)
                                 merge = true;
@@ -97,8 +101,10 @@ public class ToolpathMerger
                         break;
 
                     }
-
                 }
+
+                if (merge)
+                    break;
             }
         }
 
