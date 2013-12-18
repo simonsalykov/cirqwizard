@@ -14,10 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.PolygonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.appertures.*;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
@@ -117,6 +114,27 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
 
                 polygon.setStrokeWidth(0);
                 return polygon;
+            }
+            else if (flash.getAperture() instanceof OvalAperture)
+            {
+                OvalAperture aperture = (OvalAperture)flash.getAperture();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+                double width = aperture.getWidth().doubleValue();
+                double height = aperture.getHeight().doubleValue();
+                Path path = new Path();
+
+                if (width > height)
+                {
+
+                }
+                else if (width < height)
+                {
+
+                }
+
+                path.setStrokeWidth(0);
+                return path;
             }
         }
         return null;

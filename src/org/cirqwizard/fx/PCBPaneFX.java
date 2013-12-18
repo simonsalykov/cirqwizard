@@ -14,10 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.PolygonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.appertures.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
@@ -229,6 +226,11 @@ public class PCBPaneFX extends Region
 
                 g.closePath();
                 g.fill();
+            }
+            else if (flash.getAperture() instanceof OvalAperture)
+            {
+                OvalAperture aperture = (OvalAperture)flash.getAperture();
+                g.fillOval(flash.getX().doubleValue(), flash.getY().doubleValue(), aperture.getWidth().doubleValue(), aperture.getHeight().doubleValue());
             }
         }
     }
