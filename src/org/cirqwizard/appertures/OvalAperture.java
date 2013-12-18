@@ -16,6 +16,9 @@ package org.cirqwizard.appertures;
 
 import org.cirqwizard.math.RealNumber;
 
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+
 
 public class OvalAperture extends Aperture
 {
@@ -55,8 +58,31 @@ public class OvalAperture extends Aperture
     @Override
     public void render(java.awt.Graphics2D g, int x, int y, double scale)
     {
-      //  int diameter = (int) (this.diameter.doubleValue() * scale);
-      //  g.fillArc(x - diameter / 2, y - diameter / 2, diameter, diameter, 0, 360);
+        double flashX = x;
+        double flashY = y;
+        double width = this.width.doubleValue() * scale;
+        double height = this.height.doubleValue() * scale;
+        double d, l;
+
+        if (width > height)
+        {
+            d = height;
+            l = width - height;
+
+            g.fill(new Ellipse2D.Double(flashX - l / 2 - d / 2, flashY - d / 2, d, d));
+            g.fill(new Ellipse2D.Double(flashX + l / 2 - d / 2, flashY - d / 2, d, d));
+            g.fill(new Rectangle2D.Double(flashX - l / 2, flashY - height / 2, l, height));
+
+        }
+        else if (width < height)
+        {
+            d = width;
+            l = height - width;
+
+            g.fill(new Ellipse2D.Double(flashX - d / 2, flashY + l / 2 - d / 2, d, d));
+            g.fill(new Ellipse2D.Double(flashX - d / 2, flashY - l / 2 - d / 2, d, d));
+            g.fill(new Rectangle2D.Double(flashX - width / 2, flashY - l / 2, width, l));
+        }
     }
 
     @Override
