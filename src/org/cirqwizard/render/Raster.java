@@ -14,10 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.render;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.PolygonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import javafx.scene.shape.*;
+import org.cirqwizard.appertures.*;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.PolygonUtils;
 import org.cirqwizard.gerber.Flash;
@@ -282,6 +280,35 @@ public class Raster
                     polygon.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
 
                 g.fill(polygon);
+            }
+            else if (flash.getAperture() instanceof OvalAperture)
+            {
+                OvalAperture aperture = (OvalAperture)flash.getAperture();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+                double width = aperture.getWidth().doubleValue() + inflation * 2;
+                double height = aperture.getHeight().doubleValue() + inflation * 2;
+                double d, l;
+
+                if (width > height)
+                {
+                    d = height;
+                    l = width - height;
+
+                    g.fill(new Ellipse2D.Double(flashX - l / 2 - d / 2, flashY - d / 2, d, d));
+                    g.fill(new Ellipse2D.Double(flashX + l / 2 - d / 2, flashY - d / 2, d, d));
+                    g.fill(new Rectangle2D.Double(flashX - l / 2, flashY - height / 2, l, height));
+
+                }
+                else if (width < height)
+                {
+                    d = width;
+                    l = height - width;
+
+                    g.fill(new Ellipse2D.Double(flashX - d / 2, flashY + l / 2 - d / 2, d, d));
+                    g.fill(new Ellipse2D.Double(flashX - d / 2, flashY - l / 2 - d / 2, d, d));
+                    g.fill(new Rectangle2D.Double(flashX - width / 2, flashY - l / 2, width, l));
+                }
             }
         }
     }

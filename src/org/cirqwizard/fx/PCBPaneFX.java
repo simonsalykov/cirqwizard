@@ -230,7 +230,30 @@ public class PCBPaneFX extends Region
             else if (flash.getAperture() instanceof OvalAperture)
             {
                 OvalAperture aperture = (OvalAperture)flash.getAperture();
-                g.fillOval(flash.getX().doubleValue(), flash.getY().doubleValue(), aperture.getWidth().doubleValue(), aperture.getHeight().doubleValue());
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+                double width = aperture.getWidth().doubleValue();
+                double height = aperture.getHeight().doubleValue();
+                double d, l;
+
+                if (width > height)
+                {
+                    d = height;
+                    l = width - height;
+
+                    g.fillOval(flashX + l / 2 - d / 2, flashY - d / 2, d, d);
+                    g.fillOval(flashX - l / 2 - d / 2, flashY - d / 2, d, d);
+                    g.fillRect(flashX - l / 2, flashY - height / 2, l, height);
+                }
+                else if (width < height)
+                {
+                    d = width;
+                    l = height - width;
+
+                    g.fillOval(flashX - d / 2, flashY + l / 2 - d / 2, d, d);
+                    g.fillOval(flashX - d / 2, flashY - l / 2 - d / 2, d, d);
+                    g.fillRect(flashX - width / 2, flashY - l / 2, width, l);
+                }
             }
         }
     }

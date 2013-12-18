@@ -128,7 +128,7 @@ public class GerberParser
         {
             if (i == '%')
                 parameterMode = !parameterMode;
-            else if (i == '*')
+            else if (i == '*' && sb.length() > 0)
                 break;
             else if (!Character.isWhitespace(i))
                 sb.append((char)i);
@@ -270,6 +270,7 @@ public class GerberParser
         {
             switch (dataBlock.getG())
             {
+                case  4: break;
                 case 36: polygonMode = true;
                          polygonStage = PolygonStage.BEGIN; break;
                 case 37: polygonStage = PolygonStage.CLOSING; break;

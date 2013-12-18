@@ -74,6 +74,7 @@ public class OvalAperture extends Aperture
     @Override
     public Aperture rotate(boolean clockwise)
     {
-        return this;
+
+        return new OvalAperture(height, width);
     }
 }

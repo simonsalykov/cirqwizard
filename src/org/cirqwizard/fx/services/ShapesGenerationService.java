@@ -122,15 +122,74 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                 double flashY = flash.getY().doubleValue();
                 double width = aperture.getWidth().doubleValue();
                 double height = aperture.getHeight().doubleValue();
+                double r, l;
                 Path path = new Path();
 
                 if (width > height)
                 {
+                    r = height / 2;
+                    l = width - height;
 
+                    MoveTo moveTo = new MoveTo();
+                    moveTo.setX(flashX - l / 2);
+                    moveTo.setY(flashY + height / 2);
+
+                    HLineTo hLineTo1 = new HLineTo();
+                    hLineTo1.setX(flashX + l / 2);
+
+                    ArcTo arcTo1 = new ArcTo();
+                    arcTo1.setRadiusX(r);
+                    arcTo1.setRadiusY(r);
+                    arcTo1.setX(flashX + l / 2);
+                    arcTo1.setY(flashY - height / 2);
+
+                    HLineTo hLineTo2 = new HLineTo();
+                    hLineTo2.setX(flashX - l / 2);
+
+                    ArcTo arcTo2 = new ArcTo();
+                    arcTo2.setRadiusX(r);
+                    arcTo2.setRadiusY(r);
+                    arcTo2.setX(flashX - l / 2);
+                    arcTo2.setY(flashY + height / 2);
+
+                    path.getElements().add(moveTo);
+                    path.getElements().add(hLineTo1);
+                    path.getElements().add(arcTo1);
+                    path.getElements().add(hLineTo2);
+                    path.getElements().add(arcTo2);
                 }
                 else if (width < height)
                 {
+                    r = width / 2;
+                    l = height - width;
 
+                    MoveTo moveTo = new MoveTo();
+                    moveTo.setX(flashX - width / 2);
+                    moveTo.setY(flashY + l / 2);
+
+                    ArcTo arcTo1 = new ArcTo();
+                    arcTo1.setRadiusX(r);
+                    arcTo1.setRadiusY(r);
+                    arcTo1.setX(flashX + width / 2);
+                    arcTo1.setY(flashY + l / 2);
+
+                    VLineTo vLineTo1 = new VLineTo();
+                    vLineTo1.setY(flashY - l / 2);
+
+                    ArcTo arcTo2 = new ArcTo();
+                    arcTo2.setRadiusX(r);
+                    arcTo2.setRadiusY(r);
+                    arcTo2.setX(flashX - width / 2);
+                    arcTo2.setY(flashY - l / 2);
+
+                    VLineTo vLineTo2 = new VLineTo();
+                    vLineTo2.setY(flashY + l / 2);
+
+                    path.getElements().add(moveTo);
+                    path.getElements().add(arcTo1);
+                    path.getElements().add(vLineTo1);
+                    path.getElements().add(arcTo2);
+                    path.getElements().add(vLineTo2);
                 }
 
                 path.setStrokeWidth(0);
