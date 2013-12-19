@@ -57,6 +57,9 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             line.setStrokeWidth(linearShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
             if (linearShape.getAperture() instanceof CircularAperture)
                 line.setStrokeLineCap(StrokeLineCap.ROUND);
+            if (linearShape.getAperture().getWidth(new RealNumber(0)).equals(0))
+                line.setClip(new Rectangle(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
+                        linearShape.getTo().getX().doubleValue() - linearShape.getFrom().getX().doubleValue(), linearShape.getTo().getY().doubleValue() - linearShape.getFrom().getY().doubleValue()));
             return line;
         }
         else if (primitive instanceof Flash)

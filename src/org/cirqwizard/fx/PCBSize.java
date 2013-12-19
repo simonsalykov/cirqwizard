@@ -24,6 +24,8 @@ public enum PCBSize
     private int width;
     private int height;
 
+    public static final double PCB_SIZE_CHECK_TOLERANCE = 0.1;
+
     private PCBSize(int storeValue, int width, int height)
     {
         this.storeValue = storeValue;
@@ -55,5 +57,10 @@ public enum PCBSize
             default:
                 return null;
         }
+    }
+
+    public boolean checkFit(double width, double height)
+    {
+        return ((width - getWidth()) < PCB_SIZE_CHECK_TOLERANCE) && ((height - getHeight()) < PCB_SIZE_CHECK_TOLERANCE);
     }
 }
