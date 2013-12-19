@@ -14,10 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.PolygonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.appertures.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
@@ -229,6 +226,26 @@ public class PCBPaneFX extends Region
 
                 g.closePath();
                 g.fill();
+            }
+            else if (flash.getAperture() instanceof OvalAperture)
+            {
+                OvalAperture aperture = (OvalAperture)flash.getAperture();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+                double width = aperture.getWidth().doubleValue();
+                double height = aperture.getHeight().doubleValue();
+                double d = Math.min(width, height);
+                double l = aperture.isHorizontal() ? width - height : height - width;
+                double xOffset = aperture.isHorizontal() ? l / 2 : 0;
+                double yOffset = aperture.isHorizontal() ? 0 : l / 2;
+                g.fillOval(flashX + xOffset - d / 2, flashY + yOffset - d / 2, d, d);
+                g.fillOval(flashX - xOffset - d / 2, flashY - yOffset - d / 2, d, d);
+
+                double rectX = aperture.isHorizontal() ? flashX - l / 2 : flashX - width / 2;
+                double rectY = aperture.isHorizontal() ? flashY - height / 2 : flashY - l / 2;
+                double rectWidth =  aperture.isHorizontal() ? l : width;
+                double rectHeight =  aperture.isHorizontal() ? height : l;
+                g.fillRect(rectX, rectY, rectWidth, rectHeight);
             }
         }
     }

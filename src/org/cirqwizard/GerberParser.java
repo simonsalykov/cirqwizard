@@ -204,13 +204,19 @@ public class GerberParser
             pattern = Pattern.compile(".*,(\\d*.\\d+)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
-                throw new GerberParsingException("Invalid definition of circular aperture");
+                throw new GerberParsingException("Invalid definition of octagonal aperture");
             RealNumber diameter = new RealNumber(matcher.group(1)).multiply(unitConversionRatio);
             apertures.put(apertureNumber, new OctagonalAperture(diameter));
         }
         else if (aperture.equals("O"))
         {
-            System.out.println("Oval aperture");
+            pattern = Pattern.compile(".*,(\\d*.\\d+)X(\\d*.\\d+)");
+            matcher = pattern.matcher(str);
+            if (!matcher.find())
+                throw new GerberParsingException("Invalid definition of oval aperture");
+            RealNumber width = new RealNumber(matcher.group(1)).multiply(unitConversionRatio);
+            RealNumber height = new RealNumber(matcher.group(2)).multiply(unitConversionRatio);
+            apertures.put(apertureNumber, new OvalAperture(width, height));
         }
         else if (aperture.equals("P"))
         {

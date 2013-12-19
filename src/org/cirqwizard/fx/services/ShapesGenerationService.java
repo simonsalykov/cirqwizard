@@ -14,10 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.PolygonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.appertures.*;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
@@ -117,6 +114,37 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
 
                 polygon.setStrokeWidth(0);
                 return polygon;
+            }
+            else if (flash.getAperture() instanceof OvalAperture)
+            {
+                OvalAperture aperture = (OvalAperture)flash.getAperture();
+                double flashX = flash.getX().doubleValue();
+                double flashY = flash.getY().doubleValue();
+                double width = aperture.getWidth().doubleValue();
+                double height = aperture.getHeight().doubleValue();
+                double r = aperture.isHorizontal() ? height / 2 : width / 2;
+                double l = aperture.isHorizontal() ? width - height : height - width;
+                Path path = new Path();
+
+                if (aperture.isHorizontal())
+                {
+                    path.getElements().add(new MoveTo(flashX - l / 2, flashY + height / 2));
+                    path.getElements().add(new HLineTo(flashX + l / 2));
+                    path.getElements().add(new ArcTo(r, r, 0, flashX + l / 2, flashY - height / 2, false, false));
+                    path.getElements().add(new HLineTo(flashX - l / 2));
+                    path.getElements().add(new ArcTo(r, r, 0, flashX - l / 2, flashY + height / 2, false, false));
+                }
+                else
+                {
+                    path.getElements().add(new MoveTo(flashX - width / 2, flashY + l / 2));
+                    path.getElements().add(new ArcTo(r, r, 0, flashX + width / 2, flashY + l / 2, false, false));
+                    path.getElements().add(new VLineTo(flashY - l / 2));
+                    path.getElements().add(new ArcTo(r, r, 0, flashX - width / 2, flashY - l / 2, false, false));
+                    path.getElements().add(new VLineTo(flashY + l / 2));
+                }
+
+                path.setStrokeWidth(0);
+                return path;
             }
         }
         return null;
