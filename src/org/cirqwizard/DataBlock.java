@@ -32,7 +32,8 @@ public class DataBlock
 
     public void setX(RealNumber x)
     {
-        this.x = x;
+        if (this.x == null)
+            this.x = x;
     }
 
     public RealNumber getY()
@@ -42,7 +43,8 @@ public class DataBlock
 
     public void setY(RealNumber y)
     {
-        this.y = y;
+        if (this.y == null)
+            this.y = y;
     }
 
     public Integer getG()
@@ -52,7 +54,8 @@ public class DataBlock
 
     public void setG(Integer g)
     {
-        this.g = g;
+        if (this.g == null)
+            this.g = g;
     }
 
     public Integer getD()
@@ -62,7 +65,8 @@ public class DataBlock
 
     public void setD(Integer d)
     {
-        this.d = d;
+        if (this.d == null)
+            this.d = d;
     }
 
     public Integer getM()
@@ -72,6 +76,7 @@ public class DataBlock
 
     public void setM(Integer m)
     {
-        this.m = m;
+        if (this.m == null)
+            this.m = m;
     }
 }

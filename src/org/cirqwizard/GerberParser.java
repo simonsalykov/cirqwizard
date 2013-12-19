@@ -128,7 +128,7 @@ public class GerberParser
         {
             if (i == '%')
                 parameterMode = !parameterMode;
-            else if (i == '*')
+            else if ((i == '*') && (sb.length() != 0))
                 break;
             else if (!Character.isWhitespace(i))
                 sb.append((char)i);
@@ -251,6 +251,22 @@ public class GerberParser
 
     private void processDataBlock(DataBlock dataBlock) throws GerberParsingException
     {
+        if (dataBlock.getG() != null)
+        {
+            switch (dataBlock.getG())
+            {
+                case  1: currentInterpolationMode = InterpolationMode.LINEAR; break;
+                case  4: return;
+                case 36: polygonMode = true;
+                    polygonStage = PolygonStage.BEGIN; break;
+                case 37: polygonStage = PolygonStage.CLOSING; break;
+                case 54: break;
+                case 70: unitConversionRatio = INCHES_RATIO; break;
+                case 71: unitConversionRatio = MM_RATIO; break;
+                default:
+                    throw new GerberParsingException("Unknown gcode: " + dataBlock.getG());
+            }
+        }
         if (dataBlock.getM() != null)
         {
             switch (dataBlock.getM())
@@ -258,21 +274,6 @@ public class GerberParser
                 case 2: return;
                 default:
                     throw new GerberParsingException("Unknown mcode: " + dataBlock.getM());
-            }
-        }
-        if (dataBlock.getG() != null)
-        {
-            switch (dataBlock.getG())
-            {
-                case  1: currentInterpolationMode = InterpolationMode.LINEAR; break;
-                case 36: polygonMode = true;
-                         polygonStage = PolygonStage.BEGIN; break;
-                case 37: polygonStage = PolygonStage.CLOSING; break;
-                case 54: break;
-                case 70: unitConversionRatio = INCHES_RATIO; break;
-                case 71: unitConversionRatio = MM_RATIO; break;
-                default:
-                    throw new GerberParsingException("Unknown gcode: " + dataBlock.getG());
             }
         }
         if (dataBlock.getD() != null)
