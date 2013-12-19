@@ -38,8 +38,6 @@ public class PCBPlacementController extends SceneController
     @FXML private Label bottomTracesText;
     @FXML private Label drillingText;
 
-    private static final double PCB_SIZE_CHECK_TOLERANCE = 0.1;
-
     @Override
     public Parent getView()
     {
