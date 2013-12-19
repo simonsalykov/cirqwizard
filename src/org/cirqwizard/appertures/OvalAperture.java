@@ -55,6 +55,11 @@ public class OvalAperture extends Aperture
         return height;
     }
 
+    public boolean isHorizontal()
+    {
+        return width.greaterThan(height);
+    }
+
     @Override
     public void render(java.awt.Graphics2D g, int x, int y, double scale)
     {
@@ -62,27 +67,18 @@ public class OvalAperture extends Aperture
         double flashY = y;
         double width = this.width.doubleValue() * scale;
         double height = this.height.doubleValue() * scale;
-        double d, l;
+        double d = Math.min(width, height);
+        double l = isHorizontal() ? width - height : height - width;
+        double xOffset = isHorizontal() ? l / 2 : 0;
+        double yOffset = isHorizontal() ? 0 : l / 2;
+        double rectX = isHorizontal() ? flashX - l / 2 : flashX - width / 2;
+        double rectY = isHorizontal() ? flashY - height / 2 : flashY - l / 2;
+        double rectWidth =  isHorizontal() ? l : width;
+        double rectHeight =  isHorizontal() ? height : l;
 
-        if (width > height)
-        {
-            d = height;
-            l = width - height;
-
-            g.fill(new Ellipse2D.Double(flashX - l / 2 - d / 2, flashY - d / 2, d, d));
-            g.fill(new Ellipse2D.Double(flashX + l / 2 - d / 2, flashY - d / 2, d, d));
-            g.fill(new Rectangle2D.Double(flashX - l / 2, flashY - height / 2, l, height));
-
-        }
-        else if (width < height)
-        {
-            d = width;
-            l = height - width;
-
-            g.fill(new Ellipse2D.Double(flashX - d / 2, flashY + l / 2 - d / 2, d, d));
-            g.fill(new Ellipse2D.Double(flashX - d / 2, flashY - l / 2 - d / 2, d, d));
-            g.fill(new Rectangle2D.Double(flashX - width / 2, flashY - l / 2, width, l));
-        }
+        g.fill(new Ellipse2D.Double(flashX - xOffset - d / 2, flashY + yOffset - d / 2, d, d));
+        g.fill(new Ellipse2D.Double(flashX + xOffset - d / 2, flashY - yOffset - d / 2, d, d));
+        g.fill(new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight));
     }
 
     @Override

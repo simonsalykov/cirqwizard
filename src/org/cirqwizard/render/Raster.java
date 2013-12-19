@@ -288,27 +288,18 @@ public class Raster
                 double flashY = flash.getY().doubleValue();
                 double width = aperture.getWidth().doubleValue() + inflation * 2;
                 double height = aperture.getHeight().doubleValue() + inflation * 2;
-                double d, l;
+                double d = Math.min(width, height);
+                double l = aperture.isHorizontal() ? width - height : height - width;
+                double xOffset = aperture.isHorizontal() ? l / 2 : 0;
+                double yOffset = aperture.isHorizontal() ? 0 : l / 2;
+                double rectX = aperture.isHorizontal() ? flashX - l / 2 : flashX - width / 2;
+                double rectY = aperture.isHorizontal() ? flashY - height / 2 : flashY - l / 2;
+                double rectWidth =  aperture.isHorizontal() ? l : width;
+                double rectHeight =  aperture.isHorizontal() ? height : l;
 
-                if (width > height)
-                {
-                    d = height;
-                    l = width - height;
-
-                    g.fill(new Ellipse2D.Double(flashX - l / 2 - d / 2, flashY - d / 2, d, d));
-                    g.fill(new Ellipse2D.Double(flashX + l / 2 - d / 2, flashY - d / 2, d, d));
-                    g.fill(new Rectangle2D.Double(flashX - l / 2, flashY - height / 2, l, height));
-
-                }
-                else if (width < height)
-                {
-                    d = width;
-                    l = height - width;
-
-                    g.fill(new Ellipse2D.Double(flashX - d / 2, flashY + l / 2 - d / 2, d, d));
-                    g.fill(new Ellipse2D.Double(flashX - d / 2, flashY - l / 2 - d / 2, d, d));
-                    g.fill(new Rectangle2D.Double(flashX - width / 2, flashY - l / 2, width, l));
-                }
+                g.fill(new Ellipse2D.Double(flashX - xOffset - d / 2, flashY + yOffset - d / 2, d, d));
+                g.fill(new Ellipse2D.Double(flashX + xOffset - d / 2, flashY - yOffset - d / 2, d, d));
+                g.fill(new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight));
             }
         }
     }

@@ -234,26 +234,18 @@ public class PCBPaneFX extends Region
                 double flashY = flash.getY().doubleValue();
                 double width = aperture.getWidth().doubleValue();
                 double height = aperture.getHeight().doubleValue();
-                double d, l;
+                double d = Math.min(width, height);
+                double l = aperture.isHorizontal() ? width - height : height - width;
+                double xOffset = aperture.isHorizontal() ? l / 2 : 0;
+                double yOffset = aperture.isHorizontal() ? 0 : l / 2;
+                g.fillOval(flashX + xOffset - d / 2, flashY + yOffset - d / 2, d, d);
+                g.fillOval(flashX - xOffset - d / 2, flashY - yOffset - d / 2, d, d);
 
-                if (width > height)
-                {
-                    d = height;
-                    l = width - height;
-
-                    g.fillOval(flashX + l / 2 - d / 2, flashY - d / 2, d, d);
-                    g.fillOval(flashX - l / 2 - d / 2, flashY - d / 2, d, d);
-                    g.fillRect(flashX - l / 2, flashY - height / 2, l, height);
-                }
-                else if (width < height)
-                {
-                    d = width;
-                    l = height - width;
-
-                    g.fillOval(flashX - d / 2, flashY + l / 2 - d / 2, d, d);
-                    g.fillOval(flashX - d / 2, flashY - l / 2 - d / 2, d, d);
-                    g.fillRect(flashX - width / 2, flashY - l / 2, width, l);
-                }
+                double rectX = aperture.isHorizontal() ? flashX - l / 2 : flashX - width / 2;
+                double rectY = aperture.isHorizontal() ? flashY - height / 2 : flashY - l / 2;
+                double rectWidth =  aperture.isHorizontal() ? l : width;
+                double rectHeight =  aperture.isHorizontal() ? height : l;
+                g.fillRect(rectX, rectY, rectWidth, rectHeight);
             }
         }
     }
