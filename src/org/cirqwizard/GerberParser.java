@@ -251,6 +251,21 @@ public class GerberParser
 
     private void processDataBlock(DataBlock dataBlock) throws GerberParsingException
     {
+        if (dataBlock.getG() != null)
+        {
+            switch (dataBlock.getG())
+            {
+                case  4: return;
+                case 36: polygonMode = true;
+                    polygonStage = PolygonStage.BEGIN; break;
+                case 37: polygonStage = PolygonStage.CLOSING; break;
+                case 54: break;
+                case 70: unitConversionRatio = INCHES_RATIO; break;
+                case 71: unitConversionRatio = MM_RATIO; break;
+                default:
+                    throw new GerberParsingException("Unknown gcode: " + dataBlock.getG());
+            }
+        }
         if (dataBlock.getM() != null)
         {
             switch (dataBlock.getM())
@@ -258,21 +273,6 @@ public class GerberParser
                 case 2: return;
                 default:
                     throw new GerberParsingException("Unknown mcode: " + dataBlock.getM());
-            }
-        }
-        if (dataBlock.getG() != null)
-        {
-            switch (dataBlock.getG())
-            {
-                case  4: return;
-                case 36: polygonMode = true;
-                         polygonStage = PolygonStage.BEGIN; break;
-                case 37: polygonStage = PolygonStage.CLOSING; break;
-                case 54: break;
-                case 70: unitConversionRatio = INCHES_RATIO; break;
-                case 71: unitConversionRatio = MM_RATIO; break;
-                default:
-                    throw new GerberParsingException("Unknown gcode: " + dataBlock.getG());
             }
         }
         if (dataBlock.getD() != null)
