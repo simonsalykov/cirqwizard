@@ -114,20 +114,13 @@ public class XYOffsetsController extends SceneController implements Initializabl
         double laminateY = Double.parseDouble(getMainApplication().getSettings().getMachineReferencePinY()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
         double xOffsetToPcb = xOffset - laminateX;
         double yOffsetToPcb  = yOffset - laminateY;
-        boolean pcbFitLaminate = (xOffsetToPcb >= 0) && (yOffsetToPcb >= 0) && context.getPcbSize().checkFit(xOffsetToPcb + context.getBoardWidth(), yOffsetToPcb + context.getBoardHeight());
 
-        if (pcbFitLaminate || (ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()))
-        {
-            offsetErrorLabel.setVisible(!pcbFitLaminate);
-            ignoreCheckBox.setVisible(!pcbFitLaminate);
-            continueButton.setDisable(false);
-        }
-        else
-        {
-            ignoreCheckBox.setVisible(true);
-            offsetErrorLabel.setVisible(true);
-            continueButton.setDisable(true);
-        }
+        boolean pcbFitLaminate = (xOffsetToPcb >= 0) && (yOffsetToPcb >= 0) &&
+                context.getPcbSize().checkFit(xOffsetToPcb + context.getBoardWidth(), yOffsetToPcb + context.getBoardHeight());
+
+        offsetErrorLabel.setVisible(!pcbFitLaminate);
+        ignoreCheckBox.setVisible(!pcbFitLaminate);
+        continueButton.setDisable(!pcbFitLaminate && !(ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()));
     }
 
     public void updateComponents()
