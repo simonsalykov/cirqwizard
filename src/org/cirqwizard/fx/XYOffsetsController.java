@@ -114,16 +114,16 @@ public class XYOffsetsController extends SceneController implements Initializabl
         double laminateY = Double.parseDouble(getMainApplication().getSettings().getMachineReferencePinY()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
         double xOffsetToPcb = xOffset - laminateX;
         double yOffsetToPcb  = yOffset - laminateY;
+        boolean pcbFitLaminate = (xOffsetToPcb >= 0) && (yOffsetToPcb >= 0) && context.getPcbSize().checkFit(xOffsetToPcb + context.getBoardWidth(), yOffsetToPcb + context.getBoardHeight());
 
-        if (((xOffsetToPcb >= 0) && (yOffsetToPcb >= 0) && context.getPcbSize().checkFit(xOffsetToPcb + context.getBoardWidth(), yOffsetToPcb + context.getBoardHeight())) || ignoreCheckBox.isSelected())
+        if (pcbFitLaminate || (ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()))
         {
-            offsetErrorLabel.setVisible(ignoreCheckBox.isSelected());
+            offsetErrorLabel.setVisible(!pcbFitLaminate);
+            ignoreCheckBox.setVisible(!pcbFitLaminate);
             continueButton.setDisable(false);
-            ignoreCheckBox.setVisible(ignoreCheckBox.isSelected());
         }
         else
         {
-            ignoreCheckBox.setSelected(false);
             ignoreCheckBox.setVisible(true);
             offsetErrorLabel.setVisible(true);
             continueButton.setDisable(true);
@@ -132,7 +132,11 @@ public class XYOffsetsController extends SceneController implements Initializabl
 
     public void updateComponents()
     {
-        continueButton.setDisable(x.getRealNumberText() == null || y.getRealNumberText() == null);
+        if (x.getRealNumberText() == null || y.getRealNumberText() == null)
+            continueButton.setDisable(true);
+        else
+            checkOffsetLimit(x.getRealNumberText(), y.getRealNumberText());
+
         goButton.setDisable(getMainApplication().getCNCController() == null ||
                 x.getRealNumberText() == null || y.getRealNumberText() == null);
         moveZButton.setDisable(getMainApplication().getCNCController() == null || z.getRealNumberText() == null);
