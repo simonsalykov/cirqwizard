@@ -264,7 +264,7 @@ public class GerberParser
         {
             switch (dataBlock.getG())
             {
-                case  4: break;
+                case  4: return;
                 case 36: polygonMode = true;
                          polygonStage = PolygonStage.BEGIN; break;
                 case 37: polygonStage = PolygonStage.CLOSING; break;
