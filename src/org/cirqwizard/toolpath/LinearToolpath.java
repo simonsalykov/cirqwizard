@@ -24,7 +24,7 @@ public class LinearToolpath extends CuttingToolpath
 {
     private Line line;
 
-    public LinearToolpath(RealNumber toolDiameter, Point from, Point to)
+    public LinearToolpath(int toolDiameter, Point from, Point to)
     {
         super(toolDiameter);
         line = new Line(from, to);

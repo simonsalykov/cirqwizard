@@ -43,9 +43,9 @@ public class GerberParser
     private boolean polygonMode = false;
     private HashMap<Integer, Aperture> apertures = new HashMap<Integer, Aperture>();
 
-    private static final RealNumber MM_RATIO = new RealNumber(1);
-    private static final RealNumber INCHES_RATIO = new RealNumber("25.4");
-    private RealNumber unitConversionRatio = MM_RATIO;
+    private static final int MM_RATIO = 1000;
+    private static final int INCHES_RATIO = 25400;
+    private int unitConversionRatio = MM_RATIO;
 
     private int integerPlaces = 2;
     private int decimalPlaces = 4;
@@ -59,8 +59,8 @@ public class GerberParser
 
     private InterpolationMode currentInterpolationMode = InterpolationMode.LINEAR;
 
-    private RealNumber x = MathUtil.ZERO;
-    private RealNumber y = MathUtil.ZERO;
+    private int x = 0;
+    private int y = 0;
 
     private enum ExposureMode
     {
@@ -176,7 +176,7 @@ public class GerberParser
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of circular aperture");
-            RealNumber diameter = new RealNumber(matcher.group(1)).multiply(unitConversionRatio);
+            int diameter = (int)(Double.valueOf(matcher.group(1)) * unitConversionRatio);
             apertures.put(apertureNumber, new CircularAperture(diameter));
         }
         else if (aperture.equals("R"))
@@ -185,8 +185,8 @@ public class GerberParser
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of rectangular aperture");
-            RealNumber width = new RealNumber(matcher.group(1)).multiply(unitConversionRatio);
-            RealNumber height = new RealNumber(matcher.group(2)).multiply(unitConversionRatio);
+            int width = (int)(Double.valueOf(matcher.group(1)) * unitConversionRatio);
+            int height = (int)(Double.valueOf(matcher.group(2)) * unitConversionRatio);
             apertures.put(apertureNumber, new RectangularAperture(width, height));
         }
         else if (aperture.equals("OC8"))
@@ -195,7 +195,7 @@ public class GerberParser
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of circular aperture");
-            RealNumber diameter = new RealNumber(matcher.group(1)).multiply(unitConversionRatio);
+            int diameter = (int)(Double.valueOf(matcher.group(1)) * unitConversionRatio);
             apertures.put(apertureNumber, new OctagonalAperture(diameter));
         }
         else if (aperture.equals("O"))
@@ -231,20 +231,21 @@ public class GerberParser
         return dataBlock;
     }
 
-    private RealNumber convertCoordinates(String str)
+    private int convertCoordinates(String str)
     {
-        RealNumber d = new RealNumber("0");
-
         if(str.equals("0"))
-            return d;
+            return 0;
 
         int validIntPlaces = str.length() >= (integerPlaces + decimalPlaces) ? integerPlaces : (str.length() - decimalPlaces);
 
-        if(validIntPlaces > 0)
-            d = new RealNumber(str.substring(0, validIntPlaces));
+        int number = Integer.valueOf(str.substring(validIntPlaces)) * unitConversionRatio;
+        for (int i = 0; i < decimalPlaces; i++)
+            number /= 10;
 
-        d = d.add(new RealNumber(str.substring(validIntPlaces)).divide(MathUtil.pow(new RealNumber(10), decimalPlaces)));
-        return d.multiply(unitConversionRatio);
+        if(validIntPlaces > 0)
+            number += Integer.valueOf(str.substring(0, validIntPlaces)) * unitConversionRatio;
+
+        return number;
     }
 
     private void processDataBlock(DataBlock dataBlock) throws GerberParsingException
@@ -286,10 +287,10 @@ public class GerberParser
                     return;
             }
         }
-        RealNumber newX = x;
+        Integer newX = x;
         if (dataBlock.getX() != null)
             newX = dataBlock.getX();
-        RealNumber newY = y;
+        Integer newY = y;
         if (dataBlock.getY() != null)
             newY = dataBlock.getY();
 
@@ -297,10 +298,10 @@ public class GerberParser
         {
             switch (polygonStage)
             {
-                case BEGIN: polygonPoints = new ArrayList<Point>();
+                case BEGIN: polygonPoints = new ArrayList<>();
                      polygonStage = PolygonStage.DRAWING; break;
                 case DRAWING: polygonPoints.add(new Point(newX, newY)); break;
-                case CLOSING: elements.add(new Flash(new RealNumber(0), new RealNumber(0), new PolygonalAperture(polygonPoints)));
+                case CLOSING: elements.add(new Flash(0, 0, new PolygonalAperture(polygonPoints)));
                      polygonMode = false;
                      polygonStage = PolygonStage.CLOSED; break;
             }

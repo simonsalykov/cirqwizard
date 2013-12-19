@@ -20,7 +20,7 @@ import org.cirqwizard.math.RealNumber;
 
 public class Line extends Curve
 {
-    private RealNumber angleToX = null;
+    private Double angleToX = null;
 
     public Line(Point from, Point to)
     {
@@ -34,73 +34,37 @@ public class Line extends Curve
         return new Line(to, from);
     }
 
-    public RealNumber getX1()
-    {
-        return this.from.getX();
-    }
-
-    public RealNumber getX2()
-    {
-        return this.to.getX();
-    }
-
-    public RealNumber getY1()
-    {
-        return this.from.getY();
-    }
-
-    public RealNumber getY2()
-    {
-        return this.to.getY();
-    }
-
-    public RealNumber angleToX()
+    public double angleToX()
     {
         if (angleToX == null)
         {
-            if (from.getX().equals(to.getX()))
-            {
-                if (from.getY().lessThan(to.getY()))
-                    angleToX = MathUtil.HALF_PI;
-                else
-                    angleToX = MathUtil.HALF_PI.negate();
-            }
-            else if (from.getY().equals(to.getY()))
-            {
-                if (from.getX().lessThan(to.getX()))
-                    angleToX = MathUtil.ZERO;
-                else
-                    angleToX = MathUtil.MINUS_PI;
-            }
-            else
-            {
-                Point vector = to.subtract(from);
-                angleToX = MathUtil.atan2(vector.getY(), vector.getX());
-                if (angleToX.equals(MathUtil.PI))
-                    angleToX = MathUtil.MINUS_PI;
-            }
+            Point vector = to.subtract(from);
+            angleToX = Math.atan2(vector.getY(), vector.getX());
+            if (Math.abs(angleToX - Math.PI) < Math.PI / 360)
+                angleToX = -Math.PI;
         }
         return angleToX;
     }
 
-    public RealNumber length()
+    public double length()
     {
         return from.distanceTo(to);
     }
 
     public static Point intersectionPoint(Line line1, Line line2)
     {
-        RealNumber a1 = line1.getX2().subtract(line1.getX1());
-        RealNumber b1 = line2.getX1().subtract(line2.getX2());
-        RealNumber c1 = line2.getX1().subtract(line1.getX1());
+        double a1 = line1.getTo().getX() - line1.getFrom().getX();
+        double b1 = line2.getFrom().getX() - line2.getTo().getX();
+        double c1 = line2.getFrom().getX() - line1.getFrom().getX();
 
-        RealNumber a2 = line1.getY2().subtract(line1.getY1());
-        RealNumber b2 = line2.getY1().subtract(line2.getY2());
-        RealNumber c2 = line2.getY1().subtract(line1.getY1());
+        double a2 = line1.getTo().getY() - line1.getFrom().getY();
+        double b2 = line2.getFrom().getY() - line2.getTo().getY();
+        double c2 = line2.getFrom().getY() - line1.getFrom().getY();
 
-        RealNumber t = (b1.multiply(c2).subtract(b2.multiply(c1))).divide(a2.multiply(b1).subtract(a1.multiply(b2)));
+        double t = (b1 * c2 - b2 * c1) / (a2 * b1 - a1 * b2);
 
-        return new Point(line1.getX1().add(t.multiply(line1.getX2().subtract(line1.getX1()))), line1.getY1().add(t.multiply(line1.getY2().subtract(line1.getY1()))));
+        return new Point((int)(line1.getFrom().getX() + (t * (line1.getTo().getX() - line1.getFrom().getX()))),
+                (int)(line1.getFrom().getY() + (t * (line1.getTo().getY() - line1.getFrom().getY()))));
     }
 
     @Override

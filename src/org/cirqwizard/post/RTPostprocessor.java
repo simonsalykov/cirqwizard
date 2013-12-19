@@ -14,26 +14,31 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.post;
 
-import org.cirqwizard.math.RealNumber;
-
 import java.text.DecimalFormat;
 
 
 public class RTPostprocessor implements Postprocessor
 {
-    private RealNumber x;
-    private RealNumber y;
-    private RealNumber z;
-    private RealNumber feed;
+    private Integer x;
+    private Integer y;
+    private Integer z;
+    private Integer feed;
+
+    private int resolution;
 
     private final static DecimalFormat format = new DecimalFormat("0.###");
 
+    public RTPostprocessor(int resolution)
+    {
+        this.resolution = resolution;
+    }
+
     @Override
-    public void home(StringBuilder str, RealNumber yDiff)
+    public void home(StringBuilder str, Integer yDiff)
     {
         str.append("G28");
         if (yDiff != null)
-            str.append(" Y").append(yDiff);
+            str.append(" Y").append(formatCoordinate(yDiff));
         str.append('\n');
     }
 
@@ -48,7 +53,7 @@ public class RTPostprocessor implements Postprocessor
     }
 
     @Override
-    public void setupG54(StringBuilder str, RealNumber x, RealNumber y, RealNumber z)
+    public void setupG54(StringBuilder str, int x, int y, int z)
     {
         str.append("G92 X").append(formatCoordinate(x)).append(" Y").append(formatCoordinate(y)).append(" Z").append(formatCoordinate(z)).append('\n');
     }
@@ -59,12 +64,12 @@ public class RTPostprocessor implements Postprocessor
         str.append("G54\n");
     }
 
-    private String formatCoordinate(RealNumber number)
+    private String formatCoordinate(int number)
     {
-        return format.format(number.getValue());
+        return format.format((double)number / resolution);
     }
 
-    public void rapid(StringBuilder str, RealNumber x, RealNumber y, RealNumber z)
+    public void rapid(StringBuilder str, Integer x, Integer y, Integer z)
     {
         str.append("G0 ");
         if (x != null && (this.x == null || !this.x.equals(x)))
@@ -82,7 +87,7 @@ public class RTPostprocessor implements Postprocessor
             this.z = z;
     }
 
-    public void linearInterpolation(StringBuilder str, RealNumber x, RealNumber y, RealNumber z, RealNumber feed)
+    public void linearInterpolation(StringBuilder str, Integer x, Integer y, Integer z, Integer feed)
     {
         str.append("G1 ");
         if (this.x == null || !this.x.equals(x))
@@ -100,7 +105,7 @@ public class RTPostprocessor implements Postprocessor
         this.feed = feed;
     }
 
-    public void circularInterpolation(StringBuilder str, boolean clockwise, RealNumber x, RealNumber y, RealNumber z, RealNumber i, RealNumber j, RealNumber feed)
+    public void circularInterpolation(StringBuilder str, boolean clockwise, Integer x, Integer y, Integer z, Integer i, Integer j, Integer feed)
     {
         str.append('G');
         str.append(clockwise ? '2' : '3');
@@ -135,9 +140,9 @@ public class RTPostprocessor implements Postprocessor
     {
     }
 
-    public void pause(StringBuilder str, RealNumber duration)
+    public void pause(StringBuilder str, double duration)
     {
-        str.append("G4 P").append(format.format(duration.getValue())).append("\n");
+        str.append("G4 P").append(format.format(duration)).append("\n");
     }
 
     public void comment(StringBuilder str, String comment)
@@ -156,16 +161,16 @@ public class RTPostprocessor implements Postprocessor
     }
 
     @Override
-    public void rotatePP(StringBuilder str, RealNumber angle, RealNumber feed)
+    public void rotatePP(StringBuilder str, int angle, int feed)
     {
-        str.append("G1 A").append(formatCoordinate(angle.divide(100)));
+        str.append("G1 A").append(formatCoordinate(angle / 100));
         str.append(" F").append(formatCoordinate(feed)).append("\n");
     }
 
     @Override
-    public void rotatePP(StringBuilder str, RealNumber angle)
+    public void rotatePP(StringBuilder str, int angle)
     {
-        str.append("G0 A").append(formatCoordinate(angle.divide(100))).append("\n");
+        str.append("G0 A").append(formatCoordinate(angle / 100)).append("\n");
     }
 
     @Override

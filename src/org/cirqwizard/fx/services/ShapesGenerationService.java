@@ -55,9 +55,9 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
         if (primitive instanceof LinearShape)
         {
             LinearShape linearShape = (LinearShape) primitive;
-            Line line = new Line(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
-                    linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue());
-            line.setStrokeWidth(linearShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
+            Line line = new Line(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
+                    linearShape.getTo().getX(), linearShape.getTo().getY());
+            line.setStrokeWidth(linearShape.getAperture().getWidth(0));
             if (linearShape.getAperture() instanceof CircularAperture)
                 line.setStrokeLineCap(StrokeLineCap.ROUND);
             return line;
@@ -67,27 +67,27 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             Flash flash = (Flash) primitive;
             if (flash.getAperture() instanceof CircularAperture)
             {
-                Circle circle = new Circle(flash.getX().doubleValue(), flash.getY().doubleValue(),
-                        ((CircularAperture)flash.getAperture()).getDiameter().doubleValue() / 2);
+                Circle circle = new Circle(flash.getX(), flash.getY(),
+                        ((CircularAperture)flash.getAperture()).getDiameter() / 2);
                 circle.setStrokeWidth(0);
                 return circle;
             }
             else if (flash.getAperture() instanceof RectangularAperture)
             {
                 RectangularAperture aperture = (RectangularAperture)flash.getAperture();
-                Rectangle rectangle = new Rectangle(flash.getX().doubleValue() - aperture.getDimensions()[0].doubleValue() / 2,
-                        flash.getY().doubleValue() - aperture.getDimensions()[1].doubleValue() / 2,
-                        aperture.getDimensions()[0].doubleValue(), aperture.getDimensions()[1].doubleValue());
+                Rectangle rectangle = new Rectangle(flash.getX() - aperture.getDimensions()[0] / 2,
+                        flash.getY() - aperture.getDimensions()[1] / 2,
+                        aperture.getDimensions()[0], aperture.getDimensions()[1]);
                 rectangle.setStrokeWidth(0);
                 return rectangle;
             }
             else if (flash.getAperture() instanceof OctagonalAperture)
             {
-                double octagonDiameter = ((OctagonalAperture)flash.getAperture()).getDiameter().doubleValue();
+                double octagonDiameter = ((OctagonalAperture)flash.getAperture()).getDiameter();
                 double edgeOffset = octagonDiameter * (Math.pow(2, 0.5) - 1) / 2;
                 double centerOffset = octagonDiameter * 0.5;
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
+                double flashX = flash.getX();
+                double flashY = flash.getY();
 
                 Polygon polygon = new Polygon();
                 polygon.getPoints().addAll(
@@ -106,13 +106,13 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             {
                 PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
                 Polygon polygon = new Polygon();
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
+                double flashX = flash.getX();
+                double flashY = flash.getY();
 
                 for (Point p : aperture.getPoints())
                 {
-                    polygon.getPoints().add(p.getX().doubleValue() + flashX);
-                    polygon.getPoints().add(p.getY().doubleValue() + flashY);
+                    polygon.getPoints().add(p.getX() + flashX);
+                    polygon.getPoints().add(p.getY() + flashY);
                 }
 
                 polygon.setStrokeWidth(0);
@@ -124,10 +124,10 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
 
     public Shape createShapeForDrillPoint(DrillPoint drillPoint)
     {
-        Shape shape = new Arc(drillPoint.getPoint().getX().doubleValue(), drillPoint.getPoint().getY().doubleValue(),
-                drillPoint.getToolDiameter().doubleValue() / 2, drillPoint.getToolDiameter().doubleValue() / 2, 0, 360);
+        Shape shape = new Arc(drillPoint.getPoint().getX(), drillPoint.getPoint().getY(),
+                drillPoint.getToolDiameter() / 2, drillPoint.getToolDiameter() / 2, 0, 360);
         shape.setStrokeLineCap(StrokeLineCap.ROUND);
-        shape.setStrokeWidth(drillPoint.getToolDiameter().doubleValue());
+        shape.setStrokeWidth(drillPoint.getToolDiameter());
         return shape;
 
     }

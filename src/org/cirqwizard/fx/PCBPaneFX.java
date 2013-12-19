@@ -49,7 +49,7 @@ import java.util.List;
 
 public class PCBPaneFX extends Region
 {
-    private static final double DEFAULT_SCALE = 5.0;
+    private static final double DEFAULT_SCALE = 0.005;
 
     public static final Color BACKGROUND_COLOR = Color.web("#ddfbdd");
     public static final Color ENABLED_TOOLPATH_COLOR = Color.web("#191970");
@@ -63,13 +63,13 @@ public class PCBPaneFX extends Region
     public static final Color SOLDER_PAD_COLOR = Color.NAVY;
     public static final Color PCB_BORDER = Color.BLACK;
 
-    private Property<Double> scaleProperty = new SimpleObjectProperty<Double>(DEFAULT_SCALE);
+    private Property<Double> scaleProperty = new SimpleObjectProperty<>(DEFAULT_SCALE);
 
     private double boardWidth;
     private double boardHeight;
 
     private java.util.List<GerberPrimitive> gerberPrimitives;
-    private Property<ObservableList<Toolpath>> toolpaths = new SimpleListProperty<Toolpath>();
+    private Property<ObservableList<Toolpath>> toolpaths = new SimpleListProperty<>();
 
     private Canvas canvas;
     private Rectangle selectionRectangle;
@@ -175,33 +175,33 @@ public class PCBPaneFX extends Region
         {
             LinearShape linearShape = (LinearShape) primitive;
             g.setLineCap(linearShape.getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
-            g.setLineWidth(linearShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
-            g.strokeLine(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
-                    linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue());
+            g.setLineWidth(linearShape.getAperture().getWidth(0));
+            g.strokeLine(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
+                    linearShape.getTo().getX(), linearShape.getTo().getY());
         }
         else if (primitive instanceof Flash)
         {
             Flash flash = (Flash) primitive;
             if (flash.getAperture() instanceof CircularAperture)
             {
-                double d = ((CircularAperture)flash.getAperture()).getDiameter().doubleValue();
+                double d = ((CircularAperture)flash.getAperture()).getDiameter();
                 double r = d / 2;
-                g.fillOval(flash.getX().doubleValue() - r, flash.getY().doubleValue() - r, d, d);
+                g.fillOval(flash.getX() - r, flash.getY() - r, d, d);
             }
             else if (flash.getAperture() instanceof RectangularAperture)
             {
                 RectangularAperture aperture = (RectangularAperture)flash.getAperture();
-                g.fillRect(flash.getX().doubleValue() - aperture.getDimensions()[0].doubleValue() / 2,
-                        flash.getY().doubleValue() - aperture.getDimensions()[1].doubleValue() / 2,
-                        aperture.getDimensions()[0].doubleValue(),
-                        aperture.getDimensions()[1].doubleValue());
+                g.fillRect(flash.getX() - aperture.getDimensions()[0] / 2,
+                        flash.getY() - aperture.getDimensions()[1] / 2,
+                        aperture.getDimensions()[0],
+                        aperture.getDimensions()[1]);
             }
             else if (flash.getAperture() instanceof OctagonalAperture)
             {
-                double edgeOffset = ((OctagonalAperture)flash.getAperture()).getDiameter().doubleValue() * (Math.pow(2, 0.5) - 1) / 2;
-                double centerOffset = ((OctagonalAperture)flash.getAperture()).getDiameter().doubleValue() * 0.5;
-                double x = flash.getX().doubleValue();
-                double y = flash.getY().doubleValue();
+                double edgeOffset = (Math.pow(2, 0.5) - 1) / 2 * ((OctagonalAperture)flash.getAperture()).getDiameter();
+                double centerOffset =  0.5 * ((OctagonalAperture)flash.getAperture()).getDiameter();
+                double x = flash.getX();
+                double y = flash.getY();
 
                 g.beginPath();
                 g.moveTo(centerOffset + x, edgeOffset + y);
@@ -219,13 +219,11 @@ public class PCBPaneFX extends Region
             {
                 PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
                 ArrayList<Point> points = aperture.getPoints();
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
 
                 g.beginPath();
-                g.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
+                g.moveTo(points.get(0).getX() + flash.getX(), points.get(0).getY() + flash.getY());
                 for (int i = 1; i < points.size(); i++)
-                    g.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
+                    g.lineTo(points.get(i).getX() + flash.getX(), points.get(i).getY() + flash.getY());
 
                 g.closePath();
                 g.fill();
@@ -243,28 +241,28 @@ public class PCBPaneFX extends Region
         {
             LinearToolpath linearToolpath = (LinearToolpath) toolpath;
             g.setLineCap(StrokeLineCap.ROUND);
-            g.setLineWidth(linearToolpath.getToolDiameter().doubleValue());
-            g.strokeLine(linearToolpath.getCurve().getFrom().getX().doubleValue(), linearToolpath.getCurve().getFrom().getY().doubleValue(),
-                    linearToolpath.getCurve().getTo().getX().doubleValue(), linearToolpath.getCurve().getTo().getY().doubleValue());
+            g.setLineWidth(linearToolpath.getToolDiameter());
+            g.strokeLine(linearToolpath.getCurve().getFrom().getX(), linearToolpath.getCurve().getFrom().getY(),
+                    linearToolpath.getCurve().getTo().getX(), linearToolpath.getCurve().getTo().getY());
         }
         else if (toolpath instanceof CircularToolpath)
         {
             CircularToolpath circularToolpath = (CircularToolpath) toolpath;
             g.setLineCap(StrokeLineCap.ROUND);
-            g.setLineWidth(circularToolpath.getToolDiameter().doubleValue());
+            g.setLineWidth(circularToolpath.getToolDiameter());
             Arc arc = (Arc) circularToolpath.getCurve();
-            g.strokeArc(arc.getCenter().getX().doubleValue()- arc.getRadius().doubleValue(),
-                    arc.getCenter().getY().doubleValue() - arc.getRadius().doubleValue(),
-                    arc.getRadius().doubleValue() * 2, arc.getRadius().doubleValue() * 2,
-                    -Math.toDegrees(arc.getStart().doubleValue()), Math.toDegrees(arc.getAngle().doubleValue()) * (arc.isClockwise() ? 1 : -1), ArcType.OPEN);
+            g.strokeArc(arc.getCenter().getX() - arc.getRadius(),
+                    arc.getCenter().getY() - arc.getRadius(),
+                    arc.getRadius() * 2, arc.getRadius() * 2,
+                    -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), ArcType.OPEN);
         }
         else if (toolpath instanceof DrillPoint)
         {
             DrillPoint drillPoint = (DrillPoint) toolpath;
             g.setFill(color);
-            g.fillOval(drillPoint.getPoint().getX().doubleValue() - drillPoint.getToolDiameter().doubleValue() / 2,
-                    drillPoint.getPoint().getY().doubleValue() - drillPoint.getToolDiameter().doubleValue() / 2,
-                    drillPoint.getToolDiameter().doubleValue(), drillPoint.getToolDiameter().doubleValue());
+            g.fillOval(drillPoint.getPoint().getX() - drillPoint.getToolDiameter() / 2,
+                    drillPoint.getPoint().getY() - drillPoint.getToolDiameter() / 2,
+                    drillPoint.getToolDiameter(), drillPoint.getToolDiameter());
         }
     }
 

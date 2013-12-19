@@ -47,12 +47,12 @@ public class ComponentsLayer extends Layer
         return ids;
     }
 
-    private RealNumber bindAngle(RealNumber angle)
+    private int bindAngle(int angle)
     {
-        if (angle.greaterOrEqualTo(360))
-            return angle.subtract(360);
-        if (angle.lessThan(0))
-            return angle.add(new RealNumber(360));
+        if (angle >= 360)
+            return angle - 360;
+        if (angle < 0)
+            return angle + 360;
         return angle;
     }
 
@@ -63,13 +63,13 @@ public class ComponentsLayer extends Layer
         {
             if (clockwise)
             {
-                p.setPoint(new Point(p.getPoint().getY(), p.getPoint().getX().negate()));
-                p.setAngle(bindAngle(p.getAngle().add(new RealNumber(90))));
+                p.setPoint(new Point(p.getPoint().getY(), -p.getPoint().getX()));
+                p.setAngle(bindAngle(p.getAngle() + 90));
             }
             else
             {
-                p.setPoint(new Point(p.getPoint().getY().negate(), p.getPoint().getX()));
-                p.setAngle(bindAngle(p.getAngle().subtract(new RealNumber(90))));
+                p.setPoint(new Point(-p.getPoint().getY(), p.getPoint().getX()));
+                p.setAngle(bindAngle(p.getAngle() - 90));
             }
         }
     }
@@ -87,9 +87,9 @@ public class ComponentsLayer extends Layer
         Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (PPPoint p : points)
         {
-            if (p.getPoint().getX().lessThan(min.getX()))
+            if (p.getPoint().getX() < min.getX())
                 min = new Point(p.getPoint().getX(), min.getY());
-            if (p.getPoint().getY().lessThan(min.getY()))
+            if (p.getPoint().getY() < min.getY())
                 min = new Point(min.getX(), p.getPoint().getY());
         }
         return min;

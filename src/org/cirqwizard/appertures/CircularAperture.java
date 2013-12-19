@@ -14,51 +14,41 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.appertures;
 
-import org.cirqwizard.math.RealNumber;
-
-
 public class CircularAperture extends Aperture
 {
-    private RealNumber diameter;
+    private int diameter;
 
-    public CircularAperture(RealNumber diameter)
+    public CircularAperture(int diameter)
     {
         super();
         this.diameter = diameter;
     }
 
-    public CircularAperture(RealNumber diameter, RealNumber holeDiameter)
+    public CircularAperture(int diameter, int holeDiameter)
     {
         super(holeDiameter);
         this.diameter = diameter;
     }
 
-    public CircularAperture(RealNumber diameter, RealNumber holeWidth, RealNumber holeHeight)
+    public CircularAperture(int diameter, int holeWidth, int holeHeight)
     {
         super(holeWidth, holeHeight);
         this.diameter = diameter;
     }
 
-    public RealNumber getDiameter()
+    public int getDiameter()
     {
         return diameter;
     }
 
     @Override
-    public void render(java.awt.Graphics2D g, int x, int y, double scale)
-    {
-        int diameter = (int) (this.diameter.doubleValue() * scale);
-        g.fillArc(x - diameter / 2, y - diameter / 2, diameter, diameter, 0, 360);
-    }
-
-    @Override
     public boolean isVisible()
     {
-        return diameter.greaterThan(0);
+        return diameter > 0;
     }
 
     @Override
-    public RealNumber getWidth(RealNumber angle)
+    public int getWidth(double angle)
     {
         return diameter;
     }

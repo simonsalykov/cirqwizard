@@ -1,37 +1,39 @@
 package org.cirqwizard.render;
 
+import org.cirqwizard.geom.Point;
+
 /**
  * Created by simon on 11/12/13.
  */
 public class MatchedArc
 {
-    private PointI center;
-    private double radius;
+    private Point center;
+    private int radius;
     private double uncertainty;
 
-    public MatchedArc(PointI center, double radius, double uncertainty)
+    public MatchedArc(Point center, int radius, double uncertainty)
     {
         this.center = center;
         this.radius = radius;
         this.uncertainty = uncertainty;
     }
 
-    public PointI getCenter()
+    public Point getCenter()
     {
         return center;
     }
 
-    public void setCenter(PointI center)
+    public void setCenter(Point center)
     {
         this.center = center;
     }
 
-    public double getRadius()
+    public int getRadius()
     {
         return radius;
     }
 
-    public void setRadius(double radius)
+    public void setRadius(int radius)
     {
         this.radius = radius;
     }

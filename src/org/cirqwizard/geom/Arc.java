@@ -21,12 +21,12 @@ import org.cirqwizard.math.RealNumber;
 public class Arc extends Curve
 {
     private Point center;
-    private RealNumber radius;
+    private int radius;
     private boolean clockwise;
-    private RealNumber start;
-    private RealNumber angle;
+    private double start;
+    private double angle;
 
-    public Arc(Point from, Point to, Point center, RealNumber radius, boolean clockwise)
+    public Arc(Point from, Point to, Point center, int radius, boolean clockwise)
     {
         this.from = from;
         this.to = to;
@@ -41,7 +41,7 @@ public class Arc extends Curve
     {
         start = new Line(center, from).angleToX();
         if (to.equals(from))
-            angle = MathUtil.TWO_PI;
+            angle = Math.PI * 2;
         else
         {
             angle = new Line(center, to).angleToX();
@@ -49,18 +49,18 @@ public class Arc extends Curve
         }
     }
 
-    public static RealNumber calculateAngularDistance(RealNumber startAngle, RealNumber endAngle, boolean clockwise)
+    public static double calculateAngularDistance(double startAngle, double endAngle, boolean clockwise)
     {
-        if (startAngle.equals(endAngle))
-            return MathUtil.TWO_PI;
+        if (startAngle == endAngle)
+            return Math.PI * 2;
 
-        RealNumber theta;
+        double theta;
         if (!clockwise)
-            theta = endAngle.subtract(startAngle);
+            theta = endAngle - startAngle;
         else
-            theta = startAngle.subtract(endAngle);
-        if (theta.lessThan(0))
-            theta = theta.add(MathUtil.TWO_PI);
+            theta = startAngle - endAngle;
+        if (theta < 0)
+            theta += Math.PI * 2;
         return theta;
     }
 
@@ -89,17 +89,17 @@ public class Arc extends Curve
         return center;
     }
 
-    public RealNumber getRadius()
+    public int getRadius()
     {
         return radius;
     }
 
-    public RealNumber getStart()
+    public double getStart()
     {
         return start;
     }
 
-    public RealNumber getAngle()
+    public double getAngle()
     {
         return angle;
     }
@@ -109,13 +109,13 @@ public class Arc extends Curve
         return clockwise;
     }
 
-    public RealNumber getEnd(boolean bind)
+    public double getEnd(boolean bind)
     {
-        RealNumber end;
+        double end;
         if (clockwise)
-            end = start.subtract(angle);
+            end = start - angle;
         else
-            end = start.add(angle);
+            end = start + angle;
         if (bind)
             end = MathUtil.bindAngle(end);
         return end;

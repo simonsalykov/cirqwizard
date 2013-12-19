@@ -52,7 +52,7 @@ public class MillingLayer extends Layer
             if (element instanceof LinearShape)
             {
                 LinearShape shape = (LinearShape) element;
-                toolpaths.add(new LinearToolpath(element.getAperture().getWidth(new RealNumber(0)), shape.getFrom(), shape.getTo()));
+                toolpaths.add(new LinearToolpath(element.getAperture().getWidth(0), shape.getFrom(), shape.getTo()));
             }
         }
     }
@@ -77,9 +77,9 @@ public class MillingLayer extends Layer
         Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (GerberPrimitive p : elements)
         {
-            if (p.getMin().getX().lessThan(min.getX()))
+            if (p.getMin().getX() < min.getX())
                 min = new Point(p.getMin().getX(), min.getY());
-            if (p.getMin().getY().lessThan(min.getY()))
+            if (p.getMin().getY() < min.getY())
                 min = new Point(min.getX(), p.getMin().getY());
         }
         return min;

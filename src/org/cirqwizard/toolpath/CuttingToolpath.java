@@ -20,16 +20,16 @@ import org.cirqwizard.math.RealNumber;
 
 public abstract class CuttingToolpath extends Toolpath
 {
-    private RealNumber toolDiameter;
+    private int toolDiameter;
 
     public abstract Curve getCurve();
 
-    public CuttingToolpath(RealNumber toolDiameter)
+    public CuttingToolpath(int toolDiameter)
     {
         this.toolDiameter = toolDiameter;
     }
 
-    public RealNumber getToolDiameter()
+    public int getToolDiameter()
     {
         return toolDiameter;
     }

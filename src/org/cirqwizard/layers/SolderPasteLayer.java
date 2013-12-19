@@ -67,15 +67,15 @@ public class SolderPasteLayer extends Layer
         Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (GerberPrimitive p : elements)
         {
-            if (p.getMin().getX().lessThan(min.getX()))
+            if (p.getMin().getX() < min.getX())
                 min = new Point(p.getMin().getX(), min.getY());
-            if (p.getMin().getY().lessThan(min.getY()))
+            if (p.getMin().getY() < min.getY())
                 min = new Point(min.getX(), p.getMin().getY());
         }
         return min;
     }
 
-    public void generateToolpaths(RealNumber needleDiameter)
+    public void generateToolpaths(int needleDiameter)
     {
         toolpaths = new ArrayList<Toolpath>();
         for (GerberPrimitive element : elements)
@@ -86,25 +86,24 @@ public class SolderPasteLayer extends Layer
                 if (flash.getAperture() instanceof RectangularAperture)
                 {
                     RectangularAperture aperture = (RectangularAperture)flash.getAperture();
-                    RealNumber[] dimensions = aperture.getDimensions();
-                    boolean vertical = dimensions[1].greaterThan(dimensions[0]);
-                    RealNumber needleRadius = needleDiameter.divide(2);
+                    int[] dimensions = aperture.getDimensions();
+                    boolean vertical = dimensions[1] > dimensions[0];
 
-                    int passes = Math.max(1, (int) dimensions[vertical ? 0 : 1].divide(needleDiameter.multiply(2)).doubleValue());
+                    int passes = Math.max(1, dimensions[vertical ? 0 : 1] / (needleDiameter * 2));
                     for (int i = 0; i < passes; i++)
                     {
                         LinearToolpath toolpath;
                         if (vertical)
                         {
-                            RealNumber x = flash.getX().subtract(dimensions[0].divide(2)).add(dimensions[0].divide(passes + 1).multiply(i + 1));
-                            RealNumber y = flash.getY().subtract(dimensions[1].divide(2)).add(needleRadius.multiply(2));
-                            toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, flash.getY().add(dimensions[1].divide(2)).subtract(needleRadius.multiply(2))));
+                            int x = (int)(flash.getX() - dimensions[0] / 2 + (double)dimensions[0] / (passes + 1) * (i + 1));
+                            int y = flash.getY() - dimensions[1] / 2 + needleDiameter;
+                            toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, flash.getY() + (dimensions[1] / 2) - needleDiameter));
                         }
                         else
                         {
-                            RealNumber x = flash.getX().subtract(dimensions[0].divide(2)).add(needleRadius.multiply(2));
-                            RealNumber y = flash.getY().subtract(dimensions[1].divide(2)).add(dimensions[1].divide(passes + 1).multiply(i + 1));
-                            toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(flash.getX().add(dimensions[0].divide(2)).subtract(needleRadius.multiply(2)), y));
+                            int x = flash.getX() - dimensions[0] / 2 + needleDiameter;
+                            int y = (int)(flash.getY() - dimensions[1] / 2 + (double)dimensions[1] / (passes + 1) * (i + 1));
+                            toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(flash.getX() + (dimensions[0] / 2) - needleDiameter, y));
                         }
                         toolpaths.add(toolpath);
                     }

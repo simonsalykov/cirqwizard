@@ -24,7 +24,7 @@ public class LinearShape extends GerberPrimitive
 {
     private Line line;
 
-    public LinearShape(RealNumber fromX, RealNumber fromY, RealNumber toX, RealNumber toY, Aperture aperture)
+    public LinearShape(int fromX, int fromY, int toX, int toY, Aperture aperture)
     {
         Point from = new Point(fromX, fromY);
         Point to = new Point(toX, toY);
@@ -47,13 +47,13 @@ public class LinearShape extends GerberPrimitive
     {
         if (clockwise)
         {
-            line.setFrom(new Point(line.getFrom().getY(), line.getFrom().getX().negate()));
-            line.setTo(new Point(line.getTo().getY(), line.getTo().getX().negate()));
+            line.setFrom(new Point(line.getFrom().getY(), -line.getFrom().getX()));
+            line.setTo(new Point(line.getTo().getY(), -line.getTo().getX()));
         }
         else
         {
-            line.setFrom(new Point(line.getFrom().getY().negate(), line.getFrom().getX()));
-            line.setTo(new Point(line.getTo().getY().negate(), line.getTo().getX()));
+            line.setFrom(new Point(-line.getFrom().getY(), line.getFrom().getX()));
+            line.setTo(new Point(-line.getTo().getY(), line.getTo().getX()));
         }
         aperture = aperture.rotate(clockwise);
     }
@@ -68,8 +68,8 @@ public class LinearShape extends GerberPrimitive
     @Override
     public Point getMin()
     {
-        return new Point(line.getFrom().getX().lessThan(line.getTo().getX()) ? line.getFrom().getX() : line.getTo().getX(),
-                line.getFrom().getY().lessOrEqualTo(line.getTo().getY()) ? line.getFrom().getY() : line.getTo().getY());
+        return new Point(line.getFrom().getX() < line.getTo().getX() ? line.getFrom().getX() : line.getTo().getX(),
+                line.getFrom().getY() < line.getTo().getY() ? line.getFrom().getY() : line.getTo().getY());
     }
 
 }

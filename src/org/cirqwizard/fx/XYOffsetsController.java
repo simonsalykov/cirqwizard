@@ -42,7 +42,7 @@ public class XYOffsetsController extends SceneController implements Initializabl
     @FXML private Button continueButton;
 
 
-    private final static double REFERENCE_PIN_POSITION_ON_LAMINATE = 5;
+    private final static int REFERENCE_PIN_POSITION_ON_LAMINATE = 5000;
 
 
     @Override
@@ -65,22 +65,22 @@ public class XYOffsetsController extends SceneController implements Initializabl
         x.realNumberTextProperty().addListener(changeListener);
         y.realNumberTextProperty().addListener(changeListener);
         z.realNumberTextProperty().addListener(changeListener);
-        x.realNumberTextProperty().addListener(new ChangeListener<String>()
+        x.realNumberIntegerProperty().addListener(new ChangeListener<Number>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2)
             {
-                checkOffsetLimit(s2, y.getRealNumberText());
-                getMainApplication().getContext().setG54X(s2);
+                checkOffsetLimit(number2 == null ? null : number2.intValue(), y.getIntegerValue());
+                getMainApplication().getContext().setG54X(number2 == null ? null : number2.intValue());
             }
         });
-        y.realNumberTextProperty().addListener(new ChangeListener<String>()
+        y.realNumberIntegerProperty().addListener(new ChangeListener<Number>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2)
             {
-                checkOffsetLimit(x.getRealNumberText(), s2);
-                getMainApplication().getContext().setG54Y(s2);
+                checkOffsetLimit(x.getIntegerValue(), number2 == null ? null : number2.intValue());
+                getMainApplication().getContext().setG54Y(number2 == null ? null : number2.intValue());
             }
         });
     }
@@ -88,22 +88,20 @@ public class XYOffsetsController extends SceneController implements Initializabl
     @Override
     public void refresh()
     {
-        x.setText(getMainApplication().getContext().getG54X());
-        y.setText(getMainApplication().getContext().getG54Y());
+        x.setIntegerValue(getMainApplication().getContext().getG54X());
+        y.setIntegerValue(getMainApplication().getContext().getG54Y());
         updateComponents();
     }
 
-    private void checkOffsetLimit(String x, String y)
+    private void checkOffsetLimit(Integer x, Integer y)
     {
         if (x == null || y == null)
             return;
-        double xOffset = Double.parseDouble(x);
-        double yOffset = Double.parseDouble(y);
         Context context = getMainApplication().getContext();
-        double laminateX = Double.parseDouble(getMainApplication().getSettings().getMachineReferencePinX()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
-        double laminateY = Double.parseDouble(getMainApplication().getSettings().getMachineReferencePinY()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
-        double xOffsetToPcb = xOffset - laminateX;
-        double yOffsetToPcb  = yOffset - laminateY;
+        int laminateX = Integer.valueOf(getMainApplication().getSettings().getMachineReferencePinX()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
+        int laminateY = Integer.valueOf(getMainApplication().getSettings().getMachineReferencePinY()) - REFERENCE_PIN_POSITION_ON_LAMINATE;
+        double xOffsetToPcb = x - laminateX;
+        double yOffsetToPcb  = y - laminateY;
         if (((xOffsetToPcb >= 0) && (xOffsetToPcb + context.getBoardWidth() <= context.getPcbSize().getWidth())) &&
             ((yOffsetToPcb >= 0) && (yOffsetToPcb + context.getBoardHeight() <= context.getPcbSize().getHeight())))
         {
@@ -128,12 +126,12 @@ public class XYOffsetsController extends SceneController implements Initializabl
     public void moveXY()
     {
         if (!goButton.isDisabled())
-            getMainApplication().getCNCController().moveTo(x.getRealNumberText(), y.getRealNumberText());
+            getMainApplication().getCNCController().moveTo(x.getIntegerValue(), y.getIntegerValue());
     }
 
     public void moveZ()
     {
         if (!moveZButton.isDisabled())
-            getMainApplication().getCNCController().moveZ(z.getRealNumberText());
+            getMainApplication().getCNCController().moveZ(z.getIntegerValue());
     }
 }

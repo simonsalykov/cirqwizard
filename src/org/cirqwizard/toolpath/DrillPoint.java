@@ -25,9 +25,9 @@ public class DrillPoint extends CuttingToolpath
 {
     private Point point;
 
-    public DrillPoint(Point point, RealNumber diameter)
+    public DrillPoint(Point point, int diameter)
     {
-        super(new RealNumber(diameter.getValue().setScale(1, RoundingMode.HALF_UP)));
+        super(diameter / 100 * 100);    // Rounding to tenth of millimeter
         this.point = point;
     }
 

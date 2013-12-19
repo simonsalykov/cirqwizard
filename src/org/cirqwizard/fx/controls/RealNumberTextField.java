@@ -18,11 +18,17 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
+import org.cirqwizard.settings.Settings;
+
+import java.text.DecimalFormat;
 
 
 public class RealNumberTextField extends TextField
 {
     private StringProperty realNumberTextProperty = new SimpleStringProperty();
+    private IntegerProperty realNumberIntegerProperty = new SimpleIntegerProperty();
+
+    private DecimalFormat format = new DecimalFormat("0.0");
 
     public final String getRealNumberText()
     {
@@ -32,6 +38,24 @@ public class RealNumberTextField extends TextField
     public StringProperty realNumberTextProperty()
     {
         return realNumberTextProperty;
+    }
+
+    public Integer getIntegerValue()
+    {
+        return realNumberIntegerProperty.getValue();
+    }
+
+    public IntegerProperty realNumberIntegerProperty()
+    {
+        return realNumberIntegerProperty;
+    }
+
+    public void setIntegerValue(Integer value)
+    {
+        if (value == null)
+            setText(null);
+        else
+            setText(format.format((double) value / Settings.RESOLUTION));
     }
 
     public RealNumberTextField()
@@ -50,13 +74,14 @@ public class RealNumberTextField extends TextField
                     try
                     {
                         newValue = newValue.trim().replace(",", ".");
-                        Double.parseDouble(newValue);
+                        realNumberIntegerProperty.setValue(Double.parseDouble(newValue) * Settings.RESOLUTION);
                         realNumberTextProperty.setValue(newValue);
                     }
                     catch (Exception e)
                     {
                         getStyleClass().add("validation-error");
                         realNumberTextProperty.setValue(null);
+                        realNumberIntegerProperty.setValue(null);
                     }
                 }
             }

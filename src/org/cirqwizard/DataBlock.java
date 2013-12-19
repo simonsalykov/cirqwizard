@@ -14,33 +14,30 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard;
 
-import org.cirqwizard.math.RealNumber;
-
-
 public class DataBlock
 {
-    private RealNumber x;
-    private RealNumber y;
+    private Integer x;
+    private Integer y;
     private Integer g;
     private Integer d;
     private Integer m;
 
-    public RealNumber getX()
+    public Integer getX()
     {
         return x;
     }
 
-    public void setX(RealNumber x)
+    public void setX(Integer x)
     {
         this.x = x;
     }
 
-    public RealNumber getY()
+    public Integer getY()
     {
         return y;
     }
 
-    public void setY(RealNumber y)
+    public void setY(Integer y)
     {
         this.y = y;
     }

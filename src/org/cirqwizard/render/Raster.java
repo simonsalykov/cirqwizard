@@ -51,32 +51,23 @@ import java.util.concurrent.TimeUnit;
 
 public class Raster
 {
-    private static final int PREVIEW_RESOLUTION_FACTOR = 10;
-
-    private BufferedImage preview;
     private int width;
     private int height;
-    private int resolution;
-    private int previewResolution;
-    private double inflation;
+    private int inflation;
+    private int toolDiameter;
+
     private ArrayList<GerberPrimitive> primitives = new ArrayList<GerberPrimitive>();
-    private ArrayList<RealNumber> radii = new ArrayList<RealNumber>();
+    private ArrayList<Integer> radii = new ArrayList<>();
     private ArrayList<Flash> circularFlashes = new ArrayList<>();
 
     private DoubleProperty generationProgress = new SimpleDoubleProperty();
 
-    private RealNumber toolDiameter;
 
-    public Raster(double width, double height, int resolution, double inflation, RealNumber toolDiameter)
+    public Raster(int width, int height, int inflation, int toolDiameter)
     {
-        int[] cmap = {0x00000000, 0x00ffffff, 0x0000ff00, 0xffffffff};
-        IndexColorModel icm = new IndexColorModel(2, 3, cmap, 0, false, 3, DataBuffer.TYPE_BYTE);
-        previewResolution = resolution / PREVIEW_RESOLUTION_FACTOR;
-        preview = new BufferedImage((int)(width * previewResolution), (int)(height * previewResolution), BufferedImage.TYPE_BYTE_BINARY, icm);
-        this.width = (int)(width * resolution);
-        this.height = (int)(height * resolution);
+        this.width = width;
+        this.height = height;
         this.inflation = inflation;
-        this.resolution = resolution;
         this.toolDiameter = toolDiameter;
     }
 
@@ -88,14 +79,14 @@ public class Raster
             CircularAperture aperture = (CircularAperture) primitive.getAperture();
             if (primitive instanceof Flash)
                 circularFlashes.add((Flash) primitive);
-            else if (!radii.contains(aperture.getDiameter().divide(2).multiply(resolution)))
-                radii.add(aperture.getDiameter().divide(2).multiply(resolution));
+            else if (!radii.contains(aperture.getDiameter() / 2))
+                radii.add(aperture.getDiameter() / 2);
         }
     }
 
     public java.util.List<Toolpath> trace()
     {
-        final int windowSize = 5 * resolution;
+        final int windowSize = 5000;
         final int windowsOverlap = 5;
 
         final Vector<Toolpath> segments = new Vector<>();
@@ -128,7 +119,7 @@ public class Raster
                             for (Flash flash : circularFlashes)
                             {
                                 Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
-                                translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter().divide(2).multiply(resolution))));
+                                translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2)));
                             }
 
                             int windowWidth = Math.min(windowSize + 2 * windowsOverlap, width - _x);
@@ -187,7 +178,7 @@ public class Raster
                 Point start = translateWindowCoordiantes(ct.getCurve().getFrom(), offset);
                 Point end = translateWindowCoordiantes(ct.getCurve().getTo(), offset);
                 Point center = translateWindowCoordiantes(arc.getCenter(), offset);
-                RealNumber radius = arc.getRadius().divide(resolution);
+                int radius = arc.getRadius();
                 result.add(new CircularToolpath(ct.getToolDiameter(), start, end, center, radius, arc.isClockwise()));
             }
         }
@@ -197,12 +188,12 @@ public class Raster
 
     private Point translateWindowCoordiantes(Point point, Point windowOffset)
     {
-        return new Point(point.getX(), point.getY()).add(windowOffset).divide(new RealNumber(resolution));
+        return new Point(point.getX(), point.getY()).add(windowOffset);
     }
 
     private Point translateToWindowCoordinates(Point point, Point windowOffset)
     {
-        return new Point(point.getX(), point.getY()).multiply(new RealNumber(resolution)).subtract(windowOffset);
+        return new Point(point.getX(), point.getY()).subtract(windowOffset);
     }
 
     private java.util.List<Toolpath> mergeToolpaths(java.util.List<Toolpath> toolpaths)
@@ -223,14 +214,9 @@ public class Raster
         return generationProgress;
     }
 
-    public java.util.List<RealNumber> getRadii()
+    public java.util.List<Integer> getRadii()
     {
         return radii;
-    }
-
-    public int getResolution()
-    {
-        return resolution;
     }
 
     private RasterWindow renderWindow(PointI lowerLeftCorner, int width, int height)
@@ -242,57 +228,49 @@ public class Raster
         g.setBackground(Color.BLACK);
         g.clearRect(0, 0, width, height);
         for (GerberPrimitive primitive : primitives)
-            renderPrimitive(window.createGraphics(), primitive, inflation, false, lowerLeftCorner);
+            renderPrimitive(window.createGraphics(), primitive, inflation, lowerLeftCorner);
 
         return new RasterWindow(window, lowerLeftCorner);
     }
 
-    private void renderPrimitive(Graphics2D g, GerberPrimitive primitive, double inflation, boolean renderPreview, PointI lowerLeftCorner)
+    private void renderPrimitive(Graphics2D g, GerberPrimitive primitive, double inflation, PointI lowerLeftCorner)
     {
         if (!primitive.getAperture().isVisible())
             return;
 
-        if (renderPreview)
-        {
-            g.transform(AffineTransform.getScaleInstance(previewResolution, previewResolution));
-        }
-        else
-        {
-            g.transform(AffineTransform.getTranslateInstance(-lowerLeftCorner.x, -lowerLeftCorner.y));
-            g.transform(AffineTransform.getScaleInstance(resolution, resolution));
-        }
+        g.transform(AffineTransform.getTranslateInstance(-lowerLeftCorner.x, -lowerLeftCorner.y));
         g.setColor(Color.WHITE);
         if (primitive instanceof LinearShape)
         {
             LinearShape linearShape = (LinearShape) primitive;
             int cap = linearShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
-            g.setStroke(new BasicStroke((float) ((linearShape.getAperture().getWidth(new RealNumber(0)).doubleValue() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
-            g.draw(new Line2D.Double(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
-                    linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue()));
+            g.setStroke(new BasicStroke((float) ((linearShape.getAperture().getWidth(0) + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
+                    linearShape.getTo().getX(), linearShape.getTo().getY()));
         }
         else if (primitive instanceof Flash)
         {
             Flash flash = (Flash) primitive;
             if (flash.getAperture() instanceof CircularAperture)
             {
-                double d = ((CircularAperture)flash.getAperture()).getDiameter().doubleValue() + inflation * 2;
+                double d = ((CircularAperture)flash.getAperture()).getDiameter() + inflation * 2;
                 double r = d / 2;
-                g.fill(new Ellipse2D.Double(flash.getX().doubleValue() - r, flash.getY().doubleValue() - r, d, d));
+                g.fill(new Ellipse2D.Double(flash.getX() - r, flash.getY() - r, d, d));
             }
             else if (flash.getAperture() instanceof RectangularAperture)
             {
                 RectangularAperture aperture = (RectangularAperture)flash.getAperture();
-                g.fill(new Rectangle2D.Double(flash.getX().doubleValue() - aperture.getDimensions()[0].doubleValue() / 2 - inflation,
-                        flash.getY().doubleValue() - aperture.getDimensions()[1].doubleValue() / 2 - inflation,
-                        aperture.getDimensions()[0].doubleValue() + inflation * 2,
-                        aperture.getDimensions()[1].doubleValue() + inflation * 2));
+                g.fill(new Rectangle2D.Double(flash.getX() - aperture.getDimensions()[0] / 2 - inflation,
+                        flash.getY() - aperture.getDimensions()[1] / 2 - inflation,
+                        aperture.getDimensions()[0] + inflation * 2,
+                        aperture.getDimensions()[1] + inflation * 2));
             }
             else if (flash.getAperture() instanceof OctagonalAperture)
             {
-                double edgeOffset = (((OctagonalAperture)flash.getAperture()).getDiameter().doubleValue() + inflation * 2) * (Math.pow(2, 0.5) - 1) / 2;
-                double centerOffset = (((OctagonalAperture)flash.getAperture()).getDiameter().doubleValue() + inflation * 2) * 0.5;
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
+                double edgeOffset = (Math.pow(2, 0.5) - 1) / 2 * (((OctagonalAperture)flash.getAperture()).getDiameter() + inflation * 2);
+                double centerOffset = 0.5 * (((OctagonalAperture)flash.getAperture()).getDiameter() + inflation * 2);
+                double flashX = flash.getX();
+                double flashY = flash.getY();
 
                 Path2D polygon = new GeneralPath();
                 polygon.moveTo(centerOffset + flashX, edgeOffset + flashY);
@@ -309,29 +287,17 @@ public class Raster
             {
                 PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
                 ArrayList<org.cirqwizard.geom.Point> points = aperture.getPoints();
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
+                double flashX = flash.getX();
+                double flashY = flash.getY();
                 Path2D polygon = new GeneralPath();
 
-                points = PolygonUtils.expandPolygon(new ArrayList<Point>(points.subList(0, points.size() - 1)), inflation);
-                polygon.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
+                points = PolygonUtils.expandPolygon(new ArrayList<>(points.subList(0, points.size() - 1)), inflation);
+                polygon.moveTo(points.get(0).getX() + flashX, points.get(0).getY() + flashY);
                 for (int i = 1; i < points.size(); i++)
-                    polygon.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
+                    polygon.lineTo(points.get(i).getX() + flashX, points.get(i).getY() + flashY);
 
                 g.fill(polygon);
             }
-        }
-    }
-
-    public void saveTo(String file)
-    {
-        try
-        {
-            ImageIO.write(preview, "png", new File(file));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
         }
     }
 

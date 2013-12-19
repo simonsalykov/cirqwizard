@@ -20,30 +20,30 @@ import org.cirqwizard.math.RealNumber;
 
 public class RectangularAperture extends Aperture
 {
-    private RealNumber dimensions[] = new RealNumber[2];
+    private int dimensions[] = new int[2];
 
-    public RectangularAperture(RealNumber width, RealNumber height)
+    public RectangularAperture(int width, int height)
     {
         super();
         this.dimensions[0] = width;
         this.dimensions[1] = height;
     }
 
-    public RectangularAperture(RealNumber width, RealNumber height, RealNumber holeDiameter)
+    public RectangularAperture(int width, int height, int holeDiameter)
     {
         super(holeDiameter);
         this.dimensions[0] = width;
         this.dimensions[1] = height;
     }
 
-    public RectangularAperture(RealNumber width, RealNumber height, RealNumber holeWidth, RealNumber holeHeight)
+    public RectangularAperture(int width, int height, int holeWidth, int holeHeight)
     {
         super(holeWidth, holeHeight);
         this.dimensions[0] = width;
         this.dimensions[1] = height;
     }
 
-    public RealNumber[] getDimensions()
+    public int[] getDimensions()
     {
         return dimensions;
     }
@@ -55,23 +55,15 @@ public class RectangularAperture extends Aperture
     }
 
     @Override
-    public void render(java.awt.Graphics2D g, int x, int y, double scale)
-    {
-        int width = (int)(dimensions[0].doubleValue() * scale);
-        int height = (int) (dimensions[1].doubleValue() * scale);
-        g.fillRect(x - width / 2, y - height / 2, width, height);
-    }
-
-    @Override
     public boolean isVisible()
     {
-        return dimensions[0].greaterThan(0) && dimensions[1].greaterThan(0);
+        return dimensions[0] > 0 && dimensions[1] > 0;
     }
 
     @Override
-    public RealNumber getWidth(RealNumber angle)
+    public int getWidth(RealNumber angle)
     {
-        return MathUtil.max(dimensions[0], dimensions[1]);
+        return Math.max(dimensions[0], dimensions[1]);
     }
 
 }

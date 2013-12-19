@@ -20,6 +20,7 @@ import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.render.Raster;
+import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.DoubleProperty;
@@ -37,7 +38,7 @@ import java.util.logging.Level;
 
 public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 {
-    private Property<String> toolDiameter = new SimpleObjectProperty<String>();
+    private Property<String> toolDiameter = new SimpleObjectProperty<>();
     private MainApplication mainApplication;
     private DoubleProperty overallProgressProperty;
     private Context context;
@@ -85,19 +86,20 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 Layer layer = getLayer();
                 if (layer instanceof TraceLayer)
                 {
-                    Raster raster = new Raster(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1, 1000,
-                            Double.valueOf(toolDiameter.getValue()) / 2, new RealNumber(toolDiameter.getValue()));
+                    int diameter = (int)(Double.valueOf(toolDiameter.getValue()) * Settings.RESOLUTION);
+                    Raster raster = new Raster((int)(mainApplication.getContext().getBoardWidth() + 1), (int)(mainApplication.getContext().getBoardHeight() + 1),
+                            diameter / 2, diameter);
                     TraceLayer traceLayer = (TraceLayer) layer;
                     overallProgressProperty.bind(raster.generationProgressProperty());
                     long t = System.currentTimeMillis();
-                    traceLayer.generateToolpaths(raster, new RealNumber(toolDiameter.getValue()));
+                    traceLayer.generateToolpaths(raster);
                     t = System.currentTimeMillis() - t;
                     System.out.println("generation time: " + t);
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {
                     SolderPasteLayer solderPasteLayer = (SolderPasteLayer) layer;
-                    solderPasteLayer.generateToolpaths(new RealNumber(toolDiameter.getValue()));
+                    solderPasteLayer.generateToolpaths((int)(Double.valueOf(toolDiameter.getValue()) * Settings.RESOLUTION));
                 }
                 else if (layer instanceof MillingLayer)
                 {
@@ -108,9 +110,9 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 List<? extends Toolpath> toolpaths = layer.getToolpaths();
                 if (layer instanceof DrillingLayer)
                 {
-                    ArrayList<DrillPoint> drillPoints = new ArrayList<DrillPoint>();
+                    ArrayList<DrillPoint> drillPoints = new ArrayList<>();
                     for (DrillPoint p : ((DrillingLayer)layer).getToolpaths())
-                        if (Math.abs(p.getToolDiameter().doubleValue() - Double.valueOf(toolDiameter.getValue())) < 0.05)
+                        if (Math.abs(Double.valueOf(toolDiameter.getValue()) - p.getToolDiameter()) < 0.05)
                             drillPoints.add(p);
                     toolpaths = drillPoints;
                 }

@@ -96,63 +96,61 @@ public class CNCController
         send(str, COMMAND_TIMEOUT);
     }
 
-    public void home(String yDiff)
+    public void home(Integer yDiff)
     {
         StringBuilder str = new StringBuilder();
-        PostProcessorFactory.getPostProcessor().home(str, new RealNumber(yDiff));
+        PostProcessorFactory.getPostProcessor().home(str, yDiff);
         send(str.toString());
     }
 
-    public void moveTo(String x, String y)
+    public void moveTo(Integer x, Integer y)
     {
-        moveTo(x, y, "0");
+        moveTo(x, y, 0);
     }
 
-    public void moveTo(String x, String y, String z)
+    public void moveTo(Integer x, Integer y, Integer z)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.selectMachineWS(str);
-        RealNumber _x = x == null ? null : new RealNumber(x);
-        RealNumber _y = y == null ? null : new RealNumber(y);
         if (z != null)
-            post.rapid(str, null, null, new RealNumber(z));
-        post.rapid(str, _x, _y, null);
+            post.rapid(str, null, null, z);
+        post.rapid(str, x, y, null);
         send(str.toString());
     }
 
-    public void moveZ(String z)
+    public void moveZ(int z)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.selectMachineWS(str);
-        post.rapid(str, null, null, new RealNumber(z));
+        post.rapid(str, null, null, z);
         send(str.toString());
     }
 
-    public void moveHeadAway(String y)
+    public void moveHeadAway(int y)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.selectMachineWS(str);
-        post.rapid(str, null, null, new RealNumber(0));
-        post.rapid(str, null, new RealNumber(y), null);
+        post.rapid(str, null, null, 0);
+        post.rapid(str, null, y, null);
         send(str.toString());
     }
 
-    public void testCut(String x, String y, String z, String clearance, String safetyHeight, String workingHeight, String xyFeed, String zFeed,
+    public void testCut(int x, int y, int z, int clearance, int safetyHeight, int workingHeight, int xyFeed, int zFeed,
                         String spindleSpeed, boolean horizontalDirection)
     {
         StringBuilder str  = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
-        post.setupG54(str, new RealNumber(x), new RealNumber(y), new RealNumber(z));
+        post.setupG54(str, x, y, z);
         post.selectWCS(str);
-        post.rapid(str, new RealNumber(0), new RealNumber(0), new RealNumber(clearance));
+        post.rapid(str, 0, 0, clearance);
         post.spindleOn(str, spindleSpeed);
-        post.rapid(str, null, null, new RealNumber(safetyHeight));
-        post.linearInterpolation(str, new RealNumber(0), new RealNumber(0), new RealNumber(workingHeight), new RealNumber(zFeed));
-        post.linearInterpolation(str, new RealNumber(horizontalDirection ? 5 : 0), new RealNumber(horizontalDirection ? 0 : 5), new RealNumber(workingHeight), new RealNumber(xyFeed));
-        post.rapid(str, null, null, new RealNumber(clearance));
+        post.rapid(str, null, null, safetyHeight);
+        post.linearInterpolation(str, 0, 0, workingHeight, zFeed);
+        post.linearInterpolation(str, horizontalDirection ? 5000 : 0, horizontalDirection ? 0 : 5000, workingHeight, xyFeed);
+        post.rapid(str, null, null, clearance);
         post.spindleOff(str);
         send(str.toString());
     }
@@ -162,74 +160,73 @@ public class CNCController
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.selectMachineWS(str);
-        post.rapid(str, null, null, new RealNumber(0));
+        post.rapid(str, null, null, 0);
         post.spindleOff(str);
         post.syringeOff(str);
         send(str.toString(), PROGRAM_INTERRUPTION_TIMEOUT);
     }
 
-    public void dispensePaste(String duration)
+    public void dispensePaste(int duration)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.syringeOn(str);
-        post.pause(str, new RealNumber(duration));
+        post.pause(str, duration);
         post.syringeOff(str);
         send(str.toString());
     }
 
-    public void testDispensing(String x, String y, String z, String prefeedPause, String length, String feed)
+    public void testDispensing(int x, int y, int z, int prefeedPause, int length, int feed)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.selectMachineWS(str);
-        post.rapid(str, null, null, new RealNumber(0));
-        post.rapid(str, new RealNumber(x), new RealNumber(y), null);
-        post.rapid(str, null, null, new RealNumber(z));
+        post.rapid(str, null, null, 0);
+        post.rapid(str, x, y, null);
+        post.rapid(str, null, null, z);
         post.syringeOn(str);
-        post.pause(str, new RealNumber(prefeedPause));
-        post.linearInterpolation(str, new RealNumber(x).add(new RealNumber(length)), new RealNumber(y),
-                new RealNumber(z), new RealNumber(feed));
+        post.pause(str, prefeedPause);
+        post.linearInterpolation(str, x + length, y, z, feed);
         post.syringeOff(str);
-        post.rapid(str, null, null, new RealNumber(0));
+        post.rapid(str, null, null, 0);
         send(str.toString());
     }
 
-    public void rotatePP(String angle, String feed)
+    public void rotatePP(int angle, int feed)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
-        post.rotatePP(str, new RealNumber(angle), new RealNumber(feed));
+        post.rotatePP(str, angle, feed);
         send(str.toString());
     }
 
-    public void rotatePP(String angle)
+    public void rotatePP(int angle)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
-        post.rotatePP(str, new RealNumber(angle));
+        post.rotatePP(str, angle);
         send(str.toString());
     }
 
-    public void pickup(String pickupHeight, String moveHeight)
+    public void pickup(int pickupHeight, int moveHeight)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
-        post.rapid(str, null, null, new RealNumber(pickupHeight));
+        post.rapid(str, null, null, pickupHeight);
         post.vacuumOn(str);
-        post.pause(str, new RealNumber("0.5"));
-        post.rapid(str, null, null, new RealNumber(moveHeight));
+        post.pause(str, 500);
+        post.rapid(str, null, null, moveHeight);
         send(str.toString());
     }
 
-    public void place(String placementHeight, String moveHeight)
+    public void place(int placementHeight, int moveHeight)
     {
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
-        post.rapid(str, null, null, new RealNumber(placementHeight));
+        post.rapid(str, null, null, placementHeight);
         post.vacuumOff(str);
-        post.pause(str, new RealNumber("0.1"));
-        post.rapid(str, null, null, new RealNumber(moveHeight));
+        post.pause(str, 100);
+        post.rapid(str, null, null, moveHeight);
         send(str.toString());
     }
 

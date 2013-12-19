@@ -120,7 +120,7 @@ public class ZOffsetController extends SceneController implements Initializable
             automaticZOffset.setText(settings.getDefaultTracesZOffset());
         }
         else if (getMainApplication().getContext().getG54Z() != null)
-            automaticZOffset.setText(getMainApplication().getContext().getG54Z());
+            automaticZOffset.setIntegerValue(getMainApplication().getContext().getG54Z());
 
         scrapPlaceX.setText(settings.getScrapPlaceX());
         scrapPlaceY.setText(settings.getScrapPlaceY());
@@ -157,7 +157,7 @@ public class ZOffsetController extends SceneController implements Initializable
     public void moveXY()
     {
         if (!goButton.isDisabled())
-            getMainApplication().getCNCController().moveTo(scrapPlaceX.getRealNumberText(), scrapPlaceY.getRealNumberText());
+            getMainApplication().getCNCController().moveTo(scrapPlaceX.getIntegerValue(), scrapPlaceY.getIntegerValue());
     }
 
     public void test()
@@ -165,7 +165,7 @@ public class ZOffsetController extends SceneController implements Initializable
         if (testButton.isDisabled())
             return;
         Settings settings = getMainApplication().getSettings();
-        getMainApplication().getCNCController().testCut(scrapPlaceX.getRealNumberText(), scrapPlaceY.getRealNumberText(), automaticZOffset.getRealNumberText(),
+        getMainApplication().getCNCController().testCut(scrapPlaceX.getIntegerValue(), scrapPlaceY.getIntegerValue(), automaticZOffset.getIntegerValue(),
                 settings.getDefaultTracesClearance(), settings.getDefaultTracesSafetyHeight(), settings.getDefaultTracesWorkingHeight(),
                 settings.getDefaultTracesFeedXY(), settings.getDefaultTracesFeedZ(), settings.getDefaultTracesSpeed(), horizontalTestCut.isSelected());
     }

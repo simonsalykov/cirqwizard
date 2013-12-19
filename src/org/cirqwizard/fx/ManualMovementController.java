@@ -80,8 +80,8 @@ public class ManualMovementController extends SceneController implements Initial
 
     public void goToUpdatedCoordinates()
     {
-        getMainApplication().getCNCController().moveTo(xPositionTextField.getRealNumberText(), yPositionTextField.getRealNumberText(),
-                zPositionTextField.getRealNumberText());
+        getMainApplication().getCNCController().moveTo(xPositionTextField.getIntegerValue(), yPositionTextField.getIntegerValue(),
+                zPositionTextField.getIntegerValue());
     }
 
     public void home()

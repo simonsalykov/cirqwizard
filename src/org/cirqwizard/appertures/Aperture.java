@@ -27,20 +27,20 @@ public abstract class Aperture
     }
 
     protected HoleType holeType;
-    protected RealNumber holeDimensions[] = new RealNumber[2];
+    protected int holeDimensions[] = new int[2];
 
     public Aperture()
     {
         this.holeType = HoleType.NONE;
     }
 
-    public Aperture(RealNumber holeDiameter)
+    public Aperture(int holeDiameter)
     {
         this.holeType = HoleType.CIRCULAR;
         this.holeDimensions[0] = holeDiameter;
     }
 
-    public Aperture(RealNumber holeWidth, RealNumber holeHeight)
+    public Aperture(int holeWidth, int holeHeight)
     {
         this.holeType = HoleType.RECTANGULAR;
         this.holeDimensions[0] = holeWidth;
@@ -49,10 +49,8 @@ public abstract class Aperture
 
     public abstract Aperture rotate(boolean clockwise);
 
-    public abstract void render(java.awt.Graphics2D g, int x, int y, double scale);
-
     public abstract boolean isVisible();
 
-    public abstract RealNumber getWidth(RealNumber angle);
+    public abstract int getWidth(double angle);
 
 }

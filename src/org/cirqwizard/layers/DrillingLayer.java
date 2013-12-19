@@ -36,9 +36,9 @@ public class DrillingLayer extends Layer
         this.drillPoints = drillPoints;
     }
 
-    public List<RealNumber> getDrillDiameters()
+    public List<Integer> getDrillDiameters()
     {
-        ArrayList<RealNumber> result = new ArrayList<RealNumber>();
+        ArrayList<Integer> result = new ArrayList<>();
         for (DrillPoint drillPoint : drillPoints)
             if (!result.contains(drillPoint.getToolDiameter()))
                 result.add(drillPoint.getToolDiameter());
@@ -51,9 +51,9 @@ public class DrillingLayer extends Layer
         for (DrillPoint d : drillPoints)
         {
             if (clockwise)
-                d.setPoint(new Point(d.getPoint().getY(), d.getPoint().getX().negate()));
+                d.setPoint(new Point(d.getPoint().getY(), -d.getPoint().getX()));
             else
-                d.setPoint(new Point(d.getPoint().getY().negate(), d.getPoint().getX()));
+                d.setPoint(new Point(-d.getPoint().getY(), d.getPoint().getX()));
         }
     }
 
@@ -70,9 +70,9 @@ public class DrillingLayer extends Layer
         Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (DrillPoint d : drillPoints)
         {
-            if (d.getPoint().getX().lessThan(min.getX()))
+            if (d.getPoint().getX() < min.getX())
                 min = new Point(d.getPoint().getX(), min.getY());
-            if (d.getPoint().getY().lessThan(min.getY()))
+            if (d.getPoint().getY() < min.getY())
                 min = new Point(min.getX(), d.getPoint().getY());
         }
         return min;

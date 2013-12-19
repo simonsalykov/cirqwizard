@@ -54,9 +54,9 @@ public class Context
     private boolean placingSelected;
 
     private PCBSize pcbSize;
-    private String g54X;
-    private String g54Y;
-    private String g54Z;
+    private Integer g54X;
+    private Integer g54Y;
+    private Integer g54Z;
 
     private boolean zOffsetEstablished;
 
@@ -208,7 +208,7 @@ public class Context
         else
         {
             millingLayer.generateToolpaths();
-            contourMillDiameter = drillFormat.format(((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter().getValue());
+            contourMillDiameter = drillFormat.format(((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter());
         }
         contourSelected = millingLayer != null;
     }
@@ -224,21 +224,21 @@ public class Context
         else
         {
             drillDiameters = new ArrayList<String>();
-            for (RealNumber diameter : drillingLayer.getDrillDiameters())
-                drillDiameters.add(drillFormat.format(diameter.getValue()));
+            for (int diameter : drillingLayer.getDrillDiameters())
+                drillDiameters.add(drillFormat.format(diameter));
         }
         drillingSelected = drillingLayer != null;
     }
 
     private void openComponents(String file)
     {
-        PPParser parser = new PPParser(file);
+        PPParser parser = new PPParser(file, Settings.RESOLUTION);
         parser.parse();
         if (!parser.getComponents().isEmpty())
         {
             componentsLayer = new ComponentsLayer();
             componentsLayer.setPoints(parser.getComponents());
-            componentIds = new ArrayList<ComponentId>(componentsLayer.getComponentIds());
+            componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }
         placingSelected = componentsLayer != null;
     }
@@ -273,12 +273,12 @@ public class Context
         Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (Layer layer : getLayers())
         {
-            if (layer.getMinPoint().getX().lessThan(min.getX()))
+            if (layer.getMinPoint().getX() < min.getX())
                 min = new Point(layer.getMinPoint().getX(), min.getY());
-            if (layer.getMinPoint().getY().lessThan(min.getY()))
+            if (layer.getMinPoint().getY() < min.getY())
                 min = new Point(min.getX(), layer.getMinPoint().getY());
         }
-        min = new Point(min.getX().negate(), min.getY().negate());
+        min = new Point(-min.getX(), -min.getY());
         for (Layer layer : getLayers())
             layer.move(min);
     }
@@ -361,34 +361,34 @@ public class Context
         settings.setPCBSize(pcbSize);
     }
 
-    public String getG54X()
+    public Integer getG54X()
     {
         return g54X != null ? g54X : settings.getG54X();
     }
 
-    public void setG54X(String g54X)
+    public void setG54X(Integer g54X)
     {
         this.g54X = g54X;
         settings.setG54X(g54X);
     }
 
-    public String getG54Y()
+    public Integer getG54Y()
     {
         return g54Y != null ? g54Y : settings.getG54Y();
     }
 
-    public void setG54Y(String g54Y)
+    public void setG54Y(Integer g54Y)
     {
         this.g54Y = g54Y;
         settings.setG54Y(g54Y);
     }
 
-    public String getG54Z()
+    public Integer getG54Z()
     {
         return g54Z;
     }
 
-    public void setG54Z(String g54Z)
+    public void setG54Z(Integer g54Z)
     {
         this.g54Z = g54Z;
     }

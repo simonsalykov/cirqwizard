@@ -36,17 +36,17 @@ public class PasteGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        RealNumber x = new RealNumber(context.getG54X());
-        RealNumber y = new RealNumber(context.getG54Y());
-        RealNumber z = new RealNumber(context.getG54Z());
+        int x = Integer.valueOf(context.getG54X());
+        int y = Integer.valueOf(context.getG54Y());
+        int z = Integer.valueOf(context.getG54Z());
         postprocessor.setupG54(str, x, y, z);
         postprocessor.selectWCS(str);
 
-        RealNumber _clearance = new RealNumber(clearance);
-        RealNumber _workingHeight = new RealNumber(workingHeight);
-        RealNumber _preFeedPause = new RealNumber(preFeedPause);
-        RealNumber _postFeedPause = new RealNumber(postFeedPause);
-        RealNumber _feed = new RealNumber(feed);
+        int _clearance = Integer.valueOf(clearance);
+        int _workingHeight = Integer.valueOf(workingHeight);
+        int _preFeedPause = Integer.valueOf(preFeedPause);
+        int _postFeedPause = Integer.valueOf(postFeedPause);
+        int _feed = Integer.valueOf(feed);
 
         postprocessor.rapid(str, null, null, _clearance);
         for (Toolpath toolpath : context.getSolderPasteLayer().getToolpaths())

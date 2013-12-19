@@ -14,14 +14,12 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.post;
 
-import org.cirqwizard.math.RealNumber;
-
 
 public interface Postprocessor
 {
-    public void home(StringBuilder str, RealNumber yDiff);
+    public void home(StringBuilder str, Integer yDiff);
 
-    public void setupG54(StringBuilder str, RealNumber x, RealNumber y, RealNumber z);
+    public void setupG54(StringBuilder str, int x, int y, int z);
     public void selectWCS(StringBuilder str);
     public void selectMachineWS(StringBuilder str);
 
@@ -29,9 +27,9 @@ public interface Postprocessor
     public void footer(StringBuilder str);
     public void comment(StringBuilder str, String comment);
 
-    public void rapid(StringBuilder str, RealNumber x, RealNumber y, RealNumber z);
-    public void linearInterpolation(StringBuilder str, RealNumber x, RealNumber y, RealNumber z, RealNumber feed);
-    public void circularInterpolation(StringBuilder str, boolean clockwise, RealNumber x, RealNumber y, RealNumber z, RealNumber i, RealNumber j, RealNumber feed);
+    public void rapid(StringBuilder str, Integer x, Integer y, Integer z);
+    public void linearInterpolation(StringBuilder str, Integer x, Integer y, Integer z, Integer feed);
+    public void circularInterpolation(StringBuilder str, boolean clockwise, Integer x, Integer y, Integer z, Integer i, Integer j, Integer feed);
 
     public void spindleOn(StringBuilder str, String speed);
     public void spindleOff(StringBuilder str);
@@ -39,10 +37,10 @@ public interface Postprocessor
     public void syringeOn(StringBuilder str);
     public void syringeOff(StringBuilder str);
 
-    public void pause(StringBuilder str, RealNumber duration);
+    public void pause(StringBuilder str, int duration);
 
-    public void rotatePP(StringBuilder str, RealNumber angle, RealNumber feed);
-    public void rotatePP(StringBuilder str, RealNumber angle);
+    public void rotatePP(StringBuilder str, int angle, int feed);
+    public void rotatePP(StringBuilder str, int angle);
     public void vacuumOn(StringBuilder str);
     public void vacuumOff(StringBuilder str);
 

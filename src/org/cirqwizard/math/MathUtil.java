@@ -20,21 +20,13 @@ import java.math.BigDecimal;
 public class MathUtil
 {
     public static final RealNumber PI = new RealNumber(new BigDecimal(Math.PI));
-    public static final RealNumber MINUS_PI = PI.negate();
-    public static final RealNumber HALF_PI = PI.divide(2);
-    public static final RealNumber TWO_PI = PI.multiply(2);
-    public static final RealNumber ZERO = new RealNumber(0);
-    public static final RealNumber MICRON = new RealNumber("0.000001");
 
-    public static final int BOUNDARY_PRECISION = 10;
-    public static final int INT_CONVERTION_FACTOR = 10000;
-
-    public static RealNumber bindAngle(RealNumber angle)
+    public static double bindAngle(double angle)
     {
-        if (angle.compareTo(PI) >= 0)
-            angle = angle.subtract(TWO_PI);
-        if (angle.compareTo(MINUS_PI) < 0)
-            angle = angle.add(TWO_PI);
+        if (angle >= Math.PI)
+            angle -= Math.PI * 2;
+        if (angle < -Math.PI)
+            angle += Math.PI * 2;
         return angle;
     }
 

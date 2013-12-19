@@ -24,7 +24,7 @@ public class CircularToolpath extends CuttingToolpath
 {
     private Arc arc;
 
-    public CircularToolpath(RealNumber toolDiameter, Point from, Point to, Point center, RealNumber radius, boolean clockwise)
+    public CircularToolpath(int toolDiameter, Point from, Point to, Point center, int radius, boolean clockwise)
     {
         super(toolDiameter);
         arc = new Arc(from, to, center, radius, clockwise);

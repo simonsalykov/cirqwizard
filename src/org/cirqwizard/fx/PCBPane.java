@@ -33,11 +33,11 @@ import java.io.IOException;
 
 public class PCBPane extends Region
 {
-    private static final double DEFAULT_SCALE = 5.0;
+    private static final double DEFAULT_SCALE = 0.005;
 
     private Group group = new Group();
-    private Property<ObservableList<Shape>> items = new SimpleListProperty<Shape>();
-    private Property<Double> scaleProperty = new SimpleObjectProperty<Double>(DEFAULT_SCALE);
+    private Property<ObservableList<Shape>> items = new SimpleListProperty<>();
+    private Property<Double> scaleProperty = new SimpleObjectProperty<>(DEFAULT_SCALE);
 
     private Translate translateTransform = new Translate(0, 0);
     private Scale scaleTransform = new Scale(scaleProperty().getValue(), -scaleProperty().getValue());

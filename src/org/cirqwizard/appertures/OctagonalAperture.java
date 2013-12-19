@@ -21,21 +21,21 @@ import java.awt.*;
 
 public class OctagonalAperture extends Aperture
 {
-    private RealNumber diameter;
+    private int diameter;
 
-    public OctagonalAperture(RealNumber diameter)
+    public OctagonalAperture(int diameter)
     {
         super();
         this.diameter = diameter;
     }
 
-    public OctagonalAperture(RealNumber diameter, RealNumber holeDiameter)
+    public OctagonalAperture(int diameter, int holeDiameter)
     {
         super(holeDiameter);
         this.diameter = diameter;
     }
 
-    public OctagonalAperture(RealNumber diameter, RealNumber holeWidth, RealNumber holeHeight)
+    public OctagonalAperture(int diameter, int holeWidth, int holeHeight)
     {
         super(holeWidth, holeHeight);
         this.diameter = diameter;
@@ -47,29 +47,19 @@ public class OctagonalAperture extends Aperture
         return this;
     }
 
-    public RealNumber getDiameter()
+    public int getDiameter()
     {
         return diameter;
     }
 
     @Override
-    public void render(Graphics2D g, int x, int y, double scale)
-    {
-        int edgeOffset = (int) (diameter.doubleValue() * (Math.pow(2, 0.5) - 1) / 2);
-        int centerOffset = (int) (diameter.doubleValue() * 0.5);
-        int xPoints[] = {centerOffset + x, edgeOffset + x, -edgeOffset + x, -centerOffset + x, -centerOffset + x, -edgeOffset + x, edgeOffset + x, centerOffset + x};
-        int yPoints[] = {edgeOffset + y, centerOffset + y, centerOffset + y, edgeOffset + y, -edgeOffset + y, -centerOffset + y, -centerOffset + y, -edgeOffset + y};
-        g.fillPolygon(xPoints, yPoints, xPoints.length);
-    }
-
-    @Override
     public boolean isVisible()
     {
-        return diameter.greaterThan(0);
+        return diameter > 0;
     }
 
     @Override
-    public RealNumber getWidth(RealNumber angle)
+    public int getWidth(double angle)
     {
         return diameter;
     }

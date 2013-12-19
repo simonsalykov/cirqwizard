@@ -25,6 +25,8 @@ import java.util.prefs.Preferences;
 
 public class Settings
 {
+    public static final int RESOLUTION = 1000;
+
     private static class PropertyNames
     {
         private static final String MACHINE_Y_DIFF_NAME = "machine.y.diff";
@@ -153,12 +155,18 @@ public class Settings
         flush();
     }
 
-    public String getMachineYDiff()
+    public void set(String key, int value)
     {
-        return preferences.get(PropertyNames.MACHINE_Y_DIFF_NAME, "");
+        preferences.putInt(key, value);
+        flush();
     }
 
-    public void setMachineYDiff(String yDiff)
+    public int getMachineYDiff()
+    {
+        return preferences.getInt(PropertyNames.MACHINE_Y_DIFF_NAME, 0);
+    }
+
+    public void setMachineYDiff(int yDiff)
     {
         set(PropertyNames.MACHINE_Y_DIFF_NAME, yDiff);
     }
@@ -588,24 +596,38 @@ public class Settings
         flush();
     }
 
-    public String getG54X()
+    public Integer getG54X()
     {
-        return preferences.get(PropertyNames.INTERFACE_G54_X, "");
+        Integer x = null;
+        try
+        {
+            x = new Integer(preferences.get(PropertyNames.INTERFACE_G54_X, null));
+        }
+        catch (Exception e) {}
+
+        return x;
     }
 
-    public void setG54X(String x)
+    public void setG54X(Integer x)
     {
-        set(PropertyNames.INTERFACE_G54_X, x);
+        set(PropertyNames.INTERFACE_G54_X, x == null ? null : x.toString());
     }
 
-    public String getG54Y()
+    public Integer getG54Y()
     {
-        return preferences.get(PropertyNames.INTERFACE_G54_Y, "");
+        Integer y = null;
+        try
+        {
+            y = new Integer(preferences.get(PropertyNames.INTERFACE_G54_Y, null));
+        }
+        catch (Exception e) {}
+
+        return y;
     }
 
-    public void setG54Y(String y)
+    public void setG54Y(Integer y)
     {
-        set(PropertyNames.INTERFACE_G54_Y, y);
+        set(PropertyNames.INTERFACE_G54_Y, y == null ? null : y.toString());
     }
 
     public PCBSize getPCBSize()
@@ -648,6 +670,5 @@ public class Settings
     {
         preferences.putInt(PropertyNames.INTERFACE_TEST_CUT_DIRECTION, direction);
     }
-
 
 }

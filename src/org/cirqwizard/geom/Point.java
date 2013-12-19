@@ -14,77 +14,57 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.geom;
 
-import org.cirqwizard.math.MathUtil;
-import org.cirqwizard.math.RealNumber;
-
-
 public class Point
 {
-    private RealNumber x;
-    private RealNumber y;
+    private int x;
+    private int y;
 
-    public Point(RealNumber x, RealNumber y)
+    public Point(int x, int y)
     {
         this.x = x;
         this.y = y;
     }
 
-    public Point(int x, int y)
-    {
-        this(new RealNumber(x), new RealNumber(y));
-    }
-
-
-    public RealNumber getX()
+    public int getX()
     {
         return x;
     }
 
-    public RealNumber getY()
+    public int getY()
     {
         return y;
     }
 
-    public RealNumber distanceTo(Point p)
+    public double distanceTo(Point p)
     {
         if (equals(p))
-            return MathUtil.ZERO;
-        double x = this.x.doubleValue() - p.x.doubleValue();
-        double y = this.y.doubleValue() - p.y.doubleValue();
-        return new RealNumber(Math.sqrt(x * x + y * y));
+            return 0;
+        double x = this.x - p.x;
+        double y = this.y - p.y;
+        return Math.sqrt(x * x + y * y);
     }
 
     public Point add(Point p)
     {
-        return new Point(this.x.add(p.getX()), this.y.add(p.getY()));
+        return new Point(this.x + p.x, this.y + p.y);
     }
 
     public Point subtract(Point p)
     {
-        return new Point(this.x.subtract(p.getX()), this.y.subtract(p.getY()));
-    }
-
-    public Point multiply(RealNumber scalar)
-    {
-        return new Point(this.x.multiply(scalar), this.y.multiply(scalar));
-    }
-
-    public Point divide(RealNumber scalar)
-    {
-        return new Point(x.divide(scalar), y.divide(scalar));
+        return new Point(this.x - p.x, this.y - p.y);
     }
 
     public Point round()
     {
-        return new Point(x.round(2), y.round(2));
+        return new Point(x / 10 * 10, y / 10 * 10);
     }
 
     @Override
     public String toString()
     {
         return "Point{" +
-                "x=" + x.toString() +
-                ", y=" + y.toString() +
+                "x=" + x +
+                ", y=" + y +
                 '}';
     }
 
@@ -94,21 +74,19 @@ public class Point
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        return equals((Point) o, MathUtil.MICRON.doubleValue());
+        return equals((Point) o, 1);
     }
 
     public boolean equals(Point o, double precision)
     {
-        double x = this.x.doubleValue() - o.x.doubleValue();
-        double y = this.y.doubleValue() - o.y.doubleValue();
-        return Math.sqrt(x * x + y * y) < precision;
+        return distanceTo(o) < precision;
     }
 
     @Override
     public int hashCode()
     {
-        int result = x != null ? x.hashCode() : 0;
-        result = 31 * result + (y != null ? y.hashCode() : 0);
+        int result = x;
+        result = 31 * result + y;
         return result;
     }
 }

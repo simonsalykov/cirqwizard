@@ -23,7 +23,7 @@ public class Flash extends GerberPrimitive
 {
     private Point point;
 
-    public Flash(RealNumber x, RealNumber y, Aperture aperture)
+    public Flash(int x, int y, Aperture aperture)
     {
         point = new Point(x, y);
         this.aperture = aperture;
@@ -34,28 +34,23 @@ public class Flash extends GerberPrimitive
         return point;
     }
 
-    public RealNumber getX()
+    public int getX()
     {
         return point.getX();
     }
 
-    public RealNumber getY()
+    public int getY()
     {
         return point.getY();
-    }
-
-    public void render(java.awt.Graphics2D g, double scale)
-    {
-        aperture.render(g, (int) (point.getX().doubleValue() * scale), (int) (point.getY().doubleValue() * scale), scale);
     }
 
     @Override
     public void rotate(boolean clockwise)
     {
         if (clockwise)
-            point = new Point(point.getY(), point.getX().negate());
+            point = new Point(point.getY(), -point.getX());
         else
-            point = new Point(point.getY().negate(), point.getX());
+            point = new Point(-point.getY(), point.getX());
         aperture = aperture.rotate(clockwise);
     }
 

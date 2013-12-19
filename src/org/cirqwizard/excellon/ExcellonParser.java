@@ -31,12 +31,12 @@ import java.util.logging.Level;
 
 public class ExcellonParser
 {
-    private final static RealNumber INCHES_MM_RATIO = new RealNumber("25.4");
+    private final static int INCHES_MM_RATIO = 25400;
     private final static int DECIMAL_PLACES = 4;
 
-    private HashMap<Integer, RealNumber> tools = new HashMap<Integer, RealNumber>();
+    private HashMap<Integer, RealNumber> tools = new HashMap<>();
     private RealNumber currentDiameter;
-    private ArrayList<DrillPoint> drillPoints = new ArrayList<DrillPoint>();
+    private ArrayList<DrillPoint> drillPoints = new ArrayList<>();
 
 
     public void parse(String filename)
@@ -98,14 +98,16 @@ public class ExcellonParser
         }
     }
 
-    private static RealNumber convertCoordinate(String str)
+    private static int convertCoordinate(String str)
     {
         int decimalPartStart = str.length() - DECIMAL_PLACES;
         decimalPartStart = Math.max(decimalPartStart, 0);
-        RealNumber number = new RealNumber(str.substring(decimalPartStart)).divide(MathUtil.pow(new RealNumber(10), DECIMAL_PLACES));
+        int number = Integer.valueOf(str.substring(decimalPartStart)) * INCHES_MM_RATIO;
+        for (int i = 0; i < DECIMAL_PLACES; i++)
+            number /= 10;
         if (str.length() > DECIMAL_PLACES)
-            number = number.add(new RealNumber(str.substring(0, decimalPartStart)));
-        return number.multiply(INCHES_MM_RATIO);
+            number += Integer.valueOf(str.substring(0, decimalPartStart)) * INCHES_MM_RATIO;
+        return number;
     }
 
     public ArrayList<DrillPoint> getDrillPoints()

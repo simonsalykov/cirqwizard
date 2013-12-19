@@ -23,10 +23,10 @@ public class PPPoint extends Toolpath
 {
     private ComponentId id;
     private Point point;
-    private RealNumber angle;
+    private int angle;
     private String name;
 
-    public PPPoint(ComponentId id, Point point, RealNumber angle, String name)
+    public PPPoint(ComponentId id, Point point, int angle, String name)
     {
         this.id = id;
         this.point = point;
@@ -54,12 +54,12 @@ public class PPPoint extends Toolpath
         this.point = point;
     }
 
-    public RealNumber getAngle()
+    public int getAngle()
     {
         return angle;
     }
 
-    public void setAngle(RealNumber angle)
+    public void setAngle(int angle)
     {
         this.angle = angle;
     }

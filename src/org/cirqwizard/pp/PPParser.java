@@ -32,17 +32,19 @@ import java.util.StringTokenizer;
 public class PPParser
 {
     private String filename;
+    private int resolution;
 
     private List<PPPoint> components;
 
-    public PPParser(String filename)
+    public PPParser(String filename, int resolution)
     {
         this.filename = filename;
+        this.resolution = resolution;
     }
 
     public void parse()
     {
-        components = new ArrayList<PPPoint>();
+        components = new ArrayList<>();
         try
         {
             LineNumberReader reader = new LineNumberReader(new FileReader(filename));
@@ -65,7 +67,7 @@ public class PPParser
                 }
 
                 components.add(new PPPoint(new ComponentId(packaging, value),
-                        new Point(new RealNumber(x), new RealNumber(y)), new RealNumber(angle), name));
+                        new Point(Integer.valueOf(x) * resolution, Integer.valueOf(y) * resolution), Integer.valueOf(angle), name));
             }
         }
         catch (FileNotFoundException e)
