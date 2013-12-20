@@ -16,7 +16,6 @@ package org.cirqwizard.generator;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.geom.Curve;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.Toolpath;
@@ -31,38 +30,29 @@ public class PasteGCodeGenerator
         this.context = context;
     }
 
-    public String generate(Postprocessor postprocessor, String preFeedPause, String postFeedPause, String feed, String clearance, String workingHeight)
+    public String generate(Postprocessor postprocessor, int preFeedPause, int postFeedPause, int feed, int clearance, int workingHeight)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        int x = Integer.valueOf(context.getG54X());
-        int y = Integer.valueOf(context.getG54Y());
-        int z = Integer.valueOf(context.getG54Z());
-        postprocessor.setupG54(str, x, y, z);
+        postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
-        int _clearance = Integer.valueOf(clearance);
-        int _workingHeight = Integer.valueOf(workingHeight);
-        int _preFeedPause = Integer.valueOf(preFeedPause);
-        int _postFeedPause = Integer.valueOf(postFeedPause);
-        int _feed = Integer.valueOf(feed);
-
-        postprocessor.rapid(str, null, null, _clearance);
+        postprocessor.rapid(str, null, null, clearance);
         for (Toolpath toolpath : context.getSolderPasteLayer().getToolpaths())
         {
             if (!toolpath.isEnabled())
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
-            postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), _clearance);
-            postprocessor.rapid(str, null, null, _workingHeight);
+            postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), clearance);
+            postprocessor.rapid(str, null, null, workingHeight);
             postprocessor.syringeOn(str);
-            postprocessor.pause(str, _preFeedPause);
+            postprocessor.pause(str, preFeedPause);
             postprocessor.linearInterpolation(str, curve.getTo().getX(), curve.getTo().getY(),
-                    _workingHeight, _feed);
+                    workingHeight, feed);
             postprocessor.syringeOff(str);
-            postprocessor.pause(str, _postFeedPause);
-            postprocessor.rapid(str, null, null, _clearance);
+            postprocessor.pause(str, postFeedPause);
+            postprocessor.rapid(str, null, null, clearance);
         }
         postprocessor.footer(str);
 

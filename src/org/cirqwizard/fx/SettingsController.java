@@ -14,16 +14,16 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.serial.SerialInterfaceFactory;
-import org.cirqwizard.settings.Settings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
+import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.serial.SerialInterfaceFactory;
+import org.cirqwizard.settings.Settings;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -101,52 +101,58 @@ public class SettingsController extends SceneController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        yAxisDiff.realNumberTextProperty().addListener(new ChangeListener<String>()
+        yAxisDiff.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setMachineYDiff(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setMachineYDiff(integer2);
             }
         });
-        referencePinX.realNumberTextProperty().addListener(new ChangeListener<String>()
+        referencePinX.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setMachineReferencePinX(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setMachineReferencePinX(integer2);
             }
         });
-        referencePinY.realNumberTextProperty().addListener(new ChangeListener<String>()
+        referencePinY.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setMachineReferencePinY(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setMachineReferencePinY(integer2);
             }
         });
-        smallPCBWidth.realNumberTextProperty().addListener(new ChangeListener<String>()
+        smallPCBWidth.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setMachineSmallPCBWidth(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setMachineSmallPCBWidth(integer2);
             }
         });
-        largePCBWidth.realNumberTextProperty().addListener(new ChangeListener<String>()
+        largePCBWidth.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setMachineLargePCBWidth(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setMachineLargePCBWidth(integer2);
             }
         });
-        farAwayY.realNumberTextProperty().addListener(new ChangeListener<String>()
+        farAwayY.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setFarAwayY(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setFarAwayY(integer2);
             }
         });
         logLevelComboBox.valueProperty().addListener(new ChangeListener<String>()
@@ -159,69 +165,77 @@ public class SettingsController extends SceneController implements Initializable
             }
         });
 
-        tracesToolDiameter.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesToolDiameter.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTraceToolDiameter(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTraceToolDiameter(integer2);
             }
         });
-        tracesFeedXY.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesFeedXY.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTracesFeedXY(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTracesFeedXY(integer2);
             }
         });
-        tracesFeedZ.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesFeedZ.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTracesFeedZ(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTracesFeedZ(integer2);
             }
         });
-        tracesClearance.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesClearance.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTracesClearance(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTracesClearance(integer2);
             }
         });
-        tracesSafetyHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesSafetyHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTracesSafetyHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTracesSafetyHeight(integer2);
             }
         });
-        tracesZOffset.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesZOffset.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTracesZOFfset(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTracesZOFfset(integer2);
             }
         });
-        tracesWorkingHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        tracesWorkingHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultTracesWorkingHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultTracesWorkingHeight(integer2);
             }
         });
 
-        drillingFeed.realNumberTextProperty().addListener(new ChangeListener<String>()
+        drillingFeed.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultDrillingFeed(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDrillingFeed(integer2);
             }
         });
         drillingSpeed.realNumberTextProperty().addListener(new ChangeListener<String>()
@@ -232,53 +246,59 @@ public class SettingsController extends SceneController implements Initializable
                 getMainApplication().getSettings().setDefaultDrillingSpeed(s2);
             }
         });
-        drillingClearance.realNumberTextProperty().addListener(new ChangeListener<String>()
+        drillingClearance.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultDrillingClearance(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDrillingClearance(integer2);
             }
         });
-        drillingSafetyHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        drillingSafetyHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultDrillingSafetyHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDrillingSafetyHeight(integer2);
             }
         });
-        drillingZOffset.realNumberTextProperty().addListener(new ChangeListener<String>()
+        drillingZOffset.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultDrillingZOffset(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDrillingZOffset(integer2);
             }
         });
-        drillingWorkingHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        drillingWorkingHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultDrillingWorkingHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDrillingWorkingHeight(integer2);
             }
         });
 
-        contourFeedXY.realNumberTextProperty().addListener(new ChangeListener<String>()
+        contourFeedXY.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultContourFeedXY(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultContourFeedXY(integer2);
             }
         });
-        contourFeedZ.realNumberTextProperty().addListener(new ChangeListener<String>()
+        contourFeedZ.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultContourFeedZ(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultContourFeedZ(integer2);
             }
         });
         contourSpeed.realNumberTextProperty().addListener(new ChangeListener<String>()
@@ -289,126 +309,141 @@ public class SettingsController extends SceneController implements Initializable
                 getMainApplication().getSettings().setDefaultContourSpeed(s2);
             }
         });
-        contourClearance.realNumberTextProperty().addListener(new ChangeListener<String>()
+        contourClearance.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultContourClearance(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultContourClearance(integer2);
             }
         });
-        contourSafetyHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        contourSafetyHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultContourSafetyHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultContourSafetyHeight(integer2);
             }
         });
-        contourZOffset.realNumberTextProperty().addListener(new ChangeListener<String>()
+        contourZOffset.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultContourZOffset(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultContourZOffset(integer2);
             }
         });
-        contourWorkingHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        contourWorkingHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setDefaultContourWorkingHeight(s2);
-            }
-        });
-
-        dispensingNeedleDiameter.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDefaultDispensingNeedleDiameter(s2);
-            }
-        });
-        dispensingPrefeedPause.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDefaultDispensingPrefeedPause(s2);
-            }
-        });
-        dispensingFeed.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDefaultDispensingFeed(s2);
-            }
-        });
-        dispensingClearance.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDefaultDispensingClearance(s2);
-            }
-        });
-        dispensingZOffset.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDefaultDispensingZOffset(s2);
-            }
-        });
-        dispensingWorkingHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDefaultDispensingWorkingHeight(s2);
-            }
-        });
-        dispensingBleedingDuration.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDispensingBleedingDuration(s2);
-            }
-        });
-        dispensingPostfeedPause.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                getMainApplication().getSettings().setDispensingPostfeedPause(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultContourWorkingHeight(integer2);
             }
         });
 
-        ppPickupHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        dispensingNeedleDiameter.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setPPPickupHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDispensingNeedleDiameter(integer2);
             }
         });
-        ppMoveHeight.realNumberTextProperty().addListener(new ChangeListener<String>()
+        dispensingPrefeedPause.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setPPMoveHeight(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDispensingPrefeedPause(integer2);
             }
         });
-        ppRotationFeed.realNumberTextProperty().addListener(new ChangeListener<String>()
+        dispensingFeed.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setPPRotationFeed(s2);
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDispensingFeed(integer2);
+            }
+        });
+        dispensingClearance.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDispensingClearance(integer2);
+            }
+        });
+        dispensingZOffset.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDispensingZOffset(integer2);
+            }
+        });
+        dispensingWorkingHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDefaultDispensingWorkingHeight(integer2);
+            }
+        });
+        dispensingBleedingDuration.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDispensingBleedingDuration(integer2);
+            }
+        });
+        dispensingPostfeedPause.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setDispensingPostfeedPause(integer2);
+            }
+        });
+
+        ppPickupHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setPPPickupHeight(integer2);
+            }
+        });
+        ppMoveHeight.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setPPMoveHeight(integer2);
+            }
+        });
+        ppRotationFeed.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
+            {
+                if (integer2 != null)
+                    getMainApplication().getSettings().setPPRotationFeed(integer2);
             }
         });
     }
@@ -428,49 +463,49 @@ public class SettingsController extends SceneController implements Initializable
 
         logLevelComboBox.setValue(settings.getLogLevel());
 
-        yAxisDiff.setText(settings.getMachineYDiff());
-        referencePinX.setText(settings.getMachineReferencePinX());
-        referencePinY.setText(settings.getMachineReferencePinY());
-        smallPCBWidth.setText(settings.getMachineSmallPCBWidth());
-        largePCBWidth.setText(settings.getMachineLargePCBWidth());
-        farAwayY.setText(settings.getFarAwayY());
+        yAxisDiff.setIntegerValue(settings.getMachineYDiff());
+        referencePinX.setIntegerValue(settings.getMachineReferencePinX());
+        referencePinY.setIntegerValue(settings.getMachineReferencePinY());
+        smallPCBWidth.setIntegerValue(settings.getMachineSmallPCBWidth());
+        largePCBWidth.setIntegerValue(settings.getMachineLargePCBWidth());
+        farAwayY.setIntegerValue(settings.getFarAwayY());
 
-        tracesToolDiameter.setText(settings.getDefaultTraceToolDiameter());
-        tracesFeedXY.setText(settings.getDefaultTracesFeedXY());
-        tracesFeedZ.setText(settings.getDefaultTracesFeedZ());
+        tracesToolDiameter.setIntegerValue(settings.getDefaultTraceToolDiameter());
+        tracesFeedXY.setIntegerValue(settings.getDefaultTracesFeedXY());
+        tracesFeedZ.setIntegerValue(settings.getDefaultTracesFeedZ());
         tracesSpeed.setText(settings.getDefaultTracesSpeed());
-        tracesClearance.setText(settings.getDefaultTracesClearance());
-        tracesSafetyHeight.setText(settings.getDefaultTracesSafetyHeight());
-        tracesZOffset.setText(settings.getDefaultTracesZOffset());
-        tracesWorkingHeight.setText(settings.getDefaultTracesWorkingHeight());
+        tracesClearance.setIntegerValue(settings.getDefaultTracesClearance());
+        tracesSafetyHeight.setIntegerValue(settings.getDefaultTracesSafetyHeight());
+        tracesZOffset.setIntegerValue(settings.getDefaultTracesZOffset());
+        tracesWorkingHeight.setIntegerValue(settings.getDefaultTracesWorkingHeight());
 
-        drillingFeed.setText(settings.getDefaultDrillingFeed());
+        drillingFeed.setIntegerValue(settings.getDefaultDrillingFeed());
         drillingSpeed.setText(settings.getDefaultDrillingSpeed());
-        drillingClearance.setText(settings.getDefaultDrillingClearance());
-        drillingSafetyHeight.setText(settings.getDefaultDrillingSafetyHeight());
-        drillingZOffset.setText(settings.getDefaultDrillingZOffset());
-        drillingWorkingHeight.setText(settings.getDefaultDrillingWorkingHeight());
+        drillingClearance.setIntegerValue(settings.getDefaultDrillingClearance());
+        drillingSafetyHeight.setIntegerValue(settings.getDefaultDrillingSafetyHeight());
+        drillingZOffset.setIntegerValue(settings.getDefaultDrillingZOffset());
+        drillingWorkingHeight.setIntegerValue(settings.getDefaultDrillingWorkingHeight());
 
-        contourFeedXY.setText(settings.getDefaultContourFeedXY());
-        contourFeedZ.setText(settings.getDefaultContourFeedZ());
+        contourFeedXY.setIntegerValue(settings.getDefaultContourFeedXY());
+        contourFeedZ.setIntegerValue(settings.getDefaultContourFeedZ());
         contourSpeed.setText(settings.getDefaultContourSpeed());
-        contourClearance.setText(settings.getDefaultContourClearance());
-        contourSafetyHeight.setText(settings.getDefaultContourSafetyHeight());
-        contourZOffset.setText(settings.getDefaultContourZOffset());
-        contourWorkingHeight.setText(settings.getDefaultContourWorkingHeight());
+        contourClearance.setIntegerValue(settings.getDefaultContourClearance());
+        contourSafetyHeight.setIntegerValue(settings.getDefaultContourSafetyHeight());
+        contourZOffset.setIntegerValue(settings.getDefaultContourZOffset());
+        contourWorkingHeight.setIntegerValue(settings.getDefaultContourWorkingHeight());
 
-        dispensingNeedleDiameter.setText(settings.getDefaultDispensingNeedleDiameter());
-        dispensingPrefeedPause.setText(settings.getDefaultDispensingPrefeedPause());
-        dispensingFeed.setText(settings.getDefaultDispensingFeed());
-        dispensingClearance.setText(settings.getDefaultDispensingClearance());
-        dispensingZOffset.setText(settings.getDefaultDispensingZOffset());
-        dispensingWorkingHeight.setText(settings.getDefaultDispensingWorkingHeight());
-        dispensingBleedingDuration.setText(settings.getDispensingBleedingDuration());
-        dispensingPostfeedPause.setText(settings.getDispensingPostfeedPause());
+        dispensingNeedleDiameter.setIntegerValue(settings.getDefaultDispensingNeedleDiameter());
+        dispensingPrefeedPause.setIntegerValue(settings.getDefaultDispensingPrefeedPause());
+        dispensingFeed.setIntegerValue(settings.getDefaultDispensingFeed());
+        dispensingClearance.setIntegerValue(settings.getDefaultDispensingClearance());
+        dispensingZOffset.setIntegerValue(settings.getDefaultDispensingZOffset());
+        dispensingWorkingHeight.setIntegerValue(settings.getDefaultDispensingWorkingHeight());
+        dispensingBleedingDuration.setIntegerValue(settings.getDispensingBleedingDuration());
+        dispensingPostfeedPause.setIntegerValue(settings.getDispensingPostfeedPause());
 
-        ppPickupHeight.setText(settings.getPPPickupHeight());
-        ppMoveHeight.setText(settings.getPPMoveHeight());
-        ppRotationFeed.setText(settings.getPPRotationFeed());
+        ppPickupHeight.setIntegerValue(settings.getPPPickupHeight());
+        ppMoveHeight.setIntegerValue(settings.getPPMoveHeight());
+        ppRotationFeed.setIntegerValue(settings.getPPRotationFeed());
     }
 
 }

@@ -22,6 +22,7 @@ import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.settings.Settings;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,8 +44,8 @@ public class GerberParser
     private boolean polygonMode = false;
     private HashMap<Integer, Aperture> apertures = new HashMap<Integer, Aperture>();
 
-    private static final int MM_RATIO = 1000;
-    private static final int INCHES_RATIO = 25400;
+    private static final int MM_RATIO = 1 * Settings.RESOLUTION;
+    private static final int INCHES_RATIO = (int)(25.4 * Settings.RESOLUTION);
     private int unitConversionRatio = MM_RATIO;
 
     private int integerPlaces = 2;

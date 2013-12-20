@@ -14,13 +14,16 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.machining;
 
-import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.services.ToolpathGenerationService;
-import org.cirqwizard.toolpath.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeLineCap;
+import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.services.ToolpathGenerationService;
+import org.cirqwizard.toolpath.*;
 
 import java.util.ArrayList;
 
@@ -45,7 +48,7 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
             {
                 clickPoint = toPCBCoordinates(new Point2D(event.getX(), event.getY()));
                 pcbPane.setSelection(clickPoint.getX(), clickPoint.getY(), 0, 0);
-                ArrayList<Toolpath> changedToolpaths = new ArrayList<Toolpath>();
+                ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
                 for (Toolpath toolpath : service.getValue())
                 {
                     if (toolpath.isSelected())
@@ -58,7 +61,7 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
             else if (event.getEventType().equals(MouseEvent.MOUSE_DRAGGED))
             {
                 Point2D eventPoint = toPCBCoordinates(new Point2D(event.getX(), event.getY()));
-                ArrayList<Toolpath> changedToolpaths = new ArrayList<Toolpath>();
+                ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
                 for (Toolpath toolpath : service.getValue())
                 {
                     Shape shape = createShapeForToolpath((CuttingToolpath) toolpath);
@@ -89,27 +92,26 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
         if (toolpath instanceof LinearToolpath)
         {
             LinearToolpath t = (LinearToolpath) toolpath;
-            shape = new Line(t.getCurve().getFrom().getX().doubleValue(), t.getCurve().getFrom().getY().doubleValue(),
-                    t.getCurve().getTo().getX().doubleValue(), t.getCurve().getTo().getY().doubleValue());
+            shape = new Line(t.getCurve().getFrom().getX(), t.getCurve().getFrom().getY(),
+                    t.getCurve().getTo().getX(), t.getCurve().getTo().getY());
         }
         else if (toolpath instanceof CircularToolpath)
         {
             org.cirqwizard.geom.Arc t = (org.cirqwizard.geom.Arc)toolpath.getCurve();
-            shape = new Arc(t.getCenter().getX().doubleValue(), t.getCenter().getY().doubleValue(),
-                    t.getRadius().doubleValue(), t.getRadius().doubleValue(),
-                    -Math.toDegrees(t.getStart().doubleValue()), Math.toDegrees(t.getAngle().doubleValue()));
+            shape = new Arc(t.getCenter().getX(), t.getCenter().getY(),
+                    t.getRadius(), t.getRadius(),
+                    -Math.toDegrees(t.getStart()), Math.toDegrees(t.getAngle()));
         }
         else if (toolpath instanceof DrillPoint)
         {
             DrillPoint drillPoint = (DrillPoint) toolpath;
-            shape = new Arc(drillPoint.getPoint().getX().doubleValue(), drillPoint.getPoint().getY().doubleValue(),
-                    drillPoint.getToolDiameter().doubleValue() / 2, drillPoint.getToolDiameter().doubleValue() / 2,
-                    0, 360);
+            shape = new Arc(drillPoint.getPoint().getX(), drillPoint.getPoint().getY(),
+                    drillPoint.getToolDiameter() / 2, drillPoint.getToolDiameter() / 2, 0, 360);
         }
         if (shape != null)
         {
             shape.setStrokeLineCap(StrokeLineCap.ROUND);
-            shape.setStrokeWidth(toolpath.getToolDiameter().doubleValue());
+            shape.setStrokeWidth(toolpath.getToolDiameter());
         }
 
         return shape;

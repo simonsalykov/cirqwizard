@@ -17,6 +17,7 @@ package org.cirqwizard.pp;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.io.FileNotFoundException;
@@ -32,14 +33,12 @@ import java.util.StringTokenizer;
 public class PPParser
 {
     private String filename;
-    private int resolution;
 
     private List<PPPoint> components;
 
-    public PPParser(String filename, int resolution)
+    public PPParser(String filename)
     {
         this.filename = filename;
-        this.resolution = resolution;
     }
 
     public void parse()
@@ -67,7 +66,8 @@ public class PPParser
                 }
 
                 components.add(new PPPoint(new ComponentId(packaging, value),
-                        new Point(Integer.valueOf(x) * resolution, Integer.valueOf(y) * resolution), Integer.valueOf(angle), name));
+                        new Point((int)(Double.valueOf(x) * Settings.RESOLUTION),
+                                (int)(Double.valueOf(y) * Settings.RESOLUTION)), (int)(Double.valueOf(angle) * Settings.RESOLUTION), name));
             }
         }
         catch (FileNotFoundException e)

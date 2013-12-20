@@ -14,6 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.post;
 
+import org.cirqwizard.settings.Settings;
+
 import java.text.DecimalFormat;
 
 
@@ -24,14 +26,7 @@ public class RTPostprocessor implements Postprocessor
     private Integer z;
     private Integer feed;
 
-    private int resolution;
-
     private final static DecimalFormat format = new DecimalFormat("0.###");
-
-    public RTPostprocessor(int resolution)
-    {
-        this.resolution = resolution;
-    }
 
     @Override
     public void home(StringBuilder str, Integer yDiff)
@@ -66,7 +61,7 @@ public class RTPostprocessor implements Postprocessor
 
     private String formatCoordinate(int number)
     {
-        return format.format((double)number / resolution);
+        return format.format((double)number / Settings.RESOLUTION);
     }
 
     public void rapid(StringBuilder str, Integer x, Integer y, Integer z)
@@ -140,9 +135,9 @@ public class RTPostprocessor implements Postprocessor
     {
     }
 
-    public void pause(StringBuilder str, double duration)
+    public void pause(StringBuilder str, int duration)
     {
-        str.append("G4 P").append(format.format(duration)).append("\n");
+        str.append("G4 P").append(formatCoordinate(duration)).append("\n");
     }
 
     public void comment(StringBuilder str, String comment)

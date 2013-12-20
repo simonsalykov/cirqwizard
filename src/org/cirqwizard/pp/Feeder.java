@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.pp;
 
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.settings.Settings;
 
 
 public enum Feeder
@@ -22,18 +23,19 @@ public enum Feeder
     SMALL
             {
                 @Override
-                public RealNumber getYForRow(RealNumber baseY, int row)
+                public int getYForRow(int baseY, int row)
                 {
+                    double offset = 0;
                     switch (row)
                     {
-                        case 0: return baseY.subtract(new RealNumber("3"));
-                        case 1: return baseY.subtract(new RealNumber("13.5"));
-                        case 2: return baseY.subtract(new RealNumber("21"));
-                        case 3: return baseY.subtract(new RealNumber("29.5"));
-                        case 4: return baseY.subtract(new RealNumber("39"));
-                        case 5: return baseY.subtract(new RealNumber("49.5"));
+                        case 0: offset = 3; break;
+                        case 1: offset = 13.5; break;
+                        case 2: offset = 21; break;
+                        case 3: offset = 29.5; break;
+                        case 4: offset = 39; break;
+                        case 5: offset = 49.5; break;
                     }
-                    return null;
+                    return (int)(baseY - offset * Settings.RESOLUTION);
                 }
 
                 @Override
@@ -45,16 +47,17 @@ public enum Feeder
     MEDIUM
             {
                 @Override
-                public RealNumber getYForRow(RealNumber baseY, int row)
+                public int getYForRow(int baseY, int row)
                 {
+                    double offset = 0;
                     switch (row)
                     {
-                        case 0: return baseY.subtract(new RealNumber("6"));
-                        case 1: return baseY.subtract(new RealNumber("18.5"));
-                        case 2: return baseY.subtract(new RealNumber("32"));
-                        case 3: return baseY.subtract(new RealNumber("46.5"));
+                        case 0: offset = 6; break;
+                        case 1: offset = 18.5; break;
+                        case 2: offset = 32; break;
+                        case 3: offset = 46.5; break;
                     }
-                    return null;
+                    return (int)(baseY - offset * Settings.RESOLUTION);
                 }
 
                 @Override
@@ -66,16 +69,17 @@ public enum Feeder
     LARGE
             {
                 @Override
-                public RealNumber getYForRow(RealNumber baseY, int row)
+                public int getYForRow(int baseY, int row)
                 {
+                    double offset = 0;
                     switch (row)
                     {
-                        case 0: return baseY.subtract(new RealNumber("8"));
-                        case 1: return baseY.subtract(new RealNumber("24.5"));
-                        case 2: return baseY.subtract(new RealNumber("42"));
+                        case 0: offset = 8; break;
+                        case 1: offset = 24.5; break;
+                        case 2: offset = 42; break;
 
                     }
-                    return null;
+                    return (int)(baseY - offset * Settings.RESOLUTION);
                 }
 
                 @Override
@@ -85,6 +89,6 @@ public enum Feeder
                 }
             };
 
-    public abstract RealNumber getYForRow(RealNumber baseY, int row);
+    public abstract int getYForRow(int baseY, int row);
     public abstract int getRowCount();
 }

@@ -1,10 +1,7 @@
 package org.cirqwizard.appertures;
 
-import org.cirqwizard.math.RealNumber;
-
 import org.cirqwizard.geom.Point;
 
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class PolygonalAperture extends Aperture
@@ -19,20 +16,17 @@ public class PolygonalAperture extends Aperture
 
         for (Point p : points)
         {
-            if ((int) (p.getX().doubleValue()) > maxX)
-                maxX = (int) (p.getX().doubleValue());
-
-            if ((int) (p.getX().doubleValue()) < minX)
-                minX = (int) (p.getX().doubleValue());
+            maxX = Math.max(maxX, p.getX());
+            minX = Math.min(minX, p.getX());
         }
     }
 
-    public PolygonalAperture(RealNumber diameter, RealNumber holeDiameter)
+    public PolygonalAperture(int diameter, int holeDiameter)
     {
         super(holeDiameter);
     }
 
-    public PolygonalAperture(RealNumber diameter, RealNumber holeWidth, RealNumber holeHeight)
+    public PolygonalAperture(int diameter, int holeWidth, int holeHeight)
     {
         super(holeWidth, holeHeight);
     }
@@ -50,29 +44,13 @@ public class PolygonalAperture extends Aperture
         {
             Point point;
             if (clockwise)
-                point = new Point(p.getY(), p.getX().negate());
+                point = new Point(p.getY(), -p.getX());
             else
-                point = new Point(p.getY().negate(), p.getX());
+                point = new Point(-p.getY(), p.getX());
             newPoints.add(point);
         }
         points = newPoints;
         return this;
-    }
-
-    @Override
-    public void render(Graphics2D g, int x, int y, double scale)
-    {
-        int xPoints[] = new int[points.size()];
-        int yPoints[] = new int[points.size()];
-        int idx = 0;
-
-        for (Point p : points)
-        {
-            xPoints[idx] = (int) (p.getX().doubleValue() * scale) + x;
-            yPoints[idx] = (int) (p.getX().doubleValue() * scale) + x;
-            idx++;
-        }
-        g.fillPolygon(xPoints, yPoints, points.size());
     }
 
     @Override
@@ -82,8 +60,8 @@ public class PolygonalAperture extends Aperture
     }
 
     @Override
-    public RealNumber getWidth(RealNumber angle)
+    public int getWidth(double angle)
     {
-        return new RealNumber(maxX - minX);
+        return maxX - minX;
     }
 }

@@ -16,9 +16,6 @@ package org.cirqwizard.toolpath;
 
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
-
-import java.math.RoundingMode;
 
 
 public class DrillPoint extends CuttingToolpath

@@ -26,7 +26,7 @@ import java.text.DecimalFormat;
 public class RealNumberTextField extends TextField
 {
     private StringProperty realNumberTextProperty = new SimpleStringProperty();
-    private IntegerProperty realNumberIntegerProperty = new SimpleIntegerProperty();
+    private ObjectProperty<Integer> realNumberIntegerProperty = new SimpleObjectProperty<>();
 
     private DecimalFormat format = new DecimalFormat("0.0");
 
@@ -45,7 +45,7 @@ public class RealNumberTextField extends TextField
         return realNumberIntegerProperty.getValue();
     }
 
-    public IntegerProperty realNumberIntegerProperty()
+    public ObjectProperty<Integer> realNumberIntegerProperty()
     {
         return realNumberIntegerProperty;
     }
@@ -74,7 +74,7 @@ public class RealNumberTextField extends TextField
                     try
                     {
                         newValue = newValue.trim().replace(",", ".");
-                        realNumberIntegerProperty.setValue(Double.parseDouble(newValue) * Settings.RESOLUTION);
+                        realNumberIntegerProperty.setValue((int)(Double.parseDouble(newValue) * Settings.RESOLUTION));
                         realNumberTextProperty.setValue(newValue);
                     }
                     catch (Exception e)

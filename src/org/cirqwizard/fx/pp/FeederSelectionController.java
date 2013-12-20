@@ -14,13 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.SceneController;
-import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.pp.ComponentId;
-import org.cirqwizard.pp.Feeder;
-import org.cirqwizard.toolpath.PPPoint;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -28,7 +21,16 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.SceneController;
+import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.pp.ComponentId;
+import org.cirqwizard.pp.Feeder;
+import org.cirqwizard.toolpath.PPPoint;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -51,8 +53,6 @@ public class FeederSelectionController extends SceneController implements Initia
     @FXML private Button continueButton;
 
     private ObservableList<Integer> rows;
-
-    private DecimalFormat pitchFormat = new DecimalFormat("0.0");
 
     @Override
     public Parent getView()
@@ -110,7 +110,7 @@ public class FeederSelectionController extends SceneController implements Initia
             largeFeeder.setSelected(true);
         updateRows();
 
-        pitch.setText(context.getComponentPitch() == null ? "" : pitchFormat.format(context.getComponentPitch().getValue()));
+        pitch.setIntegerValue(context.getComponentPitch() == null ? null : context.getComponentPitch());
     }
 
     public void updateRows()
@@ -151,7 +151,7 @@ public class FeederSelectionController extends SceneController implements Initia
             context.setFeeder(Feeder.MEDIUM);
         else if (largeFeeder.isSelected())
             context.setFeeder(Feeder.LARGE);
-        context.setComponentPitch(new RealNumber(pitch.getRealNumberText()));
+        context.setComponentPitch(pitch.getIntegerValue());
         context.setFeederRow(row.getValue() - 1);
         super.next();
     }

@@ -87,44 +87,44 @@ public class Settings
 
     private static class DefaultValues
     {
-        private static final String MACHINE_SMALL_PCB_WIDTH = "65";
-        private static final String MACHINE_LARGE_PCB_WIDTH = "90";
-        private static final String MACHINE_FAR_AWAY_Y = "220";
+        private static final int MACHINE_SMALL_PCB_WIDTH = 65 * RESOLUTION;
+        private static final int MACHINE_LARGE_PCB_WIDTH = 90 * RESOLUTION;
+        private static final int MACHINE_FAR_AWAY_Y = 220 * RESOLUTION;
 
         private static final String LOGGER_LOG_LEVEL = "INFO";
 
-        private static final String TRACES_TOOL_DIAMETER = "0.3";
-        private static final String TRACES_FEED_XY = "300";
-        private static final String TRACES_FEED_Z = "200";
+        private static final int TRACES_TOOL_DIAMETER = (int)(0.3 * RESOLUTION);
+        private static final int TRACES_FEED_XY = 300 * RESOLUTION;
+        private static final int TRACES_FEED_Z = 200 * RESOLUTION;
         private static final String TRACES_SPEED = "1390";
-        private static final String TRACES_CLEARANCE = "5";
-        private static final String TRACES_SAFETY_HEIGHT = "2";
-        private static final String TRACES_WORKING_HEIGHT = "-0.05";
+        private static final int TRACES_CLEARANCE = 5 * RESOLUTION;
+        private static final int TRACES_SAFETY_HEIGHT = 2 * RESOLUTION;
+        private static final int TRACES_WORKING_HEIGHT = (int)(-0.05 * RESOLUTION);
 
-        private static final String DRILLING_FEED = "200";
+        private static final int DRILLING_FEED = 200 * RESOLUTION;
         private static final String DRILLING_SPEED = "1390";
-        private static final String DRILLING_CLEARANCE = "5";
-        private static final String DRILLING_SAFETY_HEIGHT = "2";
-        private static final String DRILLING_WORKING_HEIGHT = "-2.5";
+        private static final int DRILLING_CLEARANCE = 5 * RESOLUTION;
+        private static final int DRILLING_SAFETY_HEIGHT = 2 * RESOLUTION;
+        private static final int DRILLING_WORKING_HEIGHT = (int)(-2.5 * RESOLUTION);
 
-        private static final String CONTOUR_FEED_XY = "300";
-        private static final String CONTOUR_FEED_Z = "200";
+        private static final int CONTOUR_FEED_XY = 300 * RESOLUTION;
+        private static final int CONTOUR_FEED_Z = 200 * RESOLUTION;
         private static final String CONTOUR_SPEED = "1390";
-        private static final String CONTOUR_CLEARANCE = "5";
-        private static final String CONTOUR_SAFETY_HEIGHT = "2";
-        private static final String CONTOUR_WORKING_HEIGHT = "-2";
+        private static final int CONTOUR_CLEARANCE = 5 * RESOLUTION;
+        private static final int CONTOUR_SAFETY_HEIGHT = 2 * RESOLUTION;
+        private static final int CONTOUR_WORKING_HEIGHT = -2 * RESOLUTION;
 
-        private static final String DISPENSING_NEEDLE_DIAMETER = "0.4";
-        private static final String DISPENSING_PREFEED_PAUSE = "0.1";
-        private static final String DISPENSING_POSTFEED_PAUSE = "0.2";
-        private static final String DISPENSING_FEED = "100";
-        private static final String DISPENSING_CLEARANCE = "5";
-        private static final String DISPENSING_WORKING_HEIGHT = "0";
-        private static final String DISPENSING_BLEEDING_DURATION = "0.5";
+        private static final int DISPENSING_NEEDLE_DIAMETER = (int)(0.4 * RESOLUTION);
+        private static final int DISPENSING_PREFEED_PAUSE = (int)(0.1 * RESOLUTION);
+        private static final int DISPENSING_POSTFEED_PAUSE = (int)(0.2 * RESOLUTION);
+        private static final int DISPENSING_FEED = 100 * RESOLUTION;
+        private static final int DISPENSING_CLEARANCE = 5 * RESOLUTION;
+        private static final int DISPENSING_WORKING_HEIGHT = 0;
+        private static final int DISPENSING_BLEEDING_DURATION = (int)(0.5 * RESOLUTION);
 
-        private static final String PP_PICKUP_HEIGHT = "-14.2";
-        private static final String PP_MOVE_HEIGHT = "0.8";
-        private static final String PP_ROTATION_FEED = "100";
+        private static final int PP_PICKUP_HEIGHT = (int)(-14.2 * RESOLUTION);
+        private static final int PP_MOVE_HEIGHT = (int)(0.8 * RESOLUTION);
+        private static final int PP_ROTATION_FEED = 100 * RESOLUTION;
     }
 
     private Preferences preferences;
@@ -161,8 +161,10 @@ public class Settings
         flush();
     }
 
-    public int getMachineYDiff()
+    public Integer getMachineYDiff()
     {
+        if (preferences.get(PropertyNames.MACHINE_Y_DIFF_NAME, null) == null)
+            return null;
         return preferences.getInt(PropertyNames.MACHINE_Y_DIFF_NAME, 0);
     }
 
@@ -171,52 +173,56 @@ public class Settings
         set(PropertyNames.MACHINE_Y_DIFF_NAME, yDiff);
     }
 
-    public String getMachineReferencePinX()
+    public Integer getMachineReferencePinX()
     {
-        return preferences.get(PropertyNames.MACHINE_REFERENCE_PIN_X, "");
+        if (preferences.get(PropertyNames.MACHINE_REFERENCE_PIN_X, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.MACHINE_REFERENCE_PIN_X, 0);
     }
 
-    public void setMachineReferencePinX(String x)
+    public void setMachineReferencePinX(int x)
     {
         set(PropertyNames.MACHINE_REFERENCE_PIN_X, x);
     }
 
-    public String getMachineReferencePinY()
+    public Integer getMachineReferencePinY()
     {
-        return preferences.get(PropertyNames.MACHINE_REFERENCE_PIN_Y, "");
+        if (preferences.get(PropertyNames.MACHINE_REFERENCE_PIN_Y, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.MACHINE_REFERENCE_PIN_Y, 0);
     }
 
-    public void setMachineReferencePinY(String y)
+    public void setMachineReferencePinY(int y)
     {
         set(PropertyNames.MACHINE_REFERENCE_PIN_Y, y);
     }
 
-    public String getMachineSmallPCBWidth()
+    public Integer getMachineSmallPCBWidth()
     {
-        return preferences.get(PropertyNames.MACHINE_SMALL_PCB_WIDTH, DefaultValues.MACHINE_SMALL_PCB_WIDTH);
+        return preferences.getInt(PropertyNames.MACHINE_SMALL_PCB_WIDTH, DefaultValues.MACHINE_SMALL_PCB_WIDTH);
     }
 
-    public void setMachineSmallPCBWidth(String width)
+    public void setMachineSmallPCBWidth(int width)
     {
         set(PropertyNames.MACHINE_SMALL_PCB_WIDTH, width);
     }
 
-    public String getMachineLargePCBWidth()
+    public Integer getMachineLargePCBWidth()
     {
-        return preferences.get(PropertyNames.MACHINE_LARGE_PCB_WIDTH, DefaultValues.MACHINE_LARGE_PCB_WIDTH);
+        return preferences.getInt(PropertyNames.MACHINE_LARGE_PCB_WIDTH, DefaultValues.MACHINE_LARGE_PCB_WIDTH);
     }
 
-    public void setMachineLargePCBWidth(String width)
+    public void setMachineLargePCBWidth(int width)
     {
         set(PropertyNames.MACHINE_LARGE_PCB_WIDTH, width);
     }
 
-    public String getFarAwayY()
+    public Integer getFarAwayY()
     {
-        return preferences.get(PropertyNames.MACHINE_FAR_AWAY_Y, DefaultValues.MACHINE_FAR_AWAY_Y);
+        return preferences.getInt(PropertyNames.MACHINE_FAR_AWAY_Y, DefaultValues.MACHINE_FAR_AWAY_Y);
     }
 
-    public void setFarAwayY(String y)
+    public void setFarAwayY(int y)
     {
         set(PropertyNames.MACHINE_FAR_AWAY_Y, y);
     }
@@ -243,32 +249,32 @@ public class Settings
 
 
 
-    public String getDefaultTraceToolDiameter()
+    public Integer getDefaultTraceToolDiameter()
     {
-        return preferences.get(PropertyNames.TRACES_TOOL_DIAMETER, DefaultValues.TRACES_TOOL_DIAMETER);
+        return preferences.getInt(PropertyNames.TRACES_TOOL_DIAMETER, DefaultValues.TRACES_TOOL_DIAMETER);
     }
 
-    public void setDefaultTraceToolDiameter(String diameter)
+    public void setDefaultTraceToolDiameter(int diameter)
     {
         set(PropertyNames.TRACES_TOOL_DIAMETER, diameter);
     }
 
-    public String getDefaultTracesFeedXY()
+    public Integer getDefaultTracesFeedXY()
     {
-        return preferences.get(PropertyNames.TRACES_FEED_XY, DefaultValues.TRACES_FEED_XY);
+        return preferences.getInt(PropertyNames.TRACES_FEED_XY, DefaultValues.TRACES_FEED_XY);
     }
 
-    public void setDefaultTracesFeedXY(String feed)
+    public void setDefaultTracesFeedXY(int feed)
     {
         set(PropertyNames.TRACES_FEED_XY, feed);
     }
 
-    public String getDefaultTracesFeedZ()
+    public Integer getDefaultTracesFeedZ()
     {
-        return preferences.get(PropertyNames.TRACES_FEED_Z, DefaultValues.TRACES_FEED_Z);
+        return preferences.getInt(PropertyNames.TRACES_FEED_Z, DefaultValues.TRACES_FEED_Z);
     }
 
-    public void setDefaultTracesFeedZ(String feed)
+    public void setDefaultTracesFeedZ(int feed)
     {
         set(PropertyNames.TRACES_FEED_Z, feed);
     }
@@ -278,59 +284,61 @@ public class Settings
         return preferences.get(PropertyNames.TRACES_SPEED, DefaultValues.TRACES_SPEED);
     }
 
-    public void setDefaultTracesSpeed(String speed)
+    public void setDefaultTracesSpeed(int speed)
     {
         set(PropertyNames.TRACES_SPEED, speed);
     }
 
-    public String getDefaultTracesClearance()
+    public Integer getDefaultTracesClearance()
     {
-        return preferences.get(PropertyNames.TRACES_CLEARANCE, DefaultValues.TRACES_CLEARANCE);
+        return preferences.getInt(PropertyNames.TRACES_CLEARANCE, DefaultValues.TRACES_CLEARANCE);
     }
 
-    public void setDefaultTracesClearance(String clearance)
+    public void setDefaultTracesClearance(int clearance)
     {
         set(PropertyNames.TRACES_CLEARANCE, clearance);
     }
 
-    public String getDefaultTracesSafetyHeight()
+    public Integer getDefaultTracesSafetyHeight()
     {
-        return preferences.get(PropertyNames.TRACES_SAFETY_HEIGHT, DefaultValues.TRACES_SAFETY_HEIGHT);
+        return preferences.getInt(PropertyNames.TRACES_SAFETY_HEIGHT, DefaultValues.TRACES_SAFETY_HEIGHT);
     }
 
-    public void setDefaultTracesSafetyHeight(String height)
+    public void setDefaultTracesSafetyHeight(int height)
     {
         set(PropertyNames.TRACES_SAFETY_HEIGHT, height);
     }
 
-    public String getDefaultTracesZOffset()
+    public Integer getDefaultTracesZOffset()
     {
-        return preferences.get(PropertyNames.TRACES_DEFAULT_Z_OFFSET, "");
+        if (preferences.get(PropertyNames.TRACES_DEFAULT_Z_OFFSET, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.TRACES_DEFAULT_Z_OFFSET, 0);
     }
 
-    public void setDefaultTracesZOFfset(String offset)
+    public void setDefaultTracesZOFfset(int offset)
     {
         set(PropertyNames.TRACES_DEFAULT_Z_OFFSET, offset);
     }
 
-    public String getDefaultTracesWorkingHeight()
+    public Integer getDefaultTracesWorkingHeight()
     {
-        return preferences.get(PropertyNames.TRACES_WORKING_HEIGHT, DefaultValues.TRACES_WORKING_HEIGHT);
+        return preferences.getInt(PropertyNames.TRACES_WORKING_HEIGHT, DefaultValues.TRACES_WORKING_HEIGHT);
     }
 
-    public void setDefaultTracesWorkingHeight(String height)
+    public void setDefaultTracesWorkingHeight(int height)
     {
         set(PropertyNames.TRACES_WORKING_HEIGHT, height);
     }
 
 
 
-    public String getDefaultDrillingFeed()
+    public Integer getDefaultDrillingFeed()
     {
-        return preferences.get(PropertyNames.DRILLING_FEED, DefaultValues.DRILLING_FEED);
+        return preferences.getInt(PropertyNames.DRILLING_FEED, DefaultValues.DRILLING_FEED);
     }
 
-    public void setDefaultDrillingFeed(String feed)
+    public void setDefaultDrillingFeed(int feed)
     {
         set(PropertyNames.DRILLING_FEED, feed);
     }
@@ -345,64 +353,66 @@ public class Settings
         set(PropertyNames.DRILLING_SPEED, speed);
     }
 
-    public String getDefaultDrillingClearance()
+    public Integer getDefaultDrillingClearance()
     {
-        return preferences.get(PropertyNames.DRILLING_CLEARANCE, DefaultValues.DRILLING_CLEARANCE);
+        return preferences.getInt(PropertyNames.DRILLING_CLEARANCE, DefaultValues.DRILLING_CLEARANCE);
     }
 
-    public void setDefaultDrillingClearance(String clearance)
+    public void setDefaultDrillingClearance(int clearance)
     {
         set(PropertyNames.DRILLING_CLEARANCE, clearance);
     }
 
-    public String getDefaultDrillingSafetyHeight()
+    public Integer getDefaultDrillingSafetyHeight()
     {
-        return preferences.get(PropertyNames.DRILLING_SAFETY_HEIGHT, DefaultValues.DRILLING_SAFETY_HEIGHT);
+        return preferences.getInt(PropertyNames.DRILLING_SAFETY_HEIGHT, DefaultValues.DRILLING_SAFETY_HEIGHT);
     }
 
-    public void setDefaultDrillingSafetyHeight(String height)
+    public void setDefaultDrillingSafetyHeight(int height)
     {
         set(PropertyNames.DRILLING_SAFETY_HEIGHT, height);
     }
 
-    public String getDefaultDrillingZOffset()
+    public Integer getDefaultDrillingZOffset()
     {
-        return preferences.get(PropertyNames.DRILLING_Z_OFFSET, "");
+        if (preferences.get(PropertyNames.DRILLING_Z_OFFSET, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.DRILLING_Z_OFFSET, 0);
     }
 
-    public void setDefaultDrillingZOffset(String offset)
+    public void setDefaultDrillingZOffset(int offset)
     {
         set(PropertyNames.DRILLING_Z_OFFSET, offset);
     }
 
-    public String getDefaultDrillingWorkingHeight()
+    public Integer getDefaultDrillingWorkingHeight()
     {
-        return preferences.get(PropertyNames.DRILLING_WORKING_HEIGHT, DefaultValues.DRILLING_WORKING_HEIGHT);
+        return preferences.getInt(PropertyNames.DRILLING_WORKING_HEIGHT, DefaultValues.DRILLING_WORKING_HEIGHT);
     }
 
-    public void setDefaultDrillingWorkingHeight(String height)
+    public void setDefaultDrillingWorkingHeight(int height)
     {
         set(PropertyNames.DRILLING_WORKING_HEIGHT, height);
     }
 
 
 
-    public String getDefaultContourFeedXY()
+    public Integer getDefaultContourFeedXY()
     {
-        return preferences.get(PropertyNames.CONTOUR_FEED_XY, DefaultValues.CONTOUR_FEED_XY);
+        return preferences.getInt(PropertyNames.CONTOUR_FEED_XY, DefaultValues.CONTOUR_FEED_XY);
     }
 
-    public void setDefaultContourFeedXY(String feed)
+    public void setDefaultContourFeedXY(int feed)
     {
         set(PropertyNames.CONTOUR_FEED_XY, feed);
     }
 
-    public String getDefaultContourFeedZ()
+    public Integer getDefaultContourFeedZ()
     {
-        return preferences.get(PropertyNames.CONTOUR_FEED_Z, DefaultValues.CONTOUR_FEED_Z);
+        return preferences.getInt(PropertyNames.CONTOUR_FEED_Z, DefaultValues.CONTOUR_FEED_Z);
     }
 
-    public void setDefaultContourFeedZ(String feed)
+    public void setDefaultContourFeedZ(int feed)
     {
         set(PropertyNames.CONTOUR_FEED_Z, feed);
     }
@@ -417,155 +427,159 @@ public class Settings
         set(PropertyNames.CONTOUR_SPEED, speed);
     }
 
-    public String getDefaultContourClearance()
+    public Integer getDefaultContourClearance()
     {
-        return preferences.get(PropertyNames.CONTOUR_CLEARANCE, DefaultValues.CONTOUR_CLEARANCE);
+        return preferences.getInt(PropertyNames.CONTOUR_CLEARANCE, DefaultValues.CONTOUR_CLEARANCE);
     }
 
-    public void setDefaultContourClearance(String clearance)
+    public void setDefaultContourClearance(int clearance)
     {
         set(PropertyNames.CONTOUR_CLEARANCE, clearance);
     }
 
-    public String getDefaultContourSafetyHeight()
+    public Integer getDefaultContourSafetyHeight()
     {
-        return preferences.get(PropertyNames.CONTOUR_SAFETY_HEIGHT, DefaultValues.CONTOUR_SAFETY_HEIGHT);
+        return preferences.getInt(PropertyNames.CONTOUR_SAFETY_HEIGHT, DefaultValues.CONTOUR_SAFETY_HEIGHT);
     }
 
-    public void setDefaultContourSafetyHeight(String height)
+    public void setDefaultContourSafetyHeight(int height)
     {
         set(PropertyNames.CONTOUR_SAFETY_HEIGHT, height);
     }
 
-    public String getDefaultContourZOffset()
+    public Integer getDefaultContourZOffset()
     {
-        return preferences.get(PropertyNames.CONTOUR_Z_OFFSET, "");
+        if (preferences.get(PropertyNames.CONTOUR_Z_OFFSET, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.CONTOUR_Z_OFFSET, 0);
     }
 
-    public void setDefaultContourZOffset(String offset)
+    public void setDefaultContourZOffset(int offset)
     {
         set(PropertyNames.CONTOUR_Z_OFFSET, offset);
     }
 
-    public String getDefaultContourWorkingHeight()
+    public Integer getDefaultContourWorkingHeight()
     {
-        return preferences.get(PropertyNames.CONTOUR_WORKING_HEIGHT, DefaultValues.CONTOUR_WORKING_HEIGHT);
+        return preferences.getInt(PropertyNames.CONTOUR_WORKING_HEIGHT, DefaultValues.CONTOUR_WORKING_HEIGHT);
     }
 
-    public void setDefaultContourWorkingHeight(String height)
+    public void setDefaultContourWorkingHeight(int height)
     {
         set(PropertyNames.CONTOUR_WORKING_HEIGHT, height);
     }
 
 
-    public String getDefaultDispensingNeedleDiameter()
+    public Integer getDefaultDispensingNeedleDiameter()
     {
-        return preferences.get(PropertyNames.DISPENSING_NEEDLE_DIAMETER, DefaultValues.DISPENSING_NEEDLE_DIAMETER);
+        return preferences.getInt(PropertyNames.DISPENSING_NEEDLE_DIAMETER, DefaultValues.DISPENSING_NEEDLE_DIAMETER);
     }
 
-    public void setDefaultDispensingNeedleDiameter(String diameter)
+    public void setDefaultDispensingNeedleDiameter(int diameter)
     {
         set(PropertyNames.DISPENSING_NEEDLE_DIAMETER, diameter);
     }
 
-    public String getDefaultDispensingPrefeedPause()
+    public Integer getDefaultDispensingPrefeedPause()
     {
-        return preferences.get(PropertyNames.DISPENSING_PREFEED_PAUSE, DefaultValues.DISPENSING_PREFEED_PAUSE);
+        return preferences.getInt(PropertyNames.DISPENSING_PREFEED_PAUSE, DefaultValues.DISPENSING_PREFEED_PAUSE);
     }
 
-    public void setDefaultDispensingPrefeedPause(String pause)
+    public void setDefaultDispensingPrefeedPause(int pause)
     {
         set(PropertyNames.DISPENSING_PREFEED_PAUSE, pause);
     }
 
-    public String getDefaultDispensingFeed()
+    public Integer getDefaultDispensingFeed()
     {
-        return preferences.get(PropertyNames.DISPENSING_FEED, DefaultValues.DISPENSING_FEED);
+        return preferences.getInt(PropertyNames.DISPENSING_FEED, DefaultValues.DISPENSING_FEED);
     }
 
-    public void setDefaultDispensingFeed(String feed)
+    public void setDefaultDispensingFeed(int feed)
     {
         set(PropertyNames.DISPENSING_FEED, feed);
     }
 
-    public String getDefaultDispensingClearance()
+    public Integer getDefaultDispensingClearance()
     {
-        return preferences.get(PropertyNames.DISPENSING_CLEARANCE, DefaultValues.DISPENSING_CLEARANCE);
+        return preferences.getInt(PropertyNames.DISPENSING_CLEARANCE, DefaultValues.DISPENSING_CLEARANCE);
     }
 
-    public void setDefaultDispensingClearance(String clearance)
+    public void setDefaultDispensingClearance(int clearance)
     {
         set(PropertyNames.DISPENSING_CLEARANCE, clearance);
     }
 
-    public String getDefaultDispensingZOffset()
+    public Integer getDefaultDispensingZOffset()
     {
-        return preferences.get(PropertyNames.DISPENSING_Z_OFFSET, "");
+        if (preferences.get(PropertyNames.DISPENSING_Z_OFFSET, "") == null)
+            return null;
+        return preferences.getInt(PropertyNames.DISPENSING_Z_OFFSET, 0);
     }
 
-    public void setDefaultDispensingZOffset(String offset)
+    public void setDefaultDispensingZOffset(int offset)
     {
         set(PropertyNames.DISPENSING_Z_OFFSET, offset);
     }
 
-    public String getDefaultDispensingWorkingHeight()
+    public Integer getDefaultDispensingWorkingHeight()
     {
-        return preferences.get(PropertyNames.DISPENSING_WORKING_HEIGHT, DefaultValues.DISPENSING_WORKING_HEIGHT);
+        return preferences.getInt(PropertyNames.DISPENSING_WORKING_HEIGHT, DefaultValues.DISPENSING_WORKING_HEIGHT);
     }
 
-    public void setDefaultDispensingWorkingHeight(String height)
+    public void setDefaultDispensingWorkingHeight(int height)
     {
         set(PropertyNames.DISPENSING_WORKING_HEIGHT, height);
     }
 
-    public String getDispensingBleedingDuration()
+    public Integer getDispensingBleedingDuration()
     {
-        return preferences.get(PropertyNames.DISPENSING_BLEEDING_DURATION, DefaultValues.DISPENSING_BLEEDING_DURATION);
+        return preferences.getInt(PropertyNames.DISPENSING_BLEEDING_DURATION, DefaultValues.DISPENSING_BLEEDING_DURATION);
     }
 
-    public String getDispensingPostfeedPause()
-    {
-        return preferences.get(PropertyNames.DISPENSING_POSTFEED_PAUSE, DefaultValues.DISPENSING_POSTFEED_PAUSE);
-    }
-
-    public void setDispensingBleedingDuration(String duration)
+    public void setDispensingBleedingDuration(int duration)
     {
         set(PropertyNames.DISPENSING_BLEEDING_DURATION, duration);
     }
 
-    public void setDispensingPostfeedPause(String duration)
+    public Integer getDispensingPostfeedPause()
+    {
+        return preferences.getInt(PropertyNames.DISPENSING_POSTFEED_PAUSE, DefaultValues.DISPENSING_POSTFEED_PAUSE);
+    }
+
+    public void setDispensingPostfeedPause(int duration)
     {
         set(PropertyNames.DISPENSING_POSTFEED_PAUSE, duration);
     }
 
 
 
-    public String getPPPickupHeight()
+    public Integer getPPPickupHeight()
     {
-        return preferences.get(PropertyNames.PP_PICKUP_HEIGHT, DefaultValues.PP_PICKUP_HEIGHT);
+        return preferences.getInt(PropertyNames.PP_PICKUP_HEIGHT, DefaultValues.PP_PICKUP_HEIGHT);
     }
 
-    public void setPPPickupHeight(String height)
+    public void setPPPickupHeight(int height)
     {
         set(PropertyNames.PP_PICKUP_HEIGHT, height);
     }
 
-    public String getPPMoveHeight()
+    public Integer getPPMoveHeight()
     {
-        return preferences.get(PropertyNames.PP_MOVE_HEIGHT, DefaultValues.PP_MOVE_HEIGHT);
+        return preferences.getInt(PropertyNames.PP_MOVE_HEIGHT, DefaultValues.PP_MOVE_HEIGHT);
     }
 
-    public void setPPMoveHeight(String height)
+    public void setPPMoveHeight(int height)
     {
         set(PropertyNames.PP_MOVE_HEIGHT, height);
     }
 
-    public String getPPRotationFeed()
+    public Integer getPPRotationFeed()
     {
-        return preferences.get(PropertyNames.PP_ROTATION_FEED, DefaultValues.PP_ROTATION_FEED);
+        return preferences.getInt(PropertyNames.PP_ROTATION_FEED, DefaultValues.PP_ROTATION_FEED);
     }
 
-    public void setPPRotationFeed(String feed)
+    public void setPPRotationFeed(int feed)
     {
         set(PropertyNames.PP_ROTATION_FEED, feed);
     }
@@ -598,36 +612,26 @@ public class Settings
 
     public Integer getG54X()
     {
-        Integer x = null;
-        try
-        {
-            x = new Integer(preferences.get(PropertyNames.INTERFACE_G54_X, null));
-        }
-        catch (Exception e) {}
-
-        return x;
+        if (preferences.get(PropertyNames.INTERFACE_G54_X, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.INTERFACE_G54_X, 0);
     }
 
-    public void setG54X(Integer x)
+    public void setG54X(int x)
     {
-        set(PropertyNames.INTERFACE_G54_X, x == null ? null : x.toString());
+        set(PropertyNames.INTERFACE_G54_X, x);
     }
 
     public Integer getG54Y()
     {
-        Integer y = null;
-        try
-        {
-            y = new Integer(preferences.get(PropertyNames.INTERFACE_G54_Y, null));
-        }
-        catch (Exception e) {}
-
-        return y;
+        if (preferences.get(PropertyNames.INTERFACE_G54_Y, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.INTERFACE_G54_Y, 0);
     }
 
-    public void setG54Y(Integer y)
+    public void setG54Y(int y)
     {
-        set(PropertyNames.INTERFACE_G54_Y, y == null ? null : y.toString());
+        set(PropertyNames.INTERFACE_G54_Y, y);
     }
 
     public PCBSize getPCBSize()
@@ -641,22 +645,26 @@ public class Settings
         flush();
     }
 
-    public String getScrapPlaceX()
+    public Integer getScrapPlaceX()
     {
-        return preferences.get(PropertyNames.INTERFACE_SCRAP_PLACE_X, "");
+        if (preferences.get(PropertyNames.INTERFACE_SCRAP_PLACE_X, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.INTERFACE_SCRAP_PLACE_X, 0);
     }
 
-    public void setScrapPlaceX(String x)
+    public void setScrapPlaceX(int x)
     {
         set(PropertyNames.INTERFACE_SCRAP_PLACE_X, x);
     }
 
-    public String getScrapPlaceY()
+    public Integer getScrapPlaceY()
     {
-        return preferences.get(PropertyNames.INTERFACE_SCRAP_PLACE_Y, "");
+        if (preferences.get(PropertyNames.INTERFACE_SCRAP_PLACE_Y, null) == null)
+            return null;
+        return preferences.getInt(PropertyNames.INTERFACE_SCRAP_PLACE_Y, 0);
     }
 
-    public void setScrapPlaceY(String y)
+    public void setScrapPlaceY(int y)
     {
         set(PropertyNames.INTERFACE_SCRAP_PLACE_Y, y);
     }

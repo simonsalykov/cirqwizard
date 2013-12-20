@@ -21,27 +21,27 @@ public class VectorMath
 {
     public static Point scalarMultiply(Point v, double s)
     {
-        return new Point(new RealNumber(v.getX().doubleValue() * s), new RealNumber(v.getY().doubleValue() * s));
+        return new Point((int)(s * v.getX()), (int)(s * v.getY()));
     }
 
-    public static RealNumber dotProduct(Point v1, Point v2)
+    public static double dotProduct(Point v1, Point v2)
     {
-        return v1.getX().multiply(v2.getX()).add(v1.getY().multiply(v2.getY()));
+        return (double)v1.getX() * v2.getX() + (double)v1.getY() * v2.getY();
     }
 
     public static Point rotateClockwise(Point v)
     {
-        return new Point(v.getY(), v.getX().negate());
+        return new Point(v.getY(), -v.getX());
     }
 
     public static Point rotateCounterclockwise(Point v)
     {
-        return new Point(v.getY().negate(), v.getX());
+        return new Point(-v.getY(), v.getX());
     }
 
     public static Point unitVector(Point v)
     {
-        RealNumber len = new RealNumber(Math.sqrt(v.getX().multiply(v.getX()).add(v.getY().multiply(v.getY())).doubleValue()));
-        return new Point(v.getX().divide(len), v.getY().divide(len));
+        double len = new Point(0, 0).distanceTo(v);
+        return new Point((int)((double)v.getX() / len), (int)((double)v.getY() / len));
     }
 }

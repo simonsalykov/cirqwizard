@@ -23,13 +23,12 @@ public class PolygonUtils
 {
     public static boolean isPolygonClockwise(ArrayList<Point> p)
     {
-        return VectorMath.dotProduct(VectorMath.rotateClockwise(new Point(p.get(1).getX().subtract(p.get(0).getX()), p.get(1).getY().subtract(p.get(0).getY()))),
-                new Point(p.get(2).getX().subtract(p.get(1).getX()), p.get(2).getY().subtract(p.get(1).getY()))).greaterOrEqualTo(0);
+        return VectorMath.dotProduct(VectorMath.rotateClockwise(p.get(1).subtract(p.get(0))), p.get(2).subtract(p.get(1))) >= 0;
     }
 
     public static  ArrayList<Point> expandPolygon(ArrayList<Point> p, double distance)
     {
-        ArrayList<Point> expanded = new ArrayList<Point>();
+        ArrayList<Point> expanded = new ArrayList<>();
         Point d01, d12;
 
         for (int i = 0; i < p.size(); ++i)
@@ -38,8 +37,8 @@ public class PolygonUtils
             Point pt1 = p.get(i);
             Point pt2 = p.get((i < p.size() - 1) ? i + 1 : 0);
 
-            Point v01 = new Point(pt1.getX().subtract(pt0.getX()), pt1.getY().subtract(pt0.getY()));
-            Point v12 = new Point(pt2.getX().subtract(pt1.getX()), pt2.getY().subtract(pt1.getY()));
+            Point v01 = pt1.subtract(pt0);
+            Point v12 = pt2.subtract(pt1);
 
             if (isPolygonClockwise(p))
             {
@@ -52,10 +51,8 @@ public class PolygonUtils
                 d12 = VectorMath.scalarMultiply(VectorMath.unitVector(VectorMath.rotateClockwise(v12)), distance);
             }
 
-            Line l1 = new Line(new Point(pt0.getX().add(d01.getX()), pt0.getY().add(d01.getY())),
-                    new Point(pt1.getX().add(d01.getX()), pt1.getY().add(d01.getY())));
-            Line l2 = new Line(new Point(pt1.getX().add(d12.getX()), pt1.getY().add(d12.getY())),
-                    new Point(pt2.getX().add(d12.getX()), pt2.getY().add(d12.getY())));
+            Line l1 = new Line(pt0.add(d01), pt1.add(d01));
+            Line l2 = new Line(pt1.add(d12), pt2.add(d12));
 
             expanded.add(Line.intersectionPoint(l1, l2));
         }

@@ -16,8 +16,7 @@ package org.cirqwizard.excellon;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.MathUtil;
-import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 
 import java.io.FileInputStream;
@@ -31,11 +30,11 @@ import java.util.logging.Level;
 
 public class ExcellonParser
 {
-    private final static int INCHES_MM_RATIO = 25400;
+    private final static int INCHES_MM_RATIO = (int)(25.4 * Settings.RESOLUTION);
     private final static int DECIMAL_PLACES = 4;
 
-    private HashMap<Integer, RealNumber> tools = new HashMap<>();
-    private RealNumber currentDiameter;
+    private HashMap<Integer, Integer> tools = new HashMap<>();
+    private int currentDiameter;
     private ArrayList<DrillPoint> drillPoints = new ArrayList<>();
 
 
@@ -78,7 +77,7 @@ public class ExcellonParser
         if (line.startsWith("T") && line.charAt(3) == 'C')  // Tool definition
         {
             int toolNumber = Integer.parseInt(line.substring(1, 3));
-            RealNumber diameter = new RealNumber(line.substring(5)).multiply(INCHES_MM_RATIO);
+            int diameter = (int)(Double.valueOf(line.substring(5)) * INCHES_MM_RATIO);
             tools.put(toolNumber, diameter);
         }
     }

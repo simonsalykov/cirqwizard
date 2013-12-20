@@ -106,8 +106,8 @@ public class MachiningController extends SceneController implements Initializabl
                 if (event.isShortcutDown())
                 {
                     double scale = pcbPane.scaleProperty().getValue() + event.getDeltaY() / 100.0;
-                    scale = Math.max(scale, 5.0);
-                    scale = Math.min(scale, 100.0);
+                    scale = Math.max(scale, 0.005);
+                    scale = Math.min(scale, 1);
                     pcbPane.scaleProperty().setValue(scale);
                     event.consume();
                 }
@@ -181,28 +181,31 @@ public class MachiningController extends SceneController implements Initializabl
                 }
             }
         });
-        g54X.realNumberTextProperty().addListener(new ChangeListener<String>()
+        g54X.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getContext().setG54X(s2);
+                if (integer2 != null)
+                    getMainApplication().getContext().setG54X(integer2);
             }
         });
-        g54Y.realNumberTextProperty().addListener(new ChangeListener<String>()
+        g54Y.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getContext().setG54Y(s2);
+                if (integer2 != null)
+                    getMainApplication().getContext().setG54Y(integer2);
             }
         });
-        g54Z.realNumberTextProperty().addListener(new ChangeListener<String>()
+        g54Z.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getContext().setG54Z(s2);
+                if (integer2 != null)
+                    getMainApplication().getContext().setG54Z(integer2);
             }
         });
 
@@ -255,13 +258,13 @@ public class MachiningController extends SceneController implements Initializabl
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
             toolDiameter.setDisable(false);
-            toolDiameter.setText(settings.getDefaultTraceToolDiameter());
-            feed.setText(settings.getDefaultTracesFeedXY());
+            toolDiameter.setIntegerValue(settings.getDefaultTraceToolDiameter());
+            feed.setIntegerValue(settings.getDefaultTracesFeedXY());
 
-            clearance.setText(settings.getDefaultTracesClearance());
-            safetyHeight.setText(settings.getDefaultTracesSafetyHeight());
+            clearance.setIntegerValue(settings.getDefaultTracesClearance());
+            safetyHeight.setIntegerValue(settings.getDefaultTracesSafetyHeight());
             zFeed.setDisable(false);
-            zFeed.setText(settings.getDefaultTracesFeedZ());
+            zFeed.setIntegerValue(settings.getDefaultTracesFeedZ());
 
             pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
@@ -271,10 +274,10 @@ public class MachiningController extends SceneController implements Initializabl
         {
             toolDiameter.setDisable(true);
             toolDiameter.setText(context.getDrillDiameters().get(context.getCurrentDrill()));
-            feed.setText(settings.getDefaultDrillingFeed());
+            feed.setIntegerValue(settings.getDefaultDrillingFeed());
 
-            clearance.setText(settings.getDefaultDrillingClearance());
-            safetyHeight.setText(settings.getDefaultDrillingSafetyHeight());
+            clearance.setIntegerValue(settings.getDefaultDrillingClearance());
+            safetyHeight.setIntegerValue(settings.getDefaultDrillingSafetyHeight());
             zFeed.setDisable(true);
 
             context.setG54Z(settings.getDefaultDrillingZOffset());
@@ -287,12 +290,12 @@ public class MachiningController extends SceneController implements Initializabl
         {
             toolDiameter.setDisable(true);
             toolDiameter.setText(context.getContourMillDiameter());
-            feed.setText(settings.getDefaultContourFeedXY());
+            feed.setIntegerValue(settings.getDefaultContourFeedXY());
 
-            clearance.setText(settings.getDefaultContourClearance());
-            safetyHeight.setText(settings.getDefaultContourSafetyHeight());
+            clearance.setIntegerValue(settings.getDefaultContourClearance());
+            safetyHeight.setIntegerValue(settings.getDefaultContourSafetyHeight());
             zFeed.setDisable(false);
-            zFeed.setText(settings.getDefaultContourFeedZ());
+            zFeed.setIntegerValue(settings.getDefaultContourFeedZ());
 
             context.setG54Z(settings.getDefaultContourZOffset());
 
@@ -303,13 +306,13 @@ public class MachiningController extends SceneController implements Initializabl
         else if (state == State.DISPENSING)
         {
             toolDiameter.setDisable(false);
-            toolDiameter.setText(settings.getDefaultDispensingNeedleDiameter());
-            feed.setText(settings.getDefaultDispensingFeed());
+            toolDiameter.setIntegerValue(settings.getDefaultDispensingNeedleDiameter());
+            feed.setIntegerValue(settings.getDefaultDispensingFeed());
 
-            clearance.setText(settings.getDefaultDispensingClearance());
-            safetyHeight.setText("");
+            clearance.setIntegerValue(settings.getDefaultDispensingClearance());
+            safetyHeight.setIntegerValue(null);
             safetyHeight.setDisable(true);
-            zFeed.setText("");
+            zFeed.setIntegerValue(null);
             zFeed.setDisable(true);
 
             context.setG54Z(settings.getDefaultDispensingZOffset());
@@ -319,9 +322,9 @@ public class MachiningController extends SceneController implements Initializabl
             pcbPane.setGerberPrimitives(((SolderPasteLayer)getCurrentLayer()).getElements());
         }
 
-        g54X.setText(context.getG54X());
-        g54Y.setText(context.getG54Y());
-        g54Z.setText(context.getG54Z());
+        g54X.setIntegerValue(context.getG54X());
+        g54Y.setIntegerValue(context.getG54Y());
+        g54Z.setIntegerValue(context.getG54Z());
 
         pcbPane.setBoardWidth(context.getBoardWidth());
         pcbPane.setBoardHeight(context.getBoardHeight());
@@ -340,17 +343,17 @@ public class MachiningController extends SceneController implements Initializabl
 
     public void zoomIn()
     {
-        double scale = pcbPane.scaleProperty().getValue() + 5;
-        scale = Math.max(scale, 5.0);
-        scale = Math.min(scale, 100.0);
+        double scale = pcbPane.scaleProperty().getValue() + 0.005;
+        scale = Math.max(scale, 0.005);
+        scale = Math.min(scale, 1);
         pcbPane.scaleProperty().setValue(scale);
     }
 
     public void zoomOut()
     {
-        double scale = pcbPane.scaleProperty().getValue() - 5;
-        scale = Math.max(scale, 5.0);
-        scale = Math.min(scale, 100.0);
+        double scale = pcbPane.scaleProperty().getValue() - 0.005;
+        scale = Math.max(scale, 0.005);
+        scale = Math.min(scale, 1);
         pcbPane.scaleProperty().setValue(scale);
     }
 
@@ -414,30 +417,30 @@ public class MachiningController extends SceneController implements Initializabl
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
             TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state, settings);
-            return generator.generate(new RTPostprocessor(), feed.getRealNumberText(), zFeed.getRealNumberText(),
-                    clearance.getRealNumberText(), safetyHeight.getRealNumberText(), settings.getDefaultTracesWorkingHeight(),
+            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(),
+                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultTracesWorkingHeight(),
                     settings.getDefaultTracesSpeed());
 
         }
         else if (state == State.DRILLING)
         {
             DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), feed.getRealNumberText(), clearance.getRealNumberText(),
-                    safetyHeight.getRealNumberText(), settings.getDefaultDrillingWorkingHeight(),
+            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), clearance.getIntegerValue(),
+                    safetyHeight.getIntegerValue(), settings.getDefaultDrillingWorkingHeight(),
                     settings.getDefaultDrillingSpeed());
         }
         else if (state == State.MILLING_CONTOUR)
         {
             MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), feed.getRealNumberText(), zFeed.getRealNumberText(),
-                    clearance.getRealNumberText(), safetyHeight.getRealNumberText(), settings.getDefaultContourWorkingHeight(),
+            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(),
+                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultContourWorkingHeight(),
                     settings.getDefaultContourSpeed());
         }
         else if (state == State.DISPENSING)
         {
             PasteGCodeGenerator generator = new PasteGCodeGenerator(getMainApplication().getContext());
             return generator.generate(new RTPostprocessor(), settings.getDefaultDispensingPrefeedPause(),
-                    settings.getDispensingPostfeedPause(), feed.getRealNumberText(), clearance.getText(),
+                    settings.getDispensingPostfeedPause(), feed.getIntegerValue(), clearance.getIntegerValue(),
                     settings.getDefaultDispensingWorkingHeight());
         }
 

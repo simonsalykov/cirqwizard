@@ -4,13 +4,14 @@ import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -77,9 +78,9 @@ public class ToolpathMerger
                                 map.get(c2.getTo().round()).remove(t2);
                                 continue;
                             }
-                            else if (l1.angleToX().subtract(l2.angleToX()).abs().subtract(MathUtil.PI).abs().doubleValue() < comparisonThreshold) // Removing overlapping segments
+                            else if (Math.abs(Math.abs(l1.angleToX() - l2.angleToX()) - Math.PI) < comparisonThreshold) // Removing overlapping segments
                             {
-                                if (l1.length().compareTo(l2.length()) > 0)
+                                if (l1.length() > l2.length())
                                 {
                                     toBeRemoved.add(t2);
                                     map.get(c2.getTo().round()).remove(t2);
@@ -93,7 +94,7 @@ public class ToolpathMerger
                                 }
                             }
 
-                            double angleDifference = l1.angleToX().subtract(l2.angleToX()).abs().doubleValue();
+                            double angleDifference = Math.abs(l1.angleToX() - l2.angleToX());
                             while (angleDifference >= Math.PI - comparisonThreshold)
                                 angleDifference -= Math.PI;
                             angleDifference = Math.abs(angleDifference);
@@ -108,7 +109,7 @@ public class ToolpathMerger
                         Arc a2 = (Arc) c2;
                         if (a1.getTo().equals(a2.getFrom(), 0.02) && a1.isClockwise() == a2.isClockwise())
                         {
-                            if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius().doubleValue() - a2.getRadius().doubleValue()) < 0.05)
+                            if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius() - a2.getRadius()) < 0.05)
                                 merge = true;
                         }
                     }

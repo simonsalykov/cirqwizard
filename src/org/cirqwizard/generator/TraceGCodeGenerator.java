@@ -20,7 +20,6 @@ import org.cirqwizard.fx.State;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CircularToolpath;
@@ -44,9 +43,9 @@ public class TraceGCodeGenerator
         this.settings = settings;
     }
 
-    private RealNumber getX(RealNumber x)
+    private int getX(int x)
     {
-        return state == State.MILLING_BOTTOM_INSULATION ? x.negate() : x;
+        return state == State.MILLING_BOTTOM_INSULATION ? -x : x;
     }
 
     private List<Toolpath> getToolpaths()
@@ -54,29 +53,23 @@ public class TraceGCodeGenerator
         return state == State.MILLING_TOP_INSULATION ? context.getTopTracesLayer().getToolpaths() : context.getBottomTracesLayer().getToolpaths();
     }
 
-    public String generate(Postprocessor postprocessor, String xyFeed, String zFeed, String clearance, String safetyHeight,
-                           String millingDepth, String spindleSpeed)
+    public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int clearance, int safetyHeight,
+                           int millingDepth, String spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        RealNumber g54X = new RealNumber(context.getG54X());
+        int g54X = context.getG54X();
         if (state == State.MILLING_BOTTOM_INSULATION)
         {
-            RealNumber laminateWidth = new RealNumber(context.getPcbSize() == PCBSize.Small ? settings.getMachineSmallPCBWidth() : settings.getMachineLargePCBWidth());
-            RealNumber pinX = new RealNumber(settings.getMachineReferencePinX());
-            g54X = pinX.multiply(2).add(laminateWidth).subtract(new RealNumber(context.getG54X()));
+            int laminateWidth = context.getPcbSize() == PCBSize.Small ? settings.getMachineSmallPCBWidth() : settings.getMachineLargePCBWidth();
+            int pinX = settings.getMachineReferencePinX();
+            g54X = pinX * 2 + laminateWidth - context.getG54X();
         }
-        postprocessor.setupG54(str, g54X, new RealNumber(context.getG54Y()), new RealNumber(context.getG54Z()));
+        postprocessor.setupG54(str, g54X, context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
-        RealNumber _clearance = new RealNumber(clearance);
-        RealNumber _safetyHeight = new RealNumber(safetyHeight);
-        RealNumber _millingDepth = new RealNumber(millingDepth);
-        RealNumber _xyFeed = new RealNumber(xyFeed);
-        RealNumber _zFeed = new RealNumber(zFeed);
-
-        postprocessor.rapid(str, null, null, _clearance);
+        postprocessor.rapid(str, null, null, clearance);
 
         postprocessor.spindleOn(str, spindleSpeed);
         Point prevLocation = null;
@@ -87,24 +80,24 @@ public class TraceGCodeGenerator
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
             if (prevLocation == null || !prevLocation.equals(curve.getFrom()))
             {
-                postprocessor.rapid(str, null, null, _clearance);
-                postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), _clearance);
-                postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), _safetyHeight);
+                postprocessor.rapid(str, null, null, clearance);
+                postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), clearance);
+                postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), safetyHeight);
                 postprocessor.linearInterpolation(str, getX(curve.getFrom().getX()), curve.getFrom().getY(),
-                        _millingDepth, _zFeed);
+                        millingDepth, zFeed);
             }
             if (toolpath instanceof LinearToolpath)
-                postprocessor.linearInterpolation(str, getX(curve.getTo().getX()), curve.getTo().getY(), _millingDepth, _xyFeed);
+                postprocessor.linearInterpolation(str, getX(curve.getTo().getX()), curve.getTo().getY(), millingDepth, xyFeed);
             else if (toolpath instanceof CircularToolpath)
             {
                 Arc arc = (Arc)curve;
                 postprocessor.circularInterpolation(str, state == State.MILLING_BOTTOM_INSULATION ? !arc.isClockwise() : arc.isClockwise(),
-                        getX(arc.getTo().getX()), arc.getTo().getY(), _millingDepth, getX(arc.getCenter().getX().subtract(arc.getFrom().getX())),
-                        arc.getCenter().getY().subtract(arc.getFrom().getY()), _xyFeed);
+                        getX(arc.getTo().getX()), arc.getTo().getY(), millingDepth, getX(arc.getCenter().getX() - arc.getFrom().getX()),
+                        arc.getCenter().getY() - arc.getFrom().getY(), xyFeed);
             }
             prevLocation = curve.getTo();
         }
-        postprocessor.rapid(str, null, null, _clearance);
+        postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOff(str);
         postprocessor.footer(str);
 

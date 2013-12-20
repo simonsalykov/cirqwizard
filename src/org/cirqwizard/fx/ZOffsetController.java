@@ -76,20 +76,20 @@ public class ZOffsetController extends SceneController implements Initializable
         scrapPlaceX.realNumberTextProperty().addListener(changeListener);
         scrapPlaceY.realNumberTextProperty().addListener(changeListener);
         automaticZOffset.realNumberTextProperty().addListener(changeListener);
-        scrapPlaceX.realNumberTextProperty().addListener(new ChangeListener<String>()
+        scrapPlaceX.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer number, Integer number2)
             {
-                getMainApplication().getSettings().setScrapPlaceX(s2);
+                getMainApplication().getSettings().setScrapPlaceX(number2);
             }
         });
-        scrapPlaceY.realNumberTextProperty().addListener(new ChangeListener<String>()
+        scrapPlaceY.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
             {
-                getMainApplication().getSettings().setScrapPlaceY(s2);
+                getMainApplication().getSettings().setScrapPlaceY(integer2);
             }
         });
         ChangeListener<Boolean> testCutDirectionListener = new ChangeListener<Boolean>()
@@ -117,13 +117,13 @@ public class ZOffsetController extends SceneController implements Initializable
             manualEntryRadioButton.setSelected(false);
             automaticEntryRadioButton.setSelected(false);
             manualZOffset.setText("");
-            automaticZOffset.setText(settings.getDefaultTracesZOffset());
+            automaticZOffset.setIntegerValue(settings.getDefaultTracesZOffset());
         }
         else if (getMainApplication().getContext().getG54Z() != null)
             automaticZOffset.setIntegerValue(getMainApplication().getContext().getG54Z());
 
-        scrapPlaceX.setText(settings.getScrapPlaceX());
-        scrapPlaceY.setText(settings.getScrapPlaceY());
+        scrapPlaceX.setIntegerValue(settings.getScrapPlaceX());
+        scrapPlaceY.setIntegerValue(settings.getScrapPlaceY());
         if (settings.getTestCutDirection() == 0)
             horizontalTestCut.setSelected(true);
         else if (settings.getTestCutDirection() == 1)
@@ -180,9 +180,9 @@ public class ZOffsetController extends SceneController implements Initializable
     {
         Context context = getMainApplication().getContext();
         if (manualEntryRadioButton.isSelected())
-            context.setG54Z(manualZOffset.getRealNumberText());
+            context.setG54Z(manualZOffset.getIntegerValue());
         else if (automaticEntryRadioButton.isSelected())
-            context.setG54Z(automaticZOffset.getRealNumberText());
+            context.setG54Z(automaticZOffset.getIntegerValue());
         context.setzOffsetEstablished(true);
 
         super.next();

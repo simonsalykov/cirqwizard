@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generator;
 
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.toolpath.DrillPoint;
 
@@ -29,37 +28,31 @@ public class DrillGCodeGenerator
         this.context = context;
     }
 
-    private RealNumber getSelectedDrillDiameter()
+    private int getSelectedDrillDiameter()
     {
         return context.getDrillingLayer().getDrillDiameters().get(context.getCurrentDrill());
     }
 
-    public String generate(Postprocessor postprocessor, String feed, String clearance, String safetyHeight,
-                           String drillingDepth, String spindleSpeed)
+    public String generate(Postprocessor postprocessor, int feed, int clearance, int safetyHeight,
+                           int drillingDepth, String spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        postprocessor.setupG54(str, new RealNumber(context.getG54X()), new RealNumber(context.getG54Y()),
-                new RealNumber(context.getG54Z()));
+        postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
-        RealNumber _clearance = new RealNumber(clearance);
-        RealNumber _safetyHeight = new RealNumber(safetyHeight);
-        RealNumber _drillingDepth = new RealNumber(drillingDepth);
-        RealNumber _feed = new RealNumber(feed);
-
-        postprocessor.rapid(str, null, null, _clearance);
+        postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOn(str, spindleSpeed);
-        RealNumber selectedDrill = getSelectedDrillDiameter();
+        int selectedDrill = getSelectedDrillDiameter();
         for (DrillPoint drillPoint : context.getDrillingLayer().getToolpaths())
         {
-            if (!drillPoint.getToolDiameter().equals(selectedDrill) || !drillPoint.isEnabled())
+            if (drillPoint.getToolDiameter() != selectedDrill || !drillPoint.isEnabled())
                 continue;
-            postprocessor.rapid(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), _clearance);
-            postprocessor.rapid(str, null, null, _safetyHeight);
-            postprocessor.linearInterpolation(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), _drillingDepth, _feed);
-            postprocessor.rapid(str, null, null, _clearance);
+            postprocessor.rapid(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), clearance);
+            postprocessor.rapid(str, null, null, safetyHeight);
+            postprocessor.linearInterpolation(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), drillingDepth, feed);
+            postprocessor.rapid(str, null, null, clearance);
         }
         postprocessor.spindleOff(str);
 

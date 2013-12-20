@@ -33,19 +33,19 @@ public class GroupRenderer
         if (curve instanceof Line)
         {
             Line line = (Line) curve;
-            str.append("Line[{{").append(line.getFrom().getX().toString()).append(',').
-                    append(line.getFrom().getY().toString()).append("},{").
-                    append(line.getTo().getX().toString()).append(',').
-                    append(line.getTo().getY().toString()).append("}}]");
+            str.append("Line[{{").append(line.getFrom().getX()).append(',').
+                    append(line.getFrom().getY()).append("},{").
+                    append(line.getTo().getX()).append(',').
+                    append(line.getTo().getY()).append("}}]");
         }
         else if (curve instanceof Arc)
         {
             Arc arc = (Arc) curve;
-            str.append("Circle[{").append(arc.getCenter().getX().toString()).append(",").
-                    append(arc.getCenter().getY().toString()).append("},").
-                    append(arc.getRadius().toString()).append(",{").
-                    append(arc.getStart().toString()).append(",").
-                    append(arc.getEnd(false).toString()).append("}]");
+            str.append("Circle[{").append(arc.getCenter().getX()).append(",").
+                    append(arc.getCenter().getY()).append("},").
+                    append(arc.getRadius()).append(",{").
+                    append(arc.getStart()).append(",").
+                    append(arc.getEnd(false)).append("}]");
         }
         return str.toString();
     }
@@ -59,12 +59,6 @@ public class GroupRenderer
 //        str.setLength(str.length() - 1);
 //        str.append("},Axes->True]");
         return str.toString();
-    }
-
-    public static String renderPrimitivesWindow(List<GerberPrimitive> elements, RealNumber offset, Point windowCenter, RealNumber radius)
-    {
-        StringBuilder str = new StringBuilder();
-        return renderPrimitives(GerberUtil.filterPrimitives(elements, windowCenter, radius), offset);
     }
 
     public static String renderSegments(List<Segment> segments)

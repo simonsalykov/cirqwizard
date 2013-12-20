@@ -14,10 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.appertures;
 
-import org.cirqwizard.math.MathUtil;
-import org.cirqwizard.math.RealNumber;
-
-
 public class RectangularAperture extends Aperture
 {
     private int dimensions[] = new int[2];
@@ -61,7 +57,7 @@ public class RectangularAperture extends Aperture
     }
 
     @Override
-    public int getWidth(RealNumber angle)
+    public int getWidth(double angle)
     {
         return Math.max(dimensions[0], dimensions[1]);
     }

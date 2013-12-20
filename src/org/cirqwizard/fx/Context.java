@@ -75,7 +75,7 @@ public class Context
     private int currentComponent;
     private Feeder feeder;
     private int feederRow;
-    private RealNumber componentPitch;
+    private Integer componentPitch;
 
     public Context(Settings settings)
     {
@@ -232,7 +232,7 @@ public class Context
 
     private void openComponents(String file)
     {
-        PPParser parser = new PPParser(file, Settings.RESOLUTION);
+        PPParser parser = new PPParser(file);
         parser.parse();
         if (!parser.getComponents().isEmpty())
         {
@@ -488,12 +488,12 @@ public class Context
         this.feederRow = feederRow;
     }
 
-    public RealNumber getComponentPitch()
+    public Integer getComponentPitch()
     {
         return componentPitch;
     }
 
-    public void setComponentPitch(RealNumber componentPitch)
+    public void setComponentPitch(int componentPitch)
     {
         this.componentPitch = componentPitch;
     }

@@ -45,98 +45,98 @@ public class JobSelectionController extends SceneController
     {
         Settings settings = getMainApplication().getSettings();
         
-        if (settings.getMachineYDiff().trim().isEmpty())
+        if (settings.getMachineYDiff() == null)
             return "You need to specify a value in settings for parameter Y axis difference (in Machine  pane)";
-        if (settings.getMachineReferencePinX().trim().isEmpty())
+        if (settings.getMachineReferencePinX() == null)
             return "You need to specify a value in settings for parameter Reference pin X (in Machine  pane)";
-        if (settings.getMachineReferencePinY().trim().isEmpty())
+        if (settings.getMachineReferencePinY() == null)
             return "You need to specify a value in settings for parameter Reference pin Y (in Machine  pane)";
-        if (settings.getMachineSmallPCBWidth().trim().isEmpty())
+        if (settings.getMachineSmallPCBWidth() == null)
             return "You need to specify a value in settings for parameter Small PCB width (in Machine  pane)";
-        if (settings.getMachineLargePCBWidth().trim().isEmpty())
+        if (settings.getMachineLargePCBWidth() == null)
             return "You need to specify a value in settings for parameter Large PCB width (in Machine  pane)";
-        if (settings.getFarAwayY().trim().isEmpty())
+        if (settings.getFarAwayY() == null)
             return "You need to specify a value in settings for parameter Far away Y (in Machine  pane)";
 
         if (topTraces.isSelected() || bottomTraces.isSelected())
         {
-            if (settings.getDefaultTraceToolDiameter().trim().isEmpty())
+            if (settings.getDefaultTraceToolDiameter() == null)
                 return "You need to specify a value in settings for parameter Tool diameter (in Insulation milling pane)";
-            if (settings.getDefaultTracesFeedXY().trim().isEmpty())
+            if (settings.getDefaultTracesFeedXY() == null)
                 return "You need to specify a value in settings for parameter Feed XY (in Insulation milling pane)";
-            if (settings.getDefaultTracesFeedZ().trim().isEmpty())
+            if (settings.getDefaultTracesFeedZ() == null)
                 return "You need to specify a value in settings for parameter Feed Z (in Insulation milling pane)";
             if (settings.getDefaultTracesSpeed().trim().isEmpty())
                 return "You need to specify a value in settings for parameter Speed (in Insulation milling pane)";
-            if (settings.getDefaultTracesClearance().trim().isEmpty())
+            if (settings.getDefaultTracesClearance() == null)
                 return "You need to specify a value in settings for parameter Clearance (in Insulation milling pane)";
-            if (settings.getDefaultTracesSafetyHeight().trim().isEmpty())
+            if (settings.getDefaultTracesSafetyHeight() == null)
                 return "You need to specify a value in settings for parameter Safety height (in Insulation milling pane)";
-            if (settings.getDefaultTracesZOffset().trim().isEmpty())
+            if (settings.getDefaultTracesZOffset() == null)
                 return "You need to specify a value in settings for parameter Z offset (in Insulation milling pane)";
-            if (settings.getDefaultTracesWorkingHeight().trim().isEmpty())
+            if (settings.getDefaultTracesWorkingHeight() == null)
                 return "You need to specify a value in settings for parameter Working height (in Insulation milling pane)";
         }
 
         if (drilling.isSelected())
         {
-            if (settings.getDefaultDrillingFeed().trim().isEmpty())
+            if (settings.getDefaultDrillingFeed() == null)
                 return "You need to specify a value in settings for parameter Feed (in Drilling pane)";
             if (settings.getDefaultDrillingSpeed().trim().isEmpty())
                 return "You need to specify a value in settings for parameter Speed (in Drilling pane)";
-            if (settings.getDefaultDrillingClearance().trim().isEmpty())
+            if (settings.getDefaultDrillingClearance() == null)
                 return "You need to specify a value in settings for parameter Clearance (in Drilling pane)";
-            if (settings.getDefaultDrillingSafetyHeight().trim().isEmpty())
+            if (settings.getDefaultDrillingSafetyHeight() == null)
                 return "You need to specify a value in settings for parameter Safety height (in Drilling pane)";
-            if (settings.getDefaultDrillingZOffset().trim().isEmpty())
+            if (settings.getDefaultDrillingZOffset() == null)
                 return "You need to specify a value in settings for parameter Z offset (in Drilling pane)";
-            if (settings.getDefaultDrillingWorkingHeight().trim().isEmpty())
+            if (settings.getDefaultDrillingWorkingHeight() == null)
                 return "You need to specify a value in settings for parameter Working height (in Drilling pane)";
         }
 
         if (contour.isSelected())
         {
-            if (settings.getDefaultContourFeedXY().trim().isEmpty())
+            if (settings.getDefaultContourFeedXY() == null)
                 return "You need to specify a value in settings for parameter Feed XY (in Contour milling pane)";
-            if (settings.getDefaultContourFeedZ().trim().isEmpty())
+            if (settings.getDefaultContourFeedZ() == null)
                 return "You need to specify a value in settings for parameter Feed Z (in Contour milling pane)";
             if (settings.getDefaultContourSpeed().trim().isEmpty())
                 return "You need to specify a value in settings for parameter Speed (in Contour milling pane)";
-            if (settings.getDefaultContourClearance().trim().isEmpty())
+            if (settings.getDefaultContourClearance() == null)
                 return "You need to specify a value in settings for parameter Clearance (in Contour milling pane)";
-            if (settings.getDefaultContourSafetyHeight().trim().isEmpty())
+            if (settings.getDefaultContourSafetyHeight() == null)
                 return "You need to specify a value in settings for parameter Safety height (in Contour milling pane)";
-            if (settings.getDefaultContourZOffset().trim().isEmpty())
+            if (settings.getDefaultContourZOffset() == null)
                 return "You need to specify a value in settings for parameter Z offset (in Contour milling pane)";
-            if (settings.getDefaultContourWorkingHeight().trim().isEmpty())
+            if (settings.getDefaultContourWorkingHeight() == null)
                 return "You need to specify a value in settings for parameter Working height (in Contour milling pane)";
         }
 
         if (paste.isSelected())
         {
-            if (settings.getDefaultDispensingNeedleDiameter().trim().isEmpty())
+            if (settings.getDefaultDispensingNeedleDiameter() == null)
                 return "You need to specify a value in settings for parameter Needle diameter (in Dispensing pane)";
-            if (settings.getDefaultDispensingPrefeedPause().trim().isEmpty())
+            if (settings.getDefaultDispensingPrefeedPause() == null)
                 return "You need to specify a value in settings for parameter Prefeed pause (in Dispensing pane)";
-            if (settings.getDefaultDispensingFeed().trim().isEmpty())
+            if (settings.getDefaultDispensingFeed() == null)
                 return "You need to specify a value in settings for parameter Feed (in Dispensing pane)";
-            if (settings.getDefaultDispensingClearance().trim().isEmpty())
+            if (settings.getDefaultDispensingClearance() == null)
                 return "You need to specify a value in settings for parameter Clearance (in Dispensing pane)";
-            if (settings.getDefaultDispensingZOffset().trim().isEmpty())
+            if (settings.getDefaultDispensingZOffset() == null)
                 return "You need to specify a value in settings for parameter Z offset (in Dispensing pane)";
-            if (settings.getDefaultDispensingWorkingHeight().trim().isEmpty())
+            if (settings.getDefaultDispensingWorkingHeight() == null)
                 return "You need to specify a value in settings for parameter Working height (in Dispensing pane)";
-            if (settings.getDispensingBleedingDuration().trim().isEmpty())
+            if (settings.getDispensingBleedingDuration() == null)
                 return "You need to specify a value in settings for parameter Bleeding duration (in Dispensing pane)";
-            if (settings.getDispensingPostfeedPause().trim().isEmpty())
+            if (settings.getDispensingPostfeedPause() == null)
                 return "You need to specify a value in settings for parameter Postfeed pause (in Dispensing pane)";
         }
 
         if (placing.isSelected())
         {
-            if (settings.getPPPickupHeight().trim().isEmpty())
+            if (settings.getPPPickupHeight() == null)
                 return "You need to specify a value in settings for parameter Pickup height (in Pick & Place pane)";
-            if (settings.getPPMoveHeight().trim().isEmpty())
+            if (settings.getPPMoveHeight() == null)
                 return "You need to specify a value in settings for parameter Move height (in Pick & Place pane)";
         }
 

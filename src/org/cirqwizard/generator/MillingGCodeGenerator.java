@@ -18,7 +18,6 @@ import org.cirqwizard.fx.Context;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
@@ -35,23 +34,16 @@ public class MillingGCodeGenerator
         this.context = context;
     }
 
-    public String generate(Postprocessor postprocessor, String xyFeed, String zFeed, String clearance, String safetyHeight,
-                           String millingDepth, String spindleSpeed)
+    public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int clearance, int safetyHeight,
+                           int millingDepth, String spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        postprocessor.setupG54(str, new RealNumber(context.getG54X()), new RealNumber(context.getG54Y()),
-                new RealNumber(context.getG54Z()));
+        postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
-        RealNumber _clearance = new RealNumber(clearance);
-        RealNumber _safetyHeight = new RealNumber(safetyHeight);
-        RealNumber _millingDepth = new RealNumber(millingDepth);
-        RealNumber _xyFeed = new RealNumber(xyFeed);
-        RealNumber _zFeed = new RealNumber(zFeed);
-
-        postprocessor.rapid(str, null, null, _clearance);
+        postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOn(str, spindleSpeed);
         Point prevLocation = null;
         for (Toolpath toolpath : context.getMillingLayer().getToolpaths())
@@ -61,25 +53,25 @@ public class MillingGCodeGenerator
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
             if (prevLocation == null || !prevLocation.equals(curve.getFrom()))
             {
-                postprocessor.rapid(str, null, null, _clearance);
-                postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), _clearance);
-                postprocessor.rapid(str, null, null, _safetyHeight);
+                postprocessor.rapid(str, null, null, clearance);
+                postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), clearance);
+                postprocessor.rapid(str, null, null, safetyHeight);
                 postprocessor.linearInterpolation(str, curve.getFrom().getX(), curve.getFrom().getY(),
-                        _millingDepth, _zFeed);
+                        millingDepth, zFeed);
             }
             if (toolpath instanceof LinearToolpath)
                 postprocessor.linearInterpolation(str, curve.getTo().getX(), curve.getTo().getY(),
-                        _millingDepth, _xyFeed);
+                        millingDepth, xyFeed);
             else if (toolpath instanceof CircularToolpath)
             {
                 Arc arc = (Arc) curve;
                 postprocessor.circularInterpolation(str, arc.isClockwise(), arc.getTo().getX(), arc.getTo().getY(),
-                        _millingDepth, arc.getCenter().getX().subtract(arc.getFrom().getX()),
-                        arc.getCenter().getY().subtract(arc.getFrom().getY()), _xyFeed);
+                        millingDepth, arc.getCenter().getX() - arc.getFrom().getX(),
+                        arc.getCenter().getY() - arc.getFrom().getY(), xyFeed);
             }
             prevLocation = curve.getTo();
         }
-        postprocessor.rapid(str, null, null, _clearance);
+        postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOff(str);
 
         return str.toString();

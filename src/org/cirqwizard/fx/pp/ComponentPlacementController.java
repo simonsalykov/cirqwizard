@@ -14,13 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.SceneController;
-import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.pp.ComponentId;
-import org.cirqwizard.settings.Settings;
-import org.cirqwizard.toolpath.PPPoint;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -30,9 +23,19 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.SceneController;
+import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.pp.ComponentId;
+import org.cirqwizard.settings.Settings;
+import org.cirqwizard.toolpath.PPPoint;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -65,16 +68,16 @@ public class ComponentPlacementController extends SceneController implements Ini
     @FXML private RealNumberTextField targetAngle;
 
     private ObservableList<String> componentNames = FXCollections.observableArrayList();
-    private HashMap<Integer, String[]> placementOffsets = new HashMap<Integer, String[]>();
+    private HashMap<Integer, int[]> placementOffsets = new HashMap<>();
 
-    private static final RealNumber feederOffsetX = new RealNumber("10");
-    private static final RealNumber feederOffsetY = new RealNumber("-15");
+    private static final int feederOffsetX = 10 * Settings.RESOLUTION;
+    private static final int feederOffsetY = -15 * Settings.RESOLUTION;
 
     private static final DecimalFormat coordinatesFormat = new DecimalFormat("0.00");
 
     private boolean atPickupLocation = false;
 
-    private RealNumber placementZ;
+    private Integer placementZ;
 
     @Override
     public Parent getView()
@@ -146,10 +149,10 @@ public class ComponentPlacementController extends SceneController implements Ini
         placementPane.setDisable(true);
         manualZ.setDisable(true);
 
-        RealNumber x = new RealNumber(getMainApplication().getSettings().getMachineReferencePinX());
-        pickupX.setText(coordinatesFormat.format(x.add(feederOffsetX).add(context.getComponentPitch().divide(2)).getValue()));
-        RealNumber y = new RealNumber(getMainApplication().getSettings().getMachineReferencePinY());
-        pickupY.setText(coordinatesFormat.format(context.getFeeder().getYForRow(y.add(feederOffsetY), context.getFeederRow()).getValue()));
+        int x = getMainApplication().getSettings().getMachineReferencePinX();
+        pickupX.setIntegerValue(x + feederOffsetX + context.getComponentPitch() / 2);
+        int y = getMainApplication().getSettings().getMachineReferencePinY();
+        pickupY.setIntegerValue(context.getFeeder().getYForRow(y + feederOffsetY, context.getFeederRow()));
 
         gotoTargetButton.setDisable(true);
     }
@@ -161,22 +164,22 @@ public class ComponentPlacementController extends SceneController implements Ini
         {
             if (p.getName().equals(componentName.getValue()))
             {
-                targetX.setText(coordinatesFormat.format(p.getPoint().getX().getValue()));
-                targetY.setText(coordinatesFormat.format(p.getPoint().getY().getValue()));
-                targetAngle.setText(coordinatesFormat.format(p.getAngle().getValue()));
+                targetX.setIntegerValue(p.getPoint().getX());
+                targetY.setIntegerValue(p.getPoint().getY());
+                targetAngle.setIntegerValue(p.getAngle());
 
-                String[] offsets = placementOffsets.get(p.getAngle().getValue().intValue());
+                int[] offsets = placementOffsets.get(p.getAngle());
                 if (offsets != null)
                 {
-                    placementX.setText(offsets[0]);
-                    placementY.setText(offsets[1]);
-                    placementAngle.setText(offsets[2]);
+                    placementX.setIntegerValue(offsets[0]);
+                    placementY.setIntegerValue(offsets[1]);
+                    placementAngle.setIntegerValue(offsets[2]);
                 }
                 else
                 {
-                    placementX.setText("");
-                    placementY.setText("");
-                    placementAngle.setText("");
+                    placementX.setIntegerValue(null);
+                    placementY.setIntegerValue(null);
+                    placementAngle.setIntegerValue(null);
                 }
 
                 break;
@@ -186,18 +189,18 @@ public class ComponentPlacementController extends SceneController implements Ini
         atPickupLocation = false;
     }
 
-    private void rotatePP(String angle)
+    private void rotatePP(int angle)
     {
         getMainApplication().getCNCController().rotatePP(angle, getMainApplication().getSettings().getPPRotationFeed());
     }
 
     public void gotoPickup()
     {
-        getMainApplication().getCNCController().moveTo(pickupX.getRealNumberText(), pickupY.getRealNumberText(),
+        getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(),
                 getMainApplication().getSettings().getPPMoveHeight());
-        rotatePP("0");
+        rotatePP(0);
         manualZ.setDisable(false);
-        manualZ.setText(getMainApplication().getSettings().getPPMoveHeight());
+        manualZ.setIntegerValue(getMainApplication().getSettings().getPPMoveHeight());
         atPickupLocation = true;
     }
 
@@ -206,39 +209,39 @@ public class ComponentPlacementController extends SceneController implements Ini
         Settings settings = getMainApplication().getSettings();
         if (!atPickupLocation)
         {
-            getMainApplication().getCNCController().moveTo(pickupX.getRealNumberText(), pickupY.getRealNumberText(),
+            getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(),
                     getMainApplication().getSettings().getPPMoveHeight());
-            rotatePP("0");
+            rotatePP(0);
         }
         getMainApplication().getCNCController().pickup(settings.getPPPickupHeight(), settings.getPPMoveHeight());
         manualZ.setDisable(false);
-        manualZ.setText(settings.getPPMoveHeight());
+        manualZ.setIntegerValue(settings.getPPMoveHeight());
         gotoTargetButton.setDisable(false);
     }
 
-    private String getTargetX()
+    private int getTargetX()
     {
-        RealNumber x = new RealNumber(targetX.getRealNumberText()).add(new RealNumber(getMainApplication().getContext().getG54X()));
-        if (placementX.getRealNumberText() != null)
-            x = x.add(new RealNumber(placementX.getRealNumberText()));
-        return coordinatesFormat.format(x.getValue());
+        int x = targetX.getIntegerValue() + getMainApplication().getContext().getG54X();
+        if (placementX.getIntegerValue() != null)
+            x += placementX.getIntegerValue();
+        return x;
     }
 
-    private String getTargetY()
+    private int getTargetY()
     {
-        RealNumber y = new RealNumber(targetY.getRealNumberText()).add(new RealNumber(getMainApplication().getContext().getG54Y()));
-        if (placementY.getRealNumberText() != null)
-            y = y.add(new RealNumber(placementY.getRealNumberText()));
-        return coordinatesFormat.format(y.getValue());
+        int y = targetY.getIntegerValue() + getMainApplication().getContext().getG54Y();
+        if (placementY.getIntegerValue() != null)
+            y += placementY.getIntegerValue();
+        return y;
     }
 
-    private String getTargetAngle()
+    private int getTargetAngle()
     {
-        RealNumber angle = new RealNumber(targetAngle.getRealNumberText());
-        if (placementAngle.getRealNumberText() != null)
-            angle = angle.add(new RealNumber(placementAngle.getRealNumberText()));
-        angle = angle.subtract(new RealNumber(90));
-        return coordinatesFormat.format(angle.getValue());
+        int angle = targetAngle.getIntegerValue();
+        if (placementAngle.getIntegerValue() != null)
+            angle += placementAngle.getIntegerValue();
+        angle -= 90 * Settings.RESOLUTION;
+        return angle;
     }
 
     public void gotoTarget()
@@ -247,7 +250,7 @@ public class ComponentPlacementController extends SceneController implements Ini
                 getMainApplication().getSettings().getPPMoveHeight());
         rotatePP(getTargetAngle());
         manualZ.setDisable(false);
-        manualZ.setText(getMainApplication().getSettings().getPPMoveHeight());
+        manualZ.setIntegerValue(getMainApplication().getSettings().getPPMoveHeight());
         pickupPane.setDisable(true);
         placementPane.setDisable(false);
     }
@@ -259,7 +262,7 @@ public class ComponentPlacementController extends SceneController implements Ini
         gotoTarget();
         if (placementZ != null)
         {
-            manualZ.setText(coordinatesFormat.format(placementZ.getValue()));
+            manualZ.setIntegerValue(placementZ);
             manualZ.fireEvent(new ActionEvent());
         }
     }
@@ -267,10 +270,10 @@ public class ComponentPlacementController extends SceneController implements Ini
     public void place()
     {
         Settings settings = getMainApplication().getSettings();
-        RealNumber z = new RealNumber(settings.getPPPickupHeight()).subtract(3);
-        getMainApplication().getCNCController().place(z.toString(), settings.getPPMoveHeight());
+        int z = settings.getPPPickupHeight() - 3 * Settings.RESOLUTION;
+        getMainApplication().getCNCController().place(z, settings.getPPMoveHeight());
         manualZ.setDisable(false);
-        manualZ.setText(settings.getPPMoveHeight());
+        manualZ.setIntegerValue(settings.getPPMoveHeight());
         placementPane.setDisable(true);
         gotoTargetButton.setDisable(true);
         int selectedIndex = componentName.getSelectionModel().getSelectedIndex();
@@ -279,7 +282,7 @@ public class ComponentPlacementController extends SceneController implements Ini
         else
         {
             componentName.getSelectionModel().select(selectedIndex + 1);
-            pickupX.setText(coordinatesFormat.format(new RealNumber(pickupX.getRealNumberText()).add(getMainApplication().getContext().getComponentPitch()).getValue()));
+            pickupX.setIntegerValue(pickupX.getIntegerValue() + getMainApplication().getContext().getComponentPitch());
             pickupNGoButton.setDisable(false);
         }
     }
@@ -307,7 +310,7 @@ public class ComponentPlacementController extends SceneController implements Ini
         {
             return;
         }
-        getMainApplication().getCNCController().moveTo(pickupX.getRealNumberText(), pickupY.getRealNumberText(), null);
+        getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(), null);
         atPickupLocation = true;
     }
 
@@ -315,20 +318,15 @@ public class ComponentPlacementController extends SceneController implements Ini
     {
         getMainApplication().getCNCController().moveTo(getTargetX(), getTargetY(), null);
         rotatePP(getTargetAngle());
-        placementOffsets.put(new RealNumber(targetAngle.getRealNumberText()).getValue().intValue(),
-                new String[]{placementX.getRealNumberText(), placementY.getRealNumberText(), placementAngle.getRealNumberText()});
+        placementOffsets.put(targetAngle.getIntegerValue(),
+                new int[]{placementX.getIntegerValue(), placementY.getIntegerValue(), placementAngle.getIntegerValue()});
     }
 
     public void manualZUpdated()
     {
-        try
-        {
-            RealNumber z = new RealNumber(manualZ.getRealNumberText());
-            if (!placementPane.isDisabled())
-                placementZ = z;
-            getMainApplication().getCNCController().moveZ(manualZ.getRealNumberText());
-        }
-        catch (NumberFormatException e) {}
+        if (!placementPane.isDisabled())
+            placementZ = manualZ.getIntegerValue();
+        getMainApplication().getCNCController().moveZ(manualZ.getIntegerValue());
     }
 
 }
