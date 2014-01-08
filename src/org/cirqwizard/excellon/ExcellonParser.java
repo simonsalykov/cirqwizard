@@ -27,6 +27,8 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ExcellonParser
@@ -52,9 +54,11 @@ public class ExcellonParser
                 return;
 
             }
-            boolean header = true;
+            boolean header = false;
             while ((str = reader.readLine()) != null)
             {
+                if (str.equals("M48"))
+                    header = true;
                 if (str.equals("%"))
                     header = false;
                 else if (header)
@@ -85,8 +89,17 @@ public class ExcellonParser
 
     private void parseBodyLine(String line)
     {
+        Matcher matcher = Pattern.compile("T(\\d+)C(\\d+.\\d+).+").matcher(line);
+
         if (line.equals("M30"))
             return; // End of program
+        if (matcher.matches())
+        {
+            int toolNumber = Integer.parseInt(matcher.group(1));
+            RealNumber diameter = currentDiameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
+            tools.put(toolNumber, diameter);
+            return; // C# command
+        }
         if (line.startsWith("T"))
             currentDiameter = tools.get(Integer.parseInt(line.substring(1)));
         else
