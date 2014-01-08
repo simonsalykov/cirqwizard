@@ -89,7 +89,7 @@ public class ExcellonParser
 
     private void parseBodyLine(String line)
     {
-        Matcher matcher = Pattern.compile("T(\\d+)C(\\d+.\\d+).+").matcher(line);
+        Matcher matcher = Pattern.compile("T(\\d+)C(\\d+.\\d+).*").matcher(line);
 
         if (line.equals("M30"))
             return; // End of program
