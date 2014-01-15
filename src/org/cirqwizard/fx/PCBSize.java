@@ -17,8 +17,8 @@ package org.cirqwizard.fx;
 
 public enum PCBSize
 {
-    Small(0, 75, 100),
-    Large(1, 100, 160);
+    Small(0, 75000, 100000),
+    Large(1, 100000, 160000);
 
     private int storeValue;
     private int width;

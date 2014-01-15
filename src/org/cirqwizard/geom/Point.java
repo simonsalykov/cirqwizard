@@ -37,8 +37,6 @@ public class Point
 
     public double distanceTo(Point p)
     {
-        if (equals(p))
-            return 0;
         double x = this.x - p.x;
         double y = this.y - p.y;
         return Math.sqrt(x * x + y * y);

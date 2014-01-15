@@ -57,8 +57,8 @@ public class OrientationController extends SceneController
     @Override
     public void next()
     {
-        getMainApplication().getContext().setBoardWidth(pcbPane.getUnscaledWidth());
-        getMainApplication().getContext().setBoardHeight(pcbPane.getUnscaledHeight());
+        getMainApplication().getContext().setBoardWidth((int)pcbPane.getUnscaledWidth());
+        getMainApplication().getContext().setBoardHeight((int)pcbPane.getUnscaledHeight());
         super.next();
     }
 }

@@ -66,8 +66,8 @@ public class Context
 
     private String contourMillDiameter;
 
-    private double boardWidth;
-    private double boardHeight;
+    private int boardWidth;
+    private int boardHeight;
 
     private String dispensingNeedleDiameter;
 
@@ -428,17 +428,17 @@ public class Context
         return boardHeight;
     }
 
-    public void setBoardHeight(double boardHeight)
+    public void setBoardHeight(int boardHeight)
     {
         this.boardHeight = boardHeight;
     }
 
-    public double getBoardWidth()
+    public int getBoardWidth()
     {
         return boardWidth;
     }
 
-    public void setBoardWidth(double boardWidth)
+    public void setBoardWidth(int boardWidth)
     {
         this.boardWidth = boardWidth;
     }
