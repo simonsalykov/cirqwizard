@@ -81,7 +81,7 @@ public class ExcellonParser
         return false;
     }
 
-    private boolean parseToolDefinition(String line)
+    private boolean parseToolDefinition(String line, boolean updateCurrentTool)
     {
         Matcher matcher = TC_COMMAND_PATTERN.matcher(line);
         if (matcher.matches())
@@ -89,6 +89,8 @@ public class ExcellonParser
             int toolNumber = Integer.parseInt(matcher.group(1));
             RealNumber diameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
             tools.put(toolNumber, diameter);
+            if (updateCurrentTool)
+                currentDiameter = diameter;
             return true;
         }
 
@@ -99,7 +101,7 @@ public class ExcellonParser
     {
         if (parseHeaderCommands(line))
             return;
-        if (parseToolDefinition(line))
+        if (parseToolDefinition(line, false))
             return;
     }
 
@@ -108,7 +110,7 @@ public class ExcellonParser
         if (parseHeaderCommands(line))
             return;
 
-        if (parseToolDefinition(line))
+        if (parseToolDefinition(line, true))
             return;
 
         Matcher matcher = T_COMMAND_PATTERN.matcher(line);
