@@ -19,6 +19,7 @@ import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.*;
+import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
@@ -27,6 +28,8 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -215,10 +218,16 @@ public class Context
 
     private void openDrilling(String file)
     {
-        ExcellonParser parser = new ExcellonParser();
-        parser.parse(file);
         drillingLayer = new DrillingLayer();
-        drillingLayer.setDrillPoints(parser.getDrillPoints());
+        try
+        {
+            ExcellonParser parser = new ExcellonParser(new FileReader(file));
+            drillingLayer.setDrillPoints(parser.parse());
+        }
+        catch (IOException e)
+        {
+            LoggerFactory.logException("Could not load excellon file", e);
+        }
         if (drillingLayer.getToolpaths().isEmpty())
             drillingLayer = null;
         else

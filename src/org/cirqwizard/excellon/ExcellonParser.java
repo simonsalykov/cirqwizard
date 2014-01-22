@@ -20,10 +20,7 @@ import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.DrillPoint;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -40,42 +37,37 @@ public class ExcellonParser
     private RealNumber currentDiameter;
     private ArrayList<DrillPoint> drillPoints = new ArrayList<DrillPoint>();
 
+    private Reader reader;
 
-    public void parse(String filename)
+    public ExcellonParser(Reader reader)
     {
-        try
-        {
-            FileInputStream inputStream = new FileInputStream(filename);
-            LineNumberReader reader = new LineNumberReader(new InputStreamReader(inputStream));
-            String str;
+        this.reader = reader;
+    }
 
-            boolean header = false;
-            while ((str = reader.readLine()) != null)
-            {
-                if (str.equals("M48"))
-                    header = true;
-                if (str.equals("%"))
-                    header = false;
-                else if (header)
-                    parseHeaderLine(str);
-                else
-                    parseBodyLine(str);
-            }
-        }
-        catch (IOException e)
+    public ArrayList<DrillPoint> parse() throws IOException
+    {
+        LineNumberReader r = new LineNumberReader(reader);
+        String str;
+
+        boolean header = false;
+        while ((str = r.readLine()) != null)
         {
-            LoggerFactory.logException("Error reading excellon file", e);
+            if (str.equals("M48"))
+                header = true;
+            if (str.equals("%"))
+                header = false;
+            else if (header)
+                parseHeaderLine(str);
+            else
+                parseBodyLine(str);
         }
+
+        return drillPoints;
     }
 
     private void parseHeaderLine(String line)
     {
         Matcher matcher = Pattern.compile("T(\\d+)C(\\d+.\\d+).*").matcher(line);
-
-        if (line.equals("M48"))
-            return; // Parsing header, not huge news
-        if (line.equals("M72"))
-            return; // Well, inches - what else could it be?
         if (matcher.matches())
         {
             int toolNumber = Integer.parseInt(matcher.group(1));
@@ -126,11 +118,6 @@ public class ExcellonParser
         if (str.length() > DECIMAL_PLACES)
             number = number.add(new RealNumber(str.substring(0, decimalPartStart)));
         return number.multiply(INCHES_MM_RATIO);
-    }
-
-    public ArrayList<DrillPoint> getDrillPoints()
-    {
-        return drillPoints;
     }
 
 }
