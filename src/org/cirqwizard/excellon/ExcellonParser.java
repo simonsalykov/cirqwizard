@@ -47,13 +47,8 @@ public class ExcellonParser
         {
             FileInputStream inputStream = new FileInputStream(filename);
             LineNumberReader reader = new LineNumberReader(new InputStreamReader(inputStream));
-            String str = reader.readLine();
-            if (str == null || !str.equals("%"))
-            {
-                LoggerFactory.getApplicationLogger().log(Level.INFO, "Unsupported excellon format");
-                return;
+            String str;
 
-            }
             boolean header = false;
             while ((str = reader.readLine()) != null)
             {
@@ -75,14 +70,16 @@ public class ExcellonParser
 
     private void parseHeaderLine(String line)
     {
+        Matcher matcher = Pattern.compile("T(\\d+)C(\\d+.\\d+).*").matcher(line);
+
         if (line.equals("M48"))
             return; // Parsing header, not huge news
         if (line.equals("M72"))
             return; // Well, inches - what else could it be?
-        if (line.startsWith("T") && line.charAt(3) == 'C')  // Tool definition
+        if (matcher.matches())
         {
-            int toolNumber = Integer.parseInt(line.substring(1, 3));
-            RealNumber diameter = new RealNumber(line.substring(5)).multiply(INCHES_MM_RATIO);
+            int toolNumber = Integer.parseInt(matcher.group(1));
+            RealNumber diameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
             tools.put(toolNumber, diameter);
         }
     }
@@ -93,6 +90,11 @@ public class ExcellonParser
 
         if (line.equals("M30"))
             return; // End of program
+        if (line.equals("G90"))
+            return; // Absolute Mode
+        if (line.equals("G05"))
+            return; // Drill Mode
+
         if (matcher.matches())
         {
             int toolNumber = Integer.parseInt(matcher.group(1));
@@ -101,9 +103,14 @@ public class ExcellonParser
             return; // C# command
         }
         if (line.startsWith("T"))
+        {
             currentDiameter = tools.get(Integer.parseInt(line.substring(1)));
+        }
         else
         {
+            if (currentDiameter == null)
+                return;
+
             String x = line.substring(1, line.indexOf('Y'));
             String y = line.substring(line.indexOf('Y') + 1);
             Point point = new Point(convertCoordinate(x), convertCoordinate(y));
