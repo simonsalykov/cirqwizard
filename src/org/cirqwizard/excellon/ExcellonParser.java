@@ -81,19 +81,26 @@ public class ExcellonParser
         return false;
     }
 
-
-    private void parseHeaderLine(String line)
+    private boolean parseToolDefinition(String line)
     {
-        if (parseHeaderCommands(line))
-            return;
-
         Matcher matcher = TC_COMMAND_PATTERN.matcher(line);
         if (matcher.matches())
         {
             int toolNumber = Integer.parseInt(matcher.group(1));
             RealNumber diameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
             tools.put(toolNumber, diameter);
+            return true;
         }
+
+        return false;
+    }
+
+    private void parseHeaderLine(String line)
+    {
+        if (parseHeaderCommands(line))
+            return;
+        if (parseToolDefinition(line))
+            return;
     }
 
     private void parseBodyLine(String line)
@@ -101,16 +108,10 @@ public class ExcellonParser
         if (parseHeaderCommands(line))
             return;
 
-        Matcher matcher = TC_COMMAND_PATTERN.matcher(line);  // C# command
-        if (matcher.matches())
-        {
-            int toolNumber = Integer.parseInt(matcher.group(1));
-            RealNumber diameter = currentDiameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
-            tools.put(toolNumber, diameter);
+        if (parseToolDefinition(line))
             return;
-        }
 
-        matcher = T_COMMAND_PATTERN.matcher(line);
+        Matcher matcher = T_COMMAND_PATTERN.matcher(line);
         if (matcher.matches())
         {
             currentDiameter = tools.get(Integer.parseInt(matcher.group(1)));
