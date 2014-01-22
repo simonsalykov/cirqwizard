@@ -122,4 +122,43 @@ public class ExcellonParserTest
         assertEquals(new RealNumber("1"), points.get(2).getToolDiameter());
     }
 
+    @Test
+    public void testDesignSparkFile() throws IOException
+    {
+        String fileContent = "G81\n" +
+                "M48\n" +
+                "INCH,LZ,00.000\n" +
+                "T1C00.025\n" +
+                "%\n" +
+                "T001\n" +
+                "G00X00050Y05159\n" +
+                "M15\n" +
+                "G01X30498Y05159\n" +
+                "X30498Y35607\n" +
+                "M17\n" +
+                "G00X02066Y00393\n" +
+                "M15\n" +
+                "G01X04031Y00393\n" +
+                "X04031Y02357\n" +
+                "M17\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(4, points.size());
+
+        assertEquals(new Point(new RealNumber("77.46492"), new RealNumber("13.10386")), points.get(0).getPoint());
+        assertEquals(new RealNumber("0.6"), points.get(0).getToolDiameter());
+
+        assertEquals(new Point(new RealNumber("77.46492"), new RealNumber("90.44178")), points.get(1).getPoint());
+        assertEquals(new RealNumber("0.6"), points.get(1).getToolDiameter());
+
+        assertEquals(new Point(new RealNumber("10.23874"), new RealNumber("0.99822")), points.get(2).getPoint());
+        assertEquals(new RealNumber("0.6"), points.get(2).getToolDiameter());
+
+        assertEquals(new Point(new RealNumber("10.23874"), new RealNumber("5.98678")), points.get(3).getPoint());
+        assertEquals(new RealNumber("0.6"), points.get(3).getToolDiameter());
+
+    }
+
 }
