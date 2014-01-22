@@ -15,18 +15,15 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.excellon;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.DrillPoint;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,77 +33,97 @@ public class ExcellonParser
     private final static RealNumber INCHES_MM_RATIO = new RealNumber("25.4");
     private final static int DECIMAL_PLACES = 4;
 
+    private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+)C(\\d+.\\d+).*");
+    private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
+    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?X(\\d+)Y(\\d+)");
+
     private HashMap<Integer, RealNumber> tools = new HashMap<Integer, RealNumber>();
     private RealNumber currentDiameter;
     private ArrayList<DrillPoint> drillPoints = new ArrayList<DrillPoint>();
+    private boolean header = false;
 
+    private Reader reader;
 
-    public void parse(String filename)
+    public ExcellonParser(Reader reader)
     {
-        try
-        {
-            FileInputStream inputStream = new FileInputStream(filename);
-            LineNumberReader reader = new LineNumberReader(new InputStreamReader(inputStream));
-            String str = reader.readLine();
-            if (str == null || !str.equals("%"))
-            {
-                LoggerFactory.getApplicationLogger().log(Level.INFO, "Unsupported excellon format");
-                return;
+        this.reader = reader;
+    }
 
-            }
-            boolean header = false;
-            while ((str = reader.readLine()) != null)
-            {
-                if (str.equals("M48"))
-                    header = true;
-                if (str.equals("%"))
-                    header = false;
-                else if (header)
-                    parseHeaderLine(str);
-                else
-                    parseBodyLine(str);
-            }
-        }
-        catch (IOException e)
+    public ArrayList<DrillPoint> parse() throws IOException
+    {
+        LineNumberReader r = new LineNumberReader(reader);
+        String str;
+
+        while ((str = r.readLine()) != null)
         {
-            LoggerFactory.logException("Error reading excellon file", e);
+            if (header)
+                parseHeaderLine(str);
+            else
+                parseBodyLine(str);
         }
+
+        return drillPoints;
+    }
+
+    private boolean parseHeaderCommands(String line)
+    {
+        if (line.equals("%"))
+        {
+            header = false;
+            return true;
+        }
+        if (line.equals("M48"))
+        {
+            header = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean parseToolDefinition(String line, boolean updateCurrentTool)
+    {
+        Matcher matcher = TC_COMMAND_PATTERN.matcher(line);
+        if (matcher.matches())
+        {
+            int toolNumber = Integer.parseInt(matcher.group(1));
+            RealNumber diameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
+            tools.put(toolNumber, diameter);
+            if (updateCurrentTool)
+                currentDiameter = diameter;
+            return true;
+        }
+
+        return false;
     }
 
     private void parseHeaderLine(String line)
     {
-        if (line.equals("M48"))
-            return; // Parsing header, not huge news
-        if (line.equals("M72"))
-            return; // Well, inches - what else could it be?
-        if (line.startsWith("T") && line.charAt(3) == 'C')  // Tool definition
-        {
-            int toolNumber = Integer.parseInt(line.substring(1, 3));
-            RealNumber diameter = new RealNumber(line.substring(5)).multiply(INCHES_MM_RATIO);
-            tools.put(toolNumber, diameter);
-        }
+        if (parseHeaderCommands(line))
+            return;
+        if (parseToolDefinition(line, false))
+            return;
     }
 
     private void parseBodyLine(String line)
     {
-        Matcher matcher = Pattern.compile("T(\\d+)C(\\d+.\\d+).*").matcher(line);
+        if (parseHeaderCommands(line))
+            return;
 
-        if (line.equals("M30"))
-            return; // End of program
+        if (parseToolDefinition(line, true))
+            return;
+
+        Matcher matcher = T_COMMAND_PATTERN.matcher(line);
         if (matcher.matches())
         {
-            int toolNumber = Integer.parseInt(matcher.group(1));
-            RealNumber diameter = currentDiameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
-            tools.put(toolNumber, diameter);
-            return; // C# command
+            currentDiameter = tools.get(Integer.parseInt(matcher.group(1)));
+            return;
         }
-        if (line.startsWith("T"))
-            currentDiameter = tools.get(Integer.parseInt(line.substring(1)));
-        else
+
+        matcher = COORDINATES_PATTERN.matcher(line);
+        if (matcher.matches())
         {
-            String x = line.substring(1, line.indexOf('Y'));
-            String y = line.substring(line.indexOf('Y') + 1);
-            Point point = new Point(convertCoordinate(x), convertCoordinate(y));
+            Point point = new Point(convertCoordinate(matcher.group(1)), convertCoordinate(matcher.group(2)));
             drillPoints.add(new DrillPoint(point, currentDiameter));
         }
     }
@@ -119,11 +136,6 @@ public class ExcellonParser
         if (str.length() > DECIMAL_PLACES)
             number = number.add(new RealNumber(str.substring(0, decimalPartStart)));
         return number.multiply(INCHES_MM_RATIO);
-    }
-
-    public ArrayList<DrillPoint> getDrillPoints()
-    {
-        return drillPoints;
     }
 
 }
