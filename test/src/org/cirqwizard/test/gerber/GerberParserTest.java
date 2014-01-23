@@ -22,6 +22,7 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.gerber.Region;
 import org.cirqwizard.math.RealNumber;
 import org.junit.Test;
 
@@ -159,7 +160,7 @@ public class GerberParserTest
                 "G04 Plot Data ***\n" +
                 "*\n" +
                 "G54D25*\n" +
-                "G01X0005590Y0015160D02*\n" +
+                 "G01X0005590Y0015160D02*\n" +
                 "Y0014340D01*\n" +
                 "X0006410D02*\n" +
                 "X0005590D01*\n" +
@@ -176,6 +177,71 @@ public class GerberParserTest
         ArrayList<GerberPrimitive> elements = parser.parse();
 
         assertEquals(6, elements.size());
+    }
+
+    @Test
+    public void testSprintLayoutFile() throws IOException
+    {
+        String fileContent = "%FSLAX32Y32*%\n" +
+                "%MOMM*%\n" +
+                "%LNKUPFERSEITE2*%\n" +
+                "G71*\n" +
+                "G01*\n" +
+                "%ADD10C, 0.25*%\n" +
+                "%ADD11C, 1.80*%\n" +
+                "%ADD12C, 2.00*%\n" +
+                "%LPD*%\n" +
+                "G36*\n" +
+                "X654Y852D02*\n" +
+                "X654Y822D01*\n" +
+                "X534Y822D01*\n" +
+                "X534Y852D01*\n" +
+                "X654Y852D01*\n" +
+                "G37*\n" +
+                "G54D10*\n" +
+                "X1474Y1163D02*\n" +
+                "X1474Y1263D01*\n" +
+                "G54D11*\n" +
+                "D03*\n" +
+                "X1103Y438D02*\n" +
+                "G54D12*\n" +
+                "D03*\n" +
+                "X2126Y1233D02*\n" +
+                "M02*s\n";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        ArrayList<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(4, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Region.class, p.getClass());
+        Region r = (Region) p;
+        assertEquals(4, r.getSegments().size());
+        assertEquals(new RealNumber(5.34), r.getMin().getX());
+        assertEquals(new RealNumber(8.22), r.getMin().getY());
+
+        p = elements.get(1);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.25"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("14.74"), new RealNumber("11.63")), l.getFrom());
+        assertEquals(new Point(new RealNumber("14.74"), new RealNumber("12.63")), l.getTo());
+
+        p = elements.get(2);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(CircularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.80"), ((CircularAperture)f.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("14.74"), new RealNumber("12.63")), f.getPoint());
+
+        p = elements.get(3);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(CircularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("2.00"), ((CircularAperture)f.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("11.03"), new RealNumber("4.38")), f.getPoint());
     }
 
 }
