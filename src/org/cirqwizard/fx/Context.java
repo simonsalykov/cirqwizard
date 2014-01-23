@@ -254,9 +254,16 @@ public class Context
 
     private static ArrayList<GerberPrimitive> parseGerber(String file)
     {
-        GerberParser parser = new GerberParser(file);
-        parser.parse();
-        return parser.getElements();
+        try
+        {
+            GerberParser parser = new GerberParser(new FileReader(file));
+            return parser.parse();
+        }
+        catch (IOException e)
+        {
+            LoggerFactory.logException("Could not load gerber file", e);
+            return null;
+        }
     }
 
     public ArrayList<Layer> getLayers()
