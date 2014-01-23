@@ -31,16 +31,21 @@ import java.util.regex.Pattern;
 public class ExcellonParser
 {
     private final static RealNumber INCHES_MM_RATIO = new RealNumber("25.4");
+    private final static RealNumber MM_MM_RATIO = new RealNumber("1");
     private final static int DECIMAL_PLACES = 4;
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+)C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
     private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?X(\\d+)Y(\\d+)");
+    private final static Pattern MEASUREMENT_SYSTEM_PATTERN = Pattern.compile("(INCH|METRIC),(LZ|TZ)");
 
     private HashMap<Integer, RealNumber> tools = new HashMap<Integer, RealNumber>();
     private RealNumber currentDiameter;
     private ArrayList<DrillPoint> drillPoints = new ArrayList<DrillPoint>();
     private boolean header = false;
+
+    private RealNumber coordinatesCoversionRatio = INCHES_MM_RATIO;
+    private boolean leadingZerosOmmited = true;
 
     private Reader reader;
 
@@ -87,7 +92,7 @@ public class ExcellonParser
         if (matcher.matches())
         {
             int toolNumber = Integer.parseInt(matcher.group(1));
-            RealNumber diameter = new RealNumber(matcher.group(2)).multiply(INCHES_MM_RATIO);
+            RealNumber diameter = new RealNumber(matcher.group(2)).multiply(coordinatesCoversionRatio);
             tools.put(toolNumber, diameter);
             if (updateCurrentTool)
                 currentDiameter = diameter;
@@ -103,6 +108,14 @@ public class ExcellonParser
             return;
         if (parseToolDefinition(line, false))
             return;
+
+        Matcher matcher = MEASUREMENT_SYSTEM_PATTERN.matcher(line);
+        if (matcher.matches())
+        {
+            coordinatesCoversionRatio = matcher.group(1).equals("METRIC") ? MM_MM_RATIO : INCHES_MM_RATIO;
+            leadingZerosOmmited = matcher.group(2).equals("LZ");
+            return;
+        }
     }
 
     private void parseBodyLine(String line)
@@ -128,14 +141,18 @@ public class ExcellonParser
         }
     }
 
-    private static RealNumber convertCoordinate(String str)
+    private RealNumber convertCoordinate(String str)
     {
+        boolean negative = str.startsWith("-");
+        if (negative)
+            str = str.substring(1);
+
         int decimalPartStart = str.length() - DECIMAL_PLACES;
         decimalPartStart = Math.max(decimalPartStart, 0);
         RealNumber number = new RealNumber(str.substring(decimalPartStart)).divide(MathUtil.pow(new RealNumber(10), DECIMAL_PLACES));
         if (str.length() > DECIMAL_PLACES)
             number = number.add(new RealNumber(str.substring(0, decimalPartStart)));
-        return number.multiply(INCHES_MM_RATIO);
+        return number.multiply(coordinatesCoversionRatio).multiply(negative ? -1 : 1);
     }
 
 }

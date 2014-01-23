@@ -158,7 +158,32 @@ public class ExcellonParserTest
 
         assertEquals(new Point(new RealNumber("10.23874"), new RealNumber("5.98678")), points.get(3).getPoint());
         assertEquals(new RealNumber("0.6"), points.get(3).getToolDiameter());
+    }
 
+    @Test
+    public void testMetricCoordinates() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "METRIC,TZ\n" +
+                "FMAT,1\n" +
+                "ICI,OFF\n" +
+                "T01C1.00076F085S1\n" +
+                "%\n" +
+                "T01\n" +
+                "G81\n" +
+                "X0123209Y0373930\n" +
+                "X0123209Y0399330\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(2, points.size());
+
+        assertEquals(new Point(new RealNumber("12.3209"), new RealNumber("37.393")), points.get(0).getPoint());
+        assertEquals(new RealNumber("1"), points.get(0).getToolDiameter());
+
+        assertEquals(new Point(new RealNumber("12.3209"), new RealNumber("39.933")), points.get(1).getPoint());
+        assertEquals(new RealNumber("1"), points.get(0).getToolDiameter());
     }
 
 }
