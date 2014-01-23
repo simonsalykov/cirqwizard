@@ -15,8 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard;
 
 import org.cirqwizard.appertures.*;
-import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.Region;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
@@ -37,10 +37,9 @@ public class GerberParser
 {
     private String filename;
     private ArrayList<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private ArrayList<Point> polygonPoints = new ArrayList<Point>();
 
     private boolean parameterMode = false;
-    private boolean polygonMode = false;
+    private Region region = null;
     private HashMap<Integer, Aperture> apertures = new HashMap<Integer, Aperture>();
 
     private static final RealNumber MM_RATIO = new RealNumber(1);
@@ -69,16 +68,7 @@ public class GerberParser
         FLASH
     }
 
-    private enum PolygonStage
-    {
-        BEGIN,
-        DRAWING,
-        CLOSING,
-        CLOSED
-    }
-
     private ExposureMode exposureMode = ExposureMode.OFF;
-    private PolygonStage polygonStage = PolygonStage.CLOSED;
 
     private Aperture aperture = null;
 
@@ -261,14 +251,24 @@ public class GerberParser
         {
             switch (dataBlock.getG())
             {
-                case  1: currentInterpolationMode = InterpolationMode.LINEAR; break;
+                case  1:
+                    currentInterpolationMode = InterpolationMode.LINEAR;
+                break;
                 case  4: return;
-                case 36: polygonMode = true;
-                    polygonStage = PolygonStage.BEGIN; break;
-                case 37: polygonStage = PolygonStage.CLOSING; break;
+                case 36:
+                    region = new Region();
+                break;
+                case 37:
+                    elements.add(region);
+                    region = null;
+                break;
                 case 54: break;
-                case 70: unitConversionRatio = INCHES_RATIO; break;
-                case 71: unitConversionRatio = MM_RATIO; break;
+                case 70:
+                    unitConversionRatio = INCHES_RATIO;
+                break;
+                case 71:
+                    unitConversionRatio = MM_RATIO;
+                break;
                 default:
                     throw new GerberParsingException("Unknown gcode: " + dataBlock.getG());
             }
@@ -303,17 +303,10 @@ public class GerberParser
         if (dataBlock.getY() != null)
             newY = dataBlock.getY();
 
-        if (polygonMode)
+        if (region != null)
         {
-            switch (polygonStage)
-            {
-                case BEGIN: polygonPoints = new ArrayList<Point>();
-                     polygonStage = PolygonStage.DRAWING; break;
-                case DRAWING: polygonPoints.add(new Point(newX, newY)); break;
-                case CLOSING: elements.add(new Flash(new RealNumber(0), new RealNumber(0), new PolygonalAperture(polygonPoints)));
-                     polygonMode = false;
-                     polygonStage = PolygonStage.CLOSED; break;
-            }
+            if (exposureMode == ExposureMode.ON && (!newX.equals(x) || !newY.equals(y)))
+                region.addSegment(new LinearShape(x, y, newX, newY, null));
         }
         else if (aperture != null)
         {

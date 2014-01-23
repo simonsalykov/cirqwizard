@@ -14,15 +14,12 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.render;
 
-import javafx.scene.shape.*;
 import org.cirqwizard.appertures.*;
-import org.cirqwizard.geom.Line;
-import org.cirqwizard.geom.PolygonUtils;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.gerber.Region;
 import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.math.VectorMath;
 import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -192,8 +189,11 @@ public class Raster
         Graphics2D g = window.createGraphics();
         g.setBackground(Color.GREEN);
         g.clearRect(0, 0, width, height);
+        g = window.createGraphics();
+        g.transform(AffineTransform.getTranslateInstance(-lowerLeftCorner.x, -lowerLeftCorner.y));
+        g.transform(AffineTransform.getScaleInstance(resolution, resolution));
         for (GerberPrimitive primitive : primitives)
-            renderPrimitive(window.createGraphics(), primitive, inflation, false, lowerLeftCorner);
+            renderPrimitive(g, primitive, inflation);
 
         return new RasterWindow(window, lowerLeftCorner);
     }
@@ -203,25 +203,18 @@ public class Raster
         Graphics2D g = preview.createGraphics();
         g.setBackground(Color.GREEN);
         g.clearRect(0, 0, preview.getWidth(), preview.getHeight());
+        g = preview.createGraphics();
+        g.transform(AffineTransform.getScaleInstance(previewResolution, previewResolution));
         for (GerberPrimitive primitive : primitives)
-            renderPrimitive(preview.createGraphics(), primitive, inflation, true, null);
+            renderPrimitive(g, primitive, inflation);
         fill(0, 0, 0);
     }
 
-    private void renderPrimitive(Graphics2D g, GerberPrimitive primitive, double inflation, boolean renderPreview, PointI lowerLeftCorner)
+    private void renderPrimitive(Graphics2D g, GerberPrimitive primitive, double inflation)
     {
-        if (!primitive.getAperture().isVisible())
+        if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
             return;
 
-        if (renderPreview)
-        {
-            g.transform(AffineTransform.getScaleInstance(previewResolution, previewResolution));
-        }
-        else
-        {
-            g.transform(AffineTransform.getTranslateInstance(-lowerLeftCorner.x, -lowerLeftCorner.y));
-            g.transform(AffineTransform.getScaleInstance(resolution, resolution));
-        }
         g.setColor(Color.WHITE);
         if (primitive instanceof LinearShape)
         {
@@ -230,6 +223,21 @@ public class Raster
             g.setStroke(new BasicStroke((float) ((linearShape.getAperture().getWidth(new RealNumber(0)).doubleValue() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
             g.draw(new Line2D.Double(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
                     linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue()));
+        }
+        else if (primitive instanceof Region)
+        {
+            Region region = (Region) primitive;
+
+            Path2D polygon = new GeneralPath();
+
+            g.setStroke(new BasicStroke((float) inflation * 2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
+            Point p = region.getSegments().get(0).getFrom();
+            polygon.moveTo(p.getX().doubleValue(), p.getY().doubleValue());
+            for (LinearShape segment : region.getSegments())
+                polygon.lineTo(segment.getTo().getX().doubleValue(), segment.getTo().getY().doubleValue());
+
+            g.draw(polygon);
+            g.fill(polygon);
         }
         else if (primitive instanceof Flash)
         {
@@ -264,21 +272,6 @@ public class Raster
                 polygon.lineTo(-edgeOffset + flashX, -centerOffset + flashY);
                 polygon.lineTo(edgeOffset + flashX, -centerOffset + flashY);
                 polygon.lineTo(centerOffset + flashX, -edgeOffset + flashY);
-                g.fill(polygon);
-            }
-            else if (flash.getAperture() instanceof PolygonalAperture)
-            {
-                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
-                ArrayList<org.cirqwizard.geom.Point> points = aperture.getPoints();
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
-                Path2D polygon = new GeneralPath();
-
-                points = PolygonUtils.expandPolygon(new ArrayList<Point>(points.subList(0, points.size() - 1)), inflation);
-                polygon.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
-                for (int i = 1; i < points.size(); i++)
-                    polygon.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
-
                 g.fill(polygon);
             }
             else if (flash.getAperture() instanceof OvalAperture)

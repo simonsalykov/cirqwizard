@@ -16,10 +16,10 @@ package org.cirqwizard.fx.services;
 
 import org.cirqwizard.appertures.*;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.gerber.Region;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.*;
@@ -62,6 +62,22 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         linearShape.getTo().getX().doubleValue() - linearShape.getFrom().getX().doubleValue(), linearShape.getTo().getY().doubleValue() - linearShape.getFrom().getY().doubleValue()));
             return line;
         }
+        else if (primitive instanceof Region)
+        {
+            Region region = (Region) primitive;
+            Polygon polygon = new Polygon();
+            List<LinearShape> segments = region.getSegments();
+            for (LinearShape segment : segments)
+            {
+                polygon.getPoints().add(segment.getFrom().getX().doubleValue());
+                polygon.getPoints().add(segment.getFrom().getY().doubleValue());
+            }
+            polygon.getPoints().add(segments.get(segments.size() - 1).getTo().getX().doubleValue());
+            polygon.getPoints().add(segments.get(segments.size() - 1).getTo().getY().doubleValue());
+
+            polygon.setStrokeWidth(0);
+            return polygon;
+        }
         else if (primitive instanceof Flash)
         {
             Flash flash = (Flash) primitive;
@@ -99,22 +115,6 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         -edgeOffset + flashX, -centerOffset + flashY,
                         edgeOffset + flashX, -centerOffset + flashY,
                         centerOffset + flashX, -edgeOffset + flashY );
-                polygon.setStrokeWidth(0);
-                return polygon;
-            }
-            else if (flash.getAperture() instanceof PolygonalAperture)
-            {
-                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
-                Polygon polygon = new Polygon();
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
-
-                for (Point p : aperture.getPoints())
-                {
-                    polygon.getPoints().add(p.getX().doubleValue() + flashX);
-                    polygon.getPoints().add(p.getY().doubleValue() + flashY);
-                }
-
                 polygon.setStrokeWidth(0);
                 return polygon;
             }
