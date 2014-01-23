@@ -45,6 +45,7 @@ public class GerberParser
     private static final RealNumber INCHES_RATIO = new RealNumber("25.4");
     private RealNumber unitConversionRatio = MM_RATIO;
 
+    private boolean omitLeadingZeros = true;
     private int integerPlaces = 2;
     private int decimalPlaces = 4;
 
@@ -124,7 +125,7 @@ public class GerberParser
         else if (parameter.startsWith("OF") || parameter.startsWith("IP"))
             LoggerFactory.getApplicationLogger().log(Level.FINE, "Ignoring obsolete gerber parameter");
         else if (parameter.startsWith("FS"))
-            parseCoordinateFormatSpecification(parameter.substring(parameter.indexOf("X")));
+            parseCoordinateFormatSpecification(parameter);
         else if (parameter.startsWith("MO"))
             parseMeasurementUnits(parameter.substring(2, parameter.length()));
         else
@@ -141,8 +142,9 @@ public class GerberParser
 
     private void parseCoordinateFormatSpecification(String str)
     {
-        integerPlaces = Integer.parseInt(str.substring(1, 2));
-        decimalPlaces = Integer.parseInt(str.substring(2, 3));
+        omitLeadingZeros = str.charAt(2) == 'L';
+        integerPlaces = str.charAt(str.indexOf('X') + 1) - '0';
+        decimalPlaces = str.charAt(str.indexOf('X') + 2) - '0';
     }
 
     private void parseApertureDefinition(String str) throws GerberParsingException
@@ -228,10 +230,14 @@ public class GerberParser
 
     private RealNumber convertCoordinates(String str)
     {
-        str = String.format("%" + (integerPlaces + decimalPlaces) + "s", str).replace(' ', '0');
+        boolean negative = str.startsWith("-");
+        if (negative)
+            str = str.substring(1);
+        while (str.length() < integerPlaces + decimalPlaces)
+            str = omitLeadingZeros ? '0' + str : str + '0';
         str = str.substring(0, integerPlaces) + "." + str.substring(integerPlaces, str.length());
 
-        return new RealNumber(str).multiply(unitConversionRatio);
+        return new RealNumber(str).multiply(unitConversionRatio).multiply(negative ? -1 : 1);
     }
 
     private void processDataBlock(DataBlock dataBlock) throws GerberParsingException

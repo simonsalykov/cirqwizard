@@ -154,7 +154,6 @@ public class GerberParserTest
                 "%ADD10R,0.0500X0.0600*%\n" +
                 "%ADD16C,0.0600*%\n" +
                 "%ADD25C,0.0100*%\n" +
-                "%ADD26C,0.0140*%\n" +
                 "*\n" +
                 "G04 Plot Data ***\n" +
                 "*\n" +
@@ -176,6 +175,79 @@ public class GerberParserTest
         ArrayList<GerberPrimitive> elements = parser.parse();
 
         assertEquals(6, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.254"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("14.1986"), new RealNumber("38.5064")), l.getFrom());
+        assertEquals(new Point(new RealNumber("14.1986"), new RealNumber("36.4236")), l.getTo());
+
+    }
+
+    @Test
+    public void testKiCAD() throws IOException
+    {
+        String fileContent = "G04 (created by PCBNEW (2013-07-07 BZR 4022)-stable) date 23/01/2014 11:32:09*\n" +
+                "%MOIN*%\n" +
+                "G04 Gerber Fmt 3.4, Leading zero omitted, Abs format*\n" +
+                "%FSLAX34Y34*%\n" +
+                "G01*\n" +
+                "G70*\n" +
+                "G90*\n" +
+                "G04 APERTURE LIST*\n" +
+                "%ADD12C,0.055*%\n" +
+                "%ADD13R,0.144X0.08*%\n" +
+                "%ADD39C,0.012*%\n" +
+                "G04 APERTURE END LIST*\n" +
+                "G54D12*\n" +
+                "X29724Y-52649D03*\n" +
+                "G54D13*\n" +
+                "X34842Y-57796D03*\n" +
+                "G54D39*\n" +
+                "X30905Y-49428D02*\n" +
+                "X30905Y-49094D01*\n" +
+                "X31023Y-47755D02*\n" +
+                "X30433Y-47755D01*\n" +
+                "M02*";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        ArrayList<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(4, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(CircularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.397"), ((CircularAperture)f.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("75.49896"), new RealNumber("-133.72846")), f.getPoint());
+
+        p = elements.get(1);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(RectangularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("3.6576"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
+        assertEquals(new RealNumber("2.032"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
+        assertEquals(new Point(new RealNumber("88.49868"), new RealNumber("-146.80184")), f.getPoint());
+
+        p = elements.get(2);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.3048"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("78.4987"), new RealNumber("-125.54712")), l.getFrom());
+        assertEquals(new Point(new RealNumber("78.4987"), new RealNumber("-124.69876")), l.getTo());
+
+        p = elements.get(3);
+        assertEquals(LinearShape.class, p.getClass());
+        l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.3048"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("78.79842"), new RealNumber("-121.2977")), l.getFrom());
+        assertEquals(new Point(new RealNumber("77.29982"), new RealNumber("-121.2977")), l.getTo());
+
     }
 
 }
