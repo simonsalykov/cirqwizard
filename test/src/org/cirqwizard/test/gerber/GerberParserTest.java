@@ -29,6 +29,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -207,7 +208,7 @@ public class GerberParserTest
                 "G54D12*\n" +
                 "D03*\n" +
                 "X2126Y1233D02*\n" +
-                "M02*s\n";
+                "M02*\n";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
         ArrayList<GerberPrimitive> elements = parser.parse();
@@ -217,13 +218,26 @@ public class GerberParserTest
         GerberPrimitive p = elements.get(0);
         assertEquals(Region.class, p.getClass());
         Region r = (Region) p;
+        List<LinearShape> s = r.getSegments();
         assertEquals(4, r.getSegments().size());
-        assertEquals(new RealNumber(5.34), r.getMin().getX());
-        assertEquals(new RealNumber(8.22), r.getMin().getY());
+        assertEquals(new RealNumber("5.34"), r.getMin().getX());
+        assertEquals(new RealNumber("8.22"), r.getMin().getY());
+        LinearShape l = s.get(0);
+        assertEquals(new Point(new RealNumber("6.54"), new RealNumber("8.52")), l.getFrom());
+        assertEquals(new Point(new RealNumber("6.54"), new RealNumber("8.22")), l.getTo());
+        l = s.get(1);
+        assertEquals(new Point(new RealNumber("6.54"), new RealNumber("8.22")), l.getFrom());
+        assertEquals(new Point(new RealNumber("5.34"), new RealNumber("8.22")), l.getTo());
+        l = s.get(2);
+        assertEquals(new Point(new RealNumber("5.34"), new RealNumber("8.22")), l.getFrom());
+        assertEquals(new Point(new RealNumber("5.34"), new RealNumber("8.52")), l.getTo());
+        l = s.get(3);
+        assertEquals(new Point(new RealNumber("5.34"), new RealNumber("8.52")), l.getFrom());
+        assertEquals(new Point(new RealNumber("6.54"), new RealNumber("8.52")), l.getTo());
 
         p = elements.get(1);
         assertEquals(LinearShape.class, p.getClass());
-        LinearShape l = (LinearShape) p;
+        l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(new RealNumber("0.25"), ((CircularAperture)p.getAperture()).getDiameter());
         assertEquals(new Point(new RealNumber("14.74"), new RealNumber("11.63")), l.getFrom());
@@ -244,4 +258,66 @@ public class GerberParserTest
         assertEquals(new Point(new RealNumber("11.03"), new RealNumber("4.38")), f.getPoint());
     }
 
+    @Test
+    public void testDesignSparkFile() throws IOException
+    {
+        String fileContent = "%FSLAX23Y23*%\n" +
+                "%MOMM*%\n" +
+                "G04 EasyPC Gerber Version 16.0.6 Build 3249 *\n" +
+                "%ADD23R,1.52400X1.52400*%\n" +
+                "%ADD13R,1.87960X1.87960*%\n" +
+                "%ADD14C,1.87960*%\n" +
+                "X0Y0D02*\n" +
+                "D02*\n" +
+                "D13*\n" +
+                "X17844Y25718D03*\n" +
+                "D02*\n" +
+                "D14*\n" +
+                "X20384D02*\n" +
+                "X22924D01*\n" +
+                "D02*\n" +
+                "D23*\n" +
+                "X17844Y7049D03*\n" +
+                "Y25464D03*\n" +
+                "X0Y0D02*\n" +
+                "M02*";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        ArrayList<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(4, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(RectangularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.87960"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
+        assertEquals(new RealNumber("1.87960"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
+        assertEquals(new Point(new RealNumber("17.844"), new RealNumber("25.718")), f.getPoint());
+
+        p = elements.get(1);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("1.87960"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("20.384"), new RealNumber("25.718")), l.getFrom());
+        assertEquals(new Point(new RealNumber("22.924"), new RealNumber("25.718")), l.getTo());
+
+        p = elements.get(2);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(RectangularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
+        assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
+        assertEquals(new Point(new RealNumber("17.844"), new RealNumber("7.049")), f.getPoint());
+
+        p = elements.get(3);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(RectangularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
+        assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
+        assertEquals(new Point(new RealNumber("17.844"), new RealNumber("25.464")), f.getPoint());
+
+    }
 }
