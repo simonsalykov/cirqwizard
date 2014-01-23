@@ -14,17 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.appertures.*;
-import org.cirqwizard.geom.Arc;
-import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.toolpath.CircularToolpath;
-import org.cirqwizard.toolpath.DrillPoint;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -34,17 +23,29 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Transform;
+import org.cirqwizard.appertures.*;
+import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.Flash;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.gerber.Region;
+import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.toolpath.CircularToolpath;
+import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.toolpath.LinearToolpath;
+import org.cirqwizard.toolpath.Toolpath;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class PCBPaneFX extends Region
+public class PCBPaneFX extends javafx.scene.layout.Region
 {
     private static final double DEFAULT_SCALE = 5.0;
 
@@ -163,7 +164,7 @@ public class PCBPaneFX extends Region
 
     private void renderPrimitive(GraphicsContext g, GerberPrimitive primitive)
     {
-        if (!primitive.getAperture().isVisible())
+        if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
             return;
 
         g.setStroke(gerberColor);
@@ -175,6 +176,18 @@ public class PCBPaneFX extends Region
             g.setLineWidth(linearShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
             g.strokeLine(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
                     linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue());
+        }
+        else if (primitive instanceof Region)
+        {
+            g.beginPath();
+            Region region = (Region) primitive;
+            Point p = region.getSegments().get(0).getFrom();
+            g.moveTo(p.getX().doubleValue(), p.getY().doubleValue());
+            for (LinearShape segment : region.getSegments())
+                g.lineTo(segment.getTo().getX().doubleValue(), segment.getTo().getY().doubleValue());
+
+            g.closePath();
+            g.fill();
         }
         else if (primitive instanceof Flash)
         {
@@ -209,21 +222,6 @@ public class PCBPaneFX extends Region
                 g.lineTo(-edgeOffset + x, -centerOffset + y);
                 g.lineTo(edgeOffset + x, -centerOffset + y);
                 g.lineTo(centerOffset + x, -edgeOffset + y);
-                g.closePath();
-                g.fill();
-            }
-            else if (flash.getAperture() instanceof PolygonalAperture)
-            {
-                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
-                ArrayList<Point> points = aperture.getPoints();
-                double flashX = flash.getX().doubleValue();
-                double flashY = flash.getY().doubleValue();
-
-                g.beginPath();
-                g.moveTo(points.get(0).getX().doubleValue() + flashX, points.get(0).getY().doubleValue() + flashY);
-                for (int i = 1; i < points.size(); i++)
-                    g.lineTo(points.get(i).getX().doubleValue() + flashX, points.get(i).getY().doubleValue() + flashY);
-
                 g.closePath();
                 g.fill();
             }

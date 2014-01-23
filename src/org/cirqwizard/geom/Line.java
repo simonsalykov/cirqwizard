@@ -83,18 +83,4 @@ public class Line extends Curve
         return angleToX;
     }
 
-    public static Point intersectionPoint(Line line1, Line line2)
-    {
-        RealNumber a1 = line1.getX2().subtract(line1.getX1());
-        RealNumber b1 = line2.getX1().subtract(line2.getX2());
-        RealNumber c1 = line2.getX1().subtract(line1.getX1());
-
-        RealNumber a2 = line1.getY2().subtract(line1.getY1());
-        RealNumber b2 = line2.getY1().subtract(line2.getY2());
-        RealNumber c2 = line2.getY1().subtract(line1.getY1());
-
-        RealNumber t = (b1.multiply(c2).subtract(b2.multiply(c1))).divide(a2.multiply(b1).subtract(a1.multiply(b2)));
-
-        return new Point(line1.getX1().add(t.multiply(line1.getX2().subtract(line1.getX1()))), line1.getY1().add(t.multiply(line1.getY2().subtract(line1.getY1()))));
-    }
 }
