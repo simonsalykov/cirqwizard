@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GerberParserTest
 {
@@ -184,6 +185,44 @@ public class GerberParserTest
         assertEquals(new RealNumber("0.254"), ((CircularAperture)p.getAperture()).getDiameter());
         assertEquals(new Point(new RealNumber("14.1986"), new RealNumber("38.5064")), l.getFrom());
         assertEquals(new Point(new RealNumber("14.1986"), new RealNumber("36.4236")), l.getTo());
+
+        p = elements.get(1);
+        assertEquals(LinearShape.class, p.getClass());
+        l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.254"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("16.2814"), new RealNumber("36.4236")), l.getFrom());
+        assertEquals(new Point(new RealNumber("14.1986"), new RealNumber("36.4236")), l.getTo());
+
+        p = elements.get(2);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(RectangularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.27"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
+        assertEquals(new RealNumber("1.524"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
+        assertEquals(new Point(new RealNumber("49.784"), new RealNumber("59.055")), f.getPoint());
+
+        p = elements.get(3);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(RectangularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.27"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
+        assertEquals(new RealNumber("1.524"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
+        assertEquals(new Point(new RealNumber("46.736"), new RealNumber("59.055")), f.getPoint());
+
+        p = elements.get(4);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(CircularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.524"), ((CircularAperture)f.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("88.265"), new RealNumber("59.055")), f.getPoint());
+
+        p = elements.get(5);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(CircularAperture.class, f.getAperture().getClass());
+        assertEquals(new RealNumber("1.524"), ((CircularAperture)f.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("88.265"), new RealNumber("46.355")), f.getPoint());
 
     }
 

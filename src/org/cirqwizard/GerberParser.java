@@ -108,8 +108,11 @@ public class GerberParser
         {
             if (i == '%')
                 parameterMode = !parameterMode;
-            else if ((i == '*') && (sb.length() != 0))
-                break;
+            else if (i == '*')
+            {
+                if (sb.length() > 0)
+                    break;
+            }
             else if (!Character.isWhitespace(i))
                 sb.append((char)i);
         }
