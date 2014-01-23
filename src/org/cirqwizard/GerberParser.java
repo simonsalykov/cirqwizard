@@ -15,17 +15,16 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard;
 
 import org.cirqwizard.appertures.*;
+import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.gerber.Region;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.LinearShape;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -48,6 +47,8 @@ public class GerberParser
 
     private int integerPlaces = 2;
     private int decimalPlaces = 4;
+
+    private Reader reader;
 
     private enum InterpolationMode
     {
@@ -72,49 +73,37 @@ public class GerberParser
 
     private Aperture aperture = null;
 
-    public GerberParser(String filename)
+    public GerberParser(Reader reader)
     {
-        this.filename = filename;
+        this.reader = reader;
     }
 
-    public ArrayList<GerberPrimitive> getElements()
+    public ArrayList<GerberPrimitive> parse() throws IOException
     {
+        String str;
+        while ((str = readDataBlock()) != null)
+        {
+            try
+            {
+                if (parameterMode)
+                    parseParameter(str);
+                else
+                    processDataBlock(parseDataBlock(str));
+            }
+            catch (GerberParsingException e)
+            {
+                LoggerFactory.getApplicationLogger().log(Level.FINE, "Unparsable gerber element", e);
+            }
+        }
+
         return elements;
     }
 
-
-    public void parse()
-    {
-        try
-        {
-            FileInputStream inputStream = new FileInputStream(filename);
-            String str;
-            while ((str = readDataBlock(inputStream)) != null)
-            {
-                try
-                {
-                    if (parameterMode)
-                        parseParameter(str);
-                    else
-                        processDataBlock(parseDataBlock(str));
-                }
-                catch (GerberParsingException e)
-                {
-                    LoggerFactory.getApplicationLogger().log(Level.FINE, "Unparsable gerber element", e);
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Error reader gerber file", e);
-        }
-    }
-
-    private String readDataBlock(InputStream inputStream) throws IOException
+    private String readDataBlock() throws IOException
     {
         StringBuffer sb = new StringBuffer();
         int i;
-        while ((i = inputStream.read()) != -1)
+        while ((i = reader.read()) != -1)
         {
             if (i == '%')
                 parameterMode = !parameterMode;
@@ -219,7 +208,7 @@ public class GerberParser
     private DataBlock parseDataBlock(String str)
     {
         DataBlock dataBlock = new DataBlock();
-        Pattern pattern = Pattern.compile("([GMDXY])(\\d+)");
+        Pattern pattern = Pattern.compile("([GMDXY])(-?\\d+)");
         Matcher matcher = pattern.matcher(str);
         int i = 0;
         while (matcher.find(i))
