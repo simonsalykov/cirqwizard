@@ -67,18 +67,18 @@ public class ExcellonParserTest
     {
         String fileContent = "M48\n" +
                 "INCH,TZ\n" +
-                "T1C0.0236\n" +
-                "T2C0.0354\n" +
-                "T3C0.0400\n" +
+                "T1C0.013\n" +
+                "T2C0.025\n" +
+                "T3C0.032\n" +
+                "%\n" +
                 "G90\n" +
                 "G05\n" +
-                "%\n" +
-                "T01\n" +
-                "X4116Y4667\n" +
-                "T02\n" +
-                "X9374Y2651\n" +
-                "T03\n" +
-                "X7624Y3651\n" +
+                "T1\n" +
+                "X027638Y-059016\n" +
+                "T2\n" +
+                "X036811Y-048819\n" +
+                "T3\n" +
+                "X029724Y-049303\n" +
                 "T0\n" +
                 "M30";
 
@@ -86,14 +86,14 @@ public class ExcellonParserTest
         ArrayList<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
-        assertEquals(new Point(new RealNumber("10.45464"), new RealNumber("11.85418")), points.get(0).getPoint());
-        assertEquals(new RealNumber("0.6"), points.get(0).getToolDiameter());
+        assertEquals(new Point(new RealNumber("70.20052"), new RealNumber("-149.90064")), points.get(0).getPoint());
+        assertEquals(new RealNumber("0.3"), points.get(0).getToolDiameter());
 
-        assertEquals(new Point(new RealNumber("23.80996"), new RealNumber("6.73354")), points.get(1).getPoint());
-        assertEquals(new RealNumber("0.9"), points.get(1).getToolDiameter());
+        assertEquals(new Point(new RealNumber("93.49994"), new RealNumber("-124.00026")), points.get(1).getPoint());
+        assertEquals(new RealNumber("0.6"), points.get(1).getToolDiameter());
 
-        assertEquals(new Point(new RealNumber("19.36496"), new RealNumber("9.27354")), points.get(2).getPoint());
-        assertEquals(new RealNumber("1"), points.get(2).getToolDiameter());
+        assertEquals(new Point(new RealNumber("75.49896"), new RealNumber("-125.22962")), points.get(2).getPoint());
+        assertEquals(new RealNumber("0.8"), points.get(2).getToolDiameter());
     }
 
     @Test

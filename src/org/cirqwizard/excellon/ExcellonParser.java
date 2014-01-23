@@ -36,7 +36,7 @@ public class ExcellonParser
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+)C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
-    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?X(\\d+)Y(\\d+)");
+    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?X(-?\\d+)Y(-?\\d+)");
     private final static Pattern MEASUREMENT_SYSTEM_PATTERN = Pattern.compile("(INCH|METRIC),(LZ|TZ)");
 
     private HashMap<Integer, RealNumber> tools = new HashMap<Integer, RealNumber>();
