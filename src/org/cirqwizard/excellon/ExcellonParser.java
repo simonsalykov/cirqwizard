@@ -36,7 +36,7 @@ public class ExcellonParser
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
-    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?X(-?\\d+)Y(-?\\d+)");
+    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?(X-?\\d+)?(Y-?\\d+)?");
     private final static Pattern MEASUREMENT_SYSTEM_PATTERN = Pattern.compile("(INCH|METRIC),(LZ|TZ)");
 
     private HashMap<Integer, RealNumber> tools = new HashMap<Integer, RealNumber>();
@@ -46,6 +46,9 @@ public class ExcellonParser
 
     private RealNumber coordinatesCoversionRatio = INCHES_MM_RATIO;
     private boolean leadingZerosOmmited = true;
+
+    private RealNumber x = null;
+    private RealNumber y = null;
 
     private Reader reader;
 
@@ -136,7 +139,11 @@ public class ExcellonParser
         matcher = COORDINATES_PATTERN.matcher(line);
         if (matcher.matches())
         {
-            Point point = new Point(convertCoordinate(matcher.group(1)), convertCoordinate(matcher.group(2)));
+            if (matcher.group(1) != null)
+                x = convertCoordinate(matcher.group(1).substring(1));
+            if (matcher.group(2) != null)
+                y = convertCoordinate(matcher.group(2).substring(1));
+            Point point = new Point(x, y);
             drillPoints.add(new DrillPoint(point, currentDiameter));
         }
     }
