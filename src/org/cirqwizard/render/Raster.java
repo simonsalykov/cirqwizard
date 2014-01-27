@@ -343,11 +343,11 @@ public class Raster
                         double y = flash.getY().doubleValue();
 
                         Path2D polygon = new GeneralPath();
-                        Point point = outline.getPoints().get(0);
+                        Point point = outline.getTranslatedPoints().get(0);
                         polygon.moveTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
-                        for (int i = 1; i < outline.getPoints().size(); i++)
+                        for (int i = 1; i < outline.getTranslatedPoints().size(); i++)
                         {
-                            point = outline.getPoints().get(i);
+                            point = outline.getTranslatedPoints().get(i);
                             polygon.lineTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
                         }
                         g.fill(polygon);

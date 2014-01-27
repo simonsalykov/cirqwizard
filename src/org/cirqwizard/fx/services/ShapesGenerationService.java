@@ -200,7 +200,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         double y = flash.getY().doubleValue();
 
                         Polygon polygon = new Polygon();
-                        for (Point point : outline.getPoints())
+                        for (Point point : outline.getTranslatedPoints())
                             polygon.getPoints().addAll(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
                         polygon.setStrokeWidth(0);
                         list.add(polygon);

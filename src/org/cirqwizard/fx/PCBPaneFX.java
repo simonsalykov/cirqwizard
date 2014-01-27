@@ -287,7 +287,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
                         g.beginPath();
                         Point point = outline.getPoints().get(0);
                         g.moveTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
-                        for (int i = 1; i < outline.getPoints().size(); i++)
+                        for (int i = 1; i < outline.getTranslatedPoints().size(); i++)
                         {
                             point = outline.getPoints().get(i);
                             g.lineTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
