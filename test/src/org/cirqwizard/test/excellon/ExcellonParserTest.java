@@ -264,7 +264,22 @@ public class ExcellonParserTest
 
         assertEquals(new Point(new RealNumber("61.976"), new RealNumber("44.323")), points.get(2).getPoint());
         assertEquals(new RealNumber("0.9"), points.get(0).getToolDiameter());
+    }
 
+    @Test
+    public void testUndefinedTool() throws IOException
+    {
+        String fileContent = "%\n" +
+                "T3\n" +
+                "X00250Y05025\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(new RealNumber("0.635"), new RealNumber("12.7635")), points.get(0).getPoint());
+        assertEquals(new RealNumber("1.3"), points.get(0).getToolDiameter());
     }
 
 }

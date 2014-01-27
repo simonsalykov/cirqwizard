@@ -134,6 +134,8 @@ public class ExcellonParser
         if (matcher.matches())
         {
             currentDiameter = tools.get(Integer.parseInt(matcher.group(1)));
+            if (currentDiameter == null)
+                currentDiameter = new RealNumber("1." + matcher.group(1));
             return;
         }
 
