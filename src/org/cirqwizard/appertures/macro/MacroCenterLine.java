@@ -56,4 +56,9 @@ public class MacroCenterLine extends MacroPrimitive
         return translate(center.add(new Point(getWidth().divide(2), new RealNumber(0))));
     }
 
+    @Override
+    public MacroPrimitive clone()
+    {
+        return new MacroCenterLine(width, height, center, getRotationAngle());
+    }
 }

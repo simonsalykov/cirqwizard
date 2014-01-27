@@ -24,6 +24,12 @@ public class MacroCircle extends MacroPrimitive
 
     public MacroCircle(RealNumber diameter, Point center)
     {
+        this(diameter, center, null);
+    }
+
+    public MacroCircle(RealNumber diameter, Point center, RealNumber rotationAngle)
+    {
+        super(rotationAngle);
         this.diameter = diameter;
         this.center = center;
     }
@@ -35,6 +41,12 @@ public class MacroCircle extends MacroPrimitive
 
     public Point getCenter()
     {
-        return center;
+        return translate(center);
+    }
+
+    @Override
+    public MacroPrimitive clone()
+    {
+        return new MacroCircle(diameter, center, getRotationAngle());
     }
 }

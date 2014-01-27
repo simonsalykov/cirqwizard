@@ -55,4 +55,10 @@ public class MacroVectorLine extends MacroPrimitive
     {
         return translate(end);
     }
+
+    @Override
+    public MacroPrimitive clone()
+    {
+        return new MacroVectorLine(width, start, end, getRotationAngle());
+    }
 }

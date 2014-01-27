@@ -37,7 +37,17 @@ public class ApertureMacro extends Aperture
     @Override
     public Aperture rotate(boolean clockwise)
     {
-        return null;
+        ApertureMacro clone = new ApertureMacro();
+        for (MacroPrimitive p : primitives)
+        {
+            p = p.clone();
+            RealNumber angle = p.getRotationAngle();
+            if (angle == null)
+                angle = new RealNumber(0);
+            p.setRotationAngle(angle.add(new RealNumber(90 * (clockwise ? 1 : -1))));
+            clone.addPrimitive(p);
+        }
+        return clone;
     }
 
     @Override

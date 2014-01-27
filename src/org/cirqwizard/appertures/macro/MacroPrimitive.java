@@ -33,7 +33,7 @@ public abstract class MacroPrimitive
 
     protected Point translate(Point p)
     {
-        if (rotationAngle != null && rotationAngle.equals(new RealNumber(0)))
+        if (rotationAngle == null || rotationAngle.equals(new RealNumber(0)))
             return p;
         double theta = Math.toRadians(rotationAngle.doubleValue());
         double x = p.getX().doubleValue() * Math.cos(theta) - p.getY().doubleValue() * Math.sin(theta);
@@ -50,4 +50,6 @@ public abstract class MacroPrimitive
     {
         this.rotationAngle = rotationAngle;
     }
+
+    public abstract MacroPrimitive clone();
 }

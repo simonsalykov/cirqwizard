@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.appertures.macro;
 
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.math.RealNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,16 @@ import java.util.List;
 public class MacroOutline extends MacroPrimitive
 {
     private ArrayList<Point> points = new ArrayList<>();
+
+    public MacroOutline()
+    {
+    }
+
+    public MacroOutline(ArrayList<Point> points, RealNumber rotationAngle)
+    {
+        super(rotationAngle);
+        this.points = points;
+    }
 
     public void addPoint(Point point)
     {
@@ -42,4 +53,9 @@ public class MacroOutline extends MacroPrimitive
         return result;
     }
 
+    @Override
+    public MacroPrimitive clone()
+    {
+        return new MacroOutline(points, getRotationAngle());
+    }
 }
