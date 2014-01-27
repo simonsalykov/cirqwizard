@@ -186,4 +186,27 @@ public class ExcellonParserTest
         assertEquals(new RealNumber("1"), points.get(0).getToolDiameter());
     }
 
+    @Test
+    public void testCQ49() throws IOException
+    {
+        String fileContent = "M48\n" +
+                ";Layer_Color=9474304\n" +
+                ";FILE_FORMAT=2:4\n" +
+                "INCH\n" +
+                ";TYPE=PLATED\n" +
+                "T1F00S00C0.03543\n" +
+                ";TYPE=NON_PLATED\n" +
+                "%\n" +
+                "T01\n" +
+                "X023400Y014450\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(new RealNumber("59.436"), new RealNumber("36.703")), points.get(0).getPoint());
+        assertEquals(new RealNumber("0.9"), points.get(0).getToolDiameter());
+    }
+
 }
