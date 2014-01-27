@@ -187,6 +187,32 @@ public class ExcellonParserTest
     }
 
     @Test
+    public void testMetricCoordinatesNoZeroInfo() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "METRIC\n" +
+                "FMAT,1\n" +
+                "ICI,OFF\n" +
+                "T01C1.00076F085S1\n" +
+                "%\n" +
+                "T01\n" +
+                "G81\n" +
+                "X0123209Y0373930\n" +
+                "X0123209Y0399330\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(2, points.size());
+
+        assertEquals(new Point(new RealNumber("12.3209"), new RealNumber("37.393")), points.get(0).getPoint());
+        assertEquals(new RealNumber("1"), points.get(0).getToolDiameter());
+
+        assertEquals(new Point(new RealNumber("12.3209"), new RealNumber("39.933")), points.get(1).getPoint());
+        assertEquals(new RealNumber("1"), points.get(0).getToolDiameter());
+    }
+
+    @Test
     public void testCQ49() throws IOException
     {
         String fileContent = "M48\n" +
