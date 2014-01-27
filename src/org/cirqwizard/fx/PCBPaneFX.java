@@ -29,6 +29,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Transform;
 import org.cirqwizard.appertures.*;
+import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
@@ -245,6 +246,57 @@ public class PCBPaneFX extends javafx.scene.layout.Region
                 double rectHeight =  aperture.isHorizontal() ? height : l;
                 g.fillRect(rectX, rectY, rectWidth, rectHeight);
             }
+            else if (flash.getAperture() instanceof ApertureMacro)
+            {
+                ApertureMacro macro = (ApertureMacro) flash.getAperture();
+                for (MacroPrimitive p : macro.getPrimitives())
+                {
+                    if (p instanceof MacroCenterLine)
+                    {
+                        MacroCenterLine centerLine = (MacroCenterLine) p;
+                        Point from = centerLine.getFrom().add(flash.getPoint());
+                        Point to = centerLine.getTo().add(flash.getPoint());
+                        g.setLineCap(StrokeLineCap.BUTT);
+                        g.setLineWidth(centerLine.getHeight().doubleValue());
+                        g.strokeLine(from.getX().doubleValue(), from.getY().doubleValue(), to.getX().doubleValue(), to.getY().doubleValue());
+                    }
+                    else if (p instanceof MacroVectorLine)
+                    {
+                        MacroVectorLine vectorLine = (MacroVectorLine) p;
+                        Point from = vectorLine.getTranslatedStart().add(flash.getPoint());
+                        Point to = vectorLine.getTranslatedEnd().add(flash.getPoint());
+                        g.setLineCap(StrokeLineCap.BUTT);
+                        g.setLineWidth(vectorLine.getWidth().doubleValue());
+                        g.strokeLine(from.getX().doubleValue(), from.getY().doubleValue(), to.getX().doubleValue(), to.getY().doubleValue());
+                    }
+                    else if (p instanceof MacroCircle)
+                    {
+                        MacroCircle circle = (MacroCircle) p;
+                        double d = circle.getDiameter().doubleValue();
+                        double r = d / 2;
+                        Point point = circle.getCenter().add(flash.getPoint());
+                        g.fillOval(point.getX().doubleValue() - r, point.getY().doubleValue() - r, d, d);
+
+                    }
+                    else if (p instanceof MacroOutline)
+                    {
+                        MacroOutline outline = (MacroOutline) p;
+                        double x = flash.getX().doubleValue();
+                        double y = flash.getY().doubleValue();
+
+                        g.beginPath();
+                        Point point = outline.getPoints().get(0);
+                        g.moveTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
+                        for (int i = 1; i < outline.getTranslatedPoints().size(); i++)
+                        {
+                            point = outline.getPoints().get(i);
+                            g.lineTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
+                        }
+                        g.closePath();
+                        g.fill();
+                    }
+                }
+            }
         }
     }
 
@@ -268,7 +320,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
             g.setLineCap(StrokeLineCap.ROUND);
             g.setLineWidth(circularToolpath.getToolDiameter().doubleValue());
             Arc arc = (Arc) circularToolpath.getCurve();
-            g.strokeArc(arc.getCenter().getX().doubleValue()- arc.getRadius().doubleValue(),
+            g.strokeArc(arc.getCenter().getX().doubleValue() - arc.getRadius().doubleValue(),
                     arc.getCenter().getY().doubleValue() - arc.getRadius().doubleValue(),
                     arc.getRadius().doubleValue() * 2, arc.getRadius().doubleValue() * 2,
                     -Math.toDegrees(arc.getStart().doubleValue()), Math.toDegrees(arc.getAngle().doubleValue()), ArcType.OPEN);

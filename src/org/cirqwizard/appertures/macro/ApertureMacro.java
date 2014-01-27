@@ -11,56 +11,54 @@ This program is free software: you can redistribute it and/or modify
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+package org.cirqwizard.appertures.macro;
 
-package org.cirqwizard.appertures;
-
+import org.cirqwizard.appertures.Aperture;
 import org.cirqwizard.math.RealNumber;
 
-import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public class OctagonalAperture extends Aperture
+public class ApertureMacro extends Aperture
 {
-    private RealNumber diameter;
+    private ArrayList<MacroPrimitive> primitives = new ArrayList<>();
 
-    public OctagonalAperture(RealNumber diameter)
+    public void addPrimitive(MacroPrimitive primitive)
     {
-        super();
-        this.diameter = diameter;
+        primitives.add(primitive);
     }
 
-    public OctagonalAperture(RealNumber diameter, RealNumber holeDiameter)
+    public List<MacroPrimitive> getPrimitives()
     {
-        super(holeDiameter);
-        this.diameter = diameter;
+        return primitives;
     }
 
-    public OctagonalAperture(RealNumber diameter, RealNumber holeWidth, RealNumber holeHeight)
-    {
-        super(holeWidth, holeHeight);
-        this.diameter = diameter;
-    }
 
     @Override
     public Aperture rotate(boolean clockwise)
     {
-        return this;
-    }
-
-    public RealNumber getDiameter()
-    {
-        return diameter;
+        ApertureMacro clone = new ApertureMacro();
+        for (MacroPrimitive p : primitives)
+        {
+            p = p.clone();
+            RealNumber angle = p.getRotationAngle();
+            if (angle == null)
+                angle = new RealNumber(0);
+            p.setRotationAngle(angle.add(new RealNumber(90 * (clockwise ? 1 : -1))));
+            clone.addPrimitive(p);
+        }
+        return clone;
     }
 
     @Override
     public boolean isVisible()
     {
-        return diameter.greaterThan(0);
+        return true;
     }
 
     @Override
     public RealNumber getWidth(RealNumber angle)
     {
-        return diameter;
+        return null;
     }
 }

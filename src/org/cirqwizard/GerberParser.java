@@ -15,6 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard;
 
 import org.cirqwizard.appertures.*;
+import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
@@ -35,11 +37,13 @@ import java.util.regex.Pattern;
 public class GerberParser
 {
     private String filename;
-    private ArrayList<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
+    private ArrayList<GerberPrimitive> elements = new ArrayList<>();
 
     private boolean parameterMode = false;
+    private ApertureMacro apertureMacro = null;
+    private HashMap<String, ApertureMacro> apertureMacros = new HashMap<>();
     private Region region = null;
-    private HashMap<Integer, Aperture> apertures = new HashMap<Integer, Aperture>();
+    private HashMap<Integer, Aperture> apertures = new HashMap<>();
 
     private static final RealNumber MM_RATIO = new RealNumber(1);
     private static final RealNumber INCHES_RATIO = new RealNumber("25.4");
@@ -107,7 +111,10 @@ public class GerberParser
         while ((i = reader.read()) != -1)
         {
             if (i == '%')
+            {
                 parameterMode = !parameterMode;
+                apertureMacro = null;
+            }
             else if (i == '*')
             {
                 if (sb.length() > 0)
@@ -123,6 +130,8 @@ public class GerberParser
 
     private void parseParameter(String parameter) throws GerberParsingException
     {
+        if (apertureMacro != null)
+            parseApertureMacroDefinition(parameter);
         if (parameter.startsWith("AD"))
             parseApertureDefinition(parameter.substring(2));
         else if (parameter.startsWith("OF") || parameter.startsWith("IP"))
@@ -131,6 +140,8 @@ public class GerberParser
             parseCoordinateFormatSpecification(parameter);
         else if (parameter.startsWith("MO"))
             parseMeasurementUnits(parameter.substring(2, parameter.length()));
+        else if (parameter.startsWith("AM"))
+            parseApertureMacro(parameter);
         else
             throw new GerberParsingException("Unknown parameter: " + parameter);
     }
@@ -150,14 +161,91 @@ public class GerberParser
         decimalPlaces = str.charAt(str.indexOf('X') + 2) - '0';
     }
 
+    private void parseApertureMacro(String str)
+    {
+        String macroName = str.substring(2);
+        apertureMacro = new ApertureMacro();
+        apertureMacros.put(macroName, apertureMacro);
+    }
+
+    private final static Pattern PATTERN_MACRO_1 = Pattern.compile("1,(1|0),(\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_4 = Pattern.compile("4,(1|0),(\\d+),(.*),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_4_COORDINATE_PAIR = Pattern.compile("(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_20 = Pattern.compile("20,(1|0),(\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_21 = Pattern.compile("21,(1|0),(\\d+.\\d+),(\\d+.\\d+),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
+
+    private void parseApertureMacroDefinition(String str)
+    {
+        Matcher matcher = PATTERN_MACRO_21.matcher(str);
+        if (matcher.find())
+        {
+            MacroCenterLine centerLine = new MacroCenterLine(new RealNumber(matcher.group(2)).multiply(unitConversionRatio),
+                    new RealNumber(matcher.group(3)).multiply(unitConversionRatio),
+                    new Point(new RealNumber(matcher.group(4)).multiply(unitConversionRatio), new RealNumber(matcher.group(5)).multiply(unitConversionRatio)),
+                    new RealNumber(matcher.group(6)));
+            apertureMacro.addPrimitive(centerLine);
+            return;
+        }
+
+        matcher = PATTERN_MACRO_1.matcher(str);
+        if (matcher.find())
+        {
+            MacroCircle circle = new MacroCircle(new RealNumber(matcher.group(2)).multiply(unitConversionRatio),
+                    new Point(new RealNumber(matcher.group(3)).multiply(unitConversionRatio), new RealNumber(matcher.group(4)).multiply(unitConversionRatio)));
+            apertureMacro.addPrimitive(circle);
+            return;
+        }
+
+        matcher = PATTERN_MACRO_20.matcher(str);
+        if (matcher.find())
+        {
+            MacroVectorLine vectorLine = new MacroVectorLine(new RealNumber(matcher.group(2)).multiply(unitConversionRatio),
+                    new Point(new RealNumber(matcher.group(3)).multiply(unitConversionRatio), new RealNumber(matcher.group(4)).multiply(unitConversionRatio)),
+                    new Point(new RealNumber(matcher.group(5)).multiply(unitConversionRatio), new RealNumber(matcher.group(6)).multiply(unitConversionRatio)),
+                    new RealNumber(matcher.group(7)));
+            apertureMacro.addPrimitive(vectorLine);
+            return;
+        }
+
+        matcher = PATTERN_MACRO_4.matcher(str);
+        if (matcher.find())
+        {
+            int verticesCount = Integer.valueOf(matcher.group(2));
+            MacroOutline outline = new MacroOutline();
+            outline.setRotationAngle(new RealNumber(matcher.group(4)));
+            matcher = PATTERN_MACRO_4_COORDINATE_PAIR.matcher(matcher.group(3));
+            while (matcher.find())
+                outline.addPoint(new Point(new RealNumber(matcher.group(1)).multiply(unitConversionRatio), new RealNumber(matcher.group(2)).multiply(unitConversionRatio)));
+            if (verticesCount != outline.getPoints().size() - 1)
+                LoggerFactory.getApplicationLogger().log(Level.WARNING, "Aperture macro vertices count does not match supplied coordinates: " + str);
+            if (!outline.getPoints().get(0).equals(outline.getPoints().get(outline.getPoints().size() - 1)))
+                LoggerFactory.getApplicationLogger().log(Level.WARNING, "Aperture macro does not define enclosed area: " + str);
+            outline.getPoints().remove(outline.getPoints().size() - 1);
+            apertureMacro.addPrimitive(outline);
+            return;
+        }
+    }
+
     private void parseApertureDefinition(String str) throws GerberParsingException
     {
         if (!str.startsWith("D"))
             throw new GerberParsingException("Invalid aperture definition: " + str);
 
         str = str.substring(1);
-        Pattern pattern = Pattern.compile("(\\d+)([CORP8]+)");
+        Pattern pattern = Pattern.compile("(\\d+)(.*)");
         Matcher matcher = pattern.matcher(str);
+        if (matcher.find())
+        {
+            ApertureMacro macro = apertureMacros.get(matcher.group(2));
+            if (macro != null)
+            {
+                apertures.put(Integer.valueOf(matcher.group(1)), macro);
+                return;
+            }
+        }
+
+        pattern = Pattern.compile("(\\d+)([CORP8]+)");
+        matcher = pattern.matcher(str);
         if (!matcher.find())
             throw new GerberParsingException("Aperture definition incorrectly formatted: " + str);
 

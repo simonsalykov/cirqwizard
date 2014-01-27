@@ -15,7 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.services;
 
 import org.cirqwizard.appertures.*;
+import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
@@ -29,6 +31,8 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.shape.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -47,7 +51,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
         return new ShapesGenerationTask();
     }
 
-    private Shape getShapeForPrimitive(GerberPrimitive primitive)
+    private java.util.List<Shape> getShapeForPrimitive(GerberPrimitive primitive)
     {
         if (primitive instanceof LinearShape)
         {
@@ -60,7 +64,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             if (linearShape.getAperture().getWidth(new RealNumber(0)).equals(0))
                 line.setClip(new Rectangle(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
                         linearShape.getTo().getX().doubleValue() - linearShape.getFrom().getX().doubleValue(), linearShape.getTo().getY().doubleValue() - linearShape.getFrom().getY().doubleValue()));
-            return line;
+            return Arrays.asList((Shape)line);
         }
         else if (primitive instanceof Region)
         {
@@ -76,7 +80,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             polygon.getPoints().add(segments.get(segments.size() - 1).getTo().getY().doubleValue());
 
             polygon.setStrokeWidth(0);
-            return polygon;
+            return Arrays.asList((Shape) polygon);
         }
         else if (primitive instanceof Flash)
         {
@@ -86,7 +90,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                 Circle circle = new Circle(flash.getX().doubleValue(), flash.getY().doubleValue(),
                         ((CircularAperture)flash.getAperture()).getDiameter().doubleValue() / 2);
                 circle.setStrokeWidth(0);
-                return circle;
+                return Arrays.asList((Shape) circle);
             }
             else if (flash.getAperture() instanceof RectangularAperture)
             {
@@ -95,7 +99,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         flash.getY().doubleValue() - aperture.getDimensions()[1].doubleValue() / 2,
                         aperture.getDimensions()[0].doubleValue(), aperture.getDimensions()[1].doubleValue());
                 rectangle.setStrokeWidth(0);
-                return rectangle;
+                return Arrays.asList((Shape) rectangle);
             }
             else if (flash.getAperture() instanceof OctagonalAperture)
             {
@@ -116,7 +120,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         edgeOffset + flashX, -centerOffset + flashY,
                         centerOffset + flashX, -edgeOffset + flashY );
                 polygon.setStrokeWidth(0);
-                return polygon;
+                return Arrays.asList((Shape) polygon);
             }
             else if (flash.getAperture() instanceof OvalAperture)
             {
@@ -147,7 +151,62 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                 }
 
                 path.setStrokeWidth(0);
-                return path;
+                return Arrays.asList((Shape) path);
+            }
+            else if (flash.getAperture() instanceof ApertureMacro)
+            {
+                ArrayList<Shape> list = new ArrayList<>();
+                ApertureMacro macro = (ApertureMacro) flash.getAperture();
+                for (MacroPrimitive p : macro.getPrimitives())
+                {
+                    if (p instanceof MacroCenterLine)
+                    {
+                        MacroCenterLine centerLine = (MacroCenterLine) p;
+                        Point from = centerLine.getFrom().add(flash.getPoint());
+                        Point to = centerLine.getTo().add(flash.getPoint());
+                        Line line = new Line(from.getX().doubleValue(), from.getY().doubleValue(),
+                                to.getX().doubleValue(), to.getY().doubleValue());
+                        line.setStrokeWidth(centerLine.getHeight().doubleValue());
+                        line.setStrokeLineCap(StrokeLineCap.BUTT);
+                        list.add(line);
+                    }
+                    else if (p instanceof MacroVectorLine)
+                    {
+                        MacroVectorLine vectorLine = (MacroVectorLine) p;
+                        Point from = vectorLine.getTranslatedStart().add(flash.getPoint());
+                        Point to = vectorLine.getTranslatedEnd().add(flash.getPoint());
+                        Line line = new Line(from.getX().doubleValue(), from.getY().doubleValue(),
+                                to.getX().doubleValue(), to.getY().doubleValue());
+                        line.setStrokeLineCap(StrokeLineCap.BUTT);
+                        line.setStrokeWidth(vectorLine.getWidth().doubleValue());
+                        list.add(line);
+                    }
+                    else if (p instanceof MacroCircle)
+                    {
+                        MacroCircle circle = (MacroCircle) p;
+                        double d = circle.getDiameter().doubleValue();
+                        double r = d / 2;
+                        Point point = circle.getCenter().add(flash.getPoint());
+
+                        Circle c = new Circle(point.getX().doubleValue(), point.getY().doubleValue(),
+                                circle.getDiameter().doubleValue() / 2);
+                        c.setStrokeWidth(0);
+                        list.add(c);
+                    }
+                    else if (p instanceof MacroOutline)
+                    {
+                        MacroOutline outline = (MacroOutline) p;
+                        double x = flash.getX().doubleValue();
+                        double y = flash.getY().doubleValue();
+
+                        Polygon polygon = new Polygon();
+                        for (Point point : outline.getTranslatedPoints())
+                            polygon.getPoints().addAll(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
+                        polygon.setStrokeWidth(0);
+                        list.add(polygon);
+                    }
+                }
+                return list;
             }
         }
         return null;
@@ -171,9 +230,14 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
         {
             for (GerberPrimitive primitive : primitives)
             {
-                Shape shape = getShapeForPrimitive(primitive);
-                shape.getStyleClass().add(style);
-                list.add(shape);
+                for (Shape shape : getShapeForPrimitive(primitive))
+                {
+                    if (shape != null)
+                    {
+                        shape.getStyleClass().add(style);
+                        list.add(shape);
+                    }
+                }
             }
         }
 

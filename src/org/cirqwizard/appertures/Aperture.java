@@ -49,8 +49,6 @@ public abstract class Aperture
 
     public abstract Aperture rotate(boolean clockwise);
 
-    public abstract void render(java.awt.Graphics2D g, int x, int y, double scale);
-
     public abstract boolean isVisible();
 
     public abstract RealNumber getWidth(RealNumber angle);

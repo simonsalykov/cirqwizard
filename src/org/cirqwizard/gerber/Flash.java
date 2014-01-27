@@ -44,11 +44,6 @@ public class Flash extends GerberPrimitive
         return point.getY();
     }
 
-    public void render(java.awt.Graphics2D g, double scale)
-    {
-        aperture.render(g, (int) (point.getX().doubleValue() * scale), (int) (point.getY().doubleValue() * scale), scale);
-    }
-
     @Override
     public void rotate(boolean clockwise)
     {
