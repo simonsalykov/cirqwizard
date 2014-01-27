@@ -55,14 +55,6 @@ public class RectangularAperture extends Aperture
     }
 
     @Override
-    public void render(java.awt.Graphics2D g, int x, int y, double scale)
-    {
-        int width = (int)(dimensions[0].doubleValue() * scale);
-        int height = (int) (dimensions[1].doubleValue() * scale);
-        g.fillRect(x - width / 2, y - height / 2, width, height);
-    }
-
-    @Override
     public boolean isVisible()
     {
         return dimensions[0].greaterThan(0) && dimensions[1].greaterThan(0);

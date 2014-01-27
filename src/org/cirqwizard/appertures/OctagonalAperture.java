@@ -53,16 +53,6 @@ public class OctagonalAperture extends Aperture
     }
 
     @Override
-    public void render(Graphics2D g, int x, int y, double scale)
-    {
-        int edgeOffset = (int) (diameter.doubleValue() * (Math.pow(2, 0.5) - 1) / 2);
-        int centerOffset = (int) (diameter.doubleValue() * 0.5);
-        int xPoints[] = {centerOffset + x, edgeOffset + x, -edgeOffset + x, -centerOffset + x, -centerOffset + x, -edgeOffset + x, edgeOffset + x, centerOffset + x};
-        int yPoints[] = {edgeOffset + y, centerOffset + y, centerOffset + y, edgeOffset + y, -edgeOffset + y, -centerOffset + y, -centerOffset + y, -edgeOffset + y};
-        g.fillPolygon(xPoints, yPoints, xPoints.length);
-    }
-
-    @Override
     public boolean isVisible()
     {
         return diameter.greaterThan(0);

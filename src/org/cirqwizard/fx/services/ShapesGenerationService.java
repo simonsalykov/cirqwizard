@@ -15,7 +15,11 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.services;
 
 import org.cirqwizard.appertures.*;
+import org.cirqwizard.appertures.macro.ApertureMacro;
+import org.cirqwizard.appertures.macro.MacroCenterLine;
+import org.cirqwizard.appertures.macro.MacroPrimitive;
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
@@ -149,6 +153,26 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                 path.setStrokeWidth(0);
                 return path;
             }
+            else if (flash.getAperture() instanceof ApertureMacro)
+            {
+                ApertureMacro macro = new ApertureMacro();
+                for (MacroPrimitive p : macro.getPrimitives())
+                {
+                    if (p instanceof MacroCenterLine)
+                    {
+                        MacroCenterLine centerLine = (MacroCenterLine) p;
+                        Point halfWidth = new Point(centerLine.getWidth().divide(2), new RealNumber(0));
+                        Point from = centerLine.getCenter().subtract(halfWidth).add(flash.getPoint());
+                        Point to = centerLine.getCenter().add(halfWidth).add(flash.getPoint());
+                        System.out.println("@@ center line from + " + from + " to " + to);
+                        Line line = new Line(from.getX().doubleValue(), from.getY().doubleValue(),
+                                to.getX().doubleValue(), to.getY().doubleValue());
+                        line.setStrokeWidth(centerLine.getHeight().doubleValue());
+                        line.setStrokeLineCap(StrokeLineCap.SQUARE);
+                        return line;
+                    }
+                }
+            }
         }
         return null;
     }
@@ -172,8 +196,11 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             for (GerberPrimitive primitive : primitives)
             {
                 Shape shape = getShapeForPrimitive(primitive);
-                shape.getStyleClass().add(style);
-                list.add(shape);
+                if (shape != null)
+                {
+                    shape.getStyleClass().add(style);
+                    list.add(shape);
+                }
             }
         }
 

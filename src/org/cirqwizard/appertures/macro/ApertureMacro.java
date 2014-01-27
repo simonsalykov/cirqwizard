@@ -11,56 +11,44 @@ This program is free software: you can redistribute it and/or modify
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+package org.cirqwizard.appertures.macro;
 
-package org.cirqwizard.appertures;
-
+import org.cirqwizard.appertures.Aperture;
 import org.cirqwizard.math.RealNumber;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class CircularAperture extends Aperture
+public class ApertureMacro extends Aperture
 {
-    private RealNumber diameter;
+    private ArrayList<MacroPrimitive> primitives = new ArrayList<>();
 
-    public CircularAperture(RealNumber diameter)
+    public void addPrimitive(MacroPrimitive primitive)
     {
-        super();
-        this.diameter = diameter;
+        primitives.add(primitive);
     }
 
-    public CircularAperture(RealNumber diameter, RealNumber holeDiameter)
+    public List<MacroPrimitive> getPrimitives()
     {
-        super(holeDiameter);
-        this.diameter = diameter;
+        return primitives;
     }
 
-    public CircularAperture(RealNumber diameter, RealNumber holeWidth, RealNumber holeHeight)
-    {
-        super(holeWidth, holeHeight);
-        this.diameter = diameter;
-    }
 
-    public RealNumber getDiameter()
+    @Override
+    public Aperture rotate(boolean clockwise)
     {
-        return diameter;
+        return null;
     }
 
     @Override
     public boolean isVisible()
     {
-        return diameter.greaterThan(0);
+        return true;
     }
 
     @Override
     public RealNumber getWidth(RealNumber angle)
     {
-        return diameter;
+        return null;
     }
-
-    @Override
-    public Aperture rotate(boolean clockwise)
-    {
-        return this;
-    }
-
-
 }

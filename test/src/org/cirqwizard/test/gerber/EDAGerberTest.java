@@ -31,10 +31,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-public class GerberParserTest
+public class EDAGerberTest
 {
 
     @Test
@@ -429,6 +428,5 @@ public class GerberParserTest
         assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[0]);
         assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
         assertEquals(new Point(new RealNumber("17.844"), new RealNumber("25.464")), f.getPoint());
-
     }
 }

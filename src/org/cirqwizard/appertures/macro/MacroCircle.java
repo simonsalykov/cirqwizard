@@ -12,31 +12,20 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.appertures;
+package org.cirqwizard.appertures.macro;
 
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.math.RealNumber;
 
-
-public class CircularAperture extends Aperture
+public class MacroCircle extends MacroPrimitive
 {
     private RealNumber diameter;
+    private Point center;
 
-    public CircularAperture(RealNumber diameter)
+    public MacroCircle(RealNumber diameter, Point center)
     {
-        super();
         this.diameter = diameter;
-    }
-
-    public CircularAperture(RealNumber diameter, RealNumber holeDiameter)
-    {
-        super(holeDiameter);
-        this.diameter = diameter;
-    }
-
-    public CircularAperture(RealNumber diameter, RealNumber holeWidth, RealNumber holeHeight)
-    {
-        super(holeWidth, holeHeight);
-        this.diameter = diameter;
+        this.center = center;
     }
 
     public RealNumber getDiameter()
@@ -44,23 +33,8 @@ public class CircularAperture extends Aperture
         return diameter;
     }
 
-    @Override
-    public boolean isVisible()
+    public Point getCenter()
     {
-        return diameter.greaterThan(0);
+        return center;
     }
-
-    @Override
-    public RealNumber getWidth(RealNumber angle)
-    {
-        return diameter;
-    }
-
-    @Override
-    public Aperture rotate(boolean clockwise)
-    {
-        return this;
-    }
-
-
 }
