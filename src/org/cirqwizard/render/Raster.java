@@ -14,20 +14,24 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.render;
 
-import org.cirqwizard.appertures.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import org.cirqwizard.appertures.CircularAperture;
+import org.cirqwizard.appertures.OctagonalAperture;
+import org.cirqwizard.appertures.OvalAperture;
+import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.gerber.Region;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.Toolpath;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.*;
-import org.cirqwizard.geom.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.awt.image.IndexColorModel;
@@ -82,6 +86,15 @@ public class Raster
             CircularAperture aperture = (CircularAperture) primitive.getAperture();
             if (!radii.contains(aperture.getDiameter().divide(2).multiply(resolution)))
                 radii.add(aperture.getDiameter().divide(2).multiply(resolution));
+        }
+        else if (primitive.getAperture() instanceof ApertureMacro)
+        {
+            for (MacroPrimitive p : ((ApertureMacro) primitive.getAperture()).getPrimitives())
+            {
+                if (p instanceof MacroCircle)
+                    if (!radii.contains(((MacroCircle) p).getDiameter().divide(2).multiply(resolution)))
+                        radii.add(((MacroCircle) p).getDiameter().divide(2).multiply(resolution));
+            }
         }
     }
 
@@ -293,6 +306,53 @@ public class Raster
                 g.fill(new Ellipse2D.Double(flashX - xOffset - d / 2, flashY + yOffset - d / 2, d, d));
                 g.fill(new Ellipse2D.Double(flashX + xOffset - d / 2, flashY - yOffset - d / 2, d, d));
                 g.fill(new Rectangle2D.Double(rectX, rectY, rectWidth, rectHeight));
+            }
+            else if (flash.getAperture() instanceof ApertureMacro)
+            {
+                ApertureMacro macro = (ApertureMacro) flash.getAperture();
+                for (MacroPrimitive p : macro.getPrimitives())
+                {
+                    if (p instanceof MacroCenterLine)
+                    {
+                        MacroCenterLine centerLine = (MacroCenterLine) p;
+                        Point from = centerLine.getFrom().add(flash.getPoint());
+                        Point to = centerLine.getTo().add(flash.getPoint());
+                        g.setStroke(new BasicStroke((float)centerLine.getHeight().doubleValue(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+                        g.draw(new Line2D.Float((float)from.getX().doubleValue(), (float) from.getY().doubleValue(), (float) to.getX().doubleValue(), (float) to.getY().doubleValue()));
+                    }
+                    else if (p instanceof MacroVectorLine)
+                    {
+                        MacroVectorLine vectorLine = (MacroVectorLine) p;
+                        Point from = vectorLine.getTranslatedStart().add(flash.getPoint());
+                        Point to = vectorLine.getTranslatedEnd().add(flash.getPoint());
+                        g.setStroke(new BasicStroke((float) vectorLine.getWidth().doubleValue(), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+                        g.draw(new Line2D.Float((float) from.getX().doubleValue(), (float) from.getY().doubleValue(), (float) to.getX().doubleValue(), (float) to.getY().doubleValue()));
+                    }
+                    else if (p instanceof MacroCircle)
+                    {
+                        MacroCircle circle = (MacroCircle) p;
+                        double d = circle.getDiameter().doubleValue();
+                        double r = d / 2;
+                        Point point = circle.getCenter().add(flash.getPoint());
+                        g.fill(new Ellipse2D.Double(point.getX().doubleValue() - r, point.getY().doubleValue() - r, d, d));
+                    }
+                    else if (p instanceof MacroOutline)
+                    {
+                        MacroOutline outline = (MacroOutline) p;
+                        double x = flash.getX().doubleValue();
+                        double y = flash.getY().doubleValue();
+
+                        Path2D polygon = new GeneralPath();
+                        Point point = outline.getPoints().get(0);
+                        polygon.moveTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
+                        for (int i = 1; i < outline.getPoints().size(); i++)
+                        {
+                            point = outline.getPoints().get(i);
+                            polygon.lineTo(point.getX().doubleValue() + x, point.getY().doubleValue() + y);
+                        }
+                        g.fill(polygon);
+                    }
+                }
             }
         }
     }
