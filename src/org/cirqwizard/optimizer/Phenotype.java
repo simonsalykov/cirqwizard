@@ -30,9 +30,9 @@ public class Phenotype
     private double clearance;
     private double safetyHeight;
 
-    private final static double xRapids = (double)Settings.getXRapids() / Settings.RESOLUTION;
-    private final static double yRapids = (double)Settings.getYRapids() / Settings.RESOLUTION;
-    private final static double zRapids = (double)Settings.getZRapids() / Settings.RESOLUTION;
+    private final static double xRapids = (double)Settings.getXRapids() / Settings.RESOLUTION / 60;
+    private final static double yRapids = (double)Settings.getYRapids() / Settings.RESOLUTION / 60;
+    private final static double zRapids = (double)Settings.getZRapids() / Settings.RESOLUTION / 60;
     private final static double xRapidAcceleration = (double)Settings.getXRapidAcceleration() / Settings.RESOLUTION;
     private final static double yRapidAcceleration = (double)Settings.getYRapidAcceleration() / Settings.RESOLUTION;
     private final static double zRapidAcceleration = (double)Settings.getZRapidAcceleration() / Settings.RESOLUTION;
@@ -41,8 +41,8 @@ public class Phenotype
     public Phenotype(List<Toolpath> toolpaths, int feed, int zFeed, int clearance, int safetyHeight)
     {
         this.toolpaths = toolpaths;
-        this.feed = (double)feed / Settings.RESOLUTION;
-        this.zFeed = (double) zFeed / Settings.RESOLUTION;
+        this.feed = (double)feed / Settings.RESOLUTION / 60;
+        this.zFeed = (double) zFeed / Settings.RESOLUTION / 60;
         this.clearance = (double)clearance / Settings.RESOLUTION;
         this.safetyHeight = (double) safetyHeight / Settings.RESOLUTION;
     }
@@ -71,9 +71,9 @@ public class Phenotype
                         double yRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getY() - l.getFrom().getY()) / Settings.RESOLUTION,
                                 yRapids, yRapidAcceleration);
                         totalTime += retractTime + Math.max(xRapidTime, yRapidTime) + descentToSafetyHeight + finalDescent;
-
                     }
                     totalTime += calculatePathDuration(l.length() / 1000, feed, feedAcceleration);
+                    currentLocation = l.getTo();
                 }
             }
         }
@@ -84,11 +84,11 @@ public class Phenotype
     private double calculatePathDuration(double length, double speed, double acceleration)
     {
         double accelerationDistance = speed * speed / (acceleration * 2);
-        if (accelerationDistance * 2 <= length)
+        if (accelerationDistance * 2 < length)
         {
             return (length - accelerationDistance * 2) / speed + speed / acceleration * 2;
         }
-        double topSpeed = Math.sqrt(acceleration * 2 * accelerationDistance);
+        double topSpeed = Math.sqrt(acceleration * 2 * (length / 2));
         return (topSpeed / acceleration) * 2;
     }
 }
