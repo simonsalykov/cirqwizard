@@ -55,7 +55,9 @@ public class LinearShape extends GerberPrimitive
             line.setFrom(new Point(-line.getFrom().getY(), line.getFrom().getX()));
             line.setTo(new Point(-line.getTo().getY(), line.getTo().getX()));
         }
-        aperture = aperture.rotate(clockwise);
+
+        if (aperture != null)
+            aperture = aperture.rotate(clockwise);
     }
 
     @Override

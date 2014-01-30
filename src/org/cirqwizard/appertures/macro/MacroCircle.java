@@ -12,38 +12,41 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.toolpath;
+package org.cirqwizard.appertures.macro;
 
-import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.math.RealNumber;
 
-
-public class DrillPoint extends CuttingToolpath
+public class MacroCircle extends MacroPrimitive
 {
-    private Point point;
+    private int diameter;
+    private Point center;
 
-    public DrillPoint(Point point, int diameter)
+    public MacroCircle(int diameter, Point center)
     {
-        super((diameter + 50) / 100 * 100);    // Rounding to tenth of millimeter
-        this.point = point;
+        this(diameter, center, 0);
+    }
+
+    public MacroCircle(int diameter, Point center, int rotationAngle)
+    {
+        super(rotationAngle);
+        this.diameter = diameter;
+        this.center = center;
+    }
+
+    public int getDiameter()
+    {
+        return diameter;
+    }
+
+    public Point getCenter()
+    {
+        return translate(center);
     }
 
     @Override
-    public Curve getCurve()
+    public MacroPrimitive clone()
     {
-        return null;
+        return new MacroCircle(diameter, center, getRotationAngle());
     }
-
-    public Point getPoint()
-    {
-        return point;
-    }
-
-    public void setPoint(Point point)
-    {
-        this.point = point;
-    }
-
-
-
 }

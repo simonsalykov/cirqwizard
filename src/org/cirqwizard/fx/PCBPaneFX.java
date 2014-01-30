@@ -14,20 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.PolygonalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
-import org.cirqwizard.geom.Arc;
-import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.toolpath.CircularToolpath;
-import org.cirqwizard.toolpath.DrillPoint;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -37,17 +23,30 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Transform;
+import org.cirqwizard.appertures.*;
+import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.Flash;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.LinearShape;
+import org.cirqwizard.gerber.Region;
+import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.toolpath.CircularToolpath;
+import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.toolpath.LinearToolpath;
+import org.cirqwizard.toolpath.Toolpath;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class PCBPaneFX extends Region
+public class PCBPaneFX extends javafx.scene.layout.Region
 {
     private static final double DEFAULT_SCALE = 0.005;
 
@@ -166,7 +165,7 @@ public class PCBPaneFX extends Region
 
     private void renderPrimitive(GraphicsContext g, GerberPrimitive primitive)
     {
-        if (!primitive.getAperture().isVisible())
+        if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
             return;
 
         g.setStroke(gerberColor);
@@ -178,6 +177,18 @@ public class PCBPaneFX extends Region
             g.setLineWidth(linearShape.getAperture().getWidth(0));
             g.strokeLine(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY());
+        }
+        else if (primitive instanceof Region)
+        {
+            g.beginPath();
+            Region region = (Region) primitive;
+            Point p = region.getSegments().get(0).getFrom();
+            g.moveTo(p.getX(), p.getY());
+            for (LinearShape segment : region.getSegments())
+                g.lineTo(segment.getTo().getX(), segment.getTo().getY());
+
+            g.closePath();
+            g.fill();
         }
         else if (primitive instanceof Flash)
         {
@@ -215,18 +226,76 @@ public class PCBPaneFX extends Region
                 g.closePath();
                 g.fill();
             }
-            else if (flash.getAperture() instanceof PolygonalAperture)
+            else if (flash.getAperture() instanceof OvalAperture)
             {
-                PolygonalAperture aperture = (PolygonalAperture)flash.getAperture();
-                ArrayList<Point> points = aperture.getPoints();
+                OvalAperture aperture = (OvalAperture)flash.getAperture();
+                double flashX = flash.getX();
+                double flashY = flash.getY();
+                double width = aperture.getWidth();
+                double height = aperture.getHeight();
+                double d = Math.min(width, height);
+                double l = aperture.isHorizontal() ? width - height : height - width;
+                double xOffset = aperture.isHorizontal() ? l / 2 : 0;
+                double yOffset = aperture.isHorizontal() ? 0 : l / 2;
+                g.fillOval(flashX + xOffset - d / 2, flashY + yOffset - d / 2, d, d);
+                g.fillOval(flashX - xOffset - d / 2, flashY - yOffset - d / 2, d, d);
 
-                g.beginPath();
-                g.moveTo(points.get(0).getX() + flash.getX(), points.get(0).getY() + flash.getY());
-                for (int i = 1; i < points.size(); i++)
-                    g.lineTo(points.get(i).getX() + flash.getX(), points.get(i).getY() + flash.getY());
+                double rectX = aperture.isHorizontal() ? flashX - l / 2 : flashX - width / 2;
+                double rectY = aperture.isHorizontal() ? flashY - height / 2 : flashY - l / 2;
+                double rectWidth =  aperture.isHorizontal() ? l : width;
+                double rectHeight =  aperture.isHorizontal() ? height : l;
+                g.fillRect(rectX, rectY, rectWidth, rectHeight);
+            }
+            else if (flash.getAperture() instanceof ApertureMacro)
+            {
+                ApertureMacro macro = (ApertureMacro) flash.getAperture();
+                for (MacroPrimitive p : macro.getPrimitives())
+                {
+                    if (p instanceof MacroCenterLine)
+                    {
+                        MacroCenterLine centerLine = (MacroCenterLine) p;
+                        Point from = centerLine.getFrom().add(flash.getPoint());
+                        Point to = centerLine.getTo().add(flash.getPoint());
+                        g.setLineCap(StrokeLineCap.BUTT);
+                        g.setLineWidth(centerLine.getHeight());
+                        g.strokeLine(from.getX(), from.getY(), to.getX(), to.getY());
+                    }
+                    else if (p instanceof MacroVectorLine)
+                    {
+                        MacroVectorLine vectorLine = (MacroVectorLine) p;
+                        Point from = vectorLine.getTranslatedStart().add(flash.getPoint());
+                        Point to = vectorLine.getTranslatedEnd().add(flash.getPoint());
+                        g.setLineCap(StrokeLineCap.BUTT);
+                        g.setLineWidth(vectorLine.getWidth());
+                        g.strokeLine(from.getX(), from.getY(), to.getX(), to.getY());
+                    }
+                    else if (p instanceof MacroCircle)
+                    {
+                        MacroCircle circle = (MacroCircle) p;
+                        double d = circle.getDiameter();
+                        double r = d / 2;
+                        Point point = circle.getCenter().add(flash.getPoint());
+                        g.fillOval(point.getX() - r, point.getY() - r, d, d);
 
-                g.closePath();
-                g.fill();
+                    }
+                    else if (p instanceof MacroOutline)
+                    {
+                        MacroOutline outline = (MacroOutline) p;
+                        double x = flash.getX();
+                        double y = flash.getY();
+
+                        g.beginPath();
+                        Point point = outline.getPoints().get(0);
+                        g.moveTo(point.getX() + x, point.getY() + y);
+                        for (int i = 1; i < outline.getTranslatedPoints().size(); i++)
+                        {
+                            point = outline.getPoints().get(i);
+                            g.lineTo(point.getX() + x, point.getY() + y);
+                        }
+                        g.closePath();
+                        g.fill();
+                    }
+                }
             }
         }
     }

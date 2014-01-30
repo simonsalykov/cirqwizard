@@ -12,30 +12,23 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.appertures.macro;
 
+import org.cirqwizard.geom.Point;
+import org.cirqwizard.math.RealNumber;
 
-public enum PCBSize
+public class MacroCenterLine extends MacroPrimitive
 {
-    Small(0, 75000, 100000),
-    Large(1, 100000, 160000);
-
-    private int storeValue;
     private int width;
     private int height;
+    private Point center;
 
-    public static final int PCB_SIZE_CHECK_TOLERANCE = 100;
-
-    private PCBSize(int storeValue, int width, int height)
+    public MacroCenterLine(int width, int height, Point center, int rotationAngle)
     {
-        this.storeValue = storeValue;
+        super(rotationAngle);
         this.width = width;
         this.height = height;
-    }
-
-    public int getStoreValue()
-    {
-        return storeValue;
+        this.center = center;
     }
 
     public int getWidth()
@@ -48,19 +41,24 @@ public enum PCBSize
         return height;
     }
 
-    public static PCBSize valueOf(int i)
+    public Point getCenter()
     {
-        switch (i)
-        {
-            case 0: return Small;
-            case 1: return Large;
-            default:
-                return null;
-        }
+        return center;
     }
 
-    public boolean checkFit(int width, int height)
+    public Point getFrom()
     {
-        return ((width - getWidth()) <= PCB_SIZE_CHECK_TOLERANCE) && ((height - getHeight()) <= PCB_SIZE_CHECK_TOLERANCE);
+        return translate(center.subtract(new Point(width / 2, 0)));
+    }
+
+    public Point getTo()
+    {
+        return translate(center.add(new Point(width / 2, 0)));
+    }
+
+    @Override
+    public MacroPrimitive clone()
+    {
+        return new MacroCenterLine(width, height, center, getRotationAngle());
     }
 }

@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.scene.control.CheckBox;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -40,6 +41,7 @@ public class XYOffsetsController extends SceneController implements Initializabl
     @FXML private Label offsetErrorLabel;
 
     @FXML private Button continueButton;
+    @FXML private CheckBox ignoreCheckBox;
 
 
     private final static int REFERENCE_PIN_POSITION_ON_LAMINATE = 5000;
@@ -83,6 +85,14 @@ public class XYOffsetsController extends SceneController implements Initializabl
                 getMainApplication().getContext().setG54Y(number2 == null ? null : number2.intValue());
             }
         });
+        ignoreCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
+            {
+                checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y());
+            }
+        });
     }
 
     @Override
@@ -117,7 +127,11 @@ public class XYOffsetsController extends SceneController implements Initializabl
 
     public void updateComponents()
     {
-        continueButton.setDisable(x.getRealNumberText() == null || y.getRealNumberText() == null);
+        if (x.getRealNumberText() == null || y.getRealNumberText() == null)
+            continueButton.setDisable(true);
+        else
+            checkOffsetLimit(x.getIntegerValue(), y.getIntegerValue());
+
         goButton.setDisable(getMainApplication().getCNCController() == null ||
                 x.getRealNumberText() == null || y.getRealNumberText() == null);
         moveZButton.setDisable(getMainApplication().getCNCController() == null || z.getRealNumberText() == null);

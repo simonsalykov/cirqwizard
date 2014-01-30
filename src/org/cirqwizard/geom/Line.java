@@ -14,10 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.geom;
 
-import org.cirqwizard.math.MathUtil;
-import org.cirqwizard.math.RealNumber;
-
-
 public class Line extends Curve
 {
     private Double angleToX = null;
@@ -49,22 +45,6 @@ public class Line extends Curve
     public double length()
     {
         return from.distanceTo(to);
-    }
-
-    public static Point intersectionPoint(Line line1, Line line2)
-    {
-        double a1 = line1.getTo().getX() - line1.getFrom().getX();
-        double b1 = line2.getFrom().getX() - line2.getTo().getX();
-        double c1 = line2.getFrom().getX() - line1.getFrom().getX();
-
-        double a2 = line1.getTo().getY() - line1.getFrom().getY();
-        double b2 = line2.getFrom().getY() - line2.getTo().getY();
-        double c2 = line2.getFrom().getY() - line1.getFrom().getY();
-
-        double t = (b1 * c2 - b2 * c1) / (a2 * b1 - a1 * b2);
-
-        return new Point((int)(line1.getFrom().getX() + (t * (line1.getTo().getX() - line1.getFrom().getX()))),
-                (int)(line1.getFrom().getY() + (t * (line1.getTo().getY() - line1.getFrom().getY()))));
     }
 
     @Override
