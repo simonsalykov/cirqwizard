@@ -19,16 +19,15 @@ import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.settings.Settings;
-import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.List;
 import java.util.Random;
 
 public class Phenotype
 {
+    private final static int COMPARISON_THRESHOLD = 10;
+
     private int[] genes;
     private Double fitness = null;
 
@@ -61,7 +60,8 @@ public class Phenotype
             if (t instanceof CuttingToolpath)
             {
                 Curve curve = ((CuttingToolpath) t).getCurve();
-                if (!curve.getFrom().equals(currentLocation))
+                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
+                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
                 {
                     rapidsCount++;
                     rapidsDistance += Math.max(currentLocation.getX() - curve.getFrom().getX(),
@@ -74,11 +74,34 @@ public class Phenotype
         final double countWeight = 2.0;
         final double distanceWeight = 0.000_05;
 
+//        fitness = rapidsCount;
         fitness = countWeight * rapidsCount + distanceWeight * rapidsDistance;
         return fitness;
     }
 
-    public double calculateTotalDuration(Environment env)
+    public int calculateRapidsCount(Environment env, int precision)
+    {
+        Point currentLocation = new Point(0, 0);
+
+        int rapidsCount = 0;
+
+        for (int i : genes)
+        {
+            Toolpath t = env.getToolpaths().get(i);
+            if (t instanceof CuttingToolpath)
+            {
+                Curve curve = ((CuttingToolpath) t).getCurve();
+                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
+                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
+                    rapidsCount++;
+                currentLocation = curve.getTo();
+            }
+        }
+
+        return rapidsCount;
+    }
+
+    public double calculateTotalDuration(Environment env, boolean includeFeed)
     {
         Point currentLocation = new Point(0, 0);
         double totalTime = 0;
@@ -93,7 +116,8 @@ public class Phenotype
             if (t instanceof CuttingToolpath)
             {
                 Curve curve = ((CuttingToolpath) t).getCurve();
-                if (!curve.getFrom().equals(currentLocation))
+                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
+                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
                 {
                     double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / Settings.RESOLUTION,
                             xRapids, xRapidAcceleration);
@@ -102,21 +126,23 @@ public class Phenotype
                     totalTime += retractTime + Math.max(xRapidTime, yRapidTime) + descentToSafetyHeight + finalDescent;
                 }
 
-                if (curve instanceof Line)
+                if (includeFeed)
                 {
-                    Line l = (Line) curve;
-                    totalTime += calculatePathDuration(l.length() / Settings.RESOLUTION, env.getFeed(), feedAcceleration);
-                }
-                else if (curve instanceof Arc)
-                {
-                    Arc arc = (Arc) curve;
-                    totalTime += calculatePathDuration(arc.getCircumreference() / Settings.RESOLUTION, arcFeed, feedAcceleration);
+                    if (curve instanceof Line)
+                    {
+                        Line l = (Line) curve;
+                        totalTime += calculatePathDuration(l.length() / Settings.RESOLUTION, env.getFeed(), feedAcceleration);
+                    }
+                    else if (curve instanceof Arc)
+                    {
+                        Arc arc = (Arc) curve;
+                        totalTime += calculatePathDuration(arc.getCircumreference() / Settings.RESOLUTION, arcFeed, feedAcceleration);
+                    }
                 }
                 currentLocation = curve.getTo();
             }
         }
 
-        fitness = totalTime;
         return totalTime;
     }
 

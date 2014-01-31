@@ -25,10 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 public class Optimizer
 {
-    private final static int POPULATION_SIZE = 5000;
+    private final static int POPULATION_SIZE = 350;
     private final static int TOURNAMENT_SIZE = 7;
-    private final static double MUTATION_PROBABILITY = 0.001;
-    private final static int MUTATION_GENES_COUNT = 20;
+    private final static double MUTATION_PROBABILITY = 0.05;
     private final static int SEED_COUNT = 1;
     private final static double SEED_PROBABILITY = 0.01;
 
@@ -47,18 +46,30 @@ public class Optimizer
     {
         init();
 
-        for (int i = 0; i < 10000; i++)
+        long t = 0;
+        for (int i = 0; i < 1000000; i++)
         {
-            System.out.println("Generation #" + i);
-            long t = System.currentTimeMillis();
+            boolean debug = i % 100 == 0;
+            if (debug)
+            {
+                System.out.println("Generation #" + i);
+                t = System.currentTimeMillis();
+            }
             breed();
-            t = System.currentTimeMillis() - t;
-            System.out.println("Breeding time: " + t);
-            t = System.currentTimeMillis();
+            if (debug)
+            {
+                t = System.currentTimeMillis() - t;
+                System.out.println("Breeding time: " + t);
+                t = System.currentTimeMillis();
+            }
             Phenotype mostFit = currentGeneration.getBestFitness(environment);
-            t = System.currentTimeMillis() - t ;
-            System.out.println("Best calculation: " + t);
-            System.out.println("Best random: " + mostFit.calculateFitness(environment) + " / " +mostFit.calculateTotalDuration(environment));
+            if (debug)
+            {
+                t = System.currentTimeMillis() - t ;
+                System.out.println("Best generation: " + mostFit.calculateFitness(environment) + " / " +
+                        mostFit.calculateTotalDuration(environment, false) + " / " + mostFit.calculateTotalDuration(environment, true) + " @ " +
+                        mostFit.calculateRapidsCount(environment, 1));
+            }
         }
     }
 
@@ -69,7 +80,8 @@ public class Optimizer
             originalGenes[i] = i;
         Phenotype original = new Phenotype(originalGenes);
         System.out.println("Original phenotype fitness: " + original.calculateFitness(environment) + " / " +
-                original.calculateTotalDuration(environment));
+                original.calculateTotalDuration(environment, false) + " / " + original.calculateTotalDuration(environment, true) + " @ " +
+                original.calculateRapidsCount(environment, 1));
         currentGeneration = new Generation();
         long t = System.currentTimeMillis();
         currentGeneration.populate(toolpaths.size(), POPULATION_SIZE);
@@ -80,7 +92,9 @@ public class Optimizer
         Phenotype mostFit = currentGeneration.getBestFitness(environment);
         t = System.currentTimeMillis() - t ;
         System.out.println("Best random calculation: " + t);
-        System.out.println("Best random: " + mostFit.calculateFitness(environment) + " / " +mostFit.calculateTotalDuration(environment));
+        System.out.println("Best random: " + mostFit.calculateFitness(environment) + " / " +
+                mostFit.calculateTotalDuration(environment, false) + " / " + mostFit.calculateTotalDuration(environment, true) + " @ " +
+                mostFit.calculateRapidsCount(environment, 1));
 
     }
 

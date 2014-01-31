@@ -54,7 +54,7 @@ public class Point
 
     public Point round()
     {
-        return new Point(x / 10 * 10, y / 10 * 10);
+        return new Point((x + 5) / 10 * 10, (y + 5) / 10 * 10);
     }
 
     @Override

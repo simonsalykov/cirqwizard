@@ -1,3 +1,17 @@
+/*
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 package org.cirqwizard.render;
 
 import org.cirqwizard.geom.Arc;
@@ -13,14 +27,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: simon
- * Date: 08/11/13
- * Time: 23:01
- */
 public class ToolpathMerger
 {
+    private static final double MERGE_THRESHOLD = 20.0;
+    private static final double ARC_CENTER_THRESHOLD = 50.0;
+
     private List<Toolpath> toolpaths;
 
     public ToolpathMerger(List<Toolpath> toolpaths)
@@ -58,19 +69,19 @@ public class ToolpathMerger
                         continue;
 
                     boolean l1Inversed = false;
-                    if (!c1.getTo().equals(p, 0.02))
+                    if (!c1.getTo().equals(p, MERGE_THRESHOLD))
                     {
                         c1 = c1.reverse();
                         l1Inversed = true;
                     }
-                    if (!c2.getFrom().equals(p, 0.02))
+                    if (!c2.getFrom().equals(p, MERGE_THRESHOLD))
                         c2 = c2.reverse();
 
                     if (t1 instanceof LinearToolpath && t2 instanceof LinearToolpath)
                     {
                         Line l1 = (Line) c1;
                         Line l2 = (Line) c2;
-                        if (l2.getFrom().equals(l1.getTo(), 0.02))
+                        if (l2.getFrom().equals(l1.getTo(), MERGE_THRESHOLD))
                         {
                             if (l1.getFrom().equals(l2.getTo())) // Removing duplicate segments
                             {
@@ -107,9 +118,10 @@ public class ToolpathMerger
                     {
                         Arc a1 = (Arc) c1;
                         Arc a2 = (Arc) c2;
-                        if (a1.getTo().equals(a2.getFrom(), 0.02) && a1.isClockwise() == a2.isClockwise())
+                        if (a1.getTo().equals(a2.getFrom(), MERGE_THRESHOLD) && a1.isClockwise() == a2.isClockwise())
                         {
-                            if (a1.getCenter().equals(a2.getCenter(), 0.05) && Math.abs(a1.getRadius() - a2.getRadius()) < 0.05)
+                            if (a1.getCenter().equals(a2.getCenter(), ARC_CENTER_THRESHOLD) &&
+                                    Math.abs(a1.getRadius() - a2.getRadius()) < ARC_CENTER_THRESHOLD)
                                 merge = true;
                         }
                     }
