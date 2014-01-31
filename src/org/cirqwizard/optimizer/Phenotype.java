@@ -29,10 +29,6 @@ import java.util.List;
 public class Phenotype
 {
     private List<Toolpath> toolpaths;
-    private double feed;
-    private double zFeed;
-    private double clearance;
-    private double safetyHeight;
 
     private final static double xRapids = (double)Settings.getXRapids() / Settings.RESOLUTION / 60;
     private final static double yRapids = (double)Settings.getYRapids() / Settings.RESOLUTION / 60;
@@ -43,23 +39,19 @@ public class Phenotype
     private final static double feedAcceleration = (double) Settings.getFeedAcceleration() / Settings.RESOLUTION;
     private final static double arcFeed = (double) Settings.getArcFeed() / Settings.RESOLUTION / 60;
 
-    public Phenotype(List<Toolpath> toolpaths, int feed, int zFeed, int clearance, int safetyHeight)
+    public Phenotype(List<Toolpath> toolpaths)
     {
         this.toolpaths = toolpaths;
-        this.feed = (double)feed / Settings.RESOLUTION / 60;
-        this.zFeed = (double) zFeed / Settings.RESOLUTION / 60;
-        this.clearance = (double)clearance / Settings.RESOLUTION;
-        this.safetyHeight = (double) safetyHeight / Settings.RESOLUTION;
     }
 
-    public double calculateFitness()
+    public double calculateFitness(Environment env)
     {
         Point currentLocation = new Point(0, 0);
         double totalTime = 0;
 
-        double retractTime = calculatePathDuration(clearance, zRapids, zRapidAcceleration);
-        double descentToSafetyHeight = calculatePathDuration(clearance - safetyHeight, zRapids, xRapidAcceleration);
-        double finalDescent = calculatePathDuration(safetyHeight, zFeed, feedAcceleration);
+        double retractTime = calculatePathDuration(env.getClearance(), zRapids, zRapidAcceleration);
+        double descentToSafetyHeight = calculatePathDuration(env.getClearance() - env.getSafetyHeight(), zRapids, xRapidAcceleration);
+        double finalDescent = calculatePathDuration(env.getSafetyHeight(), env.getZFeed(), feedAcceleration);
 
         for (Toolpath t : toolpaths)
         {
@@ -78,12 +70,12 @@ public class Phenotype
                 if (curve instanceof Line)
                 {
                     Line l = (Line) curve;
-                    totalTime += calculatePathDuration(l.length() / 1000, feed, feedAcceleration);
+                    totalTime += calculatePathDuration(l.length() / Settings.RESOLUTION, env.getFeed(), feedAcceleration);
                 }
                 else if (curve instanceof Arc)
                 {
                     Arc arc = (Arc) curve;
-                    totalTime += calculatePathDuration(arc.getCircumreference(), arcFeed, feedAcceleration);
+                    totalTime += calculatePathDuration(arc.getCircumreference() / Settings.RESOLUTION, arcFeed, feedAcceleration);
                 }
                 currentLocation = curve.getTo();
             }
@@ -96,9 +88,8 @@ public class Phenotype
     {
         double accelerationDistance = speed * speed / (acceleration * 2);
         if (accelerationDistance * 2 < length)
-        {
             return (length - accelerationDistance * 2) / speed + speed / acceleration * 2;
-        }
+
         double topSpeed = Math.sqrt(acceleration * 2 * (length / 2));
         return (topSpeed / acceleration) * 2;
     }

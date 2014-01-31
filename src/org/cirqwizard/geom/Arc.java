@@ -123,7 +123,7 @@ public class Arc extends Curve
 
     public int getCircumreference()
     {
-        return (int)(Math.PI * 2 * radius);
+        return (int)(getAngle() * radius);
     }
 
     @Override

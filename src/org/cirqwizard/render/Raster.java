@@ -156,7 +156,6 @@ public class Raster
         }
         catch (InterruptedException e)
         {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return mergeToolpaths(segments);
@@ -234,7 +233,6 @@ public class Raster
         g.clearRect(0, 0, width, height);
         g = window.createGraphics();
         g.transform(AffineTransform.getTranslateInstance(-lowerLeftCorner.x, -lowerLeftCorner.y));
-        g.transform(AffineTransform.getScaleInstance(Settings.RESOLUTION, Settings.RESOLUTION));
         for (GerberPrimitive primitive : primitives)
             renderPrimitive(g, primitive, inflation);
 

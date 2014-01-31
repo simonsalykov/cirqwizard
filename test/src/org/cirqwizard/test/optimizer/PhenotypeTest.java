@@ -15,7 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.test.optimizer;
 
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.optimizer.Environment;
 import org.cirqwizard.optimizer.Phenotype;
+import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 import org.junit.Test;
@@ -31,7 +33,7 @@ public class PhenotypeTest
     public void testStraigthLine()
     {
         Toolpath t = new LinearToolpath(0, new Point(0, 0), new Point(100_000, 0));
-        assertEquals(20.1, new Phenotype(Arrays.asList(t), 300_000, 200_000, 5_000, 2_000).calculateFitness(), 0.01);
+        assertEquals(20.1, new Phenotype(Arrays.asList(t)).calculateFitness(new Environment(5.0, 200.0 / 60, 5.0, 2.0)), 0.01);
     }
 
     @Test
@@ -39,7 +41,15 @@ public class PhenotypeTest
     {
         Toolpath t1 = new LinearToolpath(0, new Point(0, 0), new Point(100_000, 0));
         Toolpath t2 = new LinearToolpath(0, new Point(0, 0), new Point(100_000, 0));
-        assertEquals(46.095, new Phenotype(Arrays.asList(t1, t2), 300_000, 200_000, 5_000, 2_000).calculateFitness(), 0.001);
+        assertEquals(46.095, new Phenotype(Arrays.asList(t1, t2)).calculateFitness(new Environment(5.0, 200.0 / 60, 5.0, 2.0)), 0.001);
     }
+
+    @Test
+    public void testArc()
+    {
+        Toolpath t = new CircularToolpath(0, new Point(0, 0), new Point(0, 10000), new Point(0, 5000), 5000, true);
+        assertEquals(2.38, new Phenotype(Arrays.asList(t)).calculateFitness(new Environment(1000.0 / 60, 200.0 / 60, 5.0, 2.0)), 0.01);
+    }
+
 
 }
