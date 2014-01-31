@@ -83,7 +83,7 @@ public class TraceLayer extends Layer
         toolpaths = new ArrayList<>();
         toolpaths.addAll(raster.trace());
         Environment environment = new Environment(toolpaths, 1000.0 / 60, 200.0 / 60, 5.0, 2.0);
-        new Optimizer(toolpaths, environment).optimize();
+//        new Optimizer(toolpaths, environment).optimize();
     }
 
     @Override

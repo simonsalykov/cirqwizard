@@ -124,6 +124,6 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
 
     public Point2D toPCBCoordinates(Point2D point)
     {
-        return new Point2D(point.getX() / pcbPane.scaleProperty().getValue(), (point.getY () - pcbPane.getHeight()) / -pcbPane.scaleProperty().getValue());
+        return new Point2D(point.getX() / pcbPane.scaleProperty().getValue(), (point.getY() - pcbPane.getHeight()) / -pcbPane.scaleProperty().getValue());
     }
 }

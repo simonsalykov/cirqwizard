@@ -339,11 +339,14 @@ public class PCBPaneFX extends javafx.scene.layout.Region
     {
         if (selectionRectangle != null)
             getChildren().remove(selectionRectangle);
-        selectionRectangle = new Rectangle(x, y, width, height);
-        selectionRectangle.setStrokeWidth(0.5 / scaleProperty().getValue());
+        selectionRectangle = new Rectangle();
+        selectionRectangle.setStrokeWidth(0.5);
         selectionRectangle.getStyleClass().add("pcb-selection-rect");
-        selectionRectangle.getTransforms().add(Transform.scale(scaleProperty.getValue(), -scaleProperty.getValue()));
-        selectionRectangle.getTransforms().add(Transform.translate(0, -boardHeight));
+        // It seems that in this case transforms get converted to int somewhere down the road. So can't use them here
+        selectionRectangle.setX(x * scaleProperty().getValue());
+        selectionRectangle.setY((-y - height + boardHeight) * scaleProperty().getValue());
+        selectionRectangle.setWidth(width * scaleProperty().getValue());
+        selectionRectangle.setHeight(height * scaleProperty().getValue());
         getChildren().add(selectionRectangle);
     }
 
