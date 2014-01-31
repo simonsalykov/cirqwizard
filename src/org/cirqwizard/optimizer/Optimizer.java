@@ -16,41 +16,113 @@ package org.cirqwizard.optimizer;
 
 import org.cirqwizard.toolpath.Toolpath;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Optimizer
 {
     private final static int POPULATION_SIZE = 5000;
-    private final static int TOURNAMENT_SIZE = 4;
+    private final static int TOURNAMENT_SIZE = 7;
+    private final static double MUTATION_PROBABILITY = 0.001;
+    private final static int MUTATION_GENES_COUNT = 20;
+    private final static int SEED_COUNT = 1;
+    private final static double SEED_PROBABILITY = 0.01;
 
     private List<Toolpath> toolpaths;
+    private Environment environment;
 
     private Generation currentGeneration;
 
-    public Optimizer(List<Toolpath> toolpaths)
+    public Optimizer(List<Toolpath> toolpaths, Environment environment)
     {
         this.toolpaths = toolpaths;
+        this.environment = environment;
     }
 
     public void optimize()
     {
         init();
+
+        for (int i = 0; i < 10000; i++)
+        {
+            System.out.println("Generation #" + i);
+            long t = System.currentTimeMillis();
+            breed();
+            t = System.currentTimeMillis() - t;
+            System.out.println("Breeding time: " + t);
+            t = System.currentTimeMillis();
+            Phenotype mostFit = currentGeneration.getBestFitness(environment);
+            t = System.currentTimeMillis() - t ;
+            System.out.println("Best calculation: " + t);
+            System.out.println("Best random: " + mostFit.calculateFitness(environment) + " / " +mostFit.calculateTotalDuration(environment));
+        }
     }
 
     private void init()
     {
-        Environment environment = new Environment(1000.0 / 60, 200.0 / 60, 5.0, 2.0);
-        System.out.println("Original phenotype fitness: " + new Phenotype(toolpaths).calculateFitness(environment));
+        int[] originalGenes = new int[toolpaths.size()];
+        for (int i = 0; i < originalGenes.length; i++)
+            originalGenes[i] = i;
+        Phenotype original = new Phenotype(originalGenes);
+        System.out.println("Original phenotype fitness: " + original.calculateFitness(environment) + " / " +
+                original.calculateTotalDuration(environment));
         currentGeneration = new Generation();
         long t = System.currentTimeMillis();
-        currentGeneration.populate(toolpaths, 5000);
+        currentGeneration.populate(toolpaths.size(), POPULATION_SIZE);
         t = System.currentTimeMillis() - t;
         System.out.println("Population generation: " + t);
         t = System.currentTimeMillis();
-        double bestRandom = currentGeneration.getBestFitness(environment);
+
+        Phenotype mostFit = currentGeneration.getBestFitness(environment);
         t = System.currentTimeMillis() - t ;
         System.out.println("Best random calculation: " + t);
-        System.out.println("Best random: " + bestRandom);
+        System.out.println("Best random: " + mostFit.calculateFitness(environment) + " / " +mostFit.calculateTotalDuration(environment));
 
+    }
+
+    public void breed()
+    {
+        final Vector<Phenotype> newGeneration = new Vector<>();
+
+        if (Math.random() < SEED_PROBABILITY)
+        {
+            int[] originalPhenotype = new int[toolpaths.size()];
+            for (int i = 0; i < originalPhenotype.length; i++)
+                originalPhenotype[i] = i;
+            for (int i = 0; i < SEED_COUNT; i++)
+                newGeneration.add(new Phenotype(originalPhenotype));
+        }
+
+        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        for (int i = SEED_COUNT; i < POPULATION_SIZE; i++)
+        {
+            pool.submit(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Phenotype parent1 = currentGeneration.tournamentWinner(environment, TOURNAMENT_SIZE);
+                    Phenotype parent2 = currentGeneration.tournamentWinner(environment, TOURNAMENT_SIZE);
+                    Phenotype child = parent1.crossOver(parent2);
+                    if (Math.random() < MUTATION_PROBABILITY)
+                        child.mutate();
+                    child.calculateFitness(environment);
+                    newGeneration.add(child);
+                }
+            });
+        }
+        try
+        {
+            pool.shutdown();
+            pool.awaitTermination(10, TimeUnit.DAYS);
+        }
+        catch (InterruptedException e)
+        {
+        }
+        currentGeneration = new Generation(new ArrayList<>(newGeneration));
     }
 }

@@ -14,46 +14,58 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.optimizer;
 
-import org.cirqwizard.toolpath.Toolpath;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Generation
 {
     private ArrayList<Phenotype> population = new ArrayList<>();
-    private Double fitness;
 
-    public void populate(List<Toolpath> toolpaths, int size)
+    public Generation()
+    {
+    }
+
+    public Generation(ArrayList<Phenotype> population)
+    {
+        this.population = population;
+    }
+
+    public void populate(int genomeSize, int size)
     {
         Random rnd = new Random();
         for (int i = 0; i < size; i++)
         {
-            ArrayList<Toolpath> toAdd = new ArrayList<>(toolpaths);
-            ArrayList<Toolpath> newList = new ArrayList<>();
-            while (!toAdd.isEmpty())
-            {
-                Toolpath t = toAdd.remove(rnd.nextInt(toAdd.size()));
-                newList.add(t);
-            }
-            population.add(new Phenotype(newList));
+            ArrayList<Integer> toAdd = new ArrayList<>();
+            for (int j = 0; j < genomeSize; j++)
+                toAdd.add(j);
+            int[] newGenes = new int[toAdd.size()];
+            for (int j = 0; j < newGenes.length; j++)
+                newGenes[j] = toAdd.remove(rnd.nextInt(toAdd.size()));
+            population.add(new Phenotype(newGenes));
         }
     }
 
-    public double getBestFitness(Environment environment)
+    public Phenotype getBestFitness(Environment environment)
     {
-        if (fitness != null)
-            return fitness;
-
-        fitness = Double.MAX_VALUE;
+        Phenotype mostFit = null;
         for (Phenotype p : population)
+            if (mostFit == null || p.calculateFitness(environment) < mostFit.calculateFitness(environment))
+                mostFit = p;
+
+        return mostFit;
+    }
+
+    public Phenotype tournamentWinner(Environment environment, int tournamentSize)
+    {
+        Phenotype winner = null;
+        Random random = new Random();
+        for (int i = 0; i < tournamentSize; i++)
         {
-            double f = p.calculateFitness(environment);
-            if (f < fitness)
-                fitness = f;
+            Phenotype p = population.get(random.nextInt(population.size()));
+            if (winner == null || p.calculateFitness(environment) < winner.calculateFitness(environment))
+                winner = p;
         }
-        return fitness;
+        return winner;
     }
 
 }

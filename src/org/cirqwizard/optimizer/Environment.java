@@ -14,19 +14,35 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.optimizer;
 
+import org.cirqwizard.toolpath.Toolpath;
+
+import java.util.List;
+
 public class Environment
 {
+    private List<Toolpath> toolpaths;
     private double feed;
     private double zFeed;
     private double clearance;
     private double safetyHeight;
 
-    public Environment(double feed, double zFeed, double clearance, double safetyHeight)
+    public Environment(List<Toolpath> toolpaths, double feed, double zFeed, double clearance, double safetyHeight)
     {
+        this.toolpaths = toolpaths;
         this.feed = feed;
         this.zFeed = zFeed;
         this.clearance = clearance;
         this.safetyHeight = safetyHeight;
+    }
+
+    public List<Toolpath> getToolpaths()
+    {
+        return toolpaths;
+    }
+
+    public void setToolpaths(List<Toolpath> toolpaths)
+    {
+        this.toolpaths = toolpaths;
     }
 
     public double getFeed()
