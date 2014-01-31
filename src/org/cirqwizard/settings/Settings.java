@@ -34,6 +34,7 @@ public class Settings
     private final static int Y_RAPID_ACCELERATION = 50_000;
     private final static int Z_RAPID_ACCELERATION = 50_000;
     private final static int FEED_ACCELERATION = 50_000;
+    private final static int ARC_FEED = 400_000;
 
     private static class PropertyNames
     {
@@ -721,5 +722,10 @@ public class Settings
     public static int getFeedAcceleration()
     {
         return FEED_ACCELERATION;
+    }
+
+    public static int getArcFeed()
+    {
+        return ARC_FEED;
     }
 }

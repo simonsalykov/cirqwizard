@@ -121,6 +121,11 @@ public class Arc extends Curve
         return end;
     }
 
+    public int getCircumreference()
+    {
+        return (int)(Math.PI * 2 * radius);
+    }
+
     @Override
     public String toString()
     {

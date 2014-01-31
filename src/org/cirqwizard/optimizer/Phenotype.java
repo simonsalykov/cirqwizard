@@ -14,9 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.optimizer;
 
+import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.settings.Settings;
+import org.cirqwizard.toolpath.CircularToolpath;
+import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -37,6 +41,7 @@ public class Phenotype
     private final static double yRapidAcceleration = (double)Settings.getYRapidAcceleration() / Settings.RESOLUTION;
     private final static double zRapidAcceleration = (double)Settings.getZRapidAcceleration() / Settings.RESOLUTION;
     private final static double feedAcceleration = (double) Settings.getFeedAcceleration() / Settings.RESOLUTION;
+    private final static double arcFeed = (double) Settings.getArcFeed() / Settings.RESOLUTION / 60;
 
     public Phenotype(List<Toolpath> toolpaths, int feed, int zFeed, int clearance, int safetyHeight)
     {
@@ -58,23 +63,29 @@ public class Phenotype
 
         for (Toolpath t : toolpaths)
         {
-            if (t instanceof LinearToolpath)
+            if (t instanceof CuttingToolpath)
             {
-                LinearToolpath lt = (LinearToolpath) t;
-                if (lt.getCurve() instanceof Line)
+                Curve curve = ((CuttingToolpath) t).getCurve();
+                if (!curve.getFrom().equals(currentLocation))
                 {
-                    Line l = (Line) lt.getCurve();
-                    if (!l.getFrom().equals(currentLocation))
-                    {
-                        double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - l.getFrom().getX()) / Settings.RESOLUTION,
-                                xRapids, xRapidAcceleration);
-                        double yRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getY() - l.getFrom().getY()) / Settings.RESOLUTION,
-                                yRapids, yRapidAcceleration);
-                        totalTime += retractTime + Math.max(xRapidTime, yRapidTime) + descentToSafetyHeight + finalDescent;
-                    }
-                    totalTime += calculatePathDuration(l.length() / 1000, feed, feedAcceleration);
-                    currentLocation = l.getTo();
+                    double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / Settings.RESOLUTION,
+                            xRapids, xRapidAcceleration);
+                    double yRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getY() - curve.getFrom().getY()) / Settings.RESOLUTION,
+                            yRapids, yRapidAcceleration);
+                    totalTime += retractTime + Math.max(xRapidTime, yRapidTime) + descentToSafetyHeight + finalDescent;
                 }
+
+                if (curve instanceof Line)
+                {
+                    Line l = (Line) curve;
+                    totalTime += calculatePathDuration(l.length() / 1000, feed, feedAcceleration);
+                }
+                else if (curve instanceof Arc)
+                {
+                    Arc arc = (Arc) curve;
+                    totalTime += calculatePathDuration(arc.getCircumreference(), arcFeed, feedAcceleration);
+                }
+                currentLocation = curve.getTo();
             }
         }
 
