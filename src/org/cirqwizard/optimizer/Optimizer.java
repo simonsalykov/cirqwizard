@@ -27,75 +27,57 @@ public class Optimizer
 {
     private final static int POPULATION_SIZE = 350;
     private final static int TOURNAMENT_SIZE = 7;
-    private final static double MUTATION_PROBABILITY = 0.05;
+    private final static double MUTATION_PROBABILITY = 0.025;
     private final static int SEED_COUNT = 1;
-    private final static double SEED_PROBABILITY = 0.01;
+    private final static double SEED_PROBABILITY = 0;
 
-    private List<Toolpath> toolpaths;
+    private List<Path> paths;
     private Environment environment;
 
     private Generation currentGeneration;
 
-    public Optimizer(List<Toolpath> toolpaths, Environment environment)
+    public Optimizer(List<Path> paths, Environment environment)
     {
-        this.toolpaths = toolpaths;
+        this.paths = paths;
         this.environment = environment;
     }
 
-    public void optimize()
+    public List<Path> optimize()
     {
         init();
 
         long t = 0;
-        for (int i = 0; i < 10000000; i++)
+        double lastEvaluation = Double.MAX_VALUE;
+        for (int i = 0; i < 10000; i++)
         {
-            boolean debug = i % 100 == 0;
-            if (debug)
-            {
-                System.out.println("Generation #" + i);
-                t = System.currentTimeMillis();
-            }
             breed();
-            if (debug)
+            if (i % 200 == 0)
             {
-                t = System.currentTimeMillis() - t;
-                System.out.println("Breeding time: " + t);
-                t = System.currentTimeMillis();
-            }
-            Phenotype mostFit = currentGeneration.getBestFitness(environment);
-            if (debug)
-            {
-                t = System.currentTimeMillis() - t ;
-                System.out.println("Best generation: " + mostFit.calculateFitness(environment) + " / " +
-                        mostFit.calculateTotalDuration(environment, false) + " / " + mostFit.calculateTotalDuration(environment, true) + " @ " +
-                        mostFit.calculateRapidsCount(environment, 1));
+                Phenotype mostFit = currentGeneration.getBestFitness(environment);
+                List<Toolpath> l = new ArrayList<>();
+                for (int j : mostFit.getGenes())
+                    l.addAll(environment.getPaths().get(j).getSegments());
+                double bestResult = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, false);
+                if (Math.abs(lastEvaluation - bestResult) < 0.2)
+                    break;
+                lastEvaluation = bestResult;
             }
         }
+
+        Phenotype mostFit = currentGeneration.getBestFitness(environment);
+        ArrayList<Path> result = new ArrayList<>();
+        for (int i : mostFit.getGenes())
+            result.add(paths.get(i));
+        return result;
     }
 
     private void init()
     {
-        int[] originalGenes = new int[toolpaths.size()];
+        int[] originalGenes = new int[paths.size()];
         for (int i = 0; i < originalGenes.length; i++)
             originalGenes[i] = i;
-        Phenotype original = new Phenotype(originalGenes);
-        System.out.println("Original phenotype fitness: " + original.calculateFitness(environment) + " / " +
-                original.calculateTotalDuration(environment, false) + " / " + original.calculateTotalDuration(environment, true) + " @ " +
-                original.calculateRapidsCount(environment, 1));
         currentGeneration = new Generation();
-        long t = System.currentTimeMillis();
-        currentGeneration.populate(toolpaths.size(), POPULATION_SIZE);
-        t = System.currentTimeMillis() - t;
-        System.out.println("Population generation: " + t);
-        t = System.currentTimeMillis();
-
-        Phenotype mostFit = currentGeneration.getBestFitness(environment);
-        t = System.currentTimeMillis() - t ;
-        System.out.println("Best random calculation: " + t);
-        System.out.println("Best random: " + mostFit.calculateFitness(environment) + " / " +
-                mostFit.calculateTotalDuration(environment, false) + " / " + mostFit.calculateTotalDuration(environment, true) + " @ " +
-                mostFit.calculateRapidsCount(environment, 1));
-
+        currentGeneration.populate(paths.size(), POPULATION_SIZE);
     }
 
     public void breed()
@@ -104,7 +86,7 @@ public class Optimizer
 
         if (Math.random() < SEED_PROBABILITY)
         {
-            int[] originalPhenotype = new int[toolpaths.size()];
+            int[] originalPhenotype = new int[paths.size()];
             for (int i = 0; i < originalPhenotype.length; i++)
                 originalPhenotype[i] = i;
             for (int i = 0; i < SEED_COUNT; i++)

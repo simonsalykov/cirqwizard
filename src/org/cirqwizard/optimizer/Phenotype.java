@@ -26,19 +26,8 @@ import java.util.Random;
 
 public class Phenotype
 {
-    private final static int COMPARISON_THRESHOLD = 10;
-
     private int[] genes;
     private Double fitness = null;
-
-    private final static double xRapids = (double)Settings.getXRapids() / Settings.RESOLUTION / 60;
-    private final static double yRapids = (double)Settings.getYRapids() / Settings.RESOLUTION / 60;
-    private final static double zRapids = (double)Settings.getZRapids() / Settings.RESOLUTION / 60;
-    private final static double xRapidAcceleration = (double)Settings.getXRapidAcceleration() / Settings.RESOLUTION;
-    private final static double yRapidAcceleration = (double)Settings.getYRapidAcceleration() / Settings.RESOLUTION;
-    private final static double zRapidAcceleration = (double)Settings.getZRapidAcceleration() / Settings.RESOLUTION;
-    private final static double feedAcceleration = (double) Settings.getFeedAcceleration() / Settings.RESOLUTION;
-    private final static double arcFeed = (double) Settings.getArcFeed() / Settings.RESOLUTION / 60;
 
     public Phenotype(int[] genes)
     {
@@ -51,109 +40,21 @@ public class Phenotype
             return fitness;
 
         Point currentLocation = new Point(0, 0);
+        fitness = 0.0;
 
-        int rapidsCount = 0;
-        int rapidsDistance = 0;
         for (int i : genes)
         {
-            Toolpath t = env.getToolpaths().get(i);
-            if (t instanceof CuttingToolpath)
-            {
-                Curve curve = ((CuttingToolpath) t).getCurve();
-                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
-                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
-                {
-                    rapidsCount++;
-                    rapidsDistance += Math.max(currentLocation.getX() - curve.getFrom().getX(),
-                            Math.abs(currentLocation.getY() - curve.getFrom().getY()));
-                }
-                currentLocation = curve.getTo();
-            }
+            Path path = env.getPaths().get(i);
+            fitness += currentLocation.distanceTo(path.getStart());
+            currentLocation = path.getEnd();
         }
 
-        final double countWeight = 2.0;
-        final double distanceWeight = 0.000_05;
-
-//        fitness = rapidsCount;
-        fitness = countWeight * rapidsCount + distanceWeight * rapidsDistance;
         return fitness;
     }
 
-    public int calculateRapidsCount(Environment env, int precision)
+    public int[] getGenes()
     {
-        Point currentLocation = new Point(0, 0);
-
-        int rapidsCount = 0;
-
-        for (int i : genes)
-        {
-            Toolpath t = env.getToolpaths().get(i);
-            if (t instanceof CuttingToolpath)
-            {
-                Curve curve = ((CuttingToolpath) t).getCurve();
-                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
-                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
-                    rapidsCount++;
-                currentLocation = curve.getTo();
-            }
-        }
-
-        return rapidsCount;
-    }
-
-    public double calculateTotalDuration(Environment env, boolean includeFeed)
-    {
-        Point currentLocation = new Point(0, 0);
-        double totalTime = 0;
-
-        double retractTime = calculatePathDuration(env.getClearance(), zRapids, zRapidAcceleration);
-        double descentToSafetyHeight = calculatePathDuration(env.getClearance() - env.getSafetyHeight(), zRapids, xRapidAcceleration);
-        double finalDescent = calculatePathDuration(env.getSafetyHeight(), env.getZFeed(), feedAcceleration);
-
-        for (int i : genes)
-        {
-            Toolpath t = env.getToolpaths().get(i);
-            if (t instanceof CuttingToolpath)
-            {
-                Curve curve = ((CuttingToolpath) t).getCurve();
-                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
-                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
-                {
-                    double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / Settings.RESOLUTION,
-                            xRapids, xRapidAcceleration);
-                    double yRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getY() - curve.getFrom().getY()) / Settings.RESOLUTION,
-                            yRapids, yRapidAcceleration);
-                    totalTime += retractTime + Math.max(xRapidTime, yRapidTime) + descentToSafetyHeight + finalDescent;
-                }
-
-                if (includeFeed)
-                {
-                    if (curve instanceof Line)
-                    {
-                        Line l = (Line) curve;
-                        totalTime += calculatePathDuration(l.length() / Settings.RESOLUTION, env.getFeed(), feedAcceleration);
-                    }
-                    else if (curve instanceof Arc)
-                    {
-                        Arc arc = (Arc) curve;
-                        totalTime += calculatePathDuration(arc.getCircumreference() / Settings.RESOLUTION, arcFeed, feedAcceleration);
-                    }
-                }
-                currentLocation = curve.getTo();
-            }
-        }
-
-        return totalTime;
-    }
-
-    private double calculatePathDuration(double length, double speed, double acceleration)
-    {
-        double accelerationDistance = speed * speed / (acceleration * 2);
-        if (accelerationDistance * 2 < length)
-            return (length - accelerationDistance * 2) / speed + speed / acceleration * 2;
-
-        double topSpeed = Math.sqrt(acceleration * 2 * (length / 2));
-        return (topSpeed / acceleration) * 2;
+        return genes;
     }
 
     public Phenotype crossOver(Phenotype partner)

@@ -14,24 +14,33 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.optimizer;
 
+import org.cirqwizard.geom.Point;
+import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.toolpath.Toolpath;
+
 import java.util.List;
 
-public class Environment
+public class Path
 {
-    private List<Path> paths;
+    private List<Toolpath> segments;
 
-    public Environment(List<Path> paths)
+    public Path(List<Toolpath> segments)
     {
-        this.paths = paths;
+        this.segments = segments;
     }
 
-    public List<Path> getPaths()
+    public List<Toolpath> getSegments()
     {
-        return paths;
+        return segments;
     }
 
-    public void setPaths(List<Path> paths)
+    public Point getStart()
     {
-        this.paths = paths;
+        return ((CuttingToolpath)segments.get(0)).getCurve().getFrom();
+    }
+
+    public Point getEnd()
+    {
+        return ((CuttingToolpath)segments.get(segments.size() - 1)).getCurve().getTo();
     }
 }
