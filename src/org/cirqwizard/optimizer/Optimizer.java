@@ -47,7 +47,7 @@ public class Optimizer
         init();
 
         long t = 0;
-        for (int i = 0; i < 1000000; i++)
+        for (int i = 0; i < 10000000; i++)
         {
             boolean debug = i % 100 == 0;
             if (debug)

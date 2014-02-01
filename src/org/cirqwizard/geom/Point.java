@@ -54,7 +54,12 @@ public class Point
 
     public Point round()
     {
-        return new Point((x + 5) / 10 * 10, (y + 5) / 10 * 10);
+        return round(10);
+    }
+
+    public Point round(int roundTo)
+    {
+        return new Point((x + roundTo / 2) / roundTo * roundTo, (y + roundTo / 2) / roundTo * roundTo);
     }
 
     @Override

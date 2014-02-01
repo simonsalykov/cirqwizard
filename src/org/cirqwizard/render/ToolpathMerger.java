@@ -30,6 +30,7 @@ import java.util.List;
 public class ToolpathMerger
 {
     private static final double MERGE_THRESHOLD = 20.0;
+    private static final int ROUNDING_FACTOR = 10;
     private static final double ARC_CENTER_THRESHOLD = 50.0;
 
     private List<Toolpath> toolpaths;
@@ -86,7 +87,7 @@ public class ToolpathMerger
                             if (l1.getFrom().equals(l2.getTo())) // Removing duplicate segments
                             {
                                 toBeRemoved.add(t2);
-                                map.get(c2.getTo().round()).remove(t2);
+                                map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
                                 continue;
                             }
                             else if (Math.abs(Math.abs(l1.angleToX() - l2.angleToX()) - Math.PI) < comparisonThreshold) // Removing overlapping segments
@@ -94,13 +95,13 @@ public class ToolpathMerger
                                 if (l1.length() > l2.length())
                                 {
                                     toBeRemoved.add(t2);
-                                    map.get(c2.getTo().round()).remove(t2);
+                                    map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
                                     continue;
                                 }
                                 else
                                 {
                                     toBeRemoved.add(t1);
-                                    map.get(c2.getTo().round()).remove(t1);
+                                    map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t1);
                                     break;
                                 }
                             }
@@ -133,8 +134,8 @@ public class ToolpathMerger
                         else
                             ((CuttingToolpath) t1).getCurve().setTo(c2.getTo());
                         toBeRemoved.add(t2);
-                        map.get(c2.getTo().round()).remove(t2);
-                        map.get(c2.getTo().round()).add(t1);
+                        map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
+                        map.get(c2.getTo().round(ROUNDING_FACTOR)).add(t1);
                         break;
 
                     }
@@ -145,10 +146,19 @@ public class ToolpathMerger
             }
         }
 
+        int lines = 0;
+        int arcs = 0;
         ArrayList<Toolpath> result = new ArrayList<>();
         for (Toolpath t : toolpaths)
             if (!toBeRemoved.contains(t))
+            {
+                if (t instanceof LinearToolpath)
+                    lines++;
+                if (t instanceof CircularToolpath)
+                    arcs++;
                 result.add(t);
+            }
+        System.out.println("lines: " + lines + ", arcs: " + arcs);
 
         return result;
     }
@@ -158,8 +168,8 @@ public class ToolpathMerger
         HashMap<Point, ArrayList<Toolpath>> map = new HashMap<>();
         for (Toolpath t : toolpaths)
         {
-            Point from = ((CuttingToolpath)t).getCurve().getFrom().round();
-            Point to = ((CuttingToolpath)t).getCurve().getTo().round();
+            Point from = ((CuttingToolpath)t).getCurve().getFrom().round(ROUNDING_FACTOR);
+            Point to = ((CuttingToolpath)t).getCurve().getTo().round(ROUNDING_FACTOR);
 
             ArrayList<Toolpath> list = map.get(from);
             if (list == null)

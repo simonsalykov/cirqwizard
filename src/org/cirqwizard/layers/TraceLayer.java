@@ -16,11 +16,8 @@ package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.optimizer.Environment;
-import org.cirqwizard.optimizer.Generation;
 import org.cirqwizard.optimizer.Optimizer;
-import org.cirqwizard.optimizer.Phenotype;
 import org.cirqwizard.render.Raster;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -83,7 +80,7 @@ public class TraceLayer extends Layer
         toolpaths = new ArrayList<>();
         toolpaths.addAll(raster.trace());
         Environment environment = new Environment(toolpaths, 1000.0 / 60, 200.0 / 60, 5.0, 2.0);
-//        new Optimizer(toolpaths, environment).optimize();
+        new Optimizer(toolpaths, environment).optimize();
     }
 
     @Override
