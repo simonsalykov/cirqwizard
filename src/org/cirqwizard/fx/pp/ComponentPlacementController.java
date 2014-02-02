@@ -221,7 +221,7 @@ public class ComponentPlacementController extends SceneController implements Ini
         RealNumber x = new RealNumber(targetX.getRealNumberText()).add(new RealNumber(getMainApplication().getContext().getG54X()));
         if (placementX.getRealNumberText() != null)
             x = x.add(new RealNumber(placementX.getRealNumberText()));
-        return coordinatesFormat.format(x.getValue());
+        return coordinatesFormat.format(x.getValue()).replace(',', '.');
     }
 
     private String getTargetY()
@@ -229,7 +229,7 @@ public class ComponentPlacementController extends SceneController implements Ini
         RealNumber y = new RealNumber(targetY.getRealNumberText()).add(new RealNumber(getMainApplication().getContext().getG54Y()));
         if (placementY.getRealNumberText() != null)
             y = y.add(new RealNumber(placementY.getRealNumberText()));
-        return coordinatesFormat.format(y.getValue());
+        return coordinatesFormat.format(y.getValue()).replace(',', '.');
     }
 
     private String getTargetAngle()
