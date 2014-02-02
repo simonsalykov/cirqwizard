@@ -28,6 +28,7 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -241,14 +242,19 @@ public class Context
 
     private void openComponents(String file)
     {
-        PPParser parser = new PPParser(file);
-        parser.parse();
-        if (!parser.getComponents().isEmpty())
+        componentsLayer = new ComponentsLayer();
+        try
         {
-            componentsLayer = new ComponentsLayer();
-            componentsLayer.setPoints(parser.getComponents());
-            componentIds = new ArrayList<ComponentId>(componentsLayer.getComponentIds());
+            PPParser parser = new PPParser(new FileReader(file));
+            componentsLayer.setPoints(parser.parse());
+            componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }
+        catch (IOException e)
+        {
+            LoggerFactory.logException("Could not load centroid file", e);
+        }
+        if (componentsLayer.getPoints().isEmpty())
+            componentsLayer = null;
         placingSelected = componentsLayer != null;
     }
 

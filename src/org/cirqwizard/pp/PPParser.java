@@ -20,9 +20,9 @@ import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,21 +31,21 @@ import java.util.StringTokenizer;
 
 public class PPParser
 {
-    private String filename;
+    private Reader reader;
 
     private List<PPPoint> components;
 
-    public PPParser(String filename)
+    public PPParser(Reader reader)
     {
-        this.filename = filename;
+        this.reader = reader;
     }
 
-    public void parse()
+    public List<PPPoint> parse() throws IOException
     {
-        components = new ArrayList<PPPoint>();
+        components = new ArrayList<>();
         try
         {
-            LineNumberReader reader = new LineNumberReader(new FileReader(filename));
+            LineNumberReader reader = new LineNumberReader(this.reader);
             String str;
             while ((str = reader.readLine()) != null)
             {
@@ -72,14 +72,11 @@ public class PPParser
         {
             LoggerFactory.logException("Could not open PP file", e);
         }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Error reading PP file", e);
-        }
         catch (NoSuchElementException e)
         {
             LoggerFactory.logException("Error parsing PP file", e);
         }
+        return components;
     }
 
     public List<PPPoint> getComponents()
