@@ -34,12 +34,13 @@ public class PPParserTest
     public void testEagleFile() throws IOException
     {
         String fileContent = "C1  7.68  2.67   0 1µF SMD_0603\n" +
-                "C5 26.10 16.64 270 100nF SMD_0603";
+                "C5 26.10 16.64 270 100nF SMD_0603\n" +
+                "C8 26.10 16.64 270 SMD_0805";
 
         PPParser parser = new PPParser(new StringReader(fileContent));
         List<PPPoint> points = parser.parse();
 
-        assertEquals(2, points.size());
+        assertEquals(3, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("SMD_0603", "1µF"), p.getId());
         assertEquals(new Point(new RealNumber("7.68"), new RealNumber("2.67")), p.getPoint());
@@ -51,6 +52,12 @@ public class PPParserTest
         assertEquals(new Point(new RealNumber("26.10"), new RealNumber("16.64")), p.getPoint());
         assertEquals(new RealNumber(270), p.getAngle());
         assertEquals("C5", p.getName());
+
+        p = points.get(2);
+        assertEquals(new ComponentId("SMD_0805", ""), p.getId());
+        assertEquals(new Point(new RealNumber("26.10"), new RealNumber("16.64")), p.getPoint());
+        assertEquals(new RealNumber(270), p.getAngle());
+        assertEquals("C8", p.getName());
 
     }
 

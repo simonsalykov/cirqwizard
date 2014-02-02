@@ -27,13 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class PPParser
 {
-    private Reader reader;
+    private static final Pattern pattern = Pattern.compile("(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?");
 
-    private List<PPPoint> components;
+    private Reader reader;
 
     public PPParser(Reader reader)
     {
@@ -42,23 +44,24 @@ public class PPParser
 
     public List<PPPoint> parse() throws IOException
     {
-        components = new ArrayList<>();
+        List<PPPoint> components = new ArrayList<>();
         try
         {
             LineNumberReader reader = new LineNumberReader(this.reader);
             String str;
             while ((str = reader.readLine()) != null)
             {
-                StringTokenizer tokenizer = new StringTokenizer(str, " ");
-                String name = tokenizer.nextToken();
-                String x = tokenizer.nextToken();
-                String y = tokenizer.nextToken();
-                String angle = tokenizer.nextToken();
-                String value = tokenizer.nextToken();
-                String packaging;
-                if (tokenizer.hasMoreElements())
-                    packaging = tokenizer.nextToken();
-                else
+                Matcher matcher = pattern.matcher(str);
+                if (!matcher.find())
+                    continue;
+
+                String name = matcher.group("name");
+                String x = matcher.group("x");
+                String y = matcher.group("y");
+                String angle = matcher.group("angle");
+                String value = matcher.group("value");
+                String packaging = matcher.group("package");
+                if (packaging == null)
                 {
                     packaging = value;
                     value = "";
@@ -76,11 +79,6 @@ public class PPParser
         {
             LoggerFactory.logException("Error parsing PP file", e);
         }
-        return components;
-    }
-
-    public List<PPPoint> getComponents()
-    {
         return components;
     }
 
