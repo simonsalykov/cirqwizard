@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.settings;
 
+import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.logging.LoggerFactory;
 
@@ -74,6 +75,10 @@ public class Settings
         private static final String PP_MOVE_HEIGHT = "pp.move.height";
         private static final String PP_ROTATION_FEED = "pp.rotation.feed";
 
+        private static final String IMPORT_EXCELLON_INTEGER_PLACES = "import.excellon.integer.places";
+        private static final String IMPORT_EXCELLON_DECIMAL_PLACES = "import.excellon.decimal.places";
+        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = "import.excellon.unit.conversion.ratio";
+
         private static final String INTERFACE_RECENT_FILES = "interface.recent.files";
         private static final String INTERFACE_G54_X = "interface.g54.x";
         private static final String INTERFACE_G54_Y = "interface.g54.y";
@@ -123,6 +128,10 @@ public class Settings
         private static final String PP_PICKUP_HEIGHT = "-14.2";
         private static final String PP_MOVE_HEIGHT = "0.8";
         private static final String PP_ROTATION_FEED = "100";
+
+        private static final int IMPORT_EXCELLON_INTEGER_PLACES = 2;
+        private static final int IMPORT_EXCELLON_DECIMAL_PLACES = 4;
+        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = ExcellonParser.INCHES_MM_RATIO.toString();
     }
 
     private Preferences preferences;
@@ -560,6 +569,37 @@ public class Settings
     public void setPPRotationFeed(String feed)
     {
         set(PropertyNames.PP_ROTATION_FEED, feed);
+    }
+
+
+    public int getImportExcellonIntegerPlaces()
+    {
+        return preferences.getInt(PropertyNames.IMPORT_EXCELLON_INTEGER_PLACES, DefaultValues.IMPORT_EXCELLON_INTEGER_PLACES);
+    }
+
+    public void setImportExcellonIntegerPlaces(int places)
+    {
+        set(PropertyNames.IMPORT_EXCELLON_INTEGER_PLACES, String.valueOf(places));
+    }
+
+    public int getImportExcellonDecimalPlaces()
+    {
+        return preferences.getInt(PropertyNames.IMPORT_EXCELLON_DECIMAL_PLACES, DefaultValues.IMPORT_EXCELLON_DECIMAL_PLACES);
+    }
+
+    public void setImportExcellonDecimalPlaces(int places)
+    {
+        set(PropertyNames.IMPORT_EXCELLON_DECIMAL_PLACES, String.valueOf(places));
+    }
+
+    public String getImportExcellonUnitConversionRatio()
+    {
+        return preferences.get(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, DefaultValues.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO);
+    }
+
+    public void setImportExcellonUnitConversionRatio(String ratio)
+    {
+        set(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, ratio);
     }
 
 

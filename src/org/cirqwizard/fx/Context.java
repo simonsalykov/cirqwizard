@@ -221,10 +221,10 @@ public class Context
         drillingLayer = new DrillingLayer();
         try
         {
-            ExcellonParser parser = new ExcellonParser(new FileReader(file));
+            ExcellonParser parser = new ExcellonParser(settings, new FileReader(file));
             drillingLayer.setDrillPoints(parser.parse());
         }
-        catch (IOException e)
+        catch (IOException | RuntimeException e)
         {
             LoggerFactory.logException("Could not load excellon file", e);
         }
@@ -232,7 +232,7 @@ public class Context
             drillingLayer = null;
         else
         {
-            drillDiameters = new ArrayList<String>();
+            drillDiameters = new ArrayList<>();
             for (RealNumber diameter : drillingLayer.getDrillDiameters())
                 drillDiameters.add(drillFormat.format(diameter.getValue()));
         }

@@ -17,6 +17,7 @@ package org.cirqwizard.excellon;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.math.MathUtil;
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 
 import java.io.IOException;
@@ -30,9 +31,8 @@ import java.util.regex.Pattern;
 
 public class ExcellonParser
 {
-    private final static RealNumber INCHES_MM_RATIO = new RealNumber("25.4");
-    private final static RealNumber MM_MM_RATIO = new RealNumber("1");
-    private final static int DECIMAL_PLACES = 4;
+    public final static RealNumber INCHES_MM_RATIO = new RealNumber("25.4");
+    public final static RealNumber MM_MM_RATIO = new RealNumber("1");
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
@@ -44,7 +44,8 @@ public class ExcellonParser
     private ArrayList<DrillPoint> drillPoints = new ArrayList<DrillPoint>();
     private boolean header = false;
 
-    private RealNumber coordinatesCoversionRatio = INCHES_MM_RATIO;
+    private int decimalPlaces;
+    private RealNumber coordinatesCoversionRatio;
     private boolean leadingZerosOmmited = true;
 
     private RealNumber x = null;
@@ -54,6 +55,21 @@ public class ExcellonParser
 
     public ExcellonParser(Reader reader)
     {
+        this(null, reader);
+    }
+
+    public ExcellonParser(Settings settings, Reader reader)
+    {
+        if (settings != null)
+        {
+            this.decimalPlaces = settings.getImportExcellonDecimalPlaces();
+            this.coordinatesCoversionRatio = new RealNumber(settings.getImportExcellonUnitConversionRatio());
+        }
+        else
+        {
+            this.decimalPlaces = 4;
+            this.coordinatesCoversionRatio = INCHES_MM_RATIO;
+        }
         this.reader = reader;
     }
 
@@ -157,10 +173,10 @@ public class ExcellonParser
         if (negative)
             str = str.substring(1);
 
-        int decimalPartStart = str.length() - DECIMAL_PLACES;
+        int decimalPartStart = str.length() - decimalPlaces;
         decimalPartStart = Math.max(decimalPartStart, 0);
-        RealNumber number = new RealNumber(str.substring(decimalPartStart)).divide(MathUtil.pow(new RealNumber(10), DECIMAL_PLACES));
-        if (str.length() > DECIMAL_PLACES)
+        RealNumber number = new RealNumber(str.substring(decimalPartStart)).divide(MathUtil.pow(new RealNumber(10), decimalPlaces));
+        if (str.length() > decimalPlaces)
             number = number.add(new RealNumber(str.substring(0, decimalPartStart)));
         return number.multiply(coordinatesCoversionRatio).multiply(negative ? -1 : 1);
     }
