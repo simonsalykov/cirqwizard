@@ -59,7 +59,26 @@ public class PPParserTest
         assertEquals(new Point(new RealNumber("26.10"), new RealNumber("16.64")), p.getPoint());
         assertEquals(new RealNumber(270), p.getAngle());
         assertEquals("C8", p.getName());
-
     }
+
+    @Test
+    public void testUltiBoardFile() throws IOException
+    {
+        String fileContent = "\"C1\",\"100nF\",\"KERKO5X4R5\",\"23.876000\",\"14.732000\",\"90\",\"TOP\",\"THD\"\n" +
+                "\"J16\",\"JUMPER\",\"JUMPER\",\"\",\"\",\"0\",\"TOP\",\"THD\"\n" +
+                "\"R1\",\"10kOhm\",\"RESC6432X70N\",\"29.972000\",\"56.388000\",\"180\",\"TOP\",\"SMD\"";
+        String regex = "\"(?<name>\\S+)\",\"(?<value>\\S+)\",\"(?<package>\\S+)\",\"(?<x>\\d+.?\\d*)\",\"(?<y>\\d+.?\\d*)\",\"(?<angle>\\d+)\",\"TOP\",\"SMD\"";
+
+        PPParser parser = new PPParser(new StringReader(fileContent), regex);
+        List<PPPoint> points = parser.parse();
+
+        assertEquals(1, points.size());
+        PPPoint p = points.get(0);
+        assertEquals(new ComponentId("RESC6432X70N", "10kOhm"), p.getId());
+        assertEquals(new Point(new RealNumber("29.972"), new RealNumber("56.388")), p.getPoint());
+        assertEquals(new RealNumber(180), p.getAngle());
+        assertEquals("R1", p.getName());
+    }
+
 
 }
