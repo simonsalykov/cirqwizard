@@ -20,45 +20,47 @@ import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class PPParser
 {
-    private String filename;
+    private Reader reader;
+    private Pattern pattern;
 
-    private List<PPPoint> components;
-
-    public PPParser(String filename)
+    public PPParser(Reader reader, String pattern)
     {
-        this.filename = filename;
+        this.reader = reader;
+        this.pattern = Pattern.compile(pattern);
     }
 
-    public void parse()
+    public List<PPPoint> parse() throws IOException
     {
-        components = new ArrayList<PPPoint>();
+        List<PPPoint> components = new ArrayList<>();
         try
         {
-            LineNumberReader reader = new LineNumberReader(new FileReader(filename));
+            LineNumberReader reader = new LineNumberReader(this.reader);
             String str;
             while ((str = reader.readLine()) != null)
             {
-                StringTokenizer tokenizer = new StringTokenizer(str, " ");
-                String name = tokenizer.nextToken();
-                String x = tokenizer.nextToken();
-                String y = tokenizer.nextToken();
-                String angle = tokenizer.nextToken();
-                String value = tokenizer.nextToken();
-                String packaging;
-                if (tokenizer.hasMoreElements())
-                    packaging = tokenizer.nextToken();
-                else
+                Matcher matcher = pattern.matcher(str);
+                if (!matcher.find())
+                    continue;
+
+                String name = matcher.group("name");
+                String x = matcher.group("x");
+                String y = matcher.group("y");
+                String angle = matcher.group("angle");
+                String value = matcher.group("value");
+                String packaging = matcher.group("package");
+                if (packaging == null)
                 {
                     packaging = value;
                     value = "";
@@ -72,18 +74,10 @@ public class PPParser
         {
             LoggerFactory.logException("Could not open PP file", e);
         }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Error reading PP file", e);
-        }
         catch (NoSuchElementException e)
         {
             LoggerFactory.logException("Error parsing PP file", e);
         }
-    }
-
-    public List<PPPoint> getComponents()
-    {
         return components;
     }
 
