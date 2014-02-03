@@ -78,6 +78,7 @@ public class Settings
         private static final String IMPORT_EXCELLON_INTEGER_PLACES = "import.excellon.integer.places";
         private static final String IMPORT_EXCELLON_DECIMAL_PLACES = "import.excellon.decimal.places";
         private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = "import.excellon.unit.conversion.ratio";
+        private static final String IMPORT_PP_REGEX = "import.pp.regex";
 
         private static final String INTERFACE_RECENT_FILES = "interface.recent.files";
         private static final String INTERFACE_G54_X = "interface.g54.x";
@@ -132,6 +133,7 @@ public class Settings
         private static final int IMPORT_EXCELLON_INTEGER_PLACES = 2;
         private static final int IMPORT_EXCELLON_DECIMAL_PLACES = 4;
         private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = ExcellonParser.INCHES_MM_RATIO.toString();
+        private static final String IMPORT_PP_REGEX = "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?";
     }
 
     private Preferences preferences;
@@ -602,6 +604,16 @@ public class Settings
         set(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, ratio);
     }
 
+    public String getImportPPRegex()
+    {
+        return preferences.get(PropertyNames.IMPORT_PP_REGEX, DefaultValues.IMPORT_PP_REGEX);
+    }
+
+
+    public void setImportPPRegex(String regex)
+    {
+        set(PropertyNames.IMPORT_PP_REGEX, regex);
+    }
 
 
     public List<String> getRecentFiles()

@@ -36,8 +36,9 @@ public class PPParserTest
         String fileContent = "C1  7.68  2.67   0 1µF SMD_0603\n" +
                 "C5 26.10 16.64 270 100nF SMD_0603\n" +
                 "C8 26.10 16.64 270 SMD_0805";
+        String regex = "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?";
 
-        PPParser parser = new PPParser(new StringReader(fileContent));
+        PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
 
         assertEquals(3, points.size());

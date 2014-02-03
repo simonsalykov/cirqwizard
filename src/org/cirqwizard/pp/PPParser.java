@@ -26,20 +26,19 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class PPParser
 {
-    private static final Pattern pattern = Pattern.compile("(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?");
-
     private Reader reader;
+    private Pattern pattern;
 
-    public PPParser(Reader reader)
+    public PPParser(Reader reader, String pattern)
     {
         this.reader = reader;
+        this.pattern = Pattern.compile(pattern);
     }
 
     public List<PPPoint> parse() throws IOException

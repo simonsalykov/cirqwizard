@@ -245,7 +245,7 @@ public class Context
         componentsLayer = new ComponentsLayer();
         try
         {
-            PPParser parser = new PPParser(new FileReader(file));
+            PPParser parser = new PPParser(new FileReader(file), settings.getImportPPRegex());
             componentsLayer.setPoints(parser.parse());
             componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }

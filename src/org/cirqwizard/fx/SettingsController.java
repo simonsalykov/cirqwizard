@@ -86,6 +86,7 @@ public class SettingsController extends SceneController implements Initializable
     @FXML private TextField excellonIntegerPlaces;
     @FXML private TextField excellonDecimalPlaces;
     @FXML private ComboBox<String> excellonUnits;
+    @FXML private  TextField importPPRegex;
 
     private ChangeListener<String> serialPortNameListener = new ChangeListener<String>()
     {
@@ -204,6 +205,14 @@ public class SettingsController extends SceneController implements Initializable
                 if (excellonUnits.getSelectionModel().getSelectedIndex() == 1)
                     conversionRatio = ExcellonParser.MM_MM_RATIO;
                 getMainApplication().getSettings().setImportExcellonUnitConversionRatio(conversionRatio.toString());
+            }
+        });
+        importPPRegex.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                getMainApplication().getSettings().setImportPPRegex(s2);
             }
         });
 
@@ -523,6 +532,7 @@ public class SettingsController extends SceneController implements Initializable
         ppPickupHeight.setText(settings.getPPPickupHeight());
         ppMoveHeight.setText(settings.getPPMoveHeight());
         ppRotationFeed.setText(settings.getPPRotationFeed());
+        importPPRegex.setText(settings.getImportPPRegex());
     }
 
 }
