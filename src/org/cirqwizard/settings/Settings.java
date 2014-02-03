@@ -132,7 +132,7 @@ public class Settings
 
         private static final int IMPORT_EXCELLON_INTEGER_PLACES = 2;
         private static final int IMPORT_EXCELLON_DECIMAL_PLACES = 4;
-        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = ExcellonParser.INCHES_MM_RATIO.toString();
+        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = "25.4";
         private static final String IMPORT_PP_REGEX = "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?";
     }
 
