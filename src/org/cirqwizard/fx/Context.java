@@ -229,7 +229,7 @@ public class Context
         {
             LoggerFactory.logException("Could not load excellon file", e);
         }
-        if (drillingLayer.getToolpaths().isEmpty())
+        if (drillingLayer.getToolpaths() == null || drillingLayer.getToolpaths().isEmpty())
             drillingLayer = null;
         else
         {

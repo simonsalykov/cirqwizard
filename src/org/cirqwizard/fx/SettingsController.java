@@ -204,7 +204,7 @@ public class SettingsController extends SceneController implements Initializable
                 RealNumber conversionRatio = ExcellonParser.INCHES_MM_RATIO;
                 if (excellonUnits.getSelectionModel().getSelectedIndex() == 1)
                     conversionRatio = ExcellonParser.MM_MM_RATIO;
-                getMainApplication().getSettings().setImportExcellonUnitConversionRatio(conversionRatio.toString());
+                getMainApplication().getSettings().setImportExcellonUnitConversionRatio(conversionRatio.toString().replace(",", "."));
             }
         });
         importPPRegex.textProperty().addListener(new ChangeListener<String>()
