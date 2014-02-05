@@ -105,7 +105,7 @@ public class MachiningController extends SceneController implements Initializabl
             {
                 if (event.isShortcutDown())
                 {
-                    double scale = pcbPane.scaleProperty().getValue() + event.getDeltaY() / 100.0;
+                    double scale = pcbPane.scaleProperty().getValue() + event.getDeltaY() / 10000.0;
                     scale = Math.max(scale, 0.005);
                     scale = Math.min(scale, 1);
                     pcbPane.scaleProperty().setValue(scale);
