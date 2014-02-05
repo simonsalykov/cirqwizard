@@ -14,9 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import org.cirqwizard.geom.*;
+import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Curve;
+import org.cirqwizard.geom.Line;
 import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.generation.Segment;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -58,18 +59,6 @@ public class GroupRenderer
 //            str.append(renderNakedCycle(p.getSubdivision(offset).getOuterFace().getInnerComponents().get(0))).append(",");
 //        str.setLength(str.length() - 1);
 //        str.append("},Axes->True]");
-        return str.toString();
-    }
-
-    public static String renderSegments(List<Segment> segments)
-    {
-        StringBuilder str = new StringBuilder();
-        str.append("Graphics[{");
-        for (Segment segment : segments)
-            str.append("Line[{{").append(segment.getStart().x).append(",").append(segment.getStart().y).append("},{").
-                    append(segment.getEnd().x).append(",").append(segment.getEnd().y).append("}}],");
-        str.setLength(str.length() - 1);
-        str.append("},Axes->True]");
         return str.toString();
     }
 

@@ -22,12 +22,12 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
-import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.generation.ToolpathGenerator;
+import org.cirqwizard.generation.ToolpathMerger;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.generation.optimizer.OptimizerGraph;
 import org.cirqwizard.generation.optimizer.Path;
-import org.cirqwizard.generation.Raster;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 import org.cirqwizard.toolpath.Toolpath;
@@ -97,8 +97,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 if (layer instanceof TraceLayer)
                 {
                     int diameter = (int)(Double.valueOf(toolDiameter.getValue()) * Settings.RESOLUTION);
-                    Raster raster = new Raster(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                            diameter / 2, diameter);
+                    ToolpathGenerator generator = new ToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                            diameter / 2, diameter, ((TraceLayer) layer).getElements());
 
                     long t = System.currentTimeMillis();
                     Platform.runLater(new Runnable()
@@ -109,13 +109,12 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                             generationStageProperty.setValue("Generating tool paths...");
                         }
                     });
-                    overallProgressProperty.bind(raster.generationProgressProperty());
+                    overallProgressProperty.bind(generator.progressProperty());
                     estimatedMachiningTimeProperty.setValue("");
                     TraceLayer traceLayer = (TraceLayer) layer;
-                    for (GerberPrimitive p : ((TraceLayer) layer).getElements())
-                        raster.addPrimitive(p);
-                    ArrayList<Toolpath> toolpaths = new ArrayList<>();
-                    toolpaths.addAll(raster.trace());
+                    List<Toolpath> toolpaths = generator.generate();
+
+                    toolpaths = new ToolpathMerger(toolpaths).merge();
 
                     final OptimizerGraph optimizer = new OptimizerGraph(toolpaths);
                     Platform.runLater(new Runnable()

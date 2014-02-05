@@ -48,8 +48,6 @@ public class Tracer
     private static final double LOW_UNCERTAINTY_THRESHOLD = 0.3;   // Arcs with uncertainty lower than that are processed as arcs
     private static final double HIGH_UNCERTAINTY_THRESHOLD = 2;     // Arcs with uncertainty higher than that are processed as segments
 
-    private Raster raster;
-
     private byte[] windowData;
 
     private int width;
@@ -60,15 +58,16 @@ public class Tracer
 
     private Line currentSegment;
 
+    private ArrayList<Integer> radii;
     private ArrayList<Flash> circularFlashes;
 
-    public Tracer(Raster raster, byte[] windowData, int width, int height, int toolDiameter, ArrayList<Flash> circularFlashes)
+    public Tracer(byte[] windowData, int width, int height, int toolDiameter, ArrayList<Integer> radii, ArrayList<Flash> circularFlashes)
     {
-        this.raster = raster;
         this.windowData = windowData;
         this.width = width;
         this.height = height;
         this.toolDiameter = toolDiameter;
+        this.radii = radii;
         this.circularFlashes = circularFlashes;
     }
 
@@ -296,7 +295,7 @@ public class Tracer
 
         double segmentAngle = Math.atan2(points.getLast().getY() - points.getFirst().getY(), points.getLast().getX() - points.getFirst().getX());
 
-        for (int r : raster.getRadii())
+        for (int r : radii)
         {
             int radius = r + toolDiameter / 2;
             Point[] centers = calculateArcCenters(start, end, radius);

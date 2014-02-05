@@ -25,7 +25,7 @@ import java.util.List;
 public class TraceLayer extends Layer
 {
     private List<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private ArrayList<Toolpath> toolpaths = new ArrayList<Toolpath>();
+    private List<Toolpath> toolpaths = new ArrayList<Toolpath>();
 
     public void setElements(ArrayList<GerberPrimitive> elements)
     {
@@ -37,7 +37,7 @@ public class TraceLayer extends Layer
         return elements;
     }
 
-    public ArrayList<Toolpath> getToolpaths()
+    public List<Toolpath> getToolpaths()
     {
         return toolpaths;
     }
@@ -70,7 +70,7 @@ public class TraceLayer extends Layer
         return min;
     }
 
-    public void setToolpaths(ArrayList<Toolpath> toolpaths)
+    public void setToolpaths(List<Toolpath> toolpaths)
     {
         this.toolpaths = toolpaths;
     }
