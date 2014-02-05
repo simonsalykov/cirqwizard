@@ -28,7 +28,7 @@ public class RealNumberTextField extends TextField
     private StringProperty realNumberTextProperty = new SimpleStringProperty();
     private ObjectProperty<Integer> realNumberIntegerProperty = new SimpleObjectProperty<>();
 
-    private DecimalFormat format = new DecimalFormat("0.0");
+    private DecimalFormat format = new DecimalFormat("0.0##");
 
     public final String getRealNumberText()
     {
