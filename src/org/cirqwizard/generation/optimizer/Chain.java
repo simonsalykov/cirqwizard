@@ -20,11 +20,11 @@ import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.List;
 
-public class Path
+public class Chain
 {
     private List<Toolpath> segments;
 
-    public Path(List<Toolpath> segments)
+    public Chain(List<Toolpath> segments)
     {
         this.segments = segments;
     }

@@ -87,7 +87,7 @@ public class MachiningController extends SceneController implements Initializabl
     private StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
     @FXML private Button stopGenerationButton;
 
-    private ToolpathGenerationService service;
+    private ToolpathGenerationService toolpathGenerationService;
 
     private PCBPaneMouseHandler mouseHandler;
 
@@ -240,20 +240,20 @@ public class MachiningController extends SceneController implements Initializabl
     {
         Context context = getMainApplication().getContext();
         State state = getMainApplication().getState();
-        service = new ToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
+        toolpathGenerationService = new ToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
                 estimatedMachiningTimeProperty);
-        generationStageLabel.textProperty().bind(service.generationStageProperty());
+        generationStageLabel.textProperty().bind(toolpathGenerationService.generationStageProperty());
         serialService = new SerialInterfaceService(getMainApplication());
-        mouseHandler.setService(service);
-        generationPane.visibleProperty().bind(service.runningProperty());
+        mouseHandler.setService(toolpathGenerationService);
+        generationPane.visibleProperty().bind(toolpathGenerationService.runningProperty());
         if (getMainApplication().getCNCController() == null)
         {
             goButton.setDisable(true);
             moveHeadAwayButton.setDisable(true);
         }
         else
-            goButton.disableProperty().bind(service.runningProperty());
-        pcbPane.toolpathsProperty().bind(service.valueProperty());
+            goButton.disableProperty().bind(toolpathGenerationService.runningProperty());
+        pcbPane.toolpathsProperty().bind(toolpathGenerationService.valueProperty());
 
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
@@ -336,16 +336,20 @@ public class MachiningController extends SceneController implements Initializabl
         pcbPane.setBoardWidth(context.getBoardWidth());
         pcbPane.setBoardHeight(context.getBoardHeight());
 
-        service.toolDiameterProperty().bind(toolDiameter.realNumberTextProperty());
-        veil.visibleProperty().bind(service.runningProperty());
-        service.start();
+        toolpathGenerationService.toolDiameterProperty().bind(toolDiameter.realNumberIntegerProperty());
+        toolpathGenerationService.feedProperty().bind(feed.realNumberIntegerProperty());
+        toolpathGenerationService.zFeedProperty().bind(zFeed.realNumberIntegerProperty());
+        toolpathGenerationService.clearanceProperty().bind(clearance.realNumberIntegerProperty());
+        toolpathGenerationService.safetyHeightProperty().bind(safetyHeight.realNumberIntegerProperty());
+        veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
+        toolpathGenerationService.start();
     }
 
     public void restartService()
     {
-        veil.visibleProperty().bind(service.runningProperty());
+        veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         stopGenerationButton.setDisable(false);
-        service.restart();
+        toolpathGenerationService.restart();
     }
 
     public void zoomIn()
@@ -485,7 +489,7 @@ public class MachiningController extends SceneController implements Initializabl
     public void stopGeneration()
     {
         stopGenerationButton.setDisable(true);
-        service.cancel();
+        toolpathGenerationService.cancel();
     }
 
     public void moveHeadAway()

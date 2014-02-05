@@ -13,7 +13,7 @@ import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.*;
 
-public class OptimizerGraph
+public class ChainDetector
 {
     private static final int ROUNDING_FACTOR = 10;
 
@@ -21,19 +21,18 @@ public class OptimizerGraph
 
     private ArrayList<Point> vertices = new ArrayList<>();
     private HashMap<Point, ArrayList<Toolpath>> map = new HashMap<>();
-    private ArrayList<Toolpath> result = new ArrayList<>();
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
     private StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
 
-    public OptimizerGraph(List<Toolpath> toolpaths)
+    public ChainDetector(List<Toolpath> toolpaths)
     {
         this.toolpaths = toolpaths;
         generateMap();
     }
 
-    public List<Path> optimize()
+    public List<Chain> detect()
     {
-        List<Path> result = new ArrayList<>();
+        List<Chain> result = new ArrayList<>();
         while (!vertices.isEmpty())
         {
             Point p = vertices.get(0);
@@ -42,20 +41,10 @@ public class OptimizerGraph
                 vertices.remove(0);
                 continue;
             }
-            ArrayList<Toolpath> pathSegments = new ArrayList<>();
-            traverse(pathSegments, p, (CuttingToolpath) map.get(p).get(0));
-            result.add(new Path(pathSegments));
+            ArrayList<Toolpath> chainSegments = new ArrayList<>();
+            traverse(chainSegments, p, (CuttingToolpath) map.get(p).get(0));
+            result.add(new Chain(chainSegments));
         }
-
-        long t = System.currentTimeMillis();
-        result = new Optimizer(result, new Environment(result), progressProperty, estimatedMachiningTimeProperty).optimize();
-        t = System.currentTimeMillis() - t;
-        List<Toolpath> l = new ArrayList<>();
-        for (Path p : result)
-            l.addAll(p.getSegments());
-        double optimized = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.5, false);
-
-        System.out.println("@@ GAd: " + optimized + " / " + TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.5, true) + " in (" + t + ")");
 
         return result;
     }

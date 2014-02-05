@@ -16,12 +16,12 @@ package org.cirqwizard.generation.optimizer;
 
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -33,89 +33,89 @@ public class Optimizer
     private final static int POPULATION_SIZE = 350;
     private final static int TOURNAMENT_SIZE = 7;
     private final static double MUTATION_PROBABILITY = 0.025;
-    private final static int SEED_COUNT = 1;
-    private final static double SEED_PROBABILITY = 0;
+    private final static int MAX_GENERATIONS_COUNT = 10_000;
+    private final static int REEVALUATION_FREQUENCY = 200;
+    private final static double MIN_IMPROVEMENT = 0.2;
 
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
-
-    private List<Path> paths;
     private Environment environment;
 
     private Generation currentGeneration;
 
-    private DoubleProperty progressProperty;
-    private StringProperty estimatedMachiningTimeProperty;
+    private DoubleProperty progressProperty = new SimpleDoubleProperty();
+    private ObjectProperty<List<Toolpath>> currentBestSolutionProperty = new SimpleObjectProperty<>();
 
-    public Optimizer(List<Path> paths, Environment environment, DoubleProperty progressProperty, StringProperty estimatedMachiningTimeProperty)
+    public Optimizer(List<Chain> chains)
     {
-        this.paths = paths;
-        this.environment = environment;
-        this.progressProperty = progressProperty;
-        this.estimatedMachiningTimeProperty = estimatedMachiningTimeProperty;
+        this.environment = new Environment(chains);
     }
 
-    public List<Path> optimize()
+    public List<Chain> optimize()
     {
         init();
 
         double lastEvaluation = Double.MAX_VALUE;
-        for (int i = 0; i < 10000; i++)
+        for (int i = 0; i < MAX_GENERATIONS_COUNT; i++)
         {
-            progressProperty.setValue((double) i / 10000);
+            progressProperty.setValue((double) i / MAX_GENERATIONS_COUNT);
             breed();
-            if (i % 200 == 0)
+            if (i % REEVALUATION_FREQUENCY == 0)
             {
                 Phenotype mostFit = currentGeneration.getBestFitness(environment);
-                List<Toolpath> l = new ArrayList<>();
+                final List<Toolpath> l = new ArrayList<>();
                 for (int j : mostFit.getGenes())
-                    l.addAll(environment.getPaths().get(j).getSegments());
-                final double bestResult = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, false);
-                final long totalDuration = (long)TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, true) * 1000;
+                    l.addAll(environment.getChains().get(j).getSegments());
                 Platform.runLater(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        estimatedMachiningTimeProperty.setValue("Estimated milling time: " + timeFormat.format(new Date(totalDuration)));
+                        currentBestSolutionProperty.setValue(l);
                     }
                 });
-                if (Math.abs(lastEvaluation - bestResult) < 0.2)
+                final double bestResult = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, false);
+                if (Math.abs(lastEvaluation - bestResult) < MIN_IMPROVEMENT)
                     break;
                 lastEvaluation = bestResult;
             }
         }
 
         Phenotype mostFit = currentGeneration.getBestFitness(environment);
-        ArrayList<Path> result = new ArrayList<>();
+        ArrayList<Chain> result = new ArrayList<>();
         for (int i : mostFit.getGenes())
-            result.add(paths.get(i));
+            result.add(environment.getChains().get(i));
         return result;
+    }
+
+    public DoubleProperty progressProperty()
+    {
+        return progressProperty;
+    }
+
+    public List<Toolpath> getCurrentBestSolution()
+    {
+        return currentBestSolutionProperty.get();
+    }
+
+    public ObjectProperty<List<Toolpath>> currentBestSolutionProperty()
+    {
+        return currentBestSolutionProperty;
     }
 
     private void init()
     {
-        int[] originalGenes = new int[paths.size()];
+        int[] originalGenes = new int[environment.getChains().size()];
         for (int i = 0; i < originalGenes.length; i++)
             originalGenes[i] = i;
         currentGeneration = new Generation();
-        currentGeneration.populate(paths.size(), POPULATION_SIZE);
+        currentGeneration.populate(environment.getChains().size(), POPULATION_SIZE);
     }
 
     public void breed()
     {
         final Vector<Phenotype> newGeneration = new Vector<>();
 
-        if (Math.random() < SEED_PROBABILITY)
-        {
-            int[] originalPhenotype = new int[paths.size()];
-            for (int i = 0; i < originalPhenotype.length; i++)
-                originalPhenotype[i] = i;
-            for (int i = 0; i < SEED_COUNT; i++)
-                newGeneration.add(new Phenotype(originalPhenotype));
-        }
-
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        for (int i = SEED_COUNT; i < POPULATION_SIZE; i++)
+        for (int i = 0; i < POPULATION_SIZE; i++)
         {
             pool.submit(new Runnable()
             {

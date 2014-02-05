@@ -38,9 +38,9 @@ public class Phenotype
 
         for (int i : genes)
         {
-            Path path = env.getPaths().get(i);
-            fitness += currentLocation.distanceTo(path.getStart());
-            currentLocation = path.getEnd();
+            Chain chain = env.getChains().get(i);
+            fitness += currentLocation.distanceTo(chain.getStart());
+            currentLocation = chain.getEnd();
         }
 
         return fitness;

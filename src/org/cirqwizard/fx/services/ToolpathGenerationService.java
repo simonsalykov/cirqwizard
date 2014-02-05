@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.services;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,22 +25,31 @@ import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.generation.ToolpathGenerator;
 import org.cirqwizard.generation.ToolpathMerger;
+import org.cirqwizard.generation.optimizer.Chain;
+import org.cirqwizard.generation.optimizer.ChainDetector;
+import org.cirqwizard.generation.optimizer.Optimizer;
+import org.cirqwizard.generation.optimizer.TimeEstimator;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.generation.optimizer.OptimizerGraph;
-import org.cirqwizard.generation.optimizer.Path;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 import org.cirqwizard.toolpath.Toolpath;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 
 public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 {
-    private Property<String> toolDiameter = new SimpleObjectProperty<>();
+    private IntegerProperty toolDiameter = new SimpleIntegerProperty();
+    private IntegerProperty feedProperty = new SimpleIntegerProperty();
+    private IntegerProperty zFeedProperty = new SimpleIntegerProperty();
+    private IntegerProperty clearanceProperty = new SimpleIntegerProperty();
+    private IntegerProperty safetyHeightProperty = new SimpleIntegerProperty();
+
     private MainApplication mainApplication;
     private StringProperty generationStageProperty = new SimpleStringProperty();
     private DoubleProperty overallProgressProperty;
@@ -61,9 +71,29 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
         return new ToolpathGenerationTask();
     }
 
-    public Property<String> toolDiameterProperty()
+    public IntegerProperty toolDiameterProperty()
     {
         return toolDiameter;
+    }
+
+    public IntegerProperty feedProperty()
+    {
+        return feedProperty;
+    }
+
+    public IntegerProperty zFeedProperty()
+    {
+        return zFeedProperty;
+    }
+
+    public IntegerProperty clearanceProperty()
+    {
+        return clearanceProperty;
+    }
+
+    public IntegerProperty safetyHeightProperty()
+    {
+        return safetyHeightProperty;
     }
 
     private Layer getLayer()
@@ -93,30 +123,35 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
         {
             try
             {
+                overallProgressProperty.unbind();
+                generationStageProperty.unbind();
+                estimatedMachiningTimeProperty.unbind();
+
                 Layer layer = getLayer();
                 if (layer instanceof TraceLayer)
                 {
-                    int diameter = (int)(Double.valueOf(toolDiameter.getValue()) * Settings.RESOLUTION);
-                    ToolpathGenerator generator = new ToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                    int diameter = toolDiameter.getValue();
+                    final ToolpathGenerator generator = new ToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
                             diameter / 2, diameter, ((TraceLayer) layer).getElements());
 
-                    long t = System.currentTimeMillis();
                     Platform.runLater(new Runnable()
                     {
                         @Override
                         public void run()
                         {
                             generationStageProperty.setValue("Generating tool paths...");
+                            overallProgressProperty.bind(generator.progressProperty());
+                            estimatedMachiningTimeProperty.setValue("");
                         }
                     });
-                    overallProgressProperty.bind(generator.progressProperty());
-                    estimatedMachiningTimeProperty.setValue("");
                     TraceLayer traceLayer = (TraceLayer) layer;
                     List<Toolpath> toolpaths = generator.generate();
 
                     toolpaths = new ToolpathMerger(toolpaths).merge();
 
-                    final OptimizerGraph optimizer = new OptimizerGraph(toolpaths);
+                    List<Chain> chains = new ChainDetector(toolpaths).detect();
+
+                    final Optimizer optimizer = new Optimizer(chains);
                     Platform.runLater(new Runnable()
                     {
                         @Override
@@ -125,17 +160,30 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                             generationStageProperty.setValue("Optimizing milling time...");
                             overallProgressProperty.unbind();
                             overallProgressProperty.bind(optimizer.progressProperty());
-                            estimatedMachiningTimeProperty.bind(optimizer.estimatedMachiningTimeProperty());
                         }
                     });
-                    List<Path> optimized = optimizer.optimize();
+
+                    final DecimalFormat format = new DecimalFormat("00");
+                    estimatedMachiningTimeProperty.bind(Bindings.createStringBinding(new Callable<String>()
+                    {
+                        @Override
+                        public String call() throws Exception
+                        {
+                            long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
+                                    feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
+                                    clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
+                                    true);
+                            String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
+                                    ":" + format.format(totalDuration % 60);
+                            return "Estimated machining time: " + time;
+                        }
+                    }, optimizer.currentBestSolutionProperty()));
+                    chains = optimizer.optimize();
+
                     toolpaths.clear();
-                    for (Path p : optimized)
+                    for (Chain p : chains)
                         toolpaths.addAll(p.getSegments());
                     traceLayer.setToolpaths(toolpaths);
-
-                    t = System.currentTimeMillis() - t;
-                    System.out.println("generation time: " + t);
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {

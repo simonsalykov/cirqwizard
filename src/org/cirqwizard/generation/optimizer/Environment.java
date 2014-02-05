@@ -18,20 +18,20 @@ import java.util.List;
 
 public class Environment
 {
-    private List<Path> paths;
+    private List<Chain> chains;
 
-    public Environment(List<Path> paths)
+    public Environment(List<Chain> chains)
     {
-        this.paths = paths;
+        this.chains = chains;
     }
 
-    public List<Path> getPaths()
+    public List<Chain> getChains()
     {
-        return paths;
+        return chains;
     }
 
-    public void setPaths(List<Path> paths)
+    public void setChains(List<Chain> chains)
     {
-        this.paths = paths;
+        this.chains = chains;
     }
 }
