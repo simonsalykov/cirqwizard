@@ -12,29 +12,25 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.generator;
+package org.cirqwizard.gcode;
 
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.geom.Curve;
 import org.cirqwizard.post.Postprocessor;
-import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.toolpath.Toolpath;
 
 
-public class DrillGCodeGenerator
+public class PasteGCodeGenerator
 {
     private Context context;
 
-    public DrillGCodeGenerator(Context context)
+    public PasteGCodeGenerator(Context context)
     {
         this.context = context;
     }
 
-    private int getSelectedDrillDiameter()
-    {
-        return context.getDrillingLayer().getDrillDiameters().get(context.getCurrentDrill());
-    }
-
-    public String generate(Postprocessor postprocessor, int feed, int clearance, int safetyHeight,
-                           int drillingDepth, String spindleSpeed)
+    public String generate(Postprocessor postprocessor, int preFeedPause, int postFeedPause, int feed, int clearance, int workingHeight)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
@@ -43,18 +39,22 @@ public class DrillGCodeGenerator
         postprocessor.selectWCS(str);
 
         postprocessor.rapid(str, null, null, clearance);
-        postprocessor.spindleOn(str, spindleSpeed);
-        int selectedDrill = getSelectedDrillDiameter();
-        for (DrillPoint drillPoint : context.getDrillingLayer().getToolpaths())
+        for (Toolpath toolpath : context.getSolderPasteLayer().getToolpaths())
         {
-            if (drillPoint.getToolDiameter() != selectedDrill || !drillPoint.isEnabled())
+            if (!toolpath.isEnabled())
                 continue;
-            postprocessor.rapid(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), clearance);
-            postprocessor.rapid(str, null, null, safetyHeight);
-            postprocessor.linearInterpolation(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), drillingDepth, feed);
+            Curve curve = ((CuttingToolpath)toolpath).getCurve();
+            postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), clearance);
+            postprocessor.rapid(str, null, null, workingHeight);
+            postprocessor.syringeOn(str);
+            postprocessor.pause(str, preFeedPause);
+            postprocessor.linearInterpolation(str, curve.getTo().getX(), curve.getTo().getY(),
+                    workingHeight, feed);
+            postprocessor.syringeOff(str);
+            postprocessor.pause(str, postFeedPause);
             postprocessor.rapid(str, null, null, clearance);
         }
-        postprocessor.spindleOff(str);
+        postprocessor.footer(str);
 
         return str.toString();
     }

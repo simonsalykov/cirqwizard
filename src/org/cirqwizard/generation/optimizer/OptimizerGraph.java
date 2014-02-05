@@ -1,4 +1,4 @@
-package org.cirqwizard.optimizer;
+package org.cirqwizard.generation.optimizer;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

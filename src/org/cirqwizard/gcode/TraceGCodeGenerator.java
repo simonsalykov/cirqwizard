@@ -12,26 +12,45 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.generator;
+package org.cirqwizard.gcode;
 
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBSize;
+import org.cirqwizard.fx.State;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.post.Postprocessor;
+import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
+import java.util.List;
 
-public class MillingGCodeGenerator
+
+public class TraceGCodeGenerator
 {
     private Context context;
+    private State state;
+    private Settings settings;
 
-    public MillingGCodeGenerator(Context context)
+    public TraceGCodeGenerator(Context context, State state, Settings settings)
     {
         this.context = context;
+        this.state = state;
+        this.settings = settings;
+    }
+
+    private int getX(int x)
+    {
+        return state == State.MILLING_BOTTOM_INSULATION ? -x : x;
+    }
+
+    private List<Toolpath> getToolpaths()
+    {
+        return state == State.MILLING_TOP_INSULATION ? context.getTopTracesLayer().getToolpaths() : context.getBottomTracesLayer().getToolpaths();
     }
 
     public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int clearance, int safetyHeight,
@@ -40,13 +59,21 @@ public class MillingGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
+        int g54X = context.getG54X();
+        if (state == State.MILLING_BOTTOM_INSULATION)
+        {
+            int laminateWidth = context.getPcbSize() == PCBSize.Small ? settings.getMachineSmallPCBWidth() : settings.getMachineLargePCBWidth();
+            int pinX = settings.getMachineReferencePinX();
+            g54X = pinX * 2 + laminateWidth - context.getG54X();
+        }
+        postprocessor.setupG54(str, g54X, context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
         postprocessor.rapid(str, null, null, clearance);
+
         postprocessor.spindleOn(str, spindleSpeed);
         Point prevLocation = null;
-        for (Toolpath toolpath : context.getMillingLayer().getToolpaths())
+        for (Toolpath toolpath : getToolpaths())
         {
             if (!toolpath.isEnabled())
                 continue;
@@ -54,25 +81,25 @@ public class MillingGCodeGenerator
             if (prevLocation == null || !prevLocation.equals(curve.getFrom()))
             {
                 postprocessor.rapid(str, null, null, clearance);
-                postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), clearance);
-                postprocessor.rapid(str, null, null, safetyHeight);
-                postprocessor.linearInterpolation(str, curve.getFrom().getX(), curve.getFrom().getY(),
+                postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), clearance);
+                postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), safetyHeight);
+                postprocessor.linearInterpolation(str, getX(curve.getFrom().getX()), curve.getFrom().getY(),
                         millingDepth, zFeed);
             }
             if (toolpath instanceof LinearToolpath)
-                postprocessor.linearInterpolation(str, curve.getTo().getX(), curve.getTo().getY(),
-                        millingDepth, xyFeed);
+                postprocessor.linearInterpolation(str, getX(curve.getTo().getX()), curve.getTo().getY(), millingDepth, xyFeed);
             else if (toolpath instanceof CircularToolpath)
             {
-                Arc arc = (Arc) curve;
-                postprocessor.circularInterpolation(str, arc.isClockwise(), arc.getTo().getX(), arc.getTo().getY(),
-                        millingDepth, arc.getCenter().getX() - arc.getFrom().getX(),
+                Arc arc = (Arc)curve;
+                postprocessor.circularInterpolation(str, state == State.MILLING_BOTTOM_INSULATION ? !arc.isClockwise() : arc.isClockwise(),
+                        getX(arc.getTo().getX()), arc.getTo().getY(), millingDepth, getX(arc.getCenter().getX() - arc.getFrom().getX()),
                         arc.getCenter().getY() - arc.getFrom().getY(), xyFeed);
             }
             prevLocation = curve.getTo();
         }
         postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOff(str);
+        postprocessor.footer(str);
 
         return str.toString();
     }

@@ -12,15 +12,9 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.optimizer;
+package org.cirqwizard.generation.optimizer;
 
-import org.cirqwizard.geom.Arc;
-import org.cirqwizard.geom.Curve;
-import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.settings.Settings;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.Random;
 

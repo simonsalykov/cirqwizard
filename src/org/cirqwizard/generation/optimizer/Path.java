@@ -12,38 +12,35 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.render;
+package org.cirqwizard.generation.optimizer;
 
+import org.cirqwizard.geom.Point;
+import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.toolpath.Toolpath;
 
-public class Segment
+import java.util.List;
+
+public class Path
 {
-    private PointI start;
-    private PointI end;
+    private List<Toolpath> segments;
 
-    public Segment(PointI start, PointI end)
+    public Path(List<Toolpath> segments)
     {
-        this.start = start;
-        this.end = end;
+        this.segments = segments;
     }
 
-    public PointI getStart()
+    public List<Toolpath> getSegments()
     {
-        return start;
+        return segments;
     }
 
-    public void setStart(PointI start)
+    public Point getStart()
     {
-        this.start = start;
+        return ((CuttingToolpath)segments.get(0)).getCurve().getFrom();
     }
 
-    public PointI getEnd()
+    public Point getEnd()
     {
-        return end;
+        return ((CuttingToolpath)segments.get(segments.size() - 1)).getCurve().getTo();
     }
-
-    public void setEnd(PointI end)
-    {
-        this.end = end;
-    }
-
 }

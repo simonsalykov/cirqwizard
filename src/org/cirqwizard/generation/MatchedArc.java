@@ -1,4 +1,4 @@
-package org.cirqwizard.render;
+package org.cirqwizard.generation;
 
 import org.cirqwizard.geom.Point;
 

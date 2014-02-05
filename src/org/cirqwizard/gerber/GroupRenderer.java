@@ -16,7 +16,7 @@ package org.cirqwizard.gerber;
 
 import org.cirqwizard.geom.*;
 import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.render.Segment;
+import org.cirqwizard.generation.Segment;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 

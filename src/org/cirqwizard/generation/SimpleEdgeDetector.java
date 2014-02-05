@@ -1,9 +1,6 @@
-package org.cirqwizard.render;
+package org.cirqwizard.generation;
 
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.

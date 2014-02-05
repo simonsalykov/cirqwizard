@@ -12,7 +12,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.optimizer;
+package org.cirqwizard.generation.optimizer;
 
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
