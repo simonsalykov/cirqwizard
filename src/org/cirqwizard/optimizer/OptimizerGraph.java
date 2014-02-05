@@ -1,5 +1,9 @@
 package org.cirqwizard.optimizer;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.toolpath.CircularToolpath;
@@ -18,6 +22,8 @@ public class OptimizerGraph
     private ArrayList<Point> vertices = new ArrayList<>();
     private HashMap<Point, ArrayList<Toolpath>> map = new HashMap<>();
     private ArrayList<Toolpath> result = new ArrayList<>();
+    private DoubleProperty progressProperty = new SimpleDoubleProperty();
+    private StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
 
     public OptimizerGraph(List<Toolpath> toolpaths)
     {
@@ -42,7 +48,7 @@ public class OptimizerGraph
         }
 
         long t = System.currentTimeMillis();
-        result = new Optimizer(result, new Environment(result)).optimize();
+        result = new Optimizer(result, new Environment(result), progressProperty, estimatedMachiningTimeProperty).optimize();
         t = System.currentTimeMillis() - t;
         List<Toolpath> l = new ArrayList<>();
         for (Path p : result)
@@ -52,6 +58,16 @@ public class OptimizerGraph
         System.out.println("@@ GAd: " + optimized + " / " + TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.5, true) + " in (" + t + ")");
 
         return result;
+    }
+
+    public DoubleProperty progressProperty()
+    {
+        return progressProperty;
+    }
+
+    public StringProperty estimatedMachiningTimeProperty()
+    {
+        return estimatedMachiningTimeProperty;
     }
 
     private void traverse(ArrayList<Toolpath> result, Point point, CuttingToolpath edge)

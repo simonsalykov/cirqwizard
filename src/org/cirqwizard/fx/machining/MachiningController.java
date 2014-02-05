@@ -14,6 +14,20 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.machining;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SceneController;
@@ -31,19 +45,6 @@ import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.Toolpath;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
-import javafx.scene.Parent;
-import javafx.scene.control.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -80,7 +81,10 @@ public class MachiningController extends SceneController implements Initializabl
     @FXML private Label timeElapsedLabel;
 
     @FXML private BorderPane generationPane;
+    @FXML private Label generationStageLabel;
     @FXML private ProgressBar overallProgressBar;
+    @FXML private Label machiningTimeEstimationLabel;
+    private StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
     @FXML private Button stopGenerationButton;
 
     private ToolpathGenerationService service;
@@ -222,6 +226,7 @@ public class MachiningController extends SceneController implements Initializabl
             }
         });
 
+        machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
     }
 
     @Override
@@ -235,7 +240,9 @@ public class MachiningController extends SceneController implements Initializabl
     {
         Context context = getMainApplication().getContext();
         State state = getMainApplication().getState();
-        service = new ToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty());
+        service = new ToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
+                estimatedMachiningTimeProperty);
+        generationStageLabel.textProperty().bind(service.generationStageProperty());
         serialService = new SerialInterfaceService(getMainApplication());
         mouseHandler.setService(service);
         generationPane.visibleProperty().bind(service.runningProperty());

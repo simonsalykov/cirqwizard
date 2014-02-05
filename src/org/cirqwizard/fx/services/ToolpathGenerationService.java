@@ -14,22 +14,23 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
-import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.MainApplication;
-import org.cirqwizard.layers.*;
-import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.render.Raster;
-import org.cirqwizard.settings.Settings;
-import org.cirqwizard.toolpath.DrillPoint;
-import org.cirqwizard.toolpath.Toolpath;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.application.Platform;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.*;
+import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.optimizer.OptimizerGraph;
+import org.cirqwizard.optimizer.Path;
+import org.cirqwizard.render.Raster;
+import org.cirqwizard.settings.Settings;
+import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +41,18 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 {
     private Property<String> toolDiameter = new SimpleObjectProperty<>();
     private MainApplication mainApplication;
+    private StringProperty generationStageProperty = new SimpleStringProperty();
     private DoubleProperty overallProgressProperty;
+    private StringProperty estimatedMachiningTimeProperty;
     private Context context;
 
-    public ToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty)
+    public ToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
+                                     StringProperty estimatedMachiningTimeProperty)
     {
         this.mainApplication = mainApplication;
         this.context = mainApplication.getContext();
         this.overallProgressProperty = overallProgressProperty;
+        this.estimatedMachiningTimeProperty = estimatedMachiningTimeProperty;
     }
 
     @Override
@@ -76,6 +81,11 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
         return null;
     }
 
+    public StringProperty generationStageProperty()
+    {
+        return generationStageProperty;
+    }
+
     public class ToolpathGenerationTask extends Task<ObservableList<Toolpath>>
     {
         @Override
@@ -87,12 +97,44 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 if (layer instanceof TraceLayer)
                 {
                     int diameter = (int)(Double.valueOf(toolDiameter.getValue()) * Settings.RESOLUTION);
-                    Raster raster = new Raster((int)(mainApplication.getContext().getBoardWidth() + 1), (int)(mainApplication.getContext().getBoardHeight() + 1),
+                    Raster raster = new Raster(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
                             diameter / 2, diameter);
-                    TraceLayer traceLayer = (TraceLayer) layer;
-                    overallProgressProperty.bind(raster.generationProgressProperty());
+
                     long t = System.currentTimeMillis();
-                    traceLayer.generateToolpaths(raster);
+                    Platform.runLater(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            generationStageProperty.setValue("Generating tool paths...");
+                        }
+                    });
+                    overallProgressProperty.bind(raster.generationProgressProperty());
+                    estimatedMachiningTimeProperty.setValue("");
+                    TraceLayer traceLayer = (TraceLayer) layer;
+                    for (GerberPrimitive p : ((TraceLayer) layer).getElements())
+                        raster.addPrimitive(p);
+                    ArrayList<Toolpath> toolpaths = new ArrayList<>();
+                    toolpaths.addAll(raster.trace());
+
+                    final OptimizerGraph optimizer = new OptimizerGraph(toolpaths);
+                    Platform.runLater(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            generationStageProperty.setValue("Optimizing milling time...");
+                            overallProgressProperty.unbind();
+                            overallProgressProperty.bind(optimizer.progressProperty());
+                            estimatedMachiningTimeProperty.bind(optimizer.estimatedMachiningTimeProperty());
+                        }
+                    });
+                    List<Path> optimized = optimizer.optimize();
+                    toolpaths.clear();
+                    for (Path p : optimized)
+                        toolpaths.addAll(p.getSegments());
+                    traceLayer.setToolpaths(toolpaths);
+
                     t = System.currentTimeMillis() - t;
                     System.out.println("generation time: " + t);
                 }

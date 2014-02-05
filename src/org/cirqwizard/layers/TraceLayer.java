@@ -16,10 +16,6 @@ package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.optimizer.Environment;
-import org.cirqwizard.optimizer.Optimizer;
-import org.cirqwizard.optimizer.OptimizerGraph;
-import org.cirqwizard.render.Raster;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
@@ -74,15 +70,9 @@ public class TraceLayer extends Layer
         return min;
     }
 
-    public void generateToolpaths(Raster raster)
+    public void setToolpaths(ArrayList<Toolpath> toolpaths)
     {
-        for (GerberPrimitive p : elements)
-            raster.addPrimitive(p);
-        toolpaths = new ArrayList<>();
-        toolpaths.addAll(raster.trace());
-        new OptimizerGraph(toolpaths).optimize();
-//        Environment environment = new Environment(toolpaths, 1000.0 / 60, 200.0 / 60, 5.0, 2.0);
-//        new Optimizer(toolpaths, environment).optimize();
+        this.toolpaths = toolpaths;
     }
 
     @Override

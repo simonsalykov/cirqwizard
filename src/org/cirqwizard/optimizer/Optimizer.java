@@ -14,9 +14,15 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.optimizer;
 
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.StringProperty;
 import org.cirqwizard.toolpath.Toolpath;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -31,25 +37,32 @@ public class Optimizer
     private final static int SEED_COUNT = 1;
     private final static double SEED_PROBABILITY = 0;
 
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
+
     private List<Path> paths;
     private Environment environment;
 
     private Generation currentGeneration;
 
-    public Optimizer(List<Path> paths, Environment environment)
+    private DoubleProperty progressProperty;
+    private StringProperty estimatedMachiningTimeProperty;
+
+    public Optimizer(List<Path> paths, Environment environment, DoubleProperty progressProperty, StringProperty estimatedMachiningTimeProperty)
     {
         this.paths = paths;
         this.environment = environment;
+        this.progressProperty = progressProperty;
+        this.estimatedMachiningTimeProperty = estimatedMachiningTimeProperty;
     }
 
     public List<Path> optimize()
     {
         init();
 
-        long t = 0;
         double lastEvaluation = Double.MAX_VALUE;
         for (int i = 0; i < 10000; i++)
         {
+            progressProperty.setValue((double) i / 10000);
             breed();
             if (i % 200 == 0)
             {
@@ -57,7 +70,16 @@ public class Optimizer
                 List<Toolpath> l = new ArrayList<>();
                 for (int j : mostFit.getGenes())
                     l.addAll(environment.getPaths().get(j).getSegments());
-                double bestResult = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, false);
+                final double bestResult = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, false);
+                final long totalDuration = (long)TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, true) * 1000;
+                Platform.runLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        estimatedMachiningTimeProperty.setValue("Estimated milling time: " + timeFormat.format(new Date(totalDuration)));
+                    }
+                });
                 if (Math.abs(lastEvaluation - bestResult) < 0.2)
                     break;
                 lastEvaluation = bestResult;

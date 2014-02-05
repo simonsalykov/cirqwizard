@@ -207,10 +207,12 @@
         </BorderPane>
         <BorderPane fx:id="generationPane" prefHeight="200.0" prefWidth="600.0">
           <center>
-            <AnchorPane id="" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="175.0" prefWidth="600.0" styleClass="pcb-popup-pane">
+            <AnchorPane id="" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="600.0" styleClass="pcb-popup-pane">
               <children>
-                <ProgressBar id="overallProgress" fx:id="overallProgressBar" layoutX="50.0" layoutY="44.0" prefHeight="25.0" prefWidth="500.0" progress="0.0" />
-                <Button fx:id="stopGenerationButton" layoutX="275.0" layoutY="119.0" mnemonicParsing="false" onAction="#stopGeneration" text="Stop" />
+                <ProgressBar id="overallProgress" fx:id="overallProgressBar" layoutX="50.0" layoutY="67.0" prefHeight="25.0" prefWidth="500.0" progress="0.0" />
+                <Button fx:id="stopGenerationButton" layoutX="275.0" layoutY="149.0" mnemonicParsing="false" onAction="#stopGeneration" text="Stop" />
+                <Label fx:id="generationStageLabel" layoutX="50.0" layoutY="29.0" text="Label" />
+                <Label fx:id="machiningTimeEstimationLabel" alignment="CENTER" layoutX="131.0" layoutY="106.0" minWidth="200.0" prefWidth="339.0" text="Label" textAlignment="CENTER" />
               </children>
             </AnchorPane>
           </center>
