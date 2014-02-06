@@ -129,10 +129,13 @@ public class ToolpathMerger
 
                     if (merge)
                     {
+                        Curve curve = ((CuttingToolpath) t1).getCurve();
                         if (l1Inversed)
-                            ((CuttingToolpath) t1).getCurve().setFrom(c2.getTo());
+                            curve.setFrom(c2.getTo());
                         else
-                            ((CuttingToolpath) t1).getCurve().setTo(c2.getTo());
+                            curve.setTo(c2.getTo());
+                        if (curve instanceof Arc && c2.getTo().equals(c1.getFrom(), MERGE_THRESHOLD))
+                            curve.setTo(curve.getFrom());
                         toBeRemoved.add(t2);
                         map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
                         map.get(c2.getTo().round(ROUNDING_FACTOR)).add(t1);
