@@ -233,15 +233,9 @@ public class Context
             drillingLayer = null;
         else
         {
-<<<<<<< HEAD
-            drillDiameters = new ArrayList<String>();
+            drillDiameters = new ArrayList<>();
             for (int diameter : drillingLayer.getDrillDiameters())
                 drillDiameters.add(drillFormat.format(diameter));
-=======
-            drillDiameters = new ArrayList<>();
-            for (RealNumber diameter : drillingLayer.getDrillDiameters())
-                drillDiameters.add(drillFormat.format(diameter.getValue()));
->>>>>>> master
         }
         drillingSelected = drillingLayer != null;
     }
@@ -257,13 +251,7 @@ public class Context
         }
         catch (IOException e)
         {
-<<<<<<< HEAD
-            componentsLayer = new ComponentsLayer();
-            componentsLayer.setPoints(parser.getComponents());
-            componentIds = new ArrayList<>(componentsLayer.getComponentIds());
-=======
             LoggerFactory.logException("Could not load centroid file", e);
->>>>>>> master
         }
         if (componentsLayer.getPoints().isEmpty())
             componentsLayer = null;

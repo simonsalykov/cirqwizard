@@ -44,20 +44,20 @@ public class PPParserTest
         assertEquals(3, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("SMD_0603", "1µF"), p.getId());
-        assertEquals(new Point(new RealNumber("7.68"), new RealNumber("2.67")), p.getPoint());
-        assertEquals(new RealNumber(0), p.getAngle());
+        assertEquals(new Point(7680, 2670), p.getPoint());
+        assertEquals(0, p.getAngle());
         assertEquals("C1", p.getName());
 
         p = points.get(1);
         assertEquals(new ComponentId("SMD_0603", "100nF"), p.getId());
-        assertEquals(new Point(new RealNumber("26.10"), new RealNumber("16.64")), p.getPoint());
-        assertEquals(new RealNumber(270), p.getAngle());
+        assertEquals(new Point(26100, 16640), p.getPoint());
+        assertEquals(270000, p.getAngle());
         assertEquals("C5", p.getName());
 
         p = points.get(2);
         assertEquals(new ComponentId("SMD_0805", ""), p.getId());
-        assertEquals(new Point(new RealNumber("26.10"), new RealNumber("16.64")), p.getPoint());
-        assertEquals(new RealNumber(270), p.getAngle());
+        assertEquals(new Point(26100, 16640), p.getPoint());
+        assertEquals(270000, p.getAngle());
         assertEquals("C8", p.getName());
     }
 
@@ -75,8 +75,8 @@ public class PPParserTest
         assertEquals(1, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("RESC6432X70N", "10kOhm"), p.getId());
-        assertEquals(new Point(new RealNumber("29.972"), new RealNumber("56.388")), p.getPoint());
-        assertEquals(new RealNumber(180), p.getAngle());
+        assertEquals(new Point(29972, 56388), p.getPoint());
+        assertEquals(180000, p.getAngle());
         assertEquals("R1", p.getName());
     }
 

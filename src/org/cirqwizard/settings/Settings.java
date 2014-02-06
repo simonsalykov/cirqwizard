@@ -137,20 +137,14 @@ public class Settings
         private static final int DISPENSING_WORKING_HEIGHT = 0;
         private static final int DISPENSING_BLEEDING_DURATION = (int)(0.5 * RESOLUTION);
 
-<<<<<<< HEAD
         private static final int PP_PICKUP_HEIGHT = (int)(-14.2 * RESOLUTION);
         private static final int PP_MOVE_HEIGHT = (int)(0.8 * RESOLUTION);
         private static final int PP_ROTATION_FEED = 100 * RESOLUTION;
-=======
-        private static final String PP_PICKUP_HEIGHT = "-14.2";
-        private static final String PP_MOVE_HEIGHT = "0.8";
-        private static final String PP_ROTATION_FEED = "100";
 
         private static final int IMPORT_EXCELLON_INTEGER_PLACES = 2;
         private static final int IMPORT_EXCELLON_DECIMAL_PLACES = 4;
-        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = "25.4";
+        private static final int IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = ExcellonParser.INCHES_MM_RATIO;
         private static final String IMPORT_PP_REGEX = "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?";
->>>>>>> master
     }
 
     private Preferences preferences;
@@ -631,12 +625,12 @@ public class Settings
         set(PropertyNames.IMPORT_EXCELLON_DECIMAL_PLACES, String.valueOf(places));
     }
 
-    public String getImportExcellonUnitConversionRatio()
+    public int getImportExcellonUnitConversionRatio()
     {
-        return preferences.get(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, DefaultValues.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO);
+        return preferences.getInt(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, DefaultValues.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO);
     }
 
-    public void setImportExcellonUnitConversionRatio(String ratio)
+    public void setImportExcellonUnitConversionRatio(int ratio)
     {
         set(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, ratio);
     }

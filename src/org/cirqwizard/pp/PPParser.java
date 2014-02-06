@@ -44,11 +44,7 @@ public class PPParser
 
     public List<PPPoint> parse() throws IOException
     {
-<<<<<<< HEAD
-        components = new ArrayList<>();
-=======
         List<PPPoint> components = new ArrayList<>();
->>>>>>> master
         try
         {
             LineNumberReader reader = new LineNumberReader(this.reader);
