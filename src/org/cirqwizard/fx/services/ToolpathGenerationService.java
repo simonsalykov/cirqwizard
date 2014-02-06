@@ -147,6 +147,9 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     TraceLayer traceLayer = (TraceLayer) layer;
                     List<Toolpath> toolpaths = generator.generate();
 
+                    if (toolpaths == null || toolpaths.size() == 0)
+                        return null;
+
                     toolpaths = new ToolpathMerger(toolpaths).merge();
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
