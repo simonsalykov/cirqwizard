@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.settings;
 
+import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.logging.LoggerFactory;
 
@@ -85,6 +86,11 @@ public class Settings
         private static final String PP_MOVE_HEIGHT = "v12.pp.move.height";
         private static final String PP_ROTATION_FEED = "v12.pp.rotation.feed";
 
+        private static final String IMPORT_EXCELLON_INTEGER_PLACES = "import.excellon.integer.places";
+        private static final String IMPORT_EXCELLON_DECIMAL_PLACES = "import.excellon.decimal.places";
+        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = "import.excellon.unit.conversion.ratio";
+        private static final String IMPORT_PP_REGEX = "import.pp.regex";
+
         private static final String INTERFACE_RECENT_FILES = "interface.recent.files";
         private static final String INTERFACE_G54_X = "v12.interface.g54.x";
         private static final String INTERFACE_G54_Y = "v12.interface.g54.y";
@@ -131,9 +137,20 @@ public class Settings
         private static final int DISPENSING_WORKING_HEIGHT = 0;
         private static final int DISPENSING_BLEEDING_DURATION = (int)(0.5 * RESOLUTION);
 
+<<<<<<< HEAD
         private static final int PP_PICKUP_HEIGHT = (int)(-14.2 * RESOLUTION);
         private static final int PP_MOVE_HEIGHT = (int)(0.8 * RESOLUTION);
         private static final int PP_ROTATION_FEED = 100 * RESOLUTION;
+=======
+        private static final String PP_PICKUP_HEIGHT = "-14.2";
+        private static final String PP_MOVE_HEIGHT = "0.8";
+        private static final String PP_ROTATION_FEED = "100";
+
+        private static final int IMPORT_EXCELLON_INTEGER_PLACES = 2;
+        private static final int IMPORT_EXCELLON_DECIMAL_PLACES = 4;
+        private static final String IMPORT_EXCELLON_UNIT_CONVERSION_RATIO = "25.4";
+        private static final String IMPORT_PP_REGEX = "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?";
+>>>>>>> master
     }
 
     private Preferences preferences;
@@ -593,6 +610,47 @@ public class Settings
         set(PropertyNames.PP_ROTATION_FEED, feed);
     }
 
+
+    public int getImportExcellonIntegerPlaces()
+    {
+        return preferences.getInt(PropertyNames.IMPORT_EXCELLON_INTEGER_PLACES, DefaultValues.IMPORT_EXCELLON_INTEGER_PLACES);
+    }
+
+    public void setImportExcellonIntegerPlaces(int places)
+    {
+        set(PropertyNames.IMPORT_EXCELLON_INTEGER_PLACES, String.valueOf(places));
+    }
+
+    public int getImportExcellonDecimalPlaces()
+    {
+        return preferences.getInt(PropertyNames.IMPORT_EXCELLON_DECIMAL_PLACES, DefaultValues.IMPORT_EXCELLON_DECIMAL_PLACES);
+    }
+
+    public void setImportExcellonDecimalPlaces(int places)
+    {
+        set(PropertyNames.IMPORT_EXCELLON_DECIMAL_PLACES, String.valueOf(places));
+    }
+
+    public String getImportExcellonUnitConversionRatio()
+    {
+        return preferences.get(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, DefaultValues.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO);
+    }
+
+    public void setImportExcellonUnitConversionRatio(String ratio)
+    {
+        set(PropertyNames.IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, ratio);
+    }
+
+    public String getImportPPRegex()
+    {
+        return preferences.get(PropertyNames.IMPORT_PP_REGEX, DefaultValues.IMPORT_PP_REGEX);
+    }
+
+
+    public void setImportPPRegex(String regex)
+    {
+        set(PropertyNames.IMPORT_PP_REGEX, regex);
+    }
 
 
     public List<String> getRecentFiles()

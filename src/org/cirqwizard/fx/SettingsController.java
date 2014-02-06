@@ -20,8 +20,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.Settings;
 
@@ -79,6 +82,11 @@ public class SettingsController extends SceneController implements Initializable
     @FXML private RealNumberTextField ppPickupHeight;
     @FXML private RealNumberTextField ppMoveHeight;
     @FXML private RealNumberTextField ppRotationFeed;
+
+    @FXML private TextField excellonIntegerPlaces;
+    @FXML private TextField excellonDecimalPlaces;
+    @FXML private ComboBox<String> excellonUnits;
+    @FXML private  TextField importPPRegex;
 
     private ChangeListener<String> serialPortNameListener = new ChangeListener<String>()
     {
@@ -162,6 +170,55 @@ public class SettingsController extends SceneController implements Initializable
             {
                 LoggerFactory.getApplicationLogger().setLevel(Level.parse(s2));
                 getMainApplication().getSettings().setLogLevel(s2);
+            }
+        });
+        excellonIntegerPlaces.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                try
+                {
+                    getMainApplication().getSettings().setImportExcellonIntegerPlaces(Integer.valueOf(s2));
+                }
+                catch (NumberFormatException e)
+                {
+                }
+            }
+        });
+        excellonDecimalPlaces.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                try
+                {
+                    getMainApplication().getSettings().setImportExcellonDecimalPlaces(Integer.valueOf(s2));
+                }
+                catch (NumberFormatException e)
+                {
+                }
+            }
+        });
+        excellonUnits.getItems().clear();
+        excellonUnits.getItems().addAll("Inches", "Millimeters");
+        excellonUnits.valueProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                int conversionRatio = ExcellonParser.INCHES_MM_RATIO;
+                if (excellonUnits.getSelectionModel().getSelectedIndex() == 1)
+                    conversionRatio = ExcellonParser.MM_MM_RATIO;
+                getMainApplication().getSettings().setImportExcellonUnitConversionRatio(conversionRatio);
+            }
+        });
+        importPPRegex.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                getMainApplication().getSettings().setImportPPRegex(s2);
             }
         });
 
@@ -460,6 +517,10 @@ public class SettingsController extends SceneController implements Initializable
         if (serialInterfaceList.contains(settings.getSerialPort()))
             serialPortComboBox.setValue(settings.getSerialPort());
         serialPortComboBox.valueProperty().addListener(serialPortNameListener);
+        excellonIntegerPlaces.setText(String.valueOf(settings.getImportExcellonIntegerPlaces()));
+        excellonDecimalPlaces.setText(String.valueOf(settings.getImportExcellonDecimalPlaces()));
+        excellonUnits.getSelectionModel().select(
+                settings.getImportExcellonUnitConversionRatio() == ExcellonParser.MM_MM_RATIO ? 1 : 0);
 
         logLevelComboBox.setValue(settings.getLogLevel());
 
@@ -506,6 +567,8 @@ public class SettingsController extends SceneController implements Initializable
         ppPickupHeight.setIntegerValue(settings.getPPPickupHeight());
         ppMoveHeight.setIntegerValue(settings.getPPMoveHeight());
         ppRotationFeed.setIntegerValue(settings.getPPRotationFeed());
+
+        importPPRegex.setText(settings.getImportPPRegex());
     }
 
 }

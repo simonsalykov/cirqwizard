@@ -7,8 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
-
+<?import org.cirqwizard.fx.controls.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
+<?scenebuilder-classpath-element ../../../../out/production/cirqwizard?>
 
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.SettingsController">
   <children>
@@ -272,12 +273,31 @@
                         </FXCollections>
                       </items>
                     </ComboBox>
+                    <Label text="Excellon integer places" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <Label text="Excellon decimal places" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <Label text="Excellon units" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <TextField id="excellonIntegerPlacesTextField" fx:id="excellonIntegerPlaces" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <TextField id="excellonDecimalPlacesTextField" fx:id="excellonDecimalPlaces" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <ComboBox id="excellonUnitsComboBox" fx:id="excellonUnits" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                      <items>
+                        <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Item 1" />
+                          <String fx:value="Item 2" />
+                          <String fx:value="Item 3" />
+                        </FXCollections>
+                      </items>
+                    </ComboBox>
+                    <Label text="Centroid file format" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <TextField fx:id="importPPRegex" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                   </children>
                   <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.0" minWidth="10.0" prefWidth="110.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="200.0" />
                     <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="160.0" minWidth="10.0" prefWidth="160.0" />
                   </columnConstraints>
                   <rowConstraints>
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

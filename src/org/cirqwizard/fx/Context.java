@@ -28,6 +28,7 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -221,34 +222,51 @@ public class Context
         drillingLayer = new DrillingLayer();
         try
         {
-            ExcellonParser parser = new ExcellonParser(new FileReader(file));
+            ExcellonParser parser = new ExcellonParser(settings, new FileReader(file));
             drillingLayer.setDrillPoints(parser.parse());
         }
-        catch (IOException e)
+        catch (IOException | RuntimeException e)
         {
             LoggerFactory.logException("Could not load excellon file", e);
         }
-        if (drillingLayer.getToolpaths().isEmpty())
+        if (drillingLayer.getToolpaths() == null || drillingLayer.getToolpaths().isEmpty())
             drillingLayer = null;
         else
         {
+<<<<<<< HEAD
             drillDiameters = new ArrayList<String>();
             for (int diameter : drillingLayer.getDrillDiameters())
                 drillDiameters.add(drillFormat.format(diameter));
+=======
+            drillDiameters = new ArrayList<>();
+            for (RealNumber diameter : drillingLayer.getDrillDiameters())
+                drillDiameters.add(drillFormat.format(diameter.getValue()));
+>>>>>>> master
         }
         drillingSelected = drillingLayer != null;
     }
 
     private void openComponents(String file)
     {
-        PPParser parser = new PPParser(file);
-        parser.parse();
-        if (!parser.getComponents().isEmpty())
+        componentsLayer = new ComponentsLayer();
+        try
         {
+            PPParser parser = new PPParser(new FileReader(file), settings.getImportPPRegex());
+            componentsLayer.setPoints(parser.parse());
+            componentIds = new ArrayList<>(componentsLayer.getComponentIds());
+        }
+        catch (IOException e)
+        {
+<<<<<<< HEAD
             componentsLayer = new ComponentsLayer();
             componentsLayer.setPoints(parser.getComponents());
             componentIds = new ArrayList<>(componentsLayer.getComponentIds());
+=======
+            LoggerFactory.logException("Could not load centroid file", e);
+>>>>>>> master
         }
+        if (componentsLayer.getPoints().isEmpty())
+            componentsLayer = null;
         placingSelected = componentsLayer != null;
     }
 

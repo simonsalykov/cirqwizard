@@ -34,7 +34,7 @@ public class RealNumber
 
     public RealNumber(String str)
     {
-        value = new BigDecimal(str);
+        value = new BigDecimal(str.replace(",", "."));
     }
 
     public RealNumber(int i)

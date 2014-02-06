@@ -15,6 +15,11 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.excellon;
 
 import org.cirqwizard.geom.Point;
+<<<<<<< HEAD
+=======
+import org.cirqwizard.math.MathUtil;
+import org.cirqwizard.math.RealNumber;
+>>>>>>> master
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 
@@ -29,9 +34,14 @@ import java.util.regex.Pattern;
 
 public class ExcellonParser
 {
+<<<<<<< HEAD
     private final static int INCHES_MM_RATIO = (int)(25.4 * Settings.RESOLUTION);
     private final static int MM_MM_RATIO = Settings.RESOLUTION;
     private final static int DECIMAL_PLACES = 4;
+=======
+    public final static RealNumber INCHES_MM_RATIO = new RealNumber("25.4");
+    public final static RealNumber MM_MM_RATIO = new RealNumber("1");
+>>>>>>> master
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
@@ -43,7 +53,12 @@ public class ExcellonParser
     private ArrayList<DrillPoint> drillPoints = new ArrayList<>();
     private boolean header = false;
 
+<<<<<<< HEAD
     private int coordinatesCoversionRatio = INCHES_MM_RATIO;
+=======
+    private int decimalPlaces;
+    private RealNumber coordinatesCoversionRatio;
+>>>>>>> master
     private boolean leadingZerosOmmited = true;
 
     private Integer x = null;
@@ -53,6 +68,21 @@ public class ExcellonParser
 
     public ExcellonParser(Reader reader)
     {
+        this(null, reader);
+    }
+
+    public ExcellonParser(Settings settings, Reader reader)
+    {
+        if (settings != null)
+        {
+            this.decimalPlaces = settings.getImportExcellonDecimalPlaces();
+            this.coordinatesCoversionRatio = new RealNumber(settings.getImportExcellonUnitConversionRatio());
+        }
+        else
+        {
+            this.decimalPlaces = 4;
+            this.coordinatesCoversionRatio = INCHES_MM_RATIO;
+        }
         this.reader = reader;
     }
 
@@ -156,14 +186,21 @@ public class ExcellonParser
         if (negative)
             str = str.substring(1);
 
-        int decimalPartStart = str.length() - DECIMAL_PLACES;
+        int decimalPartStart = str.length() - decimalPlaces;
         decimalPartStart = Math.max(decimalPartStart, 0);
+<<<<<<< HEAD
         int number = Integer.valueOf(str.substring(decimalPartStart)) * coordinatesCoversionRatio;
         for (int i = 0; i < DECIMAL_PLACES; i++)
             number /= 10;
         if (str.length() > DECIMAL_PLACES)
             number += Integer.valueOf(str.substring(0, decimalPartStart)) * coordinatesCoversionRatio;
         return number * (negative ? -1 : 1);
+=======
+        RealNumber number = new RealNumber(str.substring(decimalPartStart)).divide(MathUtil.pow(new RealNumber(10), decimalPlaces));
+        if (str.length() > decimalPlaces)
+            number = number.add(new RealNumber(str.substring(0, decimalPartStart)));
+        return number.multiply(coordinatesCoversionRatio).multiply(negative ? -1 : 1);
+>>>>>>> master
     }
 
 }
