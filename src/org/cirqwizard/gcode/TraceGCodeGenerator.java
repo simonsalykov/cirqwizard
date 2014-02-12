@@ -78,7 +78,9 @@ public class TraceGCodeGenerator
             if (!toolpath.isEnabled())
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
-            if (prevLocation == null || !prevLocation.equals(curve.getFrom()))
+            if (prevLocation == null ||
+                    Math.abs(prevLocation.getX() - curve.getFrom().getX()) > Settings.ROUNDING ||
+                    Math.abs(prevLocation.getY() - curve.getFrom().getY()) > Settings.ROUNDING)
             {
                 postprocessor.rapid(str, null, null, clearance);
                 postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), clearance);

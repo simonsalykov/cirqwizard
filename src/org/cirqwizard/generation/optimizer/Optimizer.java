@@ -38,15 +38,23 @@ public class Optimizer
     private final static double MIN_IMPROVEMENT = 0.2;
 
     private Environment environment;
-
     private Generation currentGeneration;
+
+    private double feed;
+    private double zFeed;
+    private double clearance;
+    private double safetyHeight;
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
     private ObjectProperty<List<Toolpath>> currentBestSolutionProperty = new SimpleObjectProperty<>();
 
-    public Optimizer(List<Chain> chains)
+    public Optimizer(List<Chain> chains, double feed, double zFeed, double clearance, double safetyHeight)
     {
         this.environment = new Environment(chains);
+        this.feed = feed;
+        this.zFeed = zFeed;
+        this.clearance = clearance;
+        this.safetyHeight = safetyHeight;
     }
 
     public List<Chain> optimize()
@@ -72,7 +80,7 @@ public class Optimizer
                         currentBestSolutionProperty.setValue(l);
                     }
                 });
-                final double bestResult = TimeEstimator.calculateTotalDuration(l, 1000.0 / 60, 200.0 / 60, 2.0, 0.3, false);
+                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, clearance, safetyHeight, false);
                 if (Math.abs(lastEvaluation - bestResult) < MIN_IMPROVEMENT)
                     break;
                 lastEvaluation = bestResult;

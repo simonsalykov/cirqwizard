@@ -154,7 +154,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 
-                    final Optimizer optimizer = new Optimizer(chains);
+                    final Optimizer optimizer = new Optimizer(chains, feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
+                            clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION);
                     Platform.runLater(new Runnable()
                     {
                         @Override

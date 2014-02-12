@@ -26,8 +26,6 @@ import java.util.List;
 
 public class TimeEstimator
 {
-    private final static int COMPARISON_THRESHOLD = 10;
-
     private final static double xRapids = (double)Settings.getXRapids() / Settings.RESOLUTION / 60;
     private final static double yRapids = (double)Settings.getYRapids() / Settings.RESOLUTION / 60;
     private final static double zRapids = (double)Settings.getZRapids() / Settings.RESOLUTION / 60;
@@ -51,8 +49,8 @@ public class TimeEstimator
             if (t instanceof CuttingToolpath)
             {
                 Curve curve = ((CuttingToolpath) t).getCurve();
-                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
-                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
+                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > Settings.ROUNDING ||
+                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > Settings.ROUNDING)
                 {
                     double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / Settings.RESOLUTION,
                             xRapids, xRapidAcceleration);
@@ -89,28 +87,6 @@ public class TimeEstimator
 
         double topSpeed = Math.sqrt(acceleration * 2 * (length / 2));
         return (topSpeed / acceleration) * 2;
-    }
-
-
-    public static int calculateRapidsCount(List<Toolpath> toolpaths, double feed, double zFeed, double clearance, double safetyHeight, boolean includeFeed)
-    {
-        Point currentLocation = new Point(0, 0);
-
-        int rapidsCount = 0;
-
-        for (Toolpath t : toolpaths)
-        {
-            if (t instanceof CuttingToolpath)
-            {
-                Curve curve = ((CuttingToolpath) t).getCurve();
-                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > COMPARISON_THRESHOLD ||
-                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > COMPARISON_THRESHOLD)
-                    rapidsCount++;
-                currentLocation = curve.getTo();
-            }
-        }
-
-        return rapidsCount;
     }
 
 
