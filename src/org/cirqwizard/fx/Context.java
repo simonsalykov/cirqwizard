@@ -235,7 +235,7 @@ public class Context
         {
             drillDiameters = new ArrayList<>();
             for (int diameter : drillingLayer.getDrillDiameters())
-                drillDiameters.add(drillFormat.format(diameter));
+                drillDiameters.add(drillFormat.format((double)diameter / Settings.RESOLUTION));
         }
         drillingSelected = drillingLayer != null;
     }
