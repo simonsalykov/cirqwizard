@@ -77,7 +77,7 @@ public class SolderPasteLayer extends Layer
 
     public void generateToolpaths(int needleDiameter)
     {
-        toolpaths = new ArrayList<Toolpath>();
+        toolpaths = new ArrayList<>();
         for (GerberPrimitive element : elements)
         {
             if (element instanceof Flash)

@@ -192,7 +192,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 else if (layer instanceof SolderPasteLayer)
                 {
                     SolderPasteLayer solderPasteLayer = (SolderPasteLayer) layer;
-                    solderPasteLayer.generateToolpaths((int)(Double.valueOf(toolDiameter.getValue()) * Settings.RESOLUTION));
+                    solderPasteLayer.generateToolpaths(toolDiameter.getValue());
                 }
                 else if (layer instanceof MillingLayer)
                 {
@@ -205,7 +205,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 {
                     ArrayList<DrillPoint> drillPoints = new ArrayList<>();
                     for (DrillPoint p : ((DrillingLayer)layer).getToolpaths())
-                        if (Math.abs(Double.valueOf(toolDiameter.getValue()) - p.getToolDiameter()) < 0.05)
+                        if (Math.abs(toolDiameter.getValue() - p.getToolDiameter()) < 50)
                             drillPoints.add(p);
                     toolpaths = drillPoints;
                 }

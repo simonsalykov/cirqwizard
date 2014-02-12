@@ -341,7 +341,8 @@ public class MachiningController extends SceneController implements Initializabl
         if (zFeed.realNumberIntegerProperty().getValue() != null)
             toolpathGenerationService.zFeedProperty().bind(zFeed.realNumberIntegerProperty());
         toolpathGenerationService.clearanceProperty().bind(clearance.realNumberIntegerProperty());
-        toolpathGenerationService.safetyHeightProperty().bind(safetyHeight.realNumberIntegerProperty());
+        if (safetyHeight.realNumberIntegerProperty().getValue() != null)
+            toolpathGenerationService.safetyHeightProperty().bind(safetyHeight.realNumberIntegerProperty());
         veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         toolpathGenerationService.start();
     }
