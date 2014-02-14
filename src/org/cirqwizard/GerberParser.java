@@ -301,7 +301,7 @@ public class GerberParser
     private DataBlock parseDataBlock(String str)
     {
         DataBlock dataBlock = new DataBlock();
-        Pattern pattern = Pattern.compile("([GMDXY])(-?\\d+)");
+        Pattern pattern = Pattern.compile("([GMDXY])([+-]?\\d+)");
         Matcher matcher = pattern.matcher(str);
         int i = 0;
         while (matcher.find(i))
@@ -322,7 +322,7 @@ public class GerberParser
     private RealNumber convertCoordinates(String str)
     {
         boolean negative = str.startsWith("-");
-        if (negative)
+        if (str.startsWith("-") || str.startsWith("+"))
             str = str.substring(1);
         while (str.length() < integerPlaces + decimalPlaces)
             str = omitLeadingZeros ? '0' + str : str + '0';
