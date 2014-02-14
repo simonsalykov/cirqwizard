@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.PCBPlacementController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.PCBPlacementController">
   <children>
     <Label fx:id="header" layoutX="109.0" layoutY="141.0" styleClass="h1" text="Put PCB on the machine bed." />
     <VBox id="VBox" fx:id="radioButtonsBox" alignment="CENTER_LEFT" layoutX="127.0" layoutY="261.0" spacing="5.0">
@@ -30,6 +30,11 @@
     <Label fx:id="topTracesText" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE UP right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth." wrapText="true" />
     <Label fx:id="bottomTracesText" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth." wrapText="true" />
     <Label id="bottomTracesText" fx:id="drillingText" alignment="TOP_LEFT" layoutX="127.0" layoutY="190.0" prefHeight="47.0" prefWidth="630.0" text="Put the board FACE UP on the SPACER." wrapText="true" />
-    <Label fx:id="errorMessage" layoutX="127.0" layoutY="392.0" styleClass="error-message" text="This laminate is too small for this PCB in selected orientation!" visible="false" />
+    <VBox id="VBox" fx:id="errorBox" alignment="TOP_LEFT" layoutX="127.0" layoutY="392.0" spacing="5.0">
+      <children>
+        <Label id="errorMessage" styleClass="error-message" text="This laminate is too small for this PCB in selected orientation!" visible="true" />
+        <CheckBox fx:id="ignoreErrorCheckbox" mnemonicParsing="false" onAction="#updateComponents" text="Ignore this error. I know what I am doing." />
+      </children>
+    </VBox>
   </children>
 </AnchorPane>
