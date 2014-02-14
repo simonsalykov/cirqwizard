@@ -429,4 +429,40 @@ public class EDAGerberTest
         assertEquals(new RealNumber("1.52400"), ((RectangularAperture)f.getAperture()).getDimensions()[1]);
         assertEquals(new Point(new RealNumber("17.844"), new RealNumber("25.464")), f.getPoint());
     }
+
+    @Test
+    public void testProteusFile() throws IOException
+    {
+        String fileContent = "G04 PROTEUS RS274X GERBER FILE*\n" +
+                "%FSLAX24Y24*%\n" +
+                "%MOIN*%\n" +
+                "%ADD11C,0.0080*%\n" +
+                "G54D11*\n" +
+                "X+3077Y-16191D02*\n" +
+                "X+8457Y-16191D01*\n" +
+                "X-44265Y+11501D01*\n" +
+                "M00*\n";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        ArrayList<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(2, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.2032"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("7.81558"), new RealNumber("-41.12514")), l.getFrom());
+        assertEquals(new Point(new RealNumber("21.48078"), new RealNumber("-41.12514")), l.getTo());
+
+        p = elements.get(1);
+        assertEquals(LinearShape.class, p.getClass());
+        l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(new RealNumber("0.2032"), ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(new RealNumber("21.48078"), new RealNumber("-41.12514")), l.getFrom());
+        assertEquals(new Point(new RealNumber("-112.4331"), new RealNumber("29.21254")), l.getTo());
+
+    }
 }
