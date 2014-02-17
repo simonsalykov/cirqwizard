@@ -21,11 +21,9 @@ import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.OvalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
+import org.cirqwizard.gerber.*;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -237,6 +235,17 @@ public class Raster
             g.draw(new Line2D.Double(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
                     linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue()));
         }
+        else if (primitive instanceof CircularShape)
+        {
+            CircularShape circularShape = (CircularShape) primitive;
+            int cap = circularShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
+            g.setStroke(new BasicStroke((float) ((circularShape.getAperture().getWidth(new RealNumber(0)).doubleValue() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            g.draw(new Arc2D.Double(circularShape.getArc().getCenter().getX().doubleValue() - circularShape.getArc().getRadius().doubleValue(),
+                    circularShape.getArc().getCenter().getY().doubleValue() - circularShape.getArc().getRadius().doubleValue(),
+                    circularShape.getArc().getRadius().doubleValue() * 2, circularShape.getArc().getRadius().doubleValue() * 2,
+                    -Math.toDegrees(circularShape.getArc().getStart().doubleValue()),
+                    Math.toDegrees(circularShape.getArc().getAngle().doubleValue()) * (circularShape.getArc().isClockwise() ? 1 : -1), Arc2D.OPEN));
+        }
         else if (primitive instanceof Region)
         {
             Region region = (Region) primitive;
@@ -244,10 +253,23 @@ public class Raster
             Path2D polygon = new GeneralPath();
 
             g.setStroke(new BasicStroke((float) inflation * 2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
-            Point p = region.getSegments().get(0).getFrom();
+            Point p = ((InterpolatingShape) region.getSegments().get(0)).getFrom();
             polygon.moveTo(p.getX().doubleValue(), p.getY().doubleValue());
-            for (LinearShape segment : region.getSegments())
-                polygon.lineTo(segment.getTo().getX().doubleValue(), segment.getTo().getY().doubleValue());
+            for (GerberPrimitive segment : region.getSegments())
+            {
+                if (segment instanceof LinearShape)
+                    polygon.lineTo(((LinearShape)segment).getTo().getX().doubleValue(), ((LinearShape)segment).getTo().getY().doubleValue());
+                else if (segment instanceof CircularShape)
+                {
+                    Arc arc = ((CircularShape) segment).getArc();
+                    polygon.append(new Arc2D.Double(arc.getCenter().getX().doubleValue() - arc.getRadius().doubleValue(),
+                            arc.getCenter().getY().doubleValue() - arc.getRadius().doubleValue(),
+                            arc.getRadius().doubleValue() * 2, arc.getRadius().doubleValue() * 2,
+                            -Math.toDegrees(arc.getStart().doubleValue()),
+                            Math.toDegrees(arc.getAngle().doubleValue()) * (arc.isClockwise() ? 1 : -1), Arc2D.OPEN),
+                            true);
+                }
+            }
 
             g.draw(polygon);
             g.fill(polygon);

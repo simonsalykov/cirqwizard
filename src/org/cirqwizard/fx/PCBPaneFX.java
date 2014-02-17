@@ -32,10 +32,7 @@ import org.cirqwizard.appertures.*;
 import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
+import org.cirqwizard.gerber.*;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.DrillPoint;
@@ -178,14 +175,40 @@ public class PCBPaneFX extends javafx.scene.layout.Region
             g.strokeLine(linearShape.getFrom().getX().doubleValue(), linearShape.getFrom().getY().doubleValue(),
                     linearShape.getTo().getX().doubleValue(), linearShape.getTo().getY().doubleValue());
         }
+        else if (primitive instanceof CircularShape)
+        {
+            CircularShape circularShape = (CircularShape) primitive;
+            g.setLineCap(circularShape.getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
+            g.setLineWidth(circularShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
+            g.strokeArc(circularShape.getArc().getCenter().getX().doubleValue() - circularShape.getArc().getRadius().doubleValue(),
+                    circularShape.getArc().getCenter().getY().doubleValue() - circularShape.getArc().getRadius().doubleValue(),
+                    circularShape.getArc().getRadius().doubleValue() * 2, circularShape.getArc().getRadius().doubleValue() * 2,
+                    -Math.toDegrees(circularShape.getArc().getStart().doubleValue()),
+                    Math.toDegrees(circularShape.getArc().getAngle().doubleValue()) * (circularShape.getArc().isClockwise() ? 1 : -1),
+                    ArcType.OPEN);
+        }
         else if (primitive instanceof Region)
         {
             g.beginPath();
             Region region = (Region) primitive;
-            Point p = region.getSegments().get(0).getFrom();
-            g.moveTo(p.getX().doubleValue(), p.getY().doubleValue());
-            for (LinearShape segment : region.getSegments())
-                g.lineTo(segment.getTo().getX().doubleValue(), segment.getTo().getY().doubleValue());
+            GerberPrimitive firstElement = region.getSegments().get(0);
+            if (firstElement instanceof LinearShape)
+                g.moveTo(((LinearShape) firstElement).getFrom().getX().doubleValue(), ((LinearShape) firstElement).getFrom().getY().doubleValue());
+            else if (firstElement instanceof CircularShape)
+                g.moveTo(((CircularShape) firstElement).getArc().getFrom().getX().doubleValue(), ((CircularShape) firstElement).getArc().getFrom().getY().doubleValue());
+
+            for (GerberPrimitive segment : region.getSegments())
+            {
+                if (segment instanceof LinearShape)
+                    g.lineTo(((LinearShape)segment).getTo().getX().doubleValue(), ((LinearShape)segment).getTo().getY().doubleValue());
+                else if (segment instanceof CircularShape)
+                {
+                    Arc arc = ((CircularShape) segment).getArc();
+                    g.arc(arc.getCenter().getX().doubleValue(), arc.getCenter().getY().doubleValue(),
+                            arc.getRadius().doubleValue(), arc.getRadius().doubleValue(),
+                            -Math.toDegrees(arc.getStart().doubleValue()), Math.toDegrees(arc.getAngle().doubleValue()) * (arc.isClockwise() ? 1 : -1));
+                }
+            }
 
             g.closePath();
             g.fill();

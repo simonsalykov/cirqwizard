@@ -20,7 +20,7 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.math.RealNumber;
 
 
-public class LinearShape extends GerberPrimitive
+public class LinearShape extends InterpolatingShape
 {
     private Line line;
 
@@ -45,16 +45,8 @@ public class LinearShape extends GerberPrimitive
     @Override
     public void rotate(boolean clockwise)
     {
-        if (clockwise)
-        {
-            line.setFrom(new Point(line.getFrom().getY(), line.getFrom().getX().negate()));
-            line.setTo(new Point(line.getTo().getY(), line.getTo().getX().negate()));
-        }
-        else
-        {
-            line.setFrom(new Point(line.getFrom().getY().negate(), line.getFrom().getX()));
-            line.setTo(new Point(line.getTo().getY().negate(), line.getTo().getX()));
-        }
+        line.setFrom(line.getFrom().rotateRelativeToOrigin(clockwise));
+        line.setTo(line.getTo().rotateRelativeToOrigin(clockwise));
 
         if (aperture != null)
             aperture = aperture.rotate(clockwise);

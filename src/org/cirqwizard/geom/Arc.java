@@ -96,4 +96,17 @@ public class Arc extends Curve
         return end;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Arc{" +
+                "from=" + from +
+                ", to=" + to +
+                ", center=" + center +
+                ", radius=" + radius +
+                ", clockwise=" + clockwise +
+                ", start=" + start +
+                ", angle=" + angle +
+                '}';
+    }
 }
