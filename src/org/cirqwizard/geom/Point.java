@@ -69,6 +69,14 @@ public class Point
         return new Point(x.divide(scalar), y.divide(scalar));
     }
 
+    public Point rotateRelativeToOrigin(boolean clockwise)
+    {
+        if (clockwise)
+            return new Point(y, x.negate());
+        else
+            return new Point(y.negate(), x);
+    }
+
     @Override
     public String toString()
     {

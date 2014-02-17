@@ -14,14 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.Line;
 import org.cirqwizard.appertures.*;
 import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
+import org.cirqwizard.geom.*;
+import org.cirqwizard.gerber.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.*;
@@ -66,21 +65,45 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                         linearShape.getTo().getX().doubleValue() - linearShape.getFrom().getX().doubleValue(), linearShape.getTo().getY().doubleValue() - linearShape.getFrom().getY().doubleValue()));
             return Arrays.asList((Shape)line);
         }
+        else if (primitive instanceof CircularShape)
+        {
+            CircularShape circularShape = (CircularShape) primitive;
+            Arc arc = new Arc(circularShape.getArc().getCenter().getX().doubleValue(), circularShape.getArc().getCenter().getY().doubleValue(),
+                    circularShape.getArc().getRadius().doubleValue(), circularShape.getArc().getRadius().doubleValue(),
+                    -Math.toDegrees(circularShape.getArc().getStart().doubleValue()),
+                    Math.toDegrees(circularShape.getArc().getAngle().doubleValue()) * (circularShape.getArc().isClockwise() ? 1 : -1));
+            arc.setStrokeWidth(circularShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
+            if (circularShape.getAperture() instanceof CircularAperture)
+                arc.setStrokeLineCap(StrokeLineCap.ROUND);
+            return Arrays.asList((Shape)arc);
+        }
         else if (primitive instanceof Region)
         {
             Region region = (Region) primitive;
-            Polygon polygon = new Polygon();
-            List<LinearShape> segments = region.getSegments();
-            for (LinearShape segment : segments)
-            {
-                polygon.getPoints().add(segment.getFrom().getX().doubleValue());
-                polygon.getPoints().add(segment.getFrom().getY().doubleValue());
-            }
-            polygon.getPoints().add(segments.get(segments.size() - 1).getTo().getX().doubleValue());
-            polygon.getPoints().add(segments.get(segments.size() - 1).getTo().getY().doubleValue());
+            Path path = new Path();
+            List<GerberPrimitive> segments = region.getSegments();
 
-            polygon.setStrokeWidth(0);
-            return Arrays.asList((Shape) polygon);
+            Point firstPoint = ((InterpolatingShape)segments.get(0)).getFrom();
+            path.getElements().add(new MoveTo(firstPoint.getX().doubleValue(), firstPoint.getY().doubleValue()));
+
+            for (GerberPrimitive segment : segments)
+            {
+                if (segment instanceof LinearShape)
+                {
+                    LinearShape l = (LinearShape) segment;
+                    path.getElements().add(new LineTo(l.getTo().getX().doubleValue(), l.getTo().getY().doubleValue()));
+                }
+                else if (segment instanceof CircularShape)
+                {
+                    org.cirqwizard.geom.Arc arc = ((CircularShape) segment).getArc();
+                    path.getElements().add(new ArcTo(arc.getRadius().doubleValue(), arc.getRadius().doubleValue(),
+                            -Math.toDegrees(arc.getStart().doubleValue()),
+                            arc.getTo().getX().doubleValue(), arc.getTo().getY().doubleValue(), false, false));
+                }
+            }
+
+            path.setStrokeWidth(0);
+            return Arrays.asList((Shape) path);
         }
         else if (primitive instanceof Flash)
         {
