@@ -65,9 +65,9 @@ public class Point
     public Point rotateRelativeToOrigin(boolean clockwise)
     {
         if (clockwise)
-            return new Point(y, x.negate());
+            return new Point(y, -x);
         else
-            return new Point(y.negate(), x);
+            return new Point(-y, x);
     }
 
     @Override

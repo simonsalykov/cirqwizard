@@ -14,7 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
-<<<<<<< HEAD
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -24,14 +23,9 @@ import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.OvalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
-=======
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.Line;
-import org.cirqwizard.appertures.*;
->>>>>>> master
 import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.geom.*;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.toolpath.DrillPoint;
@@ -74,11 +68,11 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
         else if (primitive instanceof CircularShape)
         {
             CircularShape circularShape = (CircularShape) primitive;
-            Arc arc = new Arc(circularShape.getArc().getCenter().getX().doubleValue(), circularShape.getArc().getCenter().getY().doubleValue(),
-                    circularShape.getArc().getRadius().doubleValue(), circularShape.getArc().getRadius().doubleValue(),
-                    -Math.toDegrees(circularShape.getArc().getStart().doubleValue()),
-                    Math.toDegrees(circularShape.getArc().getAngle().doubleValue()) * (circularShape.getArc().isClockwise() ? 1 : -1));
-            arc.setStrokeWidth(circularShape.getAperture().getWidth(new RealNumber(0)).doubleValue());
+            Arc arc = new Arc(circularShape.getArc().getCenter().getX(), circularShape.getArc().getCenter().getY(),
+                    circularShape.getArc().getRadius(), circularShape.getArc().getRadius(),
+                    -Math.toDegrees(circularShape.getArc().getStart()),
+                    Math.toDegrees(circularShape.getArc().getAngle()) * (circularShape.getArc().isClockwise() ? 1 : -1));
+            arc.setStrokeWidth(circularShape.getAperture().getWidth(0));
             if (circularShape.getAperture() instanceof CircularAperture)
                 arc.setStrokeLineCap(StrokeLineCap.ROUND);
             return Arrays.asList((Shape)arc);
@@ -90,31 +84,23 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             List<GerberPrimitive> segments = region.getSegments();
 
             Point firstPoint = ((InterpolatingShape)segments.get(0)).getFrom();
-            path.getElements().add(new MoveTo(firstPoint.getX().doubleValue(), firstPoint.getY().doubleValue()));
+            path.getElements().add(new MoveTo(firstPoint.getX(), firstPoint.getY()));
 
             for (GerberPrimitive segment : segments)
             {
-<<<<<<< HEAD
-                polygon.getPoints().add((double) segment.getFrom().getX());
-                polygon.getPoints().add((double) segment.getFrom().getY());
-            }
-            polygon.getPoints().add((double) segments.get(segments.size() - 1).getTo().getX());
-            polygon.getPoints().add((double) segments.get(segments.size() - 1).getTo().getY());
-=======
                 if (segment instanceof LinearShape)
                 {
                     LinearShape l = (LinearShape) segment;
-                    path.getElements().add(new LineTo(l.getTo().getX().doubleValue(), l.getTo().getY().doubleValue()));
+                    path.getElements().add(new LineTo(l.getTo().getX(), l.getTo().getY()));
                 }
                 else if (segment instanceof CircularShape)
                 {
                     org.cirqwizard.geom.Arc arc = ((CircularShape) segment).getArc();
-                    path.getElements().add(new ArcTo(arc.getRadius().doubleValue(), arc.getRadius().doubleValue(),
-                            -Math.toDegrees(arc.getStart().doubleValue()),
-                            arc.getTo().getX().doubleValue(), arc.getTo().getY().doubleValue(), false, false));
+                    path.getElements().add(new ArcTo(arc.getRadius(), arc.getRadius(),
+                            -Math.toDegrees(arc.getStart()),
+                            arc.getTo().getX(), arc.getTo().getY(), false, false));
                 }
             }
->>>>>>> master
 
             path.setStrokeWidth(0);
             return Arrays.asList((Shape) path);

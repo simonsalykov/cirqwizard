@@ -20,15 +20,7 @@ import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
-<<<<<<< HEAD
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
-=======
 import org.cirqwizard.gerber.*;
-import org.cirqwizard.math.RealNumber;
->>>>>>> master
 import org.junit.Test;
 
 import java.io.IOException;
@@ -337,16 +329,16 @@ public class EDAGerberTest
         assertEquals(4, r.getSegments().size());
         assertEquals(5340, r.getMin().getX());
         assertEquals(8220, r.getMin().getY());
-        LinearShape l = s.get(0);
+        LinearShape l = (LinearShape) s.get(0);
         assertEquals(new Point(6540, 8520), l.getFrom());
         assertEquals(new Point(6540, 8220), l.getTo());
-        l = s.get(1);
+        l = (LinearShape) s.get(1);
         assertEquals(new Point(6540, 8220), l.getFrom());
         assertEquals(new Point(5340, 8220), l.getTo());
-        l = s.get(2);
+        l = (LinearShape) s.get(2);
         assertEquals(new Point(5340, 8220), l.getFrom());
         assertEquals(new Point(5340, 8520), l.getTo());
-        l = s.get(3);
+        l = (LinearShape) s.get(3);
         assertEquals(new Point(5340, 8520), l.getFrom());
         assertEquals(new Point(6540, 8520), l.getTo());
 
@@ -458,16 +450,16 @@ public class EDAGerberTest
         LinearShape l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(203, ((CircularAperture)p.getAperture()).getDiameter());
-        assertEquals(new Point(7816, -41125), l.getFrom());
-        assertEquals(new Point(21481, -41125), l.getTo());
+        assertEquals(new Point(7815, -41125), l.getFrom());
+        assertEquals(new Point(21480, -41125), l.getTo());
 
         p = elements.get(1);
         assertEquals(LinearShape.class, p.getClass());
         l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(203, ((CircularAperture)p.getAperture()).getDiameter());
-        assertEquals(new Point(21481, -41125), l.getFrom());
-        assertEquals(new Point(-112433, 29213), l.getTo());
+        assertEquals(new Point(21480, -41125), l.getFrom());
+        assertEquals(new Point(-112433, 29212), l.getTo());
 
     }
 
@@ -520,7 +512,7 @@ public class EDAGerberTest
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
         assertEquals(new Point(5156, 4724), arc.getFrom());
-        assertEquals(new Point(5670, 5670), arc.getTo());
+        assertEquals(new Point(5689, 5689), arc.getTo());
         assertEquals(new Point(7213, 4166), arc.getCenter());
         assertEquals(true, arc.isClockwise());
 
@@ -529,8 +521,8 @@ public class EDAGerberTest
         LinearShape l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
-        assertEquals(new Point(5690, 5690), l.getFrom());
-        assertEquals(new Point(4597, 5690), l.getTo());
+        assertEquals(new Point(5689, 5689), l.getFrom());
+        assertEquals(new Point(4597, 5689), l.getTo());
 
         p = elements.get(2);
         assertEquals(CircularShape.class, p.getClass());
@@ -538,7 +530,7 @@ public class EDAGerberTest
         arc = c.getArc();
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
-        assertEquals(new Point(4597, 5690), arc.getFrom());
+        assertEquals(new Point(4597, 5689), arc.getFrom());
         assertEquals(new Point(5156, 4724), arc.getTo());
         assertEquals(new Point(3099, 4191), arc.getCenter());
         assertEquals(true, arc.isClockwise());
@@ -554,7 +546,7 @@ public class EDAGerberTest
         l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
         assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
-        assertEquals(new Point(5156, 16612), l.getFrom());
-        assertEquals(new Point(6452, 15291), l.getTo());
+        assertEquals(new Point(5156, 16611), l.getFrom());
+        assertEquals(new Point(6451, 15290), l.getTo());
     }
 }

@@ -414,9 +414,9 @@ public class GerberParser
                 primitive = new LinearShape(x, y, newX, newY, aperture);
             else
             {
-                RealNumber i = dataBlock.getI() == null ? new RealNumber(0) : dataBlock.getI();
-                RealNumber j = dataBlock.getJ() == null ? new RealNumber(0) : dataBlock.getJ();
-                primitive = new CircularShape(x, y, newX, newY, x.add(i), y.add(j),
+                Integer i = dataBlock.getI() == null ? 0 : dataBlock.getI();
+                Integer j = dataBlock.getJ() == null ? 0 : dataBlock.getJ();
+                primitive = new CircularShape(x, y, newX, newY, x + i, y + j,
                         currentInterpolationMode == InterpolationMode.CLOCKWISE_CIRCULAR, aperture);
             }
         }

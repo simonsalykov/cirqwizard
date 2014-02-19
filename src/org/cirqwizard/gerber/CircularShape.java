@@ -23,12 +23,12 @@ public class CircularShape extends InterpolatingShape
 {
     private Arc arc;
 
-    public CircularShape(RealNumber fromX, RealNumber fromY, RealNumber toX, RealNumber toY, RealNumber centerX, RealNumber centerY,
+    public CircularShape(int fromX, int fromY, int toX, int toY, int centerX, int centerY,
                          boolean clockwise, Aperture aperture)
     {
         Point from = new Point(fromX, fromY);
         Point center = new Point(centerX, centerY);
-        arc = new Arc(from, new Point(toX, toY), center, from.distanceTo(center), clockwise);
+        arc = new Arc(from, new Point(toX, toY), center, (int) from.distanceTo(center), clockwise);
         this.aperture = aperture;
     }
 
@@ -68,7 +68,7 @@ public class CircularShape extends InterpolatingShape
     @Override
     public Point getMin()
     {
-        return new Point(arc.getFrom().getX().lessThan(arc.getTo().getX()) ? arc.getFrom().getX() : arc.getTo().getX(),
-                arc.getFrom().getY().lessOrEqualTo(arc.getTo().getY()) ? arc.getFrom().getY() : arc.getTo().getY());
+        return new Point(arc.getFrom().getX() < arc.getTo().getX() ? arc.getFrom().getX() : arc.getTo().getX(),
+                arc.getFrom().getY() <= arc.getTo().getY() ? arc.getFrom().getY() : arc.getTo().getY());
     }
 }

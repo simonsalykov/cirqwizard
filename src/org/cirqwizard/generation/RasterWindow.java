@@ -19,11 +19,10 @@ import org.cirqwizard.appertures.OctagonalAperture;
 import org.cirqwizard.appertures.OvalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
+import org.cirqwizard.gerber.*;
+import org.cirqwizard.math.RealNumber;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -70,6 +69,17 @@ public class RasterWindow
             g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY()));
         }
+        else if (primitive instanceof CircularShape)
+        {
+            CircularShape circularShape = (CircularShape) primitive;
+            int cap = circularShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
+            g.setStroke(new BasicStroke((float) ((circularShape.getAperture().getWidth(0) + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            g.draw(new Arc2D.Double(circularShape.getArc().getCenter().getX() - circularShape.getArc().getRadius(),
+                    circularShape.getArc().getCenter().getY() - circularShape.getArc().getRadius(),
+                    circularShape.getArc().getRadius() * 2, circularShape.getArc().getRadius() * 2,
+                    -Math.toDegrees(circularShape.getArc().getStart()),
+                    Math.toDegrees(circularShape.getArc().getAngle()) * (circularShape.getArc().isClockwise() ? 1 : -1), Arc2D.OPEN));
+        }
         else if (primitive instanceof Region)
         {
             Region region = (Region) primitive;
@@ -77,13 +87,23 @@ public class RasterWindow
             Path2D polygon = new GeneralPath();
 
             g.setStroke(new BasicStroke((float) inflation * 2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
-            org.cirqwizard.geom.Point p = region.getSegments().get(0).getFrom();
+            Point p = ((InterpolatingShape) region.getSegments().get(0)).getFrom();
             polygon.moveTo(p.getX(), p.getY());
-            for (LinearShape segment : region.getSegments())
-                polygon.lineTo(segment.getTo().getX(), segment.getTo().getY());
-
-            g.draw(polygon);
-            g.fill(polygon);
+            for (GerberPrimitive segment : region.getSegments())
+            {
+                if (segment instanceof LinearShape)
+                    polygon.lineTo(((LinearShape)segment).getTo().getX(), ((LinearShape)segment).getTo().getY());
+                else if (segment instanceof CircularShape)
+                {
+                    Arc arc = ((CircularShape) segment).getArc();
+                    polygon.append(new Arc2D.Double(arc.getCenter().getX() - arc.getRadius(),
+                            arc.getCenter().getY() - arc.getRadius(),
+                            arc.getRadius() * 2, arc.getRadius() * 2,
+                            -Math.toDegrees(arc.getStart()),
+                            Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), Arc2D.OPEN),
+                            true);
+                }
+            }
         }
         else if (primitive instanceof Flash)
         {
