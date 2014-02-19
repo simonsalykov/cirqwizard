@@ -22,14 +22,14 @@ import java.util.List;
 
 public class Region extends GerberPrimitive
 {
-    private List<LinearShape> segments = new ArrayList<>();
+    private List<GerberPrimitive> segments = new ArrayList<>();
 
-    public void addSegment(LinearShape segment)
+    public void addSegment(GerberPrimitive segment)
     {
         segments.add(segment);
     }
 
-    public List<LinearShape> getSegments()
+    public List<GerberPrimitive> getSegments()
     {
         return segments;
     }
@@ -37,14 +37,14 @@ public class Region extends GerberPrimitive
     @Override
     public void rotate(boolean clockwise)
     {
-        for (LinearShape segment : segments)
+        for (GerberPrimitive segment : segments)
             segment.rotate(clockwise);
     }
 
     @Override
     public void move(Point point)
     {
-        for (LinearShape segment : segments)
+        for (GerberPrimitive segment : segments)
             segment.move(point);
     }
 

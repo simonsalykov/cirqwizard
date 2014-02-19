@@ -16,8 +16,15 @@ package org.cirqwizard;
 
 public class DataBlock
 {
+<<<<<<< HEAD
     private Integer x;
     private Integer y;
+=======
+    private RealNumber x;
+    private RealNumber y;
+    private RealNumber i;
+    private RealNumber j;
+>>>>>>> master
     private Integer g;
     private Integer d;
     private Integer m;
@@ -42,6 +49,26 @@ public class DataBlock
     {
         if (this.y == null)
             this.y = y;
+    }
+
+    public RealNumber getI()
+    {
+        return i;
+    }
+
+    public void setI(RealNumber i)
+    {
+        this.i = i;
+    }
+
+    public RealNumber getJ()
+    {
+        return j;
+    }
+
+    public void setJ(RealNumber j)
+    {
+        this.j = j;
     }
 
     public Integer getG()

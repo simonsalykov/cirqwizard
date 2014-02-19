@@ -32,10 +32,7 @@ import org.cirqwizard.appertures.*;
 import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
+import org.cirqwizard.gerber.*;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.DrillPoint;
@@ -178,14 +175,37 @@ public class PCBPaneFX extends javafx.scene.layout.Region
             g.strokeLine(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY());
         }
+        else if (primitive instanceof CircularShape)
+        {
+            CircularShape circularShape = (CircularShape) primitive;
+            g.setLineCap(circularShape.getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
+            g.setLineWidth(circularShape.getAperture().getWidth(0));
+            g.strokeArc(circularShape.getArc().getCenter().getX() - circularShape.getArc().getRadius(),
+                    circularShape.getArc().getCenter().getY() - circularShape.getArc().getRadius(),
+                    circularShape.getArc().getRadius() * 2, circularShape.getArc().getRadius() * 2,
+                    -Math.toDegrees(circularShape.getArc().getStart()),
+                    Math.toDegrees(circularShape.getArc().getAngle()) * (circularShape.getArc().isClockwise() ? 1 : -1),
+                    ArcType.OPEN);
+        }
         else if (primitive instanceof Region)
         {
             g.beginPath();
             Region region = (Region) primitive;
-            Point p = region.getSegments().get(0).getFrom();
-            g.moveTo(p.getX(), p.getY());
-            for (LinearShape segment : region.getSegments())
-                g.lineTo(segment.getTo().getX(), segment.getTo().getY());
+            InterpolatingShape firstElement = (InterpolatingShape) region.getSegments().get(0);
+            g.moveTo(firstElement.getFrom().getX(), firstElement.getFrom().getY());
+
+            for (GerberPrimitive segment : region.getSegments())
+            {
+                if (segment instanceof LinearShape)
+                    g.lineTo(((LinearShape)segment).getTo().getX(), ((LinearShape)segment).getTo().getY());
+                else if (segment instanceof CircularShape)
+                {
+                    Arc arc = ((CircularShape) segment).getArc();
+                    g.arc(arc.getCenter().getX(), arc.getCenter().getY(),
+                            arc.getRadius(), arc.getRadius(),
+                            -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1));
+                }
+            }
 
             g.closePath();
             g.fill();

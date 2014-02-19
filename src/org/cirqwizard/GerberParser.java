@@ -17,10 +17,7 @@ package org.cirqwizard;
 import org.cirqwizard.appertures.*;
 import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.gerber.Region;
+import org.cirqwizard.gerber.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.Settings;
 
@@ -61,7 +58,13 @@ public class GerberParser
         COUNTERCLOCKWISE_CIRCULAR
     }
 
+    private enum ArcQuadrantMode
+    {
+        SINGLE_QUADRANT, MULTI_QUADRANT
+    }
+
     private InterpolationMode currentInterpolationMode = InterpolationMode.LINEAR;
+    private ArcQuadrantMode arcQuadrantMode;
 
     private int x = 0;
     private int y = 0;
@@ -300,7 +303,7 @@ public class GerberParser
     private DataBlock parseDataBlock(String str)
     {
         DataBlock dataBlock = new DataBlock();
-        Pattern pattern = Pattern.compile("([GMDXY])(-?\\d+)");
+        Pattern pattern = Pattern.compile("([GMDXYIJ])([+-]?\\d+)");
         Matcher matcher = pattern.matcher(str);
         int i = 0;
         while (matcher.find(i))
@@ -312,6 +315,8 @@ public class GerberParser
                 case 'D': dataBlock.setD(Integer.parseInt(matcher.group(2))); break;
                 case 'X': dataBlock.setX(convertCoordinates(matcher.group(2))); break;
                 case 'Y': dataBlock.setY(convertCoordinates(matcher.group(2))); break;
+                case 'I': dataBlock.setI(convertCoordinates(matcher.group(2))); break;
+                case 'J': dataBlock.setJ(convertCoordinates(matcher.group(2))); break;
             }
             i = matcher.end();
         }
@@ -321,7 +326,7 @@ public class GerberParser
     private int convertCoordinates(String str)
     {
         boolean negative = str.startsWith("-");
-        if (negative)
+        if (str.startsWith("-") || str.startsWith("+"))
             str = str.substring(1);
         while (str.length() < integerPlaces + decimalPlaces)
             str = omitLeadingZeros ? '0' + str : str + '0';
@@ -339,6 +344,12 @@ public class GerberParser
                 case  1:
                     currentInterpolationMode = InterpolationMode.LINEAR;
                 break;
+                case 2:
+                    currentInterpolationMode = InterpolationMode.CLOCKWISE_CIRCULAR;
+                break;
+                case 3:
+                    currentInterpolationMode = InterpolationMode.COUNTERCLOCKWISE_CIRCULAR;
+                break;
                 case  4: return;
                 case 36:
                     region = new Region();
@@ -353,6 +364,12 @@ public class GerberParser
                 break;
                 case 71:
                     unitConversionRatio = MM_RATIO;
+                break;
+                case 74:
+                    arcQuadrantMode = ArcQuadrantMode.SINGLE_QUADRANT;
+                break;
+                case 75:
+                    arcQuadrantMode = ArcQuadrantMode.MULTI_QUADRANT;
                 break;
                 default:
                     throw new GerberParsingException("Unknown gcode: " + dataBlock.getG());
@@ -388,18 +405,33 @@ public class GerberParser
         if (dataBlock.getY() != null)
             newY = dataBlock.getY();
 
+        GerberPrimitive primitive = null;
+        if(exposureMode == ExposureMode.FLASH)
+            primitive = new Flash(newX, newY, aperture);
+        else if (exposureMode == ExposureMode.ON)
+        {
+            if (currentInterpolationMode == InterpolationMode.LINEAR)
+                primitive = new LinearShape(x, y, newX, newY, aperture);
+            else
+            {
+                RealNumber i = dataBlock.getI() == null ? new RealNumber(0) : dataBlock.getI();
+                RealNumber j = dataBlock.getJ() == null ? new RealNumber(0) : dataBlock.getJ();
+                primitive = new CircularShape(x, y, newX, newY, x.add(i), y.add(j),
+                        currentInterpolationMode == InterpolationMode.CLOCKWISE_CIRCULAR, aperture);
+            }
+        }
+
         if (region != null)
         {
             if (exposureMode == ExposureMode.ON && (!newX.equals(x) || !newY.equals(y)))
-                region.addSegment(new LinearShape(x, y, newX, newY, null));
+                region.addSegment(primitive);
         }
         else if (aperture != null)
         {
-            if(exposureMode == ExposureMode.FLASH)
-                elements.add(new Flash(newX, newY, aperture));
-            else if (exposureMode == ExposureMode.ON && (!newX.equals(x) || !newY.equals(y)))
-                elements.add(new LinearShape(x, y, newX, newY, aperture));
+            if(exposureMode == ExposureMode.FLASH || exposureMode == ExposureMode.ON && (!newX.equals(x) || !newY.equals(y)))
+                elements.add(primitive);
         }
+
         x = newX;
         y = newY;
     }

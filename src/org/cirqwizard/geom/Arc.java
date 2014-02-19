@@ -121,11 +121,14 @@ public class Arc extends Curve
         return end;
     }
 
+<<<<<<< HEAD
     public int getCircumreference()
     {
         return (int)(getAngle() * radius);
     }
 
+=======
+>>>>>>> master
     @Override
     public String toString()
     {
@@ -135,8 +138,13 @@ public class Arc extends Curve
                 ", center=" + center +
                 ", radius=" + radius +
                 ", clockwise=" + clockwise +
+<<<<<<< HEAD
                 ", start=" + getStart() +
                 ", end=" + getEnd(false) +
+=======
+                ", start=" + start +
+                ", angle=" + angle +
+>>>>>>> master
                 '}';
     }
 }

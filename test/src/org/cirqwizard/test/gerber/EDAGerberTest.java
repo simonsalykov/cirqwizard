@@ -18,11 +18,17 @@ package org.cirqwizard.test.gerber;
 import org.cirqwizard.GerberParser;
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
+<<<<<<< HEAD
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.gerber.Region;
+=======
+import org.cirqwizard.gerber.*;
+import org.cirqwizard.math.RealNumber;
+>>>>>>> master
 import org.junit.Test;
 
 import java.io.IOException;
@@ -327,7 +333,7 @@ public class EDAGerberTest
         GerberPrimitive p = elements.get(0);
         assertEquals(Region.class, p.getClass());
         Region r = (Region) p;
-        List<LinearShape> s = r.getSegments();
+        List<GerberPrimitive> s = r.getSegments();
         assertEquals(4, r.getSegments().size());
         assertEquals(5340, r.getMin().getX());
         assertEquals(8220, r.getMin().getY());
@@ -427,5 +433,128 @@ public class EDAGerberTest
         assertEquals(1524, ((RectangularAperture)f.getAperture()).getDimensions()[0]);
         assertEquals(1524, ((RectangularAperture)f.getAperture()).getDimensions()[1]);
         assertEquals(new Point(17844, 25464), f.getPoint());
+    }
+
+    @Test
+    public void testProteusFile() throws IOException
+    {
+        String fileContent = "G04 PROTEUS RS274X GERBER FILE*\n" +
+                "%FSLAX24Y24*%\n" +
+                "%MOIN*%\n" +
+                "%ADD11C,0.0080*%\n" +
+                "G54D11*\n" +
+                "X+3077Y-16191D02*\n" +
+                "X+8457Y-16191D01*\n" +
+                "X-44265Y+11501D01*\n" +
+                "M00*\n";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        ArrayList<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(2, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(203, ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(7816, -41125), l.getFrom());
+        assertEquals(new Point(21481, -41125), l.getTo());
+
+        p = elements.get(1);
+        assertEquals(LinearShape.class, p.getClass());
+        l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(203, ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(21481, -41125), l.getFrom());
+        assertEquals(new Point(-112433, 29213), l.getTo());
+
+    }
+
+    @Test
+    public void testEasyPCFile() throws IOException
+    {
+        String fileContent = "%FSLAX23Y23*%\n" +
+                "%MOIN*%\n" +
+                "G04 EasyPC Gerber Version 17.0 Build 3379 *\n" +
+                "%ADD102R,0.06000X0.06000*%\n" +
+                "%ADD27C,0.00800*%\n" +
+                "%ADD17R,0.07800X0.02200*%\n" +
+                "%ADD114R,0.12598X0.03937*%\n" +
+                "%ADD115R,0.06890X0.05906*%\n" +
+                "%ADD103R,0.07090X0.06300*%\n" +
+                "%ADD113C,0.01654*%\n" +
+                "%ADD112C,0.05906*%\n" +
+                "%ADD116C,0.06299*%\n" +
+                "D113*\n" +
+                "X203Y186D02*\n" +
+                "G75*\n" +
+                "G02X224Y224I81J-22D01*\n" +
+                "G01*\n" +
+                "X181*\n" +
+                "G75*\n" +
+                "G02X203Y186I-59J-59*\n" +
+                "G01*\n" +
+                "G36*\n" +
+                "G75*\n" +
+                "G02X224Y224I81J-22*\n" +
+                "G01*\n" +
+                "X181*\n" +
+                "G75*\n" +
+                "G02X203Y186I-59J-59*\n" +
+                "G01*\n" +
+                "G37*\n" +
+                "Y654D02*\n" +
+                "X254Y602D01*\n" +
+                "M02*\n";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        ArrayList<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(5, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(CircularShape.class, p.getClass());
+        CircularShape c = (CircularShape) p;
+        Arc arc = c.getArc();
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(5156, 4724), arc.getFrom());
+        assertEquals(new Point(5670, 5670), arc.getTo());
+        assertEquals(new Point(7213, 4166), arc.getCenter());
+        assertEquals(true, arc.isClockwise());
+
+        p = elements.get(1);
+        assertEquals(LinearShape.class, p.getClass());
+        LinearShape l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(5690, 5690), l.getFrom());
+        assertEquals(new Point(4597, 5690), l.getTo());
+
+        p = elements.get(2);
+        assertEquals(CircularShape.class, p.getClass());
+        c = (CircularShape) p;
+        arc = c.getArc();
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(4597, 5690), arc.getFrom());
+        assertEquals(new Point(5156, 4724), arc.getTo());
+        assertEquals(new Point(3099, 4191), arc.getCenter());
+        assertEquals(true, arc.isClockwise());
+
+        p = elements.get(3);
+        assertEquals(Region.class, p.getClass());
+
+        Region region = (Region) p;
+        assertEquals(3, region.getSegments().size());
+
+        p = elements.get(4);
+        assertEquals(LinearShape.class, p.getClass());
+        l = (LinearShape) p;
+        assertEquals(CircularAperture.class, p.getAperture().getClass());
+        assertEquals(420, ((CircularAperture)p.getAperture()).getDiameter());
+        assertEquals(new Point(5156, 16612), l.getFrom());
+        assertEquals(new Point(6452, 15291), l.getTo());
     }
 }

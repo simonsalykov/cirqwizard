@@ -17,6 +17,7 @@ package org.cirqwizard.fx;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.VBox;
@@ -33,7 +34,8 @@ public class PCBPlacementController extends SceneController
 
     @FXML private Label header;
 
-    @FXML private Label errorMessage;
+    @FXML private VBox errorBox;
+    @FXML private CheckBox ignoreErrorCheckbox;
     @FXML private Label topTracesText;
     @FXML private Label bottomTracesText;
     @FXML private Label drillingText;
@@ -56,7 +58,7 @@ public class PCBPlacementController extends SceneController
 
         header.setVisible(false);
         topTracesText.setVisible(false);
-        errorMessage.setVisible(false);
+        errorBox.setVisible(false);
         bottomTracesText.setVisible(false);
         drillingText.setVisible(false);
         State state = getMainApplication().getState();
@@ -94,6 +96,7 @@ public class PCBPlacementController extends SceneController
             radioButtonsBox.setVisible(false);
 
         moveAwayButton.setDisable(getMainApplication().getCNCController() == null);
+        ignoreErrorCheckbox.setSelected(false);
 
         updateComponents();
     }
@@ -107,7 +110,7 @@ public class PCBPlacementController extends SceneController
     public void updateComponents()
     {
         Context context = getMainApplication().getContext();
-        errorMessage.setVisible(false);
+        errorBox.setVisible(false);
         if (smallPCB.isSelected())
             context.setPcbSize(PCBSize.Small);
         else if (largePCB.isSelected())
@@ -115,8 +118,8 @@ public class PCBPlacementController extends SceneController
         continueButton.setDisable(radioButtonsBox.isVisible() && !smallPCB.isSelected() && !largePCB.isSelected());
         if (context.getPcbSize() != null && !checkSelectedPcbSize())
         {
-            errorMessage.setVisible(true);
-            continueButton.setDisable(true);
+            errorBox.setVisible(true);
+            continueButton.setDisable(!ignoreErrorCheckbox.isSelected());
         }
     }
 
