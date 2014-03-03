@@ -212,7 +212,7 @@ public class Context
         else
         {
             millingLayer.generateToolpaths();
-            contourMillDiameter = drillFormat.format(((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter());
+            contourMillDiameter = drillFormat.format((double)((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter() / Settings.RESOLUTION);
         }
         contourSelected = millingLayer != null;
     }
