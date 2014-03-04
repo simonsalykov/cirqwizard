@@ -33,8 +33,6 @@ public class ToolpathLoader
             FileInputStream fis = new FileInputStream(path + ".tmp");
             ObjectInputStream oin = new ObjectInputStream(fis);
             toolpathContainer = (ToolpathContainer) oin.readObject();
-
-            System.out.println("Loaded ToolpathContainer from file");
         }
         catch (Exception e)
         {
@@ -42,10 +40,7 @@ public class ToolpathLoader
         }
 
         if (toolpathContainer == null)
-        {
             toolpathContainer = new ToolpathContainer();
-            System.out.println("Corrupted or missing file. Generating new ToolpathContainer");
-        }
     }
 
     public static void saveToFile()

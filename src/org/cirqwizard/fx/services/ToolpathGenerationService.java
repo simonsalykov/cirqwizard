@@ -150,23 +150,15 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
                     if (ToolpathLoader.hasValidData(diameter, traceLayer.getAngle(), context.getFile().lastModified()))
                     {
-                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
+                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && ToolpathLoader.getTopLayer() != null)
                         {
-                            if (ToolpathLoader.getTopLayer() != null)
-                            {
-                                System.out.println("Load top layer from file: " + ToolpathLoader.getTopLayer().size() + " elements");
-                                traceLayer.setToolpaths(ToolpathLoader.getTopLayer());
-                                return FXCollections.observableArrayList(ToolpathLoader.getTopLayer());
-                            }
+                            traceLayer.setToolpaths(ToolpathLoader.getTopLayer());
+                            return FXCollections.observableArrayList(ToolpathLoader.getTopLayer());
                         }
-                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
+                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION && ToolpathLoader.getBottomLayer() != null)
                         {
-                            if (ToolpathLoader.getBottomLayer() != null)
-                            {
-                                System.out.println("Load bottom layer from file: " + ToolpathLoader.getBottomLayer().size() + " elements");
-                                context.getBottomTracesLayer().setToolpaths(ToolpathLoader.getBottomLayer());
-                                return FXCollections.observableArrayList(ToolpathLoader.getBottomLayer());
-                            }
+                            context.getBottomTracesLayer().setToolpaths(ToolpathLoader.getBottomLayer());
+                            return FXCollections.observableArrayList(ToolpathLoader.getBottomLayer());
                         }
                     }
 
