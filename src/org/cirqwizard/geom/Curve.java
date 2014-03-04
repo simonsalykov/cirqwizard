@@ -15,7 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.geom;
 
 
-public abstract class Curve
+import java.io.Serializable;
+
+public abstract class Curve implements Serializable
 {
     protected Point from;
     protected Point to;

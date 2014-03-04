@@ -15,7 +15,10 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.toolpath;
 
 
-public abstract class Toolpath
+import java.io.Serializable;
+
+
+public abstract class Toolpath implements Serializable
 {
     private boolean enabled = true;
     private boolean selected = false;

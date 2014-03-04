@@ -20,15 +20,14 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.toolpath.ToolpathLoader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -41,6 +40,7 @@ public class Context
 {
     private Settings settings;
     private File file;
+    private String filename;
     private boolean fileLoaded = false;
 
     private TraceLayer topTracesLayer;
@@ -106,6 +106,8 @@ public class Context
     {
         reset();
         this.file = file;
+        filename = file.getAbsolutePath();
+        filename = filename.substring(0, filename.lastIndexOf('.'));
         fileLoaded = false;
     }
 
@@ -146,14 +148,13 @@ public class Context
 
     public void loadFile()
     {
-        String filename = file.getAbsolutePath();
-        filename = filename.substring(0, filename.lastIndexOf('.'));
         openFile(filename + ".cmp");
         openFile(filename + ".ncl");
         openFile(filename + ".crc");
         openFile(filename + ".sol");
         openFile(filename + ".drd");
         openFile(filename + ".mnt");
+        ToolpathLoader.setFile(filename);
         moveToOrigin();
         fileLoaded = true;
     }

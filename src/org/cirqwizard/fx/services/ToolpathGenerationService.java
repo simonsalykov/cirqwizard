@@ -34,6 +34,7 @@ import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.toolpath.ToolpathLoader;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -145,7 +146,31 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         }
                     });
                     TraceLayer traceLayer = (TraceLayer) layer;
-                    List<Toolpath> toolpaths = generator.generate();
+                    List<Toolpath> toolpaths;
+
+                    if (ToolpathLoader.hasValidData(diameter, context.getFile().lastModified()))
+                    {
+                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
+                        {
+                            if (ToolpathLoader.getTopLayer() != null)
+                            {
+                                System.out.println("Load top layer from file: " + ToolpathLoader.getTopLayer().size() + " elements");
+                                traceLayer.setToolpaths(ToolpathLoader.getTopLayer());
+                                return FXCollections.observableArrayList(ToolpathLoader.getTopLayer());
+                            }
+                        }
+                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
+                        {
+                            if (ToolpathLoader.getBottomLayer() != null)
+                            {
+                                System.out.println("Load bottom layer from file: " + ToolpathLoader.getBottomLayer().size() + " elements");
+                                context.getBottomTracesLayer().setToolpaths(ToolpathLoader.getBottomLayer());
+                                return FXCollections.observableArrayList(ToolpathLoader.getBottomLayer());
+                            }
+                        }
+                    }
+
+                    toolpaths = generator.generate();
 
                     if (toolpaths == null || toolpaths.size() == 0)
                         return null;
@@ -188,6 +213,18 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     for (Chain p : chains)
                         toolpaths.addAll(p.getSegments());
                     traceLayer.setToolpaths(toolpaths);
+
+                    if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
+                    {
+                        ToolpathLoader.setTopLayer(toolpaths);
+                    }
+                    else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
+                    {
+                        ToolpathLoader.setBottomLayer(toolpaths);
+                    }
+                    ToolpathLoader.setToolDiameter(diameter);
+                    ToolpathLoader.setLastModified(context.getFile().lastModified());
+                    ToolpathLoader.saveToFile();
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {
