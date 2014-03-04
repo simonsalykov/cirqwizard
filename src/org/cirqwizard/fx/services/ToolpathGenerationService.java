@@ -148,7 +148,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     TraceLayer traceLayer = (TraceLayer) layer;
                     List<Toolpath> toolpaths;
 
-                    if (ToolpathLoader.hasValidData(diameter, context.getFile().lastModified()))
+                    if (ToolpathLoader.hasValidData(diameter, traceLayer.getAngle(), context.getFile().lastModified()))
                     {
                         if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
                         {
@@ -215,15 +215,13 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     traceLayer.setToolpaths(toolpaths);
 
                     if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
-                    {
                         ToolpathLoader.setTopLayer(toolpaths);
-                    }
                     else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
-                    {
                         ToolpathLoader.setBottomLayer(toolpaths);
-                    }
+
                     ToolpathLoader.setToolDiameter(diameter);
                     ToolpathLoader.setLastModified(context.getFile().lastModified());
+                    ToolpathLoader.setAngle(traceLayer.getAngle());
                     ToolpathLoader.saveToFile();
                 }
                 else if (layer instanceof SolderPasteLayer)

@@ -67,11 +67,10 @@ public class ToolpathLoader
         }
     }
 
-    public static boolean hasValidData(int toolDiameter, long lastModified)
+    public static boolean hasValidData(int toolDiameter, int angle, long lastModified)
     {
-        return toolpathContainer.toolDiameter == toolDiameter && toolpathContainer.lastModified == lastModified;
+        return toolpathContainer.toolDiameter == toolDiameter && toolpathContainer.lastModified == lastModified && toolpathContainer.angle == angle;
     }
-
 
     public static List<Toolpath> getTopLayer()
     {
@@ -93,6 +92,11 @@ public class ToolpathLoader
         toolpathContainer.toolDiameter = toolDiameter;
     }
 
+    public static void setAngle(int angle)
+    {
+        toolpathContainer.angle = angle;
+    }
+
     public static void setTopLayer(List<Toolpath> topLayer)
     {
         toolpathContainer.topLayer = topLayer;
@@ -108,6 +112,7 @@ class ToolpathContainer implements Serializable
 {
     public int toolDiameter;
     public long lastModified;
+    public int angle;
     public List<Toolpath> bottomLayer;
     public List<Toolpath> topLayer;
 }
