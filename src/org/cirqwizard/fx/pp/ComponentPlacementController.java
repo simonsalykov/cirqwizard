@@ -68,7 +68,7 @@ public class ComponentPlacementController extends SceneController implements Ini
     @FXML private RealNumberTextField targetAngle;
 
     private ObservableList<String> componentNames = FXCollections.observableArrayList();
-    private HashMap<Integer, int[]> placementOffsets = new HashMap<>();
+    private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
 
     private static final int feederOffsetX = 10 * Settings.RESOLUTION;
     private static final int feederOffsetY = -15 * Settings.RESOLUTION;
@@ -168,7 +168,7 @@ public class ComponentPlacementController extends SceneController implements Ini
                 targetY.setIntegerValue(p.getPoint().getY());
                 targetAngle.setIntegerValue(p.getAngle());
 
-                int[] offsets = placementOffsets.get(p.getAngle());
+                Integer[] offsets = placementOffsets.get(p.getAngle());
                 if (offsets != null)
                 {
                     placementX.setIntegerValue(offsets[0]);
@@ -301,15 +301,8 @@ public class ComponentPlacementController extends SceneController implements Ini
 
     public void pickupLocationUpdated()
     {
-        try
-        {
-            new RealNumber(pickupX.getRealNumberText());
-            new RealNumber(pickupY.getRealNumberText());
-        }
-        catch (NumberFormatException e)
-        {
+        if (pickupX.getIntegerValue() == null || pickupY.getIntegerValue() == null)
             return;
-        }
         getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(), null);
         atPickupLocation = true;
     }
@@ -319,7 +312,7 @@ public class ComponentPlacementController extends SceneController implements Ini
         getMainApplication().getCNCController().moveTo(getTargetX(), getTargetY(), null);
         rotatePP(getTargetAngle());
         placementOffsets.put(targetAngle.getIntegerValue(),
-                new int[]{placementX.getIntegerValue(), placementY.getIntegerValue(), placementAngle.getIntegerValue()});
+                new Integer[]{placementX.getIntegerValue(), placementY.getIntegerValue(), placementAngle.getIntegerValue()});
     }
 
     public void manualZUpdated()
