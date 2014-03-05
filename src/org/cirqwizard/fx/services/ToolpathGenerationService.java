@@ -33,10 +33,7 @@ import org.cirqwizard.generation.optimizer.TimeEstimator;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.Settings;
-import org.cirqwizard.toolpath.DrillPoint;
-import org.cirqwizard.toolpath.Toolpath;
-import org.cirqwizard.toolpath.ToolpathsCache;
-import org.cirqwizard.toolpath.ToolpathsPersistor;
+import org.cirqwizard.toolpath.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -155,19 +152,18 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     {
                         cache = ToolpathsPersistor.loadFromFile(context.getFileName() + ".tmp");
                     }
-                    catch (ToolpathPersistingException e){}
-
-                    if (cache != null && cache.hasValidData(traceLayer.getAngle(), context.getFile().lastModified()))
+                    catch (ToolpathPersistingException e)
                     {
-                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && cache.getTopLayer(diameter) != null)
+                        LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
+                    }
+
+                    if (cache != null && cache.hasValidData(context.getFile().lastModified()))
+                    {
+                        ToolpathsCacheKey key = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter);
+                        if (cache.getToolpaths(key) != null)
                         {
-                            traceLayer.setToolpaths(cache.getTopLayer(diameter));
-                            return FXCollections.observableArrayList(cache.getTopLayer(diameter));
-                        }
-                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION && cache.getBottomLayer(diameter) != null)
-                        {
-                            context.getBottomTracesLayer().setToolpaths(cache.getBottomLayer(diameter));
-                            return FXCollections.observableArrayList(cache.getBottomLayer(diameter));
+                            traceLayer.setToolpaths(cache.getToolpaths(key));
+                            return FXCollections.observableArrayList(cache.getToolpaths(key));
                         }
                     }
                     else
@@ -217,19 +213,17 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         toolpaths.addAll(p.getSegments());
                     traceLayer.setToolpaths(toolpaths);
 
-                    if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
-                        cache.setTopLayer(diameter, toolpaths);
-                    else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
-                        cache.setBottomLayer(diameter, toolpaths);
-
+                    cache.setToolpaths(new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter), toolpaths);
                     cache.setLastModified(context.getFile().lastModified());
-                    cache.setAngle(traceLayer.getAngle());
 
                     try
                     {
                         ToolpathsPersistor.saveToFile(cache, context.getFileName()  + ".tmp");
                     }
-                    catch (ToolpathPersistingException e){}
+                    catch (ToolpathPersistingException e)
+                    {
+                        LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
+                    }
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {

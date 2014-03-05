@@ -26,7 +26,6 @@ public class TraceLayer extends Layer
 {
     private List<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
     private List<Toolpath> toolpaths = new ArrayList<Toolpath>();
-    private int angle = 0;
 
     public void setElements(ArrayList<GerberPrimitive> elements)
     {
@@ -43,18 +42,9 @@ public class TraceLayer extends Layer
         return toolpaths;
     }
 
-    public int getAngle()
-    {
-        return angle;
-    }
-
     @Override
     public void rotate(boolean clockwise)
     {
-        angle+= clockwise ? -90 : 90;
-        angle =  angle % 360;
-        angle = (angle + 360) % 360;
-
         for (GerberPrimitive p : elements)
             p.rotate(clockwise);
     }

@@ -34,7 +34,7 @@ public class ToolpathsPersistor
             ObjectInputStream oin = new ObjectInputStream(fis);
             toolpathsCache = (ToolpathsCache) oin.readObject();
         }
-        catch(Exception e)
+        catch(IOException | ClassNotFoundException e)
         {
             throw new ToolpathPersistingException("Error loading toolpaths from file", e);
         }
@@ -53,7 +53,7 @@ public class ToolpathsPersistor
                 oos.flush();
                 oos.close();
             }
-            catch(Exception e)
+            catch(IOException e)
             {
                 throw new ToolpathPersistingException("Error saving toolpaths to file", e);
             }

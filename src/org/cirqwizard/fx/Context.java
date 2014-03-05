@@ -71,6 +71,8 @@ public class Context
     private int boardWidth;
     private int boardHeight;
 
+    private int angle;
+
     private String dispensingNeedleDiameter;
 
     private List<ComponentId> componentIds;
@@ -310,6 +312,10 @@ public class Context
 
     public void rotate(boolean clockwise)
     {
+        angle+= clockwise ? -90 : 90;
+        angle =  angle % 360;
+        angle = (angle + 360) % 360;
+
         for (Layer layer : getLayers())
             layer.rotate(clockwise);
         moveToOrigin();
@@ -466,6 +472,11 @@ public class Context
     public void setBoardWidth(int boardWidth)
     {
         this.boardWidth = boardWidth;
+    }
+
+    public int getAngle()
+    {
+        return angle;
     }
 
     public String getDispensingNeedleDiameter()

@@ -23,26 +23,17 @@ import java.util.List;
 public class ToolpathsCache implements Serializable
 {
     private long lastModified;
-    private int angle;
-    private HashMap<Integer, List<Toolpath>> bottomLayer = new HashMap<>();
-    private HashMap<Integer, List<Toolpath>> topLayer = new HashMap<>();
+    private HashMap<ToolpathsCacheKey, List<Toolpath>> traces = new HashMap<>();
 
-    public boolean hasValidData(int angle, long lastModified)
+    public boolean hasValidData(long lastModified)
     {
-        return this.lastModified == lastModified && this.angle == angle;
+        return this.lastModified == lastModified;
     }
 
-    public List<Toolpath> getTopLayer(int toolDiameter)
+    public List<Toolpath> getToolpaths(ToolpathsCacheKey cacheKey)
     {
-        if (topLayer.containsKey(toolDiameter))
-            return topLayer.get(toolDiameter);
-        return null;
-    }
-
-    public List<Toolpath> getBottomLayer(int toolDiameter)
-    {
-        if (bottomLayer.containsKey(toolDiameter))
-            return bottomLayer.get(toolDiameter);
+        if (traces.containsKey(cacheKey))
+            return traces.get(cacheKey);
         return null;
     }
 
@@ -51,18 +42,8 @@ public class ToolpathsCache implements Serializable
         this.lastModified = lastModified;
     }
 
-    public void setAngle(int angle)
+    public void setToolpaths(ToolpathsCacheKey cacheKey, List<Toolpath> topLayer)
     {
-        this.angle = angle;
-    }
-
-    public void setTopLayer(int toolDiameter, List<Toolpath> topLayer)
-    {
-        this.topLayer.put(toolDiameter, topLayer);
-    }
-
-    public void setBottomLayer(int toolDiameter, List<Toolpath> bottomLayer)
-    {
-        this.bottomLayer.put(toolDiameter, bottomLayer);
+        this.traces.put(cacheKey, topLayer);
     }
 }
