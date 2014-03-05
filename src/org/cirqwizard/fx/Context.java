@@ -25,7 +25,6 @@ import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.ToolpathLoader;
 
 import java.io.File;
 import java.io.FileReader;
@@ -40,7 +39,6 @@ public class Context
 {
     private Settings settings;
     private File file;
-    private String filename;
     private boolean fileLoaded = false;
 
     private TraceLayer topTracesLayer;
@@ -106,9 +104,13 @@ public class Context
     {
         reset();
         this.file = file;
-        filename = file.getAbsolutePath();
-        filename = filename.substring(0, filename.lastIndexOf('.'));
         fileLoaded = false;
+    }
+
+    public String getFileName()
+    {
+        String filename = file.getAbsolutePath();
+        return filename.substring(0, filename.lastIndexOf('.'));
     }
 
     public boolean isFileLoaded()
@@ -148,13 +150,13 @@ public class Context
 
     public void loadFile()
     {
+        String filename = getFileName();
         openFile(filename + ".cmp");
         openFile(filename + ".ncl");
         openFile(filename + ".crc");
         openFile(filename + ".sol");
         openFile(filename + ".drd");
         openFile(filename + ".mnt");
-        ToolpathLoader.setFile(filename);
         moveToOrigin();
         fileLoaded = true;
     }

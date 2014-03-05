@@ -21,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.generation.ToolpathGenerator;
@@ -34,7 +35,8 @@ import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.DrillPoint;
 import org.cirqwizard.toolpath.Toolpath;
-import org.cirqwizard.toolpath.ToolpathLoader;
+import org.cirqwizard.toolpath.ToolpathsCache;
+import org.cirqwizard.toolpath.ToolpathsPersistor;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -148,17 +150,26 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     TraceLayer traceLayer = (TraceLayer) layer;
                     List<Toolpath> toolpaths;
 
-                    if (ToolpathLoader.hasValidData(diameter, traceLayer.getAngle(), context.getFile().lastModified()))
+                    ToolpathsCache cache = null;
+                    try
                     {
-                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && ToolpathLoader.getTopLayer() != null)
+                        cache = ToolpathsPersistor.loadFromFile(context.getFileName() + ".tmp");
+                    }
+                    catch (ToolpathPersistingException e){}
+
+                    if(cache == null)
+                        cache = new ToolpathsCache();
+                    else if (cache.hasValidData(diameter, traceLayer.getAngle(), context.getFile().lastModified()))
+                    {
+                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && cache.getTopLayer() != null)
                         {
-                            traceLayer.setToolpaths(ToolpathLoader.getTopLayer());
-                            return FXCollections.observableArrayList(ToolpathLoader.getTopLayer());
+                            traceLayer.setToolpaths(cache.getTopLayer());
+                            return FXCollections.observableArrayList(cache.getTopLayer());
                         }
-                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION && ToolpathLoader.getBottomLayer() != null)
+                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION && cache.getBottomLayer() != null)
                         {
-                            context.getBottomTracesLayer().setToolpaths(ToolpathLoader.getBottomLayer());
-                            return FXCollections.observableArrayList(ToolpathLoader.getBottomLayer());
+                            context.getBottomTracesLayer().setToolpaths(cache.getBottomLayer());
+                            return FXCollections.observableArrayList(cache.getBottomLayer());
                         }
                     }
 
@@ -207,14 +218,19 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     traceLayer.setToolpaths(toolpaths);
 
                     if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
-                        ToolpathLoader.setTopLayer(toolpaths);
+                        cache.setTopLayer(toolpaths);
                     else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
-                        ToolpathLoader.setBottomLayer(toolpaths);
+                        cache.setBottomLayer(toolpaths);
 
-                    ToolpathLoader.setToolDiameter(diameter);
-                    ToolpathLoader.setLastModified(context.getFile().lastModified());
-                    ToolpathLoader.setAngle(traceLayer.getAngle());
-                    ToolpathLoader.saveToFile();
+                    cache.setToolDiameter(diameter);
+                    cache.setLastModified(context.getFile().lastModified());
+                    cache.setAngle(traceLayer.getAngle());
+
+                    try
+                    {
+                        ToolpathsPersistor.saveToFile(cache, context.getFileName()  + ".tmp");
+                    }
+                    catch (ToolpathPersistingException e){}
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {
