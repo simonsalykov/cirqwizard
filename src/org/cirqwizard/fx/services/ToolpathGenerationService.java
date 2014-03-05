@@ -159,17 +159,17 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
                     if(cache == null)
                         cache = new ToolpathsCache();
-                    else if (cache.hasValidData(diameter, traceLayer.getAngle(), context.getFile().lastModified()))
+                    else if (cache.hasValidData(traceLayer.getAngle(), context.getFile().lastModified()))
                     {
-                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && cache.getTopLayer() != null)
+                        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && cache.getTopLayer(diameter) != null)
                         {
-                            traceLayer.setToolpaths(cache.getTopLayer());
-                            return FXCollections.observableArrayList(cache.getTopLayer());
+                            traceLayer.setToolpaths(cache.getTopLayer(diameter));
+                            return FXCollections.observableArrayList(cache.getTopLayer(diameter));
                         }
-                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION && cache.getBottomLayer() != null)
+                        else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION && cache.getBottomLayer(diameter) != null)
                         {
-                            context.getBottomTracesLayer().setToolpaths(cache.getBottomLayer());
-                            return FXCollections.observableArrayList(cache.getBottomLayer());
+                            context.getBottomTracesLayer().setToolpaths(cache.getBottomLayer(diameter));
+                            return FXCollections.observableArrayList(cache.getBottomLayer(diameter));
                         }
                     }
 
@@ -218,11 +218,10 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     traceLayer.setToolpaths(toolpaths);
 
                     if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
-                        cache.setTopLayer(toolpaths);
+                        cache.setTopLayer(diameter, toolpaths);
                     else if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
-                        cache.setBottomLayer(toolpaths);
+                        cache.setBottomLayer(diameter, toolpaths);
 
-                    cache.setToolDiameter(diameter);
                     cache.setLastModified(context.getFile().lastModified());
                     cache.setAngle(traceLayer.getAngle());
 

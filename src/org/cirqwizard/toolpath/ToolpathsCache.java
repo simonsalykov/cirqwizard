@@ -16,30 +16,34 @@ package org.cirqwizard.toolpath;
 
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class ToolpathsCache implements Serializable
 {
-    private int toolDiameter;
     private long lastModified;
     private int angle;
-    private List<Toolpath> bottomLayer;
-    private List<Toolpath> topLayer;
+    private HashMap<Integer, List<Toolpath>> bottomLayer = new HashMap<>();
+    private HashMap<Integer, List<Toolpath>> topLayer = new HashMap<>();
 
-    public boolean hasValidData(int toolDiameter, int angle, long lastModified)
+    public boolean hasValidData(int angle, long lastModified)
     {
-        return this.toolDiameter == toolDiameter && this.lastModified == lastModified && this.angle == angle;
+        return this.lastModified == lastModified && this.angle == angle;
     }
 
-    public List<Toolpath> getTopLayer()
+    public List<Toolpath> getTopLayer(int toolDiameter)
     {
-        return topLayer;
+        if (topLayer.containsKey(toolDiameter))
+            return topLayer.get(toolDiameter);
+        return null;
     }
 
-    public List<Toolpath> getBottomLayer()
+    public List<Toolpath> getBottomLayer(int toolDiameter)
     {
-        return bottomLayer;
+        if (bottomLayer.containsKey(toolDiameter))
+            return bottomLayer.get(toolDiameter);
+        return null;
     }
 
     public void setLastModified(long lastModified)
@@ -47,23 +51,18 @@ public class ToolpathsCache implements Serializable
         this.lastModified = lastModified;
     }
 
-    public void setToolDiameter(int toolDiameter)
-    {
-        this.toolDiameter = toolDiameter;
-    }
-
     public void setAngle(int angle)
     {
         this.angle = angle;
     }
 
-    public void setTopLayer(List<Toolpath> topLayer)
+    public void setTopLayer(int toolDiameter, List<Toolpath> topLayer)
     {
-        this.topLayer = topLayer;
+        this.topLayer.put(toolDiameter, topLayer);
     }
 
-    public void setBottomLayer(List<Toolpath> bottomLayer)
+    public void setBottomLayer(int toolDiameter, List<Toolpath> bottomLayer)
     {
-        this.bottomLayer = bottomLayer;
+        this.bottomLayer.put(toolDiameter, bottomLayer);
     }
 }
