@@ -15,8 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.toolpath;
 
 
-import org.cirqwizard.ToolpathPersistingException;
-
 import java.io.*;
 
 

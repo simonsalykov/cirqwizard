@@ -21,7 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.cirqwizard.ToolpathPersistingException;
+import org.cirqwizard.toolpath.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.generation.ToolpathGenerator;

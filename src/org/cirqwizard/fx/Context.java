@@ -313,8 +313,8 @@ public class Context
     public void rotate(boolean clockwise)
     {
         angle+= clockwise ? -90 : 90;
-        angle =  angle % 360;
-        angle = (angle + 360) % 360;
+        angle =  angle % 360;           // reduce the angle
+        angle = (angle + 360) % 360;    // force it to be the positive
 
         for (Layer layer : getLayers())
             layer.rotate(clockwise);

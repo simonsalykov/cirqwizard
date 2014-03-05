@@ -12,7 +12,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard;
+package org.cirqwizard.toolpath;
 
 
 public class ToolpathPersistingException extends Exception
