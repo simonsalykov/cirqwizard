@@ -157,9 +157,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     }
                     catch (ToolpathPersistingException e){}
 
-                    if(cache == null)
-                        cache = new ToolpathsCache();
-                    else if (cache.hasValidData(traceLayer.getAngle(), context.getFile().lastModified()))
+                    if (cache != null && cache.hasValidData(traceLayer.getAngle(), context.getFile().lastModified()))
                     {
                         if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION && cache.getTopLayer(diameter) != null)
                         {
@@ -172,6 +170,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                             return FXCollections.observableArrayList(cache.getBottomLayer(diameter));
                         }
                     }
+                    else
+                        cache = new ToolpathsCache();
 
                     toolpaths = generator.generate();
 
