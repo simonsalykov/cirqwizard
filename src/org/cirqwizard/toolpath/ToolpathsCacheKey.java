@@ -22,8 +22,8 @@ import java.io.Serializable;
 public class ToolpathsCacheKey implements Serializable
 {
     private State state;
-    private Integer angle;
-    private Integer toolDiameter;
+    private int angle;
+    private int toolDiameter;
 
     public ToolpathsCacheKey(State state, int angle, int toolDiameter)
     {
@@ -33,19 +33,26 @@ public class ToolpathsCacheKey implements Serializable
     }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(Object o)
     {
-        if(obj != null && obj instanceof ToolpathsCacheKey)
-        {
-            ToolpathsCacheKey k = (ToolpathsCacheKey)obj;
-            return state.equals(k.state) && angle.equals(k.angle) && toolDiameter.equals(k.toolDiameter);
-        }
-        return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ToolpathsCacheKey that = (ToolpathsCacheKey) o;
+
+        if (angle != that.angle) return false;
+        if (toolDiameter != that.toolDiameter) return false;
+        if (state != that.state) return false;
+
+        return true;
     }
 
     @Override
     public int hashCode()
     {
-        return angle.hashCode() + toolDiameter.hashCode() + state.hashCode();
+        int result = state.hashCode();
+        result = 31 * result + angle;
+        result = 31 * result + toolDiameter;
+        return result;
     }
 }
