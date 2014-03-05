@@ -104,6 +104,7 @@ public class RasterWindow
                             true);
                 }
             }
+            g.fill(polygon);
         }
         else if (primitive instanceof Flash)
         {
