@@ -21,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.toolpath.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.generation.ToolpathGenerator;
@@ -32,8 +33,7 @@ import org.cirqwizard.generation.optimizer.TimeEstimator;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.Settings;
-import org.cirqwizard.toolpath.DrillPoint;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.toolpath.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -145,7 +145,31 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         }
                     });
                     TraceLayer traceLayer = (TraceLayer) layer;
-                    List<Toolpath> toolpaths = generator.generate();
+                    List<Toolpath> toolpaths;
+
+                    ToolpathsCache cache = null;
+                    try
+                    {
+                        cache = ToolpathsPersistor.loadFromFile(context.getFileName() + ".tmp");
+                    }
+                    catch (ToolpathPersistingException e)
+                    {
+                        LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
+                    }
+
+                    if (cache != null && cache.hasValidData(context.getFile().lastModified()))
+                    {
+                        ToolpathsCacheKey key = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter);
+                        if (cache.getToolpaths(key) != null)
+                        {
+                            traceLayer.setToolpaths(cache.getToolpaths(key));
+                            return FXCollections.observableArrayList(cache.getToolpaths(key));
+                        }
+                    }
+                    else
+                        cache = new ToolpathsCache();
+
+                    toolpaths = generator.generate();
 
                     if (toolpaths == null || toolpaths.size() == 0)
                         return null;
@@ -188,6 +212,18 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     for (Chain p : chains)
                         toolpaths.addAll(p.getSegments());
                     traceLayer.setToolpaths(toolpaths);
+
+                    cache.setToolpaths(new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter), toolpaths);
+                    cache.setLastModified(context.getFile().lastModified());
+
+                    try
+                    {
+                        ToolpathsPersistor.saveToFile(cache, context.getFileName()  + ".tmp");
+                    }
+                    catch (ToolpathPersistingException e)
+                    {
+                        LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
+                    }
                 }
                 else if (layer instanceof SolderPasteLayer)
                 {

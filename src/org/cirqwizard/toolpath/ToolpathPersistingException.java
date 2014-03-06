@@ -15,32 +15,24 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.toolpath;
 
 
-import java.io.Serializable;
-
-
-public abstract class Toolpath implements Serializable
+public class ToolpathPersistingException extends Exception
 {
-    private boolean enabled = true;
-    private boolean selected = false;
-
-
-    public boolean isEnabled()
+    public ToolpathPersistingException()
     {
-        return enabled;
     }
 
-    public void setEnabled(boolean enabled)
+    public ToolpathPersistingException(String message)
     {
-        this.enabled = enabled;
+        super(message);
     }
 
-    public boolean isSelected()
+    public ToolpathPersistingException(String message, Throwable cause)
     {
-        return selected;
+        super(message, cause);
     }
 
-    public void setSelected(boolean selected)
+    public ToolpathPersistingException(Throwable cause)
     {
-        this.selected = selected;
+        super(cause);
     }
 }

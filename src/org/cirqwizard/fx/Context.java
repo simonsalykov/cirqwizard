@@ -20,7 +20,6 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.pp.PPParser;
@@ -28,7 +27,6 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -73,6 +71,8 @@ public class Context
     private int boardWidth;
     private int boardHeight;
 
+    private int angle;
+
     private String dispensingNeedleDiameter;
 
     private List<ComponentId> componentIds;
@@ -107,6 +107,12 @@ public class Context
         reset();
         this.file = file;
         fileLoaded = false;
+    }
+
+    public String getFileName()
+    {
+        String filename = file.getAbsolutePath();
+        return filename.substring(0, filename.lastIndexOf('.'));
     }
 
     public boolean isFileLoaded()
@@ -146,8 +152,7 @@ public class Context
 
     public void loadFile()
     {
-        String filename = file.getAbsolutePath();
-        filename = filename.substring(0, filename.lastIndexOf('.'));
+        String filename = getFileName();
         openFile(filename + ".cmp");
         openFile(filename + ".ncl");
         openFile(filename + ".crc");
@@ -307,6 +312,10 @@ public class Context
 
     public void rotate(boolean clockwise)
     {
+        angle+= clockwise ? -90 : 90;
+        angle =  angle % 360;           // reduce the angle
+        angle = (angle + 360) % 360;    // force it to be the positive
+
         for (Layer layer : getLayers())
             layer.rotate(clockwise);
         moveToOrigin();
@@ -463,6 +472,11 @@ public class Context
     public void setBoardWidth(int boardWidth)
     {
         this.boardWidth = boardWidth;
+    }
+
+    public int getAngle()
+    {
+        return angle;
     }
 
     public String getDispensingNeedleDiameter()
