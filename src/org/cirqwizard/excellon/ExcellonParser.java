@@ -173,12 +173,12 @@ public class ExcellonParser
 
         int decimalPartStart = str.length() - decimalPlaces;
         decimalPartStart = Math.max(decimalPartStart, 0);
-        int number = Integer.valueOf(str.substring(decimalPartStart)) * coordinatesCoversionRatio;
+        long number = Long.valueOf(str.substring(decimalPartStart)) * coordinatesCoversionRatio;
         for (int i = 0; i < decimalPlaces; i++)
             number /= 10;
         if (str.length() > decimalPlaces)
-            number += Integer.valueOf(str.substring(0, decimalPartStart)) * coordinatesCoversionRatio;
-        return number * (negative ? -1 : 1);
+            number += Long.valueOf(str.substring(0, decimalPartStart)) * coordinatesCoversionRatio;
+        return (int)(number * (negative ? -1 : 1));
     }
 
 }
