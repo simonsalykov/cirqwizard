@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-03-24T15:38:58+01:00</updated>
+  <updated>2014-03-25T00:55:32+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Issue tracking system up and running]]></title>
+    <link href="http://cirqwizard.org//blog/2014/03/25/issue-tracking-system-up-and-running/"/>
+    <updated>2014-03-25T00:13:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2014/03/25/issue-tracking-system-up-and-running</id>
+    <content type="html"><![CDATA[<p>As a next step in our effort to make cirQWizard even more open and transparent we&#8217;ve migrated to publicly available issue tracking system.</p>
+<p>The system can be accessed at <a href="https://cirqwizard.atlassian.net/">https://cirqwizard.atlassian.net/</a> There you can find detailed information about issues addressed in each release, issues scheduled for the next releases, new features we are thinking about and all those annoying bugs no one has time to fix ;)</p>
+<p>What&#8217;s even better, after simple registration procedure everyone can contribute to the project &#8211; you can comment on issues, vote for them so that we know which issues are important to you, create new issues reporting bugs you&#8217;ve encountered or suggesting new great features!</p>
+<p>Help us make cirQWizard even more awesome!</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Blog goes live &amp; version 1.2.2]]></title>
