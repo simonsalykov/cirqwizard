@@ -37,16 +37,19 @@ import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class ToolpathGenerator
 {
     private final static int WINDOW_SIZE = 5000;
     private final static int WINDOWS_OVERLAP = 5;
+    private final static int OOM_RETRY_DELAY = 1000;
 
     private int width;
     private int height;
     private int inflation;
     private int toolDiameter;
+    private int threadCount;
     private List<GerberPrimitive> primitives;
 
     private ArrayList<Flash> circularFlashes = new ArrayList<>();
@@ -54,13 +57,14 @@ public class ToolpathGenerator
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
 
-    public ToolpathGenerator(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives)
+    public ToolpathGenerator(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount)
     {
         this.width = width;
         this.height = height;
         this.inflation = inflation;
         this.toolDiameter = toolDiameter;
         this.primitives = primitives;
+        this.threadCount = threadCount;
 
         for (GerberPrimitive primitive : primitives)
         {
@@ -94,60 +98,10 @@ public class ToolpathGenerator
     {
         final Vector<Toolpath> segments = new Vector<>();
 
-        ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
         for (int x = 0; x < width; x += WINDOW_SIZE)
-        {
             for (int y = 0; y < height; y += WINDOW_SIZE)
-            {
-                final int _x = x > WINDOWS_OVERLAP ? x - WINDOWS_OVERLAP : x;
-                final int _y = y > WINDOWS_OVERLAP ? y - WINDOWS_OVERLAP : y;
-                pool.submit(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        try
-                        {
-                            Platform.runLater(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    progressProperty.set(((double) _y * WINDOW_SIZE + (double) _x * height) / ((double) width * height));
-                                }
-                            });
-
-                            Point offset = new Point(_x, _y);
-                            ArrayList<Flash> translatedFlashes = new ArrayList<>();
-                            for (Flash flash : circularFlashes)
-                            {
-                                Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
-                                translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2)));
-                            }
-
-                            int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, width - _x);
-                            int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, height - _y);
-                            RasterWindow window = new RasterWindow(new Point(_x, _y), windowWidth, windowHeight);
-                            window.render(primitives, inflation);
-                            SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
-                            window = null; // Helping GC to reclaim memory consumed by rendered image
-                            detector.process();
-                            if (detector.getOutput() != null)
-                            {
-                                java.util.List<Toolpath> toolpaths =
-                                        new Tracer(detector.getOutput(), windowWidth, windowHeight, toolDiameter, radii, translatedFlashes).process();
-                                detector = null;  // Helping GC to reclaim memory consumed by processed image
-                                segments.addAll(translateToolpaths(toolpaths, offset));
-                            }
-                        }
-                        catch (Throwable e)
-                        {
-                            LoggerFactory.logException("Error while generating tool paths", e);
-                        }
-                    }
-                });
-            }
-        }
+                pool.submit(new WindowGeneratorThread(x > WINDOWS_OVERLAP ? x - WINDOWS_OVERLAP : x, y > WINDOWS_OVERLAP ? y - WINDOWS_OVERLAP : y, segments));
 
         try
         {
@@ -159,6 +113,74 @@ public class ToolpathGenerator
         }
 
         return segments;
+    }
+
+    private class WindowGeneratorThread implements Runnable
+    {
+        private int x;
+        private int y;
+        private Vector<Toolpath> segments;
+
+        private WindowGeneratorThread(int x, int y, Vector<Toolpath> segments)
+        {
+            this.x = x;
+            this.y = y;
+            this.segments = segments;
+        }
+
+        @Override
+        public void run()
+        {
+            try
+            {
+                Platform.runLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        progressProperty.set(((double) y * WINDOW_SIZE + (double) x * height) / ((double) width * height));
+                    }
+                });
+
+                Point offset = new Point(x, y);
+                ArrayList<Flash> translatedFlashes = new ArrayList<>();
+                for (Flash flash : circularFlashes)
+                {
+                    Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
+                    translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2)));
+                }
+
+                int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, width - x);
+                int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, height - y);
+                RasterWindow window = new RasterWindow(new Point(x, y), windowWidth, windowHeight);
+                window.render(primitives, inflation);
+                SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
+                window = null; // Helping GC to reclaim memory consumed by rendered image
+                detector.process();
+                if (detector.getOutput() != null)
+                {
+                    java.util.List<Toolpath> toolpaths =
+                            new Tracer(detector.getOutput(), windowWidth, windowHeight, toolDiameter, radii, translatedFlashes).process();
+                    detector = null;  // Helping GC to reclaim memory consumed by processed image
+                    segments.addAll(translateToolpaths(toolpaths, offset));
+                }
+            }
+            catch (OutOfMemoryError e)
+            {
+                LoggerFactory.getApplicationLogger().log(Level.WARNING, "Out of memory caught while generating tool paths. Retrying", e);
+                try
+                {
+                    Thread.sleep((int)((1.0 + Math.random()) * OOM_RETRY_DELAY));
+                }
+                catch (InterruptedException e1)  {}
+
+                run();
+            }
+            catch (Throwable e)
+            {
+                LoggerFactory.logException("Error while generating tool paths", e);
+            }
+        }
     }
 
     private java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset)
