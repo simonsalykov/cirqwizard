@@ -49,6 +49,7 @@ public class Settings
 
         private static final String SERIAL_PORT_NAME = "general.serial.port";
         private static final String LOGGER_LOG_LEVEL = "general.log.level";
+        private static final String PROCESSING_THREADS = "general.processing_threads";
 
         private static final String TRACES_TOOL_DIAMETER = "v12.defaults.traces.tool.diameter";
         private static final String TRACES_FEED_XY = "v12.defaults.traces.feed.xy";
@@ -108,6 +109,7 @@ public class Settings
         private static final int MACHINE_FAR_AWAY_Y = 220 * RESOLUTION;
 
         private static final String LOGGER_LOG_LEVEL = "INFO";
+        private static final int PROCESSING_THREADS = Runtime.getRuntime().availableProcessors();
 
         private static final int TRACES_TOOL_DIAMETER = (int)(0.3 * RESOLUTION);
         private static final int TRACES_FEED_XY = 300 * RESOLUTION;
@@ -266,6 +268,16 @@ public class Settings
     public void setSerialPort(String serialPort)
     {
         set(PropertyNames.SERIAL_PORT_NAME, serialPort);
+    }
+
+    public int getProcessingThreads()
+    {
+        return preferences.getInt(PropertyNames.PROCESSING_THREADS, DefaultValues.PROCESSING_THREADS);
+    }
+
+    public void setProcessingThreads(int threads)
+    {
+        set(PropertyNames.PROCESSING_THREADS, threads);
     }
 
 

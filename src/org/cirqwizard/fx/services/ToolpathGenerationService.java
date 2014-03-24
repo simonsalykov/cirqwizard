@@ -132,7 +132,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 {
                     int diameter = toolDiameter.getValue();
                     final ToolpathGenerator generator = new ToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                            diameter / 2, diameter, ((TraceLayer) layer).getElements());
+                            diameter / 2, diameter, ((TraceLayer) layer).getElements(), mainApplication.getSettings().getProcessingThreads());
 
                     Platform.runLater(new Runnable()
                     {

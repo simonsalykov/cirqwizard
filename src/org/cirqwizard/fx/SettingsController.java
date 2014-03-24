@@ -45,6 +45,7 @@ public class SettingsController extends SceneController implements Initializable
     @FXML private RealNumberTextField farAwayY;
     @FXML private ComboBox<String> serialPortComboBox;
     @FXML private ComboBox<String> logLevelComboBox;
+    @FXML private TextField processingThreads;
 
     @FXML private RealNumberTextField tracesToolDiameter;
     @FXML private RealNumberTextField tracesFeedXY;
@@ -219,6 +220,21 @@ public class SettingsController extends SceneController implements Initializable
             public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
             {
                 getMainApplication().getSettings().setImportPPRegex(s2);
+            }
+        });
+        processingThreads.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                if (s2 != null)
+                {
+                    try
+                    {
+                        getMainApplication().getSettings().setProcessingThreads(Integer.valueOf(s2));
+                    }
+                    catch (NumberFormatException e) {}
+                }
             }
         });
 
@@ -521,6 +537,7 @@ public class SettingsController extends SceneController implements Initializable
         excellonDecimalPlaces.setText(String.valueOf(settings.getImportExcellonDecimalPlaces()));
         excellonUnits.getSelectionModel().select(
                 settings.getImportExcellonUnitConversionRatio() == ExcellonParser.MM_MM_RATIO ? 1 : 0);
+        processingThreads.setText(String.valueOf(settings.getProcessingThreads()));
 
         logLevelComboBox.setValue(settings.getLogLevel());
 
