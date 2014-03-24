@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://simonsalykov.github.io//github/sitemap.xml 
+Sitemap: http://cirqwizard.org//sitemap.xml 

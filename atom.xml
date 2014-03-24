@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[cirQWizard]]></title>
-  <link href="http://simonsalykov.github.io//github/atom.xml" rel="self"/>
-  <link href="http://simonsalykov.github.io//github/"/>
-  <updated>2014-03-24T14:09:33+01:00</updated>
-  <id>http://simonsalykov.github.io//github/</id>
+  <link href="http://cirqwizard.org//atom.xml" rel="self"/>
+  <link href="http://cirqwizard.org//"/>
+  <updated>2014-03-24T15:38:58+01:00</updated>
+  <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
     
@@ -14,11 +14,14 @@
 
   
   <entry>
-    <title type="html"><![CDATA[test post]]></title>
-    <link href="http://simonsalykov.github.io//github/blog/2013/07/29/test-post/"/>
-    <updated>2013-07-29T18:47:00+02:00</updated>
-    <id>http://simonsalykov.github.io//github/blog/2013/07/29/test-post</id>
-    <content type="html"><![CDATA[<p>A content of a test post.</p>]]></content>
+    <title type="html"><![CDATA[Blog goes live &amp; version 1.2.2]]></title>
+    <link href="http://cirqwizard.org//blog/2014/03/24/blog-goes-live-and-version-1-dot-2-2/"/>
+    <updated>2014-03-24T14:18:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2014/03/24/blog-goes-live-and-version-1-dot-2-2</id>
+    <content type="html"><![CDATA[<p>As the community of cirQWizard users grows, we feel it&#8217;s the right time to add another communication channel to keep everyone up to date on what we have done and what we are up to. So, from now on here we will be blogging about things happening to cirQWizard &#8211; new releases, known problems and workarounds, useful hints and whatever comes to our mind and we feel is appropriate to share.</p>
+<p>Needless to say, your comments are much appreciated! Feel free to share your thoughts in comments section below every article.</p>
+<p>So, today the news is that the version 1.2.2 is out. That&#8217;s a bug-fix release. The most important bug fixed there was the one that was causing missing segments of the tool paths during generation. This was caused by insufficient memory available to cirQWizard to utilize all of the available <span class="caps">CPU</span> cores. Now the application attempts to reprocess failed part of the board. You would see progress indicator jumping chaotically, as this happening. If this happens to you, you would know cirQWizard is running low on memory. Then it doesn&#8217;t make sense to run that many processing threads. To make more efficient use of your resources you can go to <strong>Settings&#8594;Application</strong> and decrease <strong>Processing threads</strong> value. With a bit of trial and error you can find a value, that would work well for you.</p>
+<p>We&#8217;re setting up a public access to the issue tracking system we use to develop cirQWizard. This would give everyone interested in depth information about what exactly was included in the released versions, as well as what we are working on at the moment and what we are thinking about. Stay tuned!</p>]]></content>
   </entry>
   
 </feed>
