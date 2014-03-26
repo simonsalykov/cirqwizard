@@ -14,18 +14,21 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation;
 
-import org.cirqwizard.appertures.RectangularAperture;
-import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
 {
@@ -51,45 +54,71 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
     public List<Toolpath> generate()
     {
         long tt = System.currentTimeMillis();
-        ArrayList<Toolpath> segments = new ArrayList<>();
+        final Vector<Toolpath> segments = new Vector<>();
 
-        for (GerberPrimitive primitive : primitives)
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+
+        for (final GerberPrimitive primitive : primitives)
         {
             if (!(primitive instanceof Flash))
                 continue;
-            Flash flash = (Flash) primitive;
-            ArrayList<GerberPrimitive> primitivesCopy = new ArrayList<>(primitives);
-            primitivesCopy.remove(flash);
-            int x = flash.getX() - flash.getAperture().getCircumRadius() * 2;
-            int y = flash.getY() - flash.getAperture().getCircumRadius() * 2;
-            x = Math.max(0, x);
-            y = Math.max(0, y);
-            Point windowOffset = new Point(x, y);
-            int windowWidth = Math.min(flash.getAperture().getCircumRadius() * 4, width - x);
-            int windowHeight = Math.min(flash.getAperture().getCircumRadius() * 4, height - y);
-            RasterWindow window = new RasterWindow(new Point(x, y), windowWidth, windowHeight);
-            window.render(primitivesCopy, toolDiameter / 2);
-            int inflation = toolDiameter / 2 + toolDiameter * (100 - overlap) / 100 * (1);
-            window.render(Arrays.asList((GerberPrimitive)flash), inflation);
-            SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
-            window = null; // Helping GC to reclaim memory consumed by rendered image
-            detector.process();
-            if (detector.getOutput() != null)
+            pool.submit(new Callable<Object>()
             {
-                java.util.List<Toolpath> toolpaths =
-                        new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, radii, translateFlashes(windowOffset)).process();
-                detector = null;  // Helping GC to reclaim memory consumed by processed image
-                for (Toolpath t : toolpaths)
+                @Override
+                public Object call() throws Exception
                 {
-                    Point from = ((CuttingToolpath)t).getCurve().getFrom();
-                    Point to = ((CuttingToolpath)t).getCurve().getTo();
-                    Point centerPoint = translateToWindowCoordinates(flash.getPoint(), windowOffset);
-                    int threshold = flash.getAperture().getCircumRadius() + (int)Math.sqrt(inflation * inflation * 2) + 10;
-                    if (from.distanceTo(centerPoint) < threshold && to.distanceTo(centerPoint) < threshold)
-                        segments.addAll(translateToolpaths(Arrays.asList(t), windowOffset));
+                    try
+                    {
+                        Flash flash = (Flash) primitive;
+                        ArrayList<GerberPrimitive> primitivesCopy = new ArrayList<>(primitives);
+                        primitivesCopy.remove(flash);
+                        int x = flash.getX() - flash.getAperture().getCircumRadius() * 2;
+                        int y = flash.getY() - flash.getAperture().getCircumRadius() * 2;
+                        x = Math.max(0, x);
+                        y = Math.max(0, y);
+                        Point windowOffset = new Point(x, y);
+                        int windowWidth = Math.min(flash.getAperture().getCircumRadius() * 4, width - x);
+                        int windowHeight = Math.min(flash.getAperture().getCircumRadius() * 4, height - y);
+                        for (int i = 0; i < passes; i++)
+                        {
+                            RasterWindow window = new RasterWindow(new Point(x, y), windowWidth, windowHeight);
+                            window.render(primitivesCopy, toolDiameter / 2);
+                            int inflation = toolDiameter / 2 + toolDiameter * (100 - overlap) / 100 * (1 + i);
+                            window.render(Arrays.asList((GerberPrimitive)flash), inflation);
+                            SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
+                            window = null; // Helping GC to reclaim memory consumed by rendered image
+                            detector.process();
+                            if (detector.getOutput() != null)
+                            {
+                                List<Toolpath> toolpaths =
+                                        new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, radii, translateFlashes(windowOffset)).process();
+                                detector = null;  // Helping GC to reclaim memory consumed by processed image
+                                for (Toolpath t : toolpaths)
+                                {
+                                    Point from = ((CuttingToolpath)t).getCurve().getFrom();
+                                    Point to = ((CuttingToolpath)t).getCurve().getTo();
+                                    Point centerPoint = translateToWindowCoordinates(flash.getPoint(), windowOffset);
+                                    int threshold = flash.getAperture().getCircumRadius() + (int)Math.sqrt(inflation * inflation * 2) + 10;
+                                    if (from.distanceTo(centerPoint) < threshold && to.distanceTo(centerPoint) < threshold)
+                                        segments.addAll(translateToolpaths(Arrays.asList(t), windowOffset));
+                                }
+                            }
+                        }
+                    }
+                    catch (Throwable e)
+                    {
+                        LoggerFactory.logException("Exception caught while generating additional passes", e);
+                    }
+                    return null;
                 }
-            }
+            });
         }
+        try
+        {
+            pool.shutdown();
+            pool.awaitTermination(10, TimeUnit.DAYS);
+        }
+        catch (InterruptedException e) {}
 
         tt = System.currentTimeMillis() - tt;
         System.out.println("Addtional passes generation time: " + tt);
