@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class ToolpathGenerator
+public class ToolpathGenerator extends AbstractToolpathGenerator
 {
     private final static int WINDOW_SIZE = 5000;
     private final static int WINDOWS_OVERLAP = 5;
@@ -50,10 +50,6 @@ public class ToolpathGenerator
     private int inflation;
     private int toolDiameter;
     private int threadCount;
-    private List<GerberPrimitive> primitives;
-
-    private ArrayList<Flash> circularFlashes = new ArrayList<>();
-    private ArrayList<Integer> radii = new ArrayList<>();
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
 
@@ -65,28 +61,7 @@ public class ToolpathGenerator
         this.toolDiameter = toolDiameter;
         this.primitives = primitives;
         this.threadCount = threadCount;
-
-        for (GerberPrimitive primitive : primitives)
-        {
-            if (primitive.getAperture() instanceof CircularAperture)
-            {
-                CircularAperture aperture = (CircularAperture) primitive.getAperture();
-                if (primitive instanceof Flash)
-                    circularFlashes.add((Flash) primitive);
-                else if (!radii.contains(aperture.getDiameter() / 2))
-                    radii.add(aperture.getDiameter() / 2);
-            }
-            else if (primitive.getAperture() instanceof ApertureMacro)
-            {
-                for (MacroPrimitive p : ((ApertureMacro) primitive.getAperture()).getPrimitives())
-                {
-                    if (p instanceof MacroCircle)
-                        if (!radii.contains(((MacroCircle) p).getDiameter() / 2))
-                            radii.add(((MacroCircle) p).getDiameter() / 2);
-                }
-            }
-
-        }
+        initRadii();
     }
 
     public DoubleProperty progressProperty()
@@ -143,12 +118,7 @@ public class ToolpathGenerator
                 });
 
                 Point offset = new Point(x, y);
-                ArrayList<Flash> translatedFlashes = new ArrayList<>();
-                for (Flash flash : circularFlashes)
-                {
-                    Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
-                    translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2)));
-                }
+                List<Flash> translatedFlashes = translateFlashes(offset);
 
                 int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, width - x);
                 int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, height - y);
@@ -183,44 +153,6 @@ public class ToolpathGenerator
         }
     }
 
-    private java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset)
-    {
-        ArrayList<Toolpath> result = new ArrayList<>();
-        for (Toolpath toolpath : toolpaths)
-        {
-            if (((CuttingToolpath)toolpath).getCurve().getFrom().equals(((CuttingToolpath)toolpath).getCurve().getTo()))
-                continue;
-            if (toolpath instanceof LinearToolpath)
-            {
-                LinearToolpath lt = (LinearToolpath) toolpath;
-                Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset);
-                Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset);
-                result.add(new LinearToolpath(((LinearToolpath) toolpath).getToolDiameter(), start, end));
-            }
-            else if (toolpath instanceof CircularToolpath)
-            {
-                CircularToolpath ct = (CircularToolpath) toolpath;
-                Arc arc = (Arc) ct.getCurve();
-                Point start = translateWindowCoordiantes(ct.getCurve().getFrom(), offset);
-                Point end = translateWindowCoordiantes(ct.getCurve().getTo(), offset);
-                Point center = translateWindowCoordiantes(arc.getCenter(), offset);
-                int radius = arc.getRadius();
-                result.add(new CircularToolpath(ct.getToolDiameter(), start, end, center, radius, arc.isClockwise()));
-            }
-        }
-
-        return result;
-    }
-
-    private Point translateWindowCoordiantes(Point point, Point windowOffset)
-    {
-        return new Point(point.getX(), point.getY()).add(windowOffset);
-    }
-
-    private Point translateToWindowCoordinates(Point point, Point windowOffset)
-    {
-        return new Point(point.getX(), point.getY()).subtract(windowOffset);
-    }
 
 
 }

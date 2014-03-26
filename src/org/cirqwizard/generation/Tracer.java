@@ -60,9 +60,9 @@ public class Tracer
     private Line currentSegment;
 
     private ArrayList<Integer> radii;
-    private ArrayList<Flash> circularFlashes;
+    private List<Flash> circularFlashes;
 
-    public Tracer(byte[] windowData, int width, int height, int inflation, int toolDiameter, ArrayList<Integer> radii, ArrayList<Flash> circularFlashes)
+    public Tracer(byte[] windowData, int width, int height, int inflation, int toolDiameter, ArrayList<Integer> radii, List<Flash> circularFlashes)
     {
         this.windowData = windowData;
         this.width = width;

@@ -21,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.generation.AdditionalToolpathGenerator;
 import org.cirqwizard.generation.ToolpathPadsFilter;
 import org.cirqwizard.toolpath.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
@@ -175,17 +176,25 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         return null;
                     toolpaths = new ToolpathMerger(toolpaths).merge();
 
-                    for (int i = 0 ; i < mainApplication.getSettings().getTracesAdditionalPasses(); i++)
+                    if (!mainApplication.getSettings().isTracesAdditionalPassesPadsOnly())
                     {
-                        int offset = diameter * (100 - mainApplication.getSettings().getTracesAdditionalPassesOverlap()) / 100;
-                        generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                                diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), mainApplication.getSettings().getProcessingThreads());
-                        List<Toolpath> additionalToolpaths = generator.generate();
-                        if (additionalToolpaths == null || additionalToolpaths.size() == 0)
-                            continue;
-                        if (mainApplication.getSettings().isTracesAdditionalPassesPadsOnly())
-                            additionalToolpaths = new ToolpathPadsFilter(additionalToolpaths, traceLayer.getElements(), diameter + offset * (i + 1)).filter();
-                        toolpaths.addAll(new ToolpathMerger(additionalToolpaths).merge());
+                        for (int i = 0 ; i < mainApplication.getSettings().getTracesAdditionalPasses(); i++)
+                        {
+                            int offset = diameter * (100 - mainApplication.getSettings().getTracesAdditionalPassesOverlap()) / 100;
+                            generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                                    diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), mainApplication.getSettings().getProcessingThreads());
+                            List<Toolpath> additionalToolpaths = generator.generate();
+                            if (additionalToolpaths == null || additionalToolpaths.size() == 0)
+                                continue;
+                            toolpaths.addAll(new ToolpathMerger(additionalToolpaths).merge());
+                        }
+                    }
+                    else if (mainApplication.getSettings().getTracesAdditionalPasses() > 0)
+                    {
+                        AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1,
+                                mainApplication.getContext().getBoardHeight() + 1, mainApplication.getSettings().getTracesAdditionalPasses(),
+                                mainApplication.getSettings().getTracesAdditionalPassesOverlap(), diameter, mainApplication.getSettings().getProcessingThreads(), traceLayer.getElements());
+                        toolpaths.addAll(new ToolpathMerger(additionalGenerator.generate()).merge());
                     }
 
 
