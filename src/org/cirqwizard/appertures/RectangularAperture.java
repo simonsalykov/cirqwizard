@@ -62,4 +62,9 @@ public class RectangularAperture extends Aperture
         return Math.max(dimensions[0], dimensions[1]);
     }
 
+    @Override
+    public int getCircumRadius()
+    {
+        return (int) Math.sqrt(dimensions[0] * dimensions[0] + dimensions[1] * dimensions[1]);
+    }
 }

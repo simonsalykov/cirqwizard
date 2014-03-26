@@ -64,4 +64,10 @@ public class PolygonalAperture extends Aperture
     {
         return maxX - minX;
     }
+
+    @Override
+    public int getCircumRadius()
+    {
+        return (maxX - minX) / 2;
+    }
 }

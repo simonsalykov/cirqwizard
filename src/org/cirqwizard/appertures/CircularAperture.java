@@ -59,5 +59,9 @@ public class CircularAperture extends Aperture
         return this;
     }
 
-
+    @Override
+    public int getCircumRadius()
+    {
+        return diameter / 2;
+    }
 }

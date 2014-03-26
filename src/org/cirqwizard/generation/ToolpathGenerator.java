@@ -57,7 +57,7 @@ public class ToolpathGenerator
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
 
-    public ToolpathGenerator(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount)
+    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount)
     {
         this.width = width;
         this.height = height;

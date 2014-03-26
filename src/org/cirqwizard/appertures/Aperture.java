@@ -50,4 +50,6 @@ public abstract class Aperture
 
     public abstract int getWidth(double angle);
 
+    public abstract int getCircumRadius();
+
 }

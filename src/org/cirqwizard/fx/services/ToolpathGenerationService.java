@@ -21,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.generation.ToolpathPadsFilter;
 import org.cirqwizard.toolpath.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
@@ -130,22 +131,6 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 Layer layer = getLayer();
                 if (layer instanceof TraceLayer)
                 {
-                    int diameter = toolDiameter.getValue();
-                    final ToolpathGenerator generator = new ToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                            diameter / 2, diameter, ((TraceLayer) layer).getElements(), mainApplication.getSettings().getProcessingThreads());
-
-                    Platform.runLater(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            generationStageProperty.setValue("Generating tool paths...");
-                            overallProgressProperty.bind(generator.progressProperty());
-                            estimatedMachiningTimeProperty.setValue("");
-                        }
-                    });
-                    TraceLayer traceLayer = (TraceLayer) layer;
-                    List<Toolpath> toolpaths;
 
                     ToolpathsCache cache = null;
                     try
@@ -157,6 +142,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
                     }
 
+                    int diameter = toolDiameter.getValue();
+                    TraceLayer traceLayer = (TraceLayer) layer;
                     if (cache != null && cache.hasValidData(context.getFile().lastModified()))
                     {
                         ToolpathsCacheKey key = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter);
@@ -169,12 +156,38 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     else
                         cache = new ToolpathsCache();
 
-                    toolpaths = generator.generate();
+                    final ToolpathGenerator generator = new ToolpathGenerator();
+                    generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                            diameter / 2, diameter, traceLayer.getElements(), mainApplication.getSettings().getProcessingThreads());
+                    Platform.runLater(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            generationStageProperty.setValue("Generating tool paths...");
+                            overallProgressProperty.bind(generator.progressProperty());
+                            estimatedMachiningTimeProperty.setValue("");
+                        }
+                    });
 
+                    List<Toolpath> toolpaths = generator.generate();
                     if (toolpaths == null || toolpaths.size() == 0)
                         return null;
-
                     toolpaths = new ToolpathMerger(toolpaths).merge();
+
+                    for (int i = 0 ; i < mainApplication.getSettings().getTracesAdditionalPasses(); i++)
+                    {
+                        int offset = diameter * (100 - mainApplication.getSettings().getTracesAdditionalPassesOverlap()) / 100;
+                        generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                                diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), mainApplication.getSettings().getProcessingThreads());
+                        List<Toolpath> additionalToolpaths = generator.generate();
+                        if (additionalToolpaths == null || additionalToolpaths.size() == 0)
+                            continue;
+                        if (mainApplication.getSettings().isTracesAdditionalPassesPadsOnly())
+                            additionalToolpaths = new ToolpathPadsFilter(additionalToolpaths, traceLayer.getElements(), diameter / 2 + offset * (i + 1)).filter();
+                        toolpaths.addAll(new ToolpathMerger(additionalToolpaths).merge());
+                    }
+
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 
