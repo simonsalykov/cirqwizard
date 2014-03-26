@@ -160,7 +160,7 @@ public class ToolpathGenerator
                 if (detector.getOutput() != null)
                 {
                     java.util.List<Toolpath> toolpaths =
-                            new Tracer(detector.getOutput(), windowWidth, windowHeight, toolDiameter, radii, translatedFlashes).process();
+                            new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, radii, translatedFlashes).process();
                     detector = null;  // Helping GC to reclaim memory consumed by processed image
                     segments.addAll(translateToolpaths(toolpaths, offset));
                 }

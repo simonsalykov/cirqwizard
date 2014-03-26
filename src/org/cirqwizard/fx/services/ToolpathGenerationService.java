@@ -184,7 +184,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         if (additionalToolpaths == null || additionalToolpaths.size() == 0)
                             continue;
                         if (mainApplication.getSettings().isTracesAdditionalPassesPadsOnly())
-                            additionalToolpaths = new ToolpathPadsFilter(additionalToolpaths, traceLayer.getElements(), diameter / 2 + offset * (i + 1)).filter();
+                            additionalToolpaths = new ToolpathPadsFilter(additionalToolpaths, traceLayer.getElements(), diameter + offset * (i + 1)).filter();
                         toolpaths.addAll(new ToolpathMerger(additionalToolpaths).merge());
                     }
 

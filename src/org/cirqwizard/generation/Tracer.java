@@ -52,6 +52,7 @@ public class Tracer
 
     private int width;
     private int height;
+    private int inflation;
     private int toolDiameter;
 
     private Point current;
@@ -61,11 +62,12 @@ public class Tracer
     private ArrayList<Integer> radii;
     private ArrayList<Flash> circularFlashes;
 
-    public Tracer(byte[] windowData, int width, int height, int toolDiameter, ArrayList<Integer> radii, ArrayList<Flash> circularFlashes)
+    public Tracer(byte[] windowData, int width, int height, int inflation, int toolDiameter, ArrayList<Integer> radii, ArrayList<Flash> circularFlashes)
     {
         this.windowData = windowData;
         this.width = width;
         this.height = height;
+        this.inflation = inflation;
         this.toolDiameter = toolDiameter;
         this.radii = radii;
         this.circularFlashes = circularFlashes;
@@ -144,7 +146,7 @@ public class Tracer
                     double margin = DEVIATION_MARGIN;
                     if (segmentCounter < SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT && previousToolpathIsArc)
                         margin = SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN;
-                    matchedArc = fitArc(toolDiameter, segmentPoints, segmentDeviation, margin);
+                    matchedArc = fitArc(segmentPoints, segmentDeviation, margin);
                 }
 
                 if (matchedArc.getUncertainty() < LOW_UNCERTAINTY_THRESHOLD)
@@ -266,7 +268,7 @@ public class Tracer
         return Math.sqrt(deviation);
     }
 
-    private MatchedArc fitArc(int toolDiameter, LinkedList<Point> points, double segmentDeviation, double margin)
+    private MatchedArc fitArc(LinkedList<Point> points, double segmentDeviation, double margin)
     {
         Point start = points.getFirst();
         Point end = points.getLast();
@@ -278,7 +280,7 @@ public class Tracer
         // Go through known apertures first
         for (Flash flash : circularFlashes)
         {
-            int radius = ((CircularAperture)flash.getAperture()).getDiameter() + toolDiameter / 2;
+            int radius = ((CircularAperture)flash.getAperture()).getDiameter() + inflation;
             double deviation = calculateArcDeviation(points, flash.getPoint(), radius);
             if (deviation < minDeviation)
             {
