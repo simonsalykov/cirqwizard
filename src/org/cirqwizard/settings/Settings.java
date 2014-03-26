@@ -59,6 +59,9 @@ public class Settings
         private static final String TRACES_SAFETY_HEIGHT = "v12.defaults.traces.safety.height";
         private static final String TRACES_DEFAULT_Z_OFFSET = "v12.defaults.traces.z.offset";
         private static final String TRACES_WORKING_HEIGHT = "v12.defaults.traces.working.height";
+        private static final String TRACES_ADDITIONAL_PASSES = "traces.additional.passes";
+        private static final String TRACES_ADDITIONAL_PASSES_OVERLAP = "traces.additional.passes.overlap";
+        private static final String TRACES_ADDITONAL_PASSES_PADS_ONLY = "traces.additional.passes.pads.only";
 
         private static final String DRILLING_FEED = "v12.defaults.drilling.feed";
         private static final String DRILLING_SPEED = "v12.defaults.drilling.speed";
@@ -118,6 +121,9 @@ public class Settings
         private static final int TRACES_CLEARANCE = 5 * RESOLUTION;
         private static final int TRACES_SAFETY_HEIGHT = 2 * RESOLUTION;
         private static final int TRACES_WORKING_HEIGHT = (int)(-0.05 * RESOLUTION);
+        private static final int TRACES_ADDITIONAL_PASSES = 1;
+        private static final int TRACES_ADDITIONAL_PASSES_OVERLAP = 20;
+        private static final int TRACES_ADDITIONAL_PASSES_PADS_ONLY = 1;
 
         private static final int DRILLING_FEED = 200 * RESOLUTION;
         private static final String DRILLING_SPEED = "1390";
@@ -364,6 +370,35 @@ public class Settings
         set(PropertyNames.TRACES_WORKING_HEIGHT, height);
     }
 
+    public Integer getTracesAdditionalPasses()
+    {
+        return preferences.getInt(PropertyNames.TRACES_ADDITIONAL_PASSES, DefaultValues.TRACES_ADDITIONAL_PASSES);
+    }
+
+    public void setTracesAdditionalPasses(int passes)
+    {
+        set(PropertyNames.TRACES_ADDITIONAL_PASSES, passes);
+    }
+
+    public Integer getTracesAdditionalPassesOverlap()
+    {
+        return preferences.getInt(PropertyNames.TRACES_ADDITIONAL_PASSES_OVERLAP, DefaultValues.TRACES_ADDITIONAL_PASSES_OVERLAP);
+    }
+
+    public void setTracesAddtiionalPassesOverlap(int overlap)
+    {
+        set(PropertyNames.TRACES_ADDITIONAL_PASSES_OVERLAP, overlap);
+    }
+
+    public boolean isTracesAdditionalPassesPadsOnly()
+    {
+        return preferences.getInt(PropertyNames.TRACES_ADDITONAL_PASSES_PADS_ONLY, DefaultValues.TRACES_ADDITIONAL_PASSES_PADS_ONLY) != 0;
+    }
+
+    public void setTracesAdditionalPassesPadsOnly(boolean padsOnly)
+    {
+        set(PropertyNames.TRACES_ADDITONAL_PASSES_PADS_ONLY, padsOnly ? 1 : 0);
+    }
 
 
     public Integer getDefaultDrillingFeed()
