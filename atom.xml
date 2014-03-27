@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-03-25T00:55:32+01:00</updated>
+  <updated>2014-03-27T20:02:23+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.3.0 released]]></title>
+    <link href="http://cirqwizard.org//blog/2014/03/27/version-1-dot-3-0-released/"/>
+    <updated>2014-03-27T19:13:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2014/03/27/version-1-dot-3-0-released</id>
+    <content type="html"><![CDATA[<p>Version 1.3.0 is a feature release, which adds a possibility to request milling tool path generation algorithm to make several passes around traces (or only around pads). This hopefully should decrease the possibility of solder bridges between pads or between pads and ground plane.</p>
+<p>Additional passes considerably increase milling time, regardless of whether it&#8217;s pads only or entire traces. But hopefully, there will be more time gained by not having to troubleshoot bridges.</p>
+<p>The relevant settings in the <strong>Insulation milling</strong> tab are:</p>
+<table class="table table-bordered ">
+	<tr>
+		<th>Setting </th>
+		<th>Meaning </th>
+	</tr>
+	<tr>
+		<td> Additional passes </td>
+		<td> Number of additional passes to be generated </td>
+	</tr>
+	<tr>
+		<td> Additional passes overlap </td>
+		<td> The overlap between previous pass and each successive pass </td>
+	</tr>
+	<tr>
+		<td> Additional passes around pads only </td>
+		<td> Whether to generate additional passes around all traces, or around pads only </td>
+	</tr>
+</table>
+<p>For now, as this feature isn&#8217;t yet thoroughly tested, the default value for <strong>Additional passes</strong> is 0, which effectively disables it. Feel free to experiment and let us know which settings you like most!</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Issue tracking system up and running]]></title>
