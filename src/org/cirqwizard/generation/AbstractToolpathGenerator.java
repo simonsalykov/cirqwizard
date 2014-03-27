@@ -14,6 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import org.cirqwizard.appertures.CircularAperture;
 import org.cirqwizard.appertures.macro.ApertureMacro;
 import org.cirqwizard.appertures.macro.MacroCircle;
@@ -36,6 +38,8 @@ public class AbstractToolpathGenerator
 
     protected ArrayList<Integer> radii = new ArrayList<>();
     protected ArrayList<Flash> circularFlashes = new ArrayList<>();
+
+    protected DoubleProperty progressProperty = new SimpleDoubleProperty();
 
     protected void initRadii()
     {
@@ -61,6 +65,12 @@ public class AbstractToolpathGenerator
         }
 
     }
+
+    public DoubleProperty progressProperty()
+    {
+        return progressProperty;
+    }
+
 
     protected List<Flash> translateFlashes(Point offset)
     {

@@ -14,11 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation;
 
+import javafx.application.Platform;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ import java.util.concurrent.TimeUnit;
 
 public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
 {
+    private static final int MIN_LENGTH = 250;
+
     private int width;
     private int height;
     private int passes;
@@ -57,11 +61,11 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
         final Vector<Toolpath> segments = new Vector<>();
 
         ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+        progressProperty.setValue(0);
+        final double progressIncrement = 1.0 / primitives.size();
 
         for (final GerberPrimitive primitive : primitives)
         {
-            if (!(primitive instanceof Flash))
-                continue;
             pool.submit(new Callable<Object>()
             {
                 @Override
@@ -69,6 +73,17 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
                 {
                     try
                     {
+                        Platform.runLater(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                progressProperty.setValue(progressProperty.getValue() + progressIncrement);
+                            }
+                        });
+                        if (!(primitive instanceof Flash))
+                            return null;
+
                         Flash flash = (Flash) primitive;
                         ArrayList<GerberPrimitive> primitivesCopy = new ArrayList<>(primitives);
                         primitivesCopy.remove(flash);
@@ -97,6 +112,8 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
                                 {
                                     Point from = ((CuttingToolpath)t).getCurve().getFrom();
                                     Point to = ((CuttingToolpath)t).getCurve().getTo();
+                                    if ((t instanceof LinearToolpath) && from.distanceTo(to) < MIN_LENGTH)
+                                        continue;
                                     Point centerPoint = translateToWindowCoordinates(flash.getPoint(), windowOffset);
                                     int threshold = flash.getAperture().getCircumRadius() + (int)Math.sqrt(inflation * inflation * 2) + 10;
                                     if (from.distanceTo(centerPoint) < threshold && to.distanceTo(centerPoint) < threshold)

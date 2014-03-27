@@ -15,23 +15,12 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.macro.ApertureMacro;
-import org.cirqwizard.appertures.macro.MacroCircle;
-import org.cirqwizard.appertures.macro.MacroPrimitive;
-import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.toolpath.CircularToolpath;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -51,7 +40,6 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
     private int toolDiameter;
     private int threadCount;
 
-    private DoubleProperty progressProperty = new SimpleDoubleProperty();
 
     public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount)
     {
@@ -62,11 +50,6 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
         this.primitives = primitives;
         this.threadCount = threadCount;
         initRadii();
-    }
-
-    public DoubleProperty progressProperty()
-    {
-        return progressProperty;
     }
 
     public List<Toolpath> generate()

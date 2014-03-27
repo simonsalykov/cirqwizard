@@ -22,7 +22,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.cirqwizard.generation.AdditionalToolpathGenerator;
-import org.cirqwizard.generation.ToolpathPadsFilter;
 import org.cirqwizard.toolpath.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
@@ -178,6 +177,14 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
                     if (!mainApplication.getSettings().isTracesAdditionalPassesPadsOnly())
                     {
+                        Platform.runLater(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                generationStageProperty.setValue("Generating additional passes...");
+                            }
+                        });
                         for (int i = 0 ; i < mainApplication.getSettings().getTracesAdditionalPasses(); i++)
                         {
                             int offset = diameter * (100 - mainApplication.getSettings().getTracesAdditionalPassesOverlap()) / 100;
@@ -191,9 +198,18 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     }
                     else if (mainApplication.getSettings().getTracesAdditionalPasses() > 0)
                     {
-                        AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1,
+                        final AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1,
                                 mainApplication.getContext().getBoardHeight() + 1, mainApplication.getSettings().getTracesAdditionalPasses(),
                                 mainApplication.getSettings().getTracesAdditionalPassesOverlap(), diameter, mainApplication.getSettings().getProcessingThreads(), traceLayer.getElements());
+                        Platform.runLater(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                generationStageProperty.setValue("Generating additional passes...");
+                                overallProgressProperty.bind(additionalGenerator.progressProperty());
+                            }
+                        });
                         toolpaths.addAll(new ToolpathMerger(additionalGenerator.generate()).merge());
                     }
 

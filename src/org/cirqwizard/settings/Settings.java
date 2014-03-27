@@ -121,7 +121,7 @@ public class Settings
         private static final int TRACES_CLEARANCE = 5 * RESOLUTION;
         private static final int TRACES_SAFETY_HEIGHT = 2 * RESOLUTION;
         private static final int TRACES_WORKING_HEIGHT = (int)(-0.05 * RESOLUTION);
-        private static final int TRACES_ADDITIONAL_PASSES = 1;
+        private static final int TRACES_ADDITIONAL_PASSES = 0;
         private static final int TRACES_ADDITIONAL_PASSES_OVERLAP = 20;
         private static final int TRACES_ADDITIONAL_PASSES_PADS_ONLY = 1;
 

@@ -59,7 +59,7 @@
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
-                <GridPane prefHeight="300.0" prefWidth="350.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                <GridPane prefHeight="300.0" prefWidth="400.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                   <children>
                     <RealNumberTextField id="tracesSpeedDiameter" fx:id="tracesToolDiameter" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                     <RealNumberTextField fx:id="tracesFeedXY" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
