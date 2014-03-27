@@ -36,26 +36,26 @@ public class RasterWindow
 {
     private BufferedImage window;
     private Point windowLowerLeftCorner;
+    private Graphics2D g;
 
     public RasterWindow(Point windowLowerLeftCorner, int width, int height)
     {
         this.windowLowerLeftCorner = windowLowerLeftCorner;
         this.window = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
-    }
-
-    public void render(java.util.List<GerberPrimitive> primitives, int inflation)
-    {
-        Graphics2D g = window.createGraphics();
+        g = window.createGraphics();
         g.setBackground(Color.BLACK);
         g.clearRect(0, 0, window.getWidth(), window.getHeight());
         g = window.createGraphics();
         g.transform(AffineTransform.getTranslateInstance(-windowLowerLeftCorner.getX(), -windowLowerLeftCorner.getY()));
-
-        for (GerberPrimitive primitive : primitives)
-            renderPrimitive(g, primitive, inflation);
     }
 
-    private void renderPrimitive(Graphics2D g, GerberPrimitive primitive, double inflation)
+    public void render(java.util.List<GerberPrimitive> primitives, int inflation)
+    {
+        for (GerberPrimitive primitive : primitives)
+            renderPrimitive(primitive, inflation);
+    }
+
+    private void renderPrimitive(GerberPrimitive primitive, double inflation)
     {
         if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
             return;

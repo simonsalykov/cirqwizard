@@ -63,4 +63,10 @@ public class OctagonalAperture extends Aperture
     {
         return diameter;
     }
+
+    @Override
+    public int getCircumRadius()
+    {
+        return diameter / 2;
+    }
 }

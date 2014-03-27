@@ -57,4 +57,10 @@ public class ApertureMacro extends Aperture
     {
         return 0;
     }
+
+    @Override
+    public int getCircumRadius()
+    {
+        return 2000;
+    }
 }

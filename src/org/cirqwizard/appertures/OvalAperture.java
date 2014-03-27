@@ -68,7 +68,12 @@ public class OvalAperture extends Aperture
     @Override
     public Aperture rotate(boolean clockwise)
     {
-
         return new OvalAperture(height, width);
+    }
+
+    @Override
+    public int getCircumRadius()
+    {
+        return (int) Math.sqrt(width * width + height * height);
     }
 }

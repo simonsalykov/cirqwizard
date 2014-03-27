@@ -19,6 +19,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.cirqwizard.excellon.ExcellonParser;
@@ -55,6 +56,9 @@ public class SettingsController extends SceneController implements Initializable
     @FXML private RealNumberTextField tracesSafetyHeight;
     @FXML private RealNumberTextField tracesZOffset;
     @FXML private RealNumberTextField tracesWorkingHeight;
+    @FXML private TextField tracesAdditionalPasses;
+    @FXML private TextField tracesAdditionalPassesOverlap;
+    @FXML private CheckBox tracesAdditionalPassesPadsOnly;
 
     @FXML private RealNumberTextField drillingFeed;
     @FXML private RealNumberTextField drillingSpeed;
@@ -299,6 +303,38 @@ public class SettingsController extends SceneController implements Initializable
             {
                 if (integer2 != null)
                     getMainApplication().getSettings().setDefaultTracesWorkingHeight(integer2);
+            }
+        });
+        tracesAdditionalPasses.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                try
+                {
+                    getMainApplication().getSettings().setTracesAdditionalPasses(Integer.valueOf(s2));
+                }
+                catch (NumberFormatException e) {}
+            }
+        });
+        tracesAdditionalPassesOverlap.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                try
+                {
+                    getMainApplication().getSettings().setTracesAddtiionalPassesOverlap(Integer.valueOf(s2));
+                }
+                catch (NumberFormatException e) {}
+            }
+        });
+        tracesAdditionalPassesPadsOnly.selectedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
+            {
+                getMainApplication().getSettings().setTracesAdditionalPassesPadsOnly(aBoolean2);
             }
         });
 
@@ -556,6 +592,9 @@ public class SettingsController extends SceneController implements Initializable
         tracesSafetyHeight.setIntegerValue(settings.getDefaultTracesSafetyHeight());
         tracesZOffset.setIntegerValue(settings.getDefaultTracesZOffset());
         tracesWorkingHeight.setIntegerValue(settings.getDefaultTracesWorkingHeight());
+        tracesAdditionalPasses.setText(String.valueOf(settings.getTracesAdditionalPasses()));
+        tracesAdditionalPassesOverlap.setText(String.valueOf(settings.getTracesAdditionalPassesOverlap()));
+        tracesAdditionalPassesPadsOnly.setSelected(settings.isTracesAdditionalPassesPadsOnly());
 
         drillingFeed.setIntegerValue(settings.getDefaultDrillingFeed());
         drillingSpeed.setText(settings.getDefaultDrillingSpeed());
