@@ -34,10 +34,8 @@ public class SerialInterfaceFactory
                 serialInterfaceList.add(port.getName());
         }
         // Linux bug - getPortIdentifiers() can't see ports being in use
-        if (!serialInterfaceList.contains(currentSerialInterface.getPortName()))
-        {
+        if (currentSerialInterface != null && !serialInterfaceList.contains(currentSerialInterface.getPortName()))
             serialInterfaceList.add(currentSerialInterface.getPortName());
-        }
 
         return serialInterfaceList;
     }
