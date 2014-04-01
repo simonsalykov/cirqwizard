@@ -82,7 +82,10 @@ public class MainApplication extends Application
         {
             if (serialInterface != null)
                 serialInterface.close();
-            serialInterface = new SerialInterfaceImpl(port, 38400);
+            if (port != null && port.length() > 0)
+                serialInterface = new SerialInterfaceImpl(port, 38400);
+            else
+                serialInterface = SerialInterfaceFactory.autodetect();
         }
         catch (SerialException e)
         {
