@@ -225,6 +225,15 @@ public class MachiningController extends SceneController implements Initializabl
                 }
             }
         });
+        toolDiameter.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
+            {
+                if (!aBoolean2)
+                    restartService();
+            }
+        });
 
         machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
     }
@@ -349,6 +358,9 @@ public class MachiningController extends SceneController implements Initializabl
 
     public void restartService()
     {
+        if (toolpathGenerationService.getLastToolDiameter() != null && toolpathGenerationService.getLastToolDiameter().equals(toolDiameter.getIntegerValue()))
+            return;
+
         veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         stopGenerationButton.setDisable(false);
         toolpathGenerationService.restart();

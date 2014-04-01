@@ -21,10 +21,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.cirqwizard.generation.AdditionalToolpathGenerator;
-import org.cirqwizard.toolpath.ToolpathPersistingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.generation.AdditionalToolpathGenerator;
 import org.cirqwizard.generation.ToolpathGenerator;
 import org.cirqwizard.generation.ToolpathMerger;
 import org.cirqwizard.generation.optimizer.Chain;
@@ -56,6 +55,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
     private DoubleProperty overallProgressProperty;
     private StringProperty estimatedMachiningTimeProperty;
     private Context context;
+
+    private Integer lastToolDiameter;
 
     public ToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
                                      StringProperty estimatedMachiningTimeProperty)
@@ -112,6 +113,11 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
         return null;
     }
 
+    public Integer getLastToolDiameter()
+    {
+        return lastToolDiameter;
+    }
+
     public StringProperty generationStageProperty()
     {
         return generationStageProperty;
@@ -124,6 +130,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
         {
             try
             {
+                lastToolDiameter = toolDiameter.get();
                 overallProgressProperty.unbind();
                 generationStageProperty.unbind();
                 estimatedMachiningTimeProperty.unbind();
