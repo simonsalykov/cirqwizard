@@ -45,6 +45,11 @@
     -fx-font-size: 16;
 }
 
+.red-background {
+   -fx-background-color: linear-gradient(#ff2400, #be1d00);
+   -fx-text-fill: white;
+}
+
 .titled-pane {
     -fx-font-size: 16;
 }

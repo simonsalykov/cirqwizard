@@ -111,7 +111,7 @@
                     <RealNumberTextField fx:id="feed" prefWidth="44.0" />
                   </children>
                 </HBox>
-                <Button fx:id="goButton" mnemonicParsing="false" onAction="#executeProgram" text="Go" />
+                <Button fx:id="goButton" mnemonicParsing="false" onAction="#executeProgram" styleClass="red-background" text="Run" />
                 <Button fx:id="moveHeadAwayButton" mnemonicParsing="false" onAction="#moveHeadAway" text="Move head away" />
               </children>
             </HBox>
