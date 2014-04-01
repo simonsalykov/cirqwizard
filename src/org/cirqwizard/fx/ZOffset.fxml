@@ -59,7 +59,7 @@
             <HBox id="HBox" alignment="CENTER" layoutX="57.0" layoutY="115.0" spacing="5.0">
               <children>
                 <Button fx:id="testButton" mnemonicParsing="false" onAction="#test" text="Test" />
-                <Button fx:id="lowerTestButton" mnemonicParsing="false" onAction="#lowerAndTest" text="Lower &amp; test" />
+                <Button fx:id="lowerTestButton" mnemonicParsing="false" onAction="#lowerAndTest" text="Reduce &amp; test" />
               </children>
             </HBox>
             <Label layoutX="23.0" layoutY="49.0" text="Test cut direction:" />
