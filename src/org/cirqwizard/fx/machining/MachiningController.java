@@ -398,9 +398,9 @@ public class MachiningController extends SceneController implements Initializabl
 
     public void selectAll()
     {
-        for (Toolpath toolpath : getCurrentLayer().getToolpaths())
+        for (Toolpath toolpath : toolpathGenerationService.getValue())
             toolpath.setSelected(true);
-        pcbPane.repaint(getCurrentLayer().getToolpaths());
+        pcbPane.repaint(toolpathGenerationService.getValue());
     }
 
     public void enableSelected()
