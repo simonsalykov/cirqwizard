@@ -18,6 +18,7 @@
         <mkdir dir="${build}"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${deploy}"/>
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${javafx.lib.ant-javafx.jar}" />
     </target>
 
     <target name="clean">
@@ -29,7 +30,6 @@
     <target name="compile" depends="init" description="compile the source " >
         <echo message="java.home ${java.home}"/>
         <echo message="os.name ${os.name}"/>
-        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${javafx.lib.ant-javafx.jar}" />
         <javac srcdir="${src}" classpath="${classpath}" destdir="${build}"/>
         <copy todir="${build}">
             <fileset dir="${src}" includes="**/*.fxml"/>
@@ -41,11 +41,17 @@
         </copy>
     </target>
 
-    <target name="package" depends="clean,compile">
-        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
-                 uri="javafx:com.sun.javafx.tools.ant"
-                 classpath="${javafx.lib.ant-javafx.jar}:${res}"/>
+    <target name="run" depends="compile" description="run the application">
+        <java classname="org.cirqwizard.fx.MainApplication" fork="true">
+            <jvmarg value="-Djava.library.path=${basedir}/lib/native/${os.name}"/>
+            <classpath>
+                <pathelement path="${build}"/>
+                <pathelement path="${classpath}"/>
+            </classpath>
+        </java>
+    </target>
 
+    <target name="package" depends="clean,compile">
         <fx:application id="cirQWizard"
                         name="cirQWizard"
                         version = "${application.version}"
