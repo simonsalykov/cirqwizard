@@ -135,10 +135,14 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 generationStageProperty.unbind();
                 estimatedMachiningTimeProperty.unbind();
 
+                Settings settings = mainApplication.getSettings();
+
                 Layer layer = getLayer();
                 if (layer instanceof TraceLayer)
                 {
-
+                    int diameter = toolDiameter.getValue();
+                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter, settings.getTracesAdditionalPasses(),
+                            settings.getTracesAdditionalPassesOverlap(), settings.isTracesAdditionalPassesPadsOnly());
                     ToolpathsCache cache = null;
                     try
                     {
@@ -149,15 +153,13 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
                     }
 
-                    int diameter = toolDiameter.getValue();
                     TraceLayer traceLayer = (TraceLayer) layer;
                     if (cache != null && cache.hasValidData(context.getFile().lastModified()))
                     {
-                        ToolpathsCacheKey key = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter);
-                        if (cache.getToolpaths(key) != null)
+                        if (cache.getToolpaths(cacheKey) != null)
                         {
-                            traceLayer.setToolpaths(cache.getToolpaths(key));
-                            return FXCollections.observableArrayList(cache.getToolpaths(key));
+                            traceLayer.setToolpaths(cache.getToolpaths(cacheKey));
+                            return FXCollections.observableArrayList(cache.getToolpaths(cacheKey));
                         }
                     }
                     else
@@ -165,7 +167,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
                     final ToolpathGenerator generator = new ToolpathGenerator();
                     generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                            diameter / 2, diameter, traceLayer.getElements(), mainApplication.getSettings().getProcessingThreads());
+                            diameter / 2, diameter, traceLayer.getElements(), settings.getProcessingThreads());
                     Platform.runLater(new Runnable()
                     {
                         @Override
@@ -182,7 +184,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         return null;
                     toolpaths = new ToolpathMerger(toolpaths).merge();
 
-                    if (!mainApplication.getSettings().isTracesAdditionalPassesPadsOnly())
+                    if (!settings.isTracesAdditionalPassesPadsOnly())
                     {
                         Platform.runLater(new Runnable()
                         {
@@ -192,22 +194,22 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                                 generationStageProperty.setValue("Generating additional passes...");
                             }
                         });
-                        for (int i = 0 ; i < mainApplication.getSettings().getTracesAdditionalPasses(); i++)
+                        for (int i = 0 ; i < settings.getTracesAdditionalPasses(); i++)
                         {
-                            int offset = diameter * (100 - mainApplication.getSettings().getTracesAdditionalPassesOverlap()) / 100;
+                            int offset = diameter * (100 - settings.getTracesAdditionalPassesOverlap()) / 100;
                             generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                                    diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), mainApplication.getSettings().getProcessingThreads());
+                                    diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), settings.getProcessingThreads());
                             List<Toolpath> additionalToolpaths = generator.generate();
                             if (additionalToolpaths == null || additionalToolpaths.size() == 0)
                                 continue;
                             toolpaths.addAll(new ToolpathMerger(additionalToolpaths).merge());
                         }
                     }
-                    else if (mainApplication.getSettings().getTracesAdditionalPasses() > 0)
+                    else if (settings.getTracesAdditionalPasses() > 0)
                     {
                         final AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1,
-                                mainApplication.getContext().getBoardHeight() + 1, mainApplication.getSettings().getTracesAdditionalPasses(),
-                                mainApplication.getSettings().getTracesAdditionalPassesOverlap(), diameter, mainApplication.getSettings().getProcessingThreads(), traceLayer.getElements());
+                                mainApplication.getContext().getBoardHeight() + 1, settings.getTracesAdditionalPasses(),
+                                settings.getTracesAdditionalPassesOverlap(), diameter, settings.getProcessingThreads(), traceLayer.getElements());
                         Platform.runLater(new Runnable()
                         {
                             @Override
@@ -237,20 +239,27 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     });
 
                     final DecimalFormat format = new DecimalFormat("00");
-                    estimatedMachiningTimeProperty.bind(Bindings.createStringBinding(new Callable<String>()
+                    Platform.runLater(new Runnable()
                     {
                         @Override
-                        public String call() throws Exception
+                        public void run()
                         {
-                            long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
-                                    feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
-                                    clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
-                                    true);
-                            String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
-                                    ":" + format.format(totalDuration % 60);
-                            return "Estimated machining time: " + time;
+                            estimatedMachiningTimeProperty.bind(Bindings.createStringBinding(new Callable<String>()
+                            {
+                                @Override
+                                public String call() throws Exception
+                                {
+                                    long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
+                                            feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
+                                            clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
+                                            true);
+                                    String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
+                                            ":" + format.format(totalDuration % 60);
+                                    return "Estimated machining time: " + time;
+                                }
+                            }, optimizer.currentBestSolutionProperty()));
                         }
-                    }, optimizer.currentBestSolutionProperty()));
+                    });
                     chains = optimizer.optimize();
 
                     toolpaths.clear();
@@ -258,7 +267,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         toolpaths.addAll(p.getSegments());
                     traceLayer.setToolpaths(toolpaths);
 
-                    cache.setToolpaths(new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter), toolpaths);
+                    cache.setToolpaths(cacheKey, toolpaths);
                     cache.setLastModified(context.getFile().lastModified());
 
                     try

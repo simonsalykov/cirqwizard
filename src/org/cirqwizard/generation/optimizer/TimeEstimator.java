@@ -44,6 +44,9 @@ public class TimeEstimator
         double descentToSafetyHeight = calculatePathDuration(clearance - safetyHeight, zRapids, xRapidAcceleration);
         double finalDescent = calculatePathDuration(safetyHeight, zFeed, feedAcceleration);
 
+        if (toolpaths == null)
+            return 0;
+
         for (Toolpath t : toolpaths)
         {
             if (t instanceof CuttingToolpath)

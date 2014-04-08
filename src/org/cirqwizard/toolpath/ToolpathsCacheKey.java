@@ -24,12 +24,18 @@ public class ToolpathsCacheKey implements Serializable
     private State state;
     private int angle;
     private int toolDiameter;
+    private int additionalPasses;
+    private int additionalPassesOverlap;
+    private boolean additionalPassesAroundPadsOnly;
 
-    public ToolpathsCacheKey(State state, int angle, int toolDiameter)
+    public ToolpathsCacheKey(State state, int angle, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly)
     {
         this.state = state;
         this.angle = angle;
         this.toolDiameter = toolDiameter;
+        this.additionalPasses = additionalPasses;
+        this.additionalPassesOverlap = additionalPassesOverlap;
+        this.additionalPassesAroundPadsOnly = additionalPassesAroundPadsOnly;
     }
 
     @Override
@@ -40,6 +46,9 @@ public class ToolpathsCacheKey implements Serializable
 
         ToolpathsCacheKey that = (ToolpathsCacheKey) o;
 
+        if (additionalPasses != that.additionalPasses) return false;
+        if (additionalPassesAroundPadsOnly != that.additionalPassesAroundPadsOnly) return false;
+        if (additionalPassesOverlap != that.additionalPassesOverlap) return false;
         if (angle != that.angle) return false;
         if (toolDiameter != that.toolDiameter) return false;
         if (state != that.state) return false;
@@ -50,9 +59,13 @@ public class ToolpathsCacheKey implements Serializable
     @Override
     public int hashCode()
     {
-        int result = state.hashCode();
+        int result = state != null ? state.hashCode() : 0;
         result = 31 * result + angle;
         result = 31 * result + toolDiameter;
+        result = 31 * result + additionalPasses;
+        result = 31 * result + additionalPassesOverlap;
+        result = 31 * result + (additionalPassesAroundPadsOnly ? 1 : 0);
         return result;
     }
+
 }
