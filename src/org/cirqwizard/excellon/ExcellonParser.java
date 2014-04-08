@@ -160,8 +160,11 @@ public class ExcellonParser
                 x = convertCoordinate(matcher.group(1).substring(1));
             if (matcher.group(2) != null)
                 y = convertCoordinate(matcher.group(2).substring(1));
-            Point point = new Point(x, y);
-            drillPoints.add(new DrillPoint(point, currentDiameter));
+            if (x != null && y != null)
+            {
+                Point point = new Point(x, y);
+                drillPoints.add(new DrillPoint(point, currentDiameter));
+            }
         }
     }
 

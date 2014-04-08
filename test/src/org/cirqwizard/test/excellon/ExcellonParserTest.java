@@ -281,4 +281,20 @@ public class ExcellonParserTest
         assertEquals(1300, points.get(0).getToolDiameter());
     }
 
+    @Test
+    public void testEmptyLines() throws IOException
+    {
+        String fileContent = "\n%\n" +
+                "T3\n" +
+                "X00250Y05025\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(635, 12763), points.get(0).getPoint());
+        assertEquals(1300, points.get(0).getToolDiameter());
+    }
+
 }
