@@ -47,7 +47,7 @@ public class WelcomeController extends SceneController
             @Override
             public void handle(ActionEvent event)
             {
-                loadFile(new File(((Hyperlink) event.getSource()).getText() + ".GTL"));
+                loadFile(new File(((Hyperlink) event.getSource()).getText() + ".cmp"));
             }
         };
         recentFilesPane.getChildren().clear();

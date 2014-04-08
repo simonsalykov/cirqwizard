@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.toolpath;
 
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 

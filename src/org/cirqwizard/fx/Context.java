@@ -263,6 +263,16 @@ public class Context
         placingSelected = componentsLayer != null;
     }
 
+    public long getTopLayerModificationDate()
+    {
+        return new File(getFileName() + ".cmp").lastModified();
+    }
+
+    public long getBottomLayerModificationDate()
+    {
+        return new File(getFileName() + ".sol").lastModified();
+    }
+
     private static ArrayList<GerberPrimitive> parseGerber(String file)
     {
         try

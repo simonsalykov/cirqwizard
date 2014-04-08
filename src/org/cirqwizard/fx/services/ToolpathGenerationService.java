@@ -268,7 +268,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     traceLayer.setToolpaths(toolpaths);
 
                     cache.setToolpaths(cacheKey, toolpaths);
-                    cache.setLastModified(context.getFile().lastModified());
+                    cache.setLastModified(mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION ? context.getTopLayerModificationDate() : context.getBottomLayerModificationDate());
 
                     try
                     {
