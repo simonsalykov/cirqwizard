@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.layers;
 
+import org.cirqwizard.appertures.OvalAperture;
 import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
@@ -81,19 +82,18 @@ public class SolderPasteLayer extends Layer
 
     private void fillRectangle(ArrayList<Toolpath> toolpaths, Point from, Point to, int width, int needleDiameter)
     {
-        int passes = Math.max(1, width / (needleDiameter * 2));
+        // Shortening tool path for needle radius
+        double angle = new Line(from, to).angleToX();
+        from = from.add(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
+        to = to.subtract(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
+
+        angle = MathUtil.bindAngle(angle - Math.PI / 2);
+        int passes = Math.max(1, width / (needleDiameter));
         for (int i = 0; i < passes; i++)
         {
-            // Shortening tool path for needle radius
-            double angle = new Line(from, to).angleToX();
-            from = from.add(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
-            to = to.subtract(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
-
             // Offsetting
-            angle = MathUtil.bindAngle(angle - Math.PI / 2);
             int offset = width / (passes + 1) * (i + 1);
             Point offsetVector = new Point((int)(Math.cos(angle) * offset), (int)(Math.sin(angle) * offset));
-            to.add(offsetVector);
             toolpaths.add(new LinearToolpath(needleDiameter, from.add(offsetVector), to.add(offsetVector)));
         }
     }
@@ -131,8 +131,27 @@ public class SolderPasteLayer extends Layer
                         toolpaths.add(toolpath);
                     }
                 }
+                else if (flash.getAperture() instanceof OvalAperture)
+                {
+                    OvalAperture aperture = (OvalAperture) flash.getAperture();
+                    Point from, to;
+                    int width;
+                    if (aperture.isHorizontal())
+                    {
+                        from = new Point(flash.getX() - aperture.getWidth() / 2 + (aperture.getHeight() / 2 - needleDiameter / 2), flash.getY() + aperture.getHeight() / 2);
+                        to = new Point(flash.getX() + aperture.getWidth() / 2 - (aperture.getHeight() / 2 - needleDiameter / 2), flash.getY() + aperture.getHeight() / 2);
+                        width = aperture.getHeight();
+                    }
+                    else
+                    {
+                        from = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() - aperture.getHeight() / 2 + (aperture.getWidth() / 2 - needleDiameter / 2));
+                        to = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() + aperture.getHeight() / 2 - (aperture.getWidth() / 2 - needleDiameter / 2));
+                        width = aperture.getWidth();
+                    }
+                    fillRectangle(toolpaths, from, to, width, needleDiameter);
+                }
                 else
-                    System.out.println("Circular apertures not supported at the moment");
+                    System.out.println("Circular apertures not supported at the moment: " + flash.getAperture());
             }
             else if (element instanceof Region)
             {
