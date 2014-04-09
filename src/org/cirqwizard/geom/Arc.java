@@ -70,6 +70,11 @@ public class Arc extends Curve
         return new Arc(to, from, center, radius, !clockwise);
     }
 
+    public boolean containsAngle(double angle)
+    {
+        return calculateAngularDistance(start, angle, clockwise) <= this.angle;
+    }
+
     @Override
     public void setFrom(Point from)
     {

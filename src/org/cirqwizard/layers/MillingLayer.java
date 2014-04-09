@@ -15,9 +15,11 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.CircularShape;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -46,13 +48,19 @@ public class MillingLayer extends Layer
 
     public void generateToolpaths()
     {
-        toolpaths = new ArrayList<Toolpath>();
+        toolpaths = new ArrayList<>();
         for (GerberPrimitive element : elements)
         {
             if (element instanceof LinearShape)
             {
                 LinearShape shape = (LinearShape) element;
                 toolpaths.add(new LinearToolpath(element.getAperture().getWidth(0), shape.getFrom(), shape.getTo()));
+            }
+            else if (element instanceof CircularShape)
+            {
+                CircularShape shape = (CircularShape) element;
+                toolpaths.add(new CircularToolpath(element.getAperture().getWidth(0), shape.getFrom(), shape.getTo(), shape.getArc().getCenter(), shape.getArc().getRadius(),
+                        shape.getArc().isClockwise()));
             }
         }
     }

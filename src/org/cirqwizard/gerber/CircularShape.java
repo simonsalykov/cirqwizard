@@ -68,7 +68,20 @@ public class CircularShape extends InterpolatingShape
     @Override
     public Point getMin()
     {
-        return new Point(arc.getFrom().getX() < arc.getTo().getX() ? arc.getFrom().getX() : arc.getTo().getX(),
-                arc.getFrom().getY() <= arc.getTo().getY() ? arc.getFrom().getY() : arc.getTo().getY());
+        int x, y;
+        if (arc.containsAngle(-Math.PI))
+            x = arc.getCenter().getX() - arc.getRadius();
+        else
+            x = Math.min(arc.getFrom().getX(), arc.getTo().getX());
+
+        if (arc.containsAngle(-Math.PI / 2))
+            y = arc.getCenter().getY() - arc.getRadius();
+        else
+            y = Math.min(arc.getFrom().getY(), arc.getTo().getY());
+
+        x -= aperture.getWidth(0) / 2;
+        y -= aperture.getWidth(0) / 2;
+
+        return new Point(x, y);
     }
 }
