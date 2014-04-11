@@ -24,6 +24,11 @@ public class Region extends GerberPrimitive
 {
     private List<GerberPrimitive> segments = new ArrayList<>();
 
+    public Region(Polarity polarity)
+    {
+        super(polarity);
+    }
+
     public void addSegment(GerberPrimitive segment)
     {
         segments.add(segment);

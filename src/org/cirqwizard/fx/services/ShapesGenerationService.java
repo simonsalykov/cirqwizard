@@ -254,7 +254,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                 {
                     if (shape != null)
                     {
-                        shape.getStyleClass().add(style);
+                        shape.getStyleClass().add(primitive.getPolarity() == GerberPrimitive.Polarity.DARK ? style : "pcb-clear-polarity");
                         list.add(shape);
                     }
                 }

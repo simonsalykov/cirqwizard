@@ -80,6 +80,11 @@
     -fx-fill: transparent;
 }
 
+.pcb-clear-polarity {
+    -fx-stroke: white;
+    -fx-fill: white
+}
+
 .pcb {
     -fx-background-color: #ddfbdd;
 }

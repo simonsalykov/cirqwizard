@@ -16,15 +16,15 @@ package org.cirqwizard.gerber;
 
 import org.cirqwizard.appertures.Aperture;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 
 
 public class Flash extends GerberPrimitive
 {
     private Point point;
 
-    public Flash(int x, int y, Aperture aperture)
+    public Flash(int x, int y, Aperture aperture, Polarity polarity)
     {
+        super(polarity);
         point = new Point(x, y);
         this.aperture = aperture;
     }

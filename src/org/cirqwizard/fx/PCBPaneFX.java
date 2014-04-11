@@ -165,8 +165,9 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
             return;
 
-        g.setStroke(gerberColor);
-        g.setFill(gerberColor);
+        Color color = primitive.getPolarity() == GerberPrimitive.Polarity.DARK ? gerberColor : BACKGROUND_COLOR;
+        g.setStroke(color);
+        g.setFill(color);
         if (primitive instanceof LinearShape)
         {
             LinearShape linearShape = (LinearShape) primitive;

@@ -21,6 +21,17 @@ import org.cirqwizard.geom.Point;
 public abstract class GerberPrimitive
 {
     protected Aperture aperture;
+    private Polarity polarity;
+
+    protected GerberPrimitive(Polarity polarity)
+    {
+        this.polarity = polarity;
+    }
+
+    public Polarity getPolarity()
+    {
+        return polarity;
+    }
 
     public Aperture getAperture()
     {
@@ -30,5 +41,11 @@ public abstract class GerberPrimitive
     public abstract void rotate(boolean clockwise);
     public abstract void move(Point point);
     public abstract Point getMin();
+
+
+    public static enum Polarity
+    {
+        CLEAR, DARK
+    }
 
 }

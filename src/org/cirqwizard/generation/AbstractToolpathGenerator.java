@@ -78,7 +78,7 @@ public class AbstractToolpathGenerator
         for (Flash flash : circularFlashes)
         {
             Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
-            translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2)));
+            translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2), flash.getPolarity()));
         }
 
         return translatedFlashes;

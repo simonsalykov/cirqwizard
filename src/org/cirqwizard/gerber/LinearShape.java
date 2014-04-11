@@ -17,15 +17,15 @@ package org.cirqwizard.gerber;
 import org.cirqwizard.appertures.Aperture;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 
 
 public class LinearShape extends InterpolatingShape
 {
     private Line line;
 
-    public LinearShape(int fromX, int fromY, int toX, int toY, Aperture aperture)
+    public LinearShape(int fromX, int fromY, int toX, int toY, Aperture aperture, Polarity polarity)
     {
+        super(polarity);
         Point from = new Point(fromX, fromY);
         Point to = new Point(toX, toY);
         line = new Line(from, to);

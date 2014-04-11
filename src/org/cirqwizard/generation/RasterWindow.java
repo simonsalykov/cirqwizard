@@ -60,7 +60,7 @@ public class RasterWindow
         if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
             return;
 
-        g.setColor(Color.WHITE);
+        g.setColor(primitive.getPolarity() == GerberPrimitive.Polarity.DARK ? Color.WHITE : Color.BLACK);
         if (primitive instanceof LinearShape)
         {
             LinearShape linearShape = (LinearShape) primitive;

@@ -18,6 +18,10 @@ import org.cirqwizard.geom.Point;
 
 public abstract class InterpolatingShape extends GerberPrimitive
 {
+    protected InterpolatingShape(Polarity polarity)
+    {
+        super(polarity);
+    }
 
     public abstract Point getFrom();
     public abstract Point getTo();

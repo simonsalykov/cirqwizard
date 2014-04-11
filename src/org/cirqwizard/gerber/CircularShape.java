@@ -17,15 +17,15 @@ package org.cirqwizard.gerber;
 import org.cirqwizard.appertures.Aperture;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 
 public class CircularShape extends InterpolatingShape
 {
     private Arc arc;
 
     public CircularShape(int fromX, int fromY, int toX, int toY, int centerX, int centerY,
-                         boolean clockwise, Aperture aperture)
+                         boolean clockwise, Aperture aperture, Polarity polarity)
     {
+        super(polarity);
         Point from = new Point(fromX, fromY);
         Point center = new Point(centerX, centerY);
         arc = new Arc(from, new Point(toX, toY), center, (int) from.distanceTo(center), clockwise);

@@ -65,6 +65,7 @@ public class GerberParser
 
     private InterpolationMode currentInterpolationMode = InterpolationMode.LINEAR;
     private ArcQuadrantMode arcQuadrantMode;
+    private GerberPrimitive.Polarity polarity = GerberPrimitive.Polarity.DARK;
 
     private int x = 0;
     private int y = 0;
@@ -144,6 +145,8 @@ public class GerberParser
             parseMeasurementUnits(parameter.substring(2, parameter.length()));
         else if (parameter.startsWith("AM"))
             parseApertureMacro(parameter);
+        else if (parameter.startsWith("LP"))
+            parseLevelPolarity(parameter);
         else
             throw new GerberParsingException("Unknown parameter: " + parameter);
     }
@@ -161,6 +164,16 @@ public class GerberParser
         omitLeadingZeros = str.charAt(2) == 'L';
         integerPlaces = str.charAt(str.indexOf('X') + 1) - '0';
         decimalPlaces = str.charAt(str.indexOf('X') + 2) - '0';
+    }
+
+    private void parseLevelPolarity(String str) throws GerberParsingException
+    {
+        if (str.charAt(2) == 'C')
+            polarity = GerberPrimitive.Polarity.CLEAR;
+        else if (str.charAt(2) == 'D')
+            polarity = GerberPrimitive.Polarity.DARK;
+        else
+            throw new GerberParsingException("Unknown polarity specified: " + str);
     }
 
     private void parseApertureMacro(String str)
@@ -352,7 +365,7 @@ public class GerberParser
                 break;
                 case  4: return;
                 case 36:
-                    region = new Region();
+                    region = new Region(polarity);
                 break;
                 case 37:
                     elements.add(region);
@@ -407,17 +420,17 @@ public class GerberParser
 
         GerberPrimitive primitive = null;
         if(exposureMode == ExposureMode.FLASH)
-            primitive = new Flash(newX, newY, aperture);
+            primitive = new Flash(newX, newY, aperture, polarity);
         else if (exposureMode == ExposureMode.ON)
         {
             if (currentInterpolationMode == InterpolationMode.LINEAR)
-                primitive = new LinearShape(x, y, newX, newY, aperture);
+                primitive = new LinearShape(x, y, newX, newY, aperture, polarity);
             else
             {
                 Integer i = dataBlock.getI() == null ? 0 : dataBlock.getI();
                 Integer j = dataBlock.getJ() == null ? 0 : dataBlock.getJ();
                 primitive = new CircularShape(x, y, newX, newY, x + i, y + j,
-                        currentInterpolationMode == InterpolationMode.CLOCKWISE_CIRCULAR, aperture);
+                        currentInterpolationMode == InterpolationMode.CLOCKWISE_CIRCULAR, aperture, polarity);
             }
         }
 
