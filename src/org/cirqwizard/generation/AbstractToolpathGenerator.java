@@ -21,9 +21,11 @@ import org.cirqwizard.appertures.macro.ApertureMacro;
 import org.cirqwizard.appertures.macro.MacroCircle;
 import org.cirqwizard.appertures.macro.MacroPrimitive;
 import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.InterpolatingShape;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -34,10 +36,10 @@ import java.util.List;
 
 public class AbstractToolpathGenerator
 {
+    protected int inflation;
     protected List<GerberPrimitive> primitives;
 
-    protected ArrayList<Integer> radii = new ArrayList<>();
-    protected ArrayList<Flash> circularFlashes = new ArrayList<>();
+    protected ArrayList<Circle> knownCircles = new ArrayList<>();
 
     protected DoubleProperty progressProperty = new SimpleDoubleProperty();
 
@@ -49,17 +51,27 @@ public class AbstractToolpathGenerator
             {
                 CircularAperture aperture = (CircularAperture) primitive.getAperture();
                 if (primitive instanceof Flash)
-                    circularFlashes.add((Flash) primitive);
-                else if (!radii.contains(aperture.getDiameter() / 2))
-                    radii.add(aperture.getDiameter() / 2);
+                {
+                    Flash f = (Flash) primitive;
+                    knownCircles.add(new Circle(f.getPoint(), aperture.getDiameter() / 2 + inflation));
+                }
+                else if (primitive instanceof InterpolatingShape)
+                {
+                    InterpolatingShape shape = (InterpolatingShape) primitive;
+                    knownCircles.add(new Circle(shape.getFrom(), aperture.getDiameter() / 2 + inflation));
+                    knownCircles.add(new Circle(shape.getTo(), aperture.getDiameter() / 2 + inflation));
+                }
             }
-            else if (primitive.getAperture() instanceof ApertureMacro)
+            else if (primitive.getAperture() instanceof ApertureMacro && primitive instanceof Flash)
             {
+                Flash f = (Flash) primitive;
                 for (MacroPrimitive p : ((ApertureMacro) primitive.getAperture()).getPrimitives())
                 {
                     if (p instanceof MacroCircle)
-                        if (!radii.contains(((MacroCircle) p).getDiameter() / 2))
-                            radii.add(((MacroCircle) p).getDiameter() / 2);
+                    {
+                        MacroCircle mc = (MacroCircle) p;
+                        knownCircles.add(new Circle(f.getPoint().add(mc.getCenter()), mc.getDiameter() / 2 + inflation));
+                    }
                 }
             }
         }
@@ -72,16 +84,16 @@ public class AbstractToolpathGenerator
     }
 
 
-    protected List<Flash> translateFlashes(Point offset)
+    protected List<Circle> translateKnownCircles(Point offset)
     {
-        ArrayList<Flash> translatedFlashes = new ArrayList<>();
-        for (Flash flash : circularFlashes)
+        ArrayList<Circle> translatedCircles = new ArrayList<>();
+        for (Circle circle : knownCircles)
         {
-            Point p  = translateToWindowCoordinates(flash.getPoint(), offset);
-            translatedFlashes.add(new Flash(p.getX(), p.getY(), new CircularAperture(((CircularAperture)flash.getAperture()).getDiameter() / 2), flash.getPolarity()));
+            Point p  = translateToWindowCoordinates(circle.getCenter(), offset);
+            translatedCircles.add(new Circle(p, circle.getRadius()));
         }
 
-        return translatedFlashes;
+        return translatedCircles;
     }
 
     protected Point translateWindowCoordiantes(Point point, Point windowOffset)

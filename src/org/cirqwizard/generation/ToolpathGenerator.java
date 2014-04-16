@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
+import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
@@ -36,7 +37,6 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
 
     private int width;
     private int height;
-    private int inflation;
     private int toolDiameter;
     private int threadCount;
 
@@ -101,7 +101,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
                 });
 
                 Point offset = new Point(x, y);
-                List<Flash> translatedFlashes = translateFlashes(offset);
+                List<Circle> translatedCircles = translateKnownCircles(offset);
 
                 int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, width - x);
                 int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, height - y);
@@ -113,7 +113,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
                 if (detector.getOutput() != null)
                 {
                     java.util.List<Toolpath> toolpaths =
-                            new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, radii, translatedFlashes).process();
+                            new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, translatedCircles).process();
                     detector = null;  // Helping GC to reclaim memory consumed by processed image
                     segments.addAll(translateToolpaths(toolpaths, offset));
                 }

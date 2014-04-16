@@ -106,7 +106,7 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
                             if (detector.getOutput() != null)
                             {
                                 List<Toolpath> toolpaths =
-                                        new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, radii, translateFlashes(windowOffset)).process();
+                                        new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, translateKnownCircles(windowOffset)).process();
                                 detector = null;  // Helping GC to reclaim memory consumed by processed image
                                 for (Toolpath t : toolpaths)
                                 {

@@ -29,8 +29,8 @@ import java.util.List;
 
 public class ToolpathMerger
 {
-    private static final double MERGE_THRESHOLD = 20.0;
-    private static final int ROUNDING_FACTOR = 10;
+    private static final double MERGE_THRESHOLD = 30.0;
+    private static final int ROUNDING_FACTOR = 50;
     private static final double ARC_CENTER_THRESHOLD = 50.0;
 
     private List<Toolpath> toolpaths;
