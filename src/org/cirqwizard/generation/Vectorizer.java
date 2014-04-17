@@ -23,18 +23,13 @@ import java.util.List;
 
 public class Vectorizer
 {
-    private static final int INITIAL_SAMPLE_COUNT = (int)(0.2 * Settings.RESOLUTION);                    // Amount of samples to process before trying to decide which curve it is
+    private static final int INITIAL_SAMPLE_COUNT = (int)(0.15 * Settings.RESOLUTION);                    // Amount of samples to process before trying to decide which curve it is
+    private static final int MAX_UNCERTAIN_SAMPLES = (int)(0.3 * Settings.RESOLUTION);
     private static final int SAMPLE_COUNT = (int)(0.1 * Settings.RESOLUTION);                            // Amount of last processed points to hold for deviation calculation
-    private static final double ANGULAR_THRESHOLD = Math.toRadians(2);      // Threshold of angular difference which results in a new segment start
+    private static final double ANGULAR_THRESHOLD = Math.toRadians(3);      // Threshold of angular difference which results in a new segment start
 
-    private static final double DEVIATION_MARGIN = 3;                       // Margin, by which arc's standard deviation should beat segment's
-    // standard deviation in order to choose arc over segment
-    private static final double SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN = 1; // As above, in case segment in question follows an arc
-    private static final int    SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT = (int)(INITIAL_SAMPLE_COUNT * 1.5);
-    // Limitation of previous constant scope (in samples from segment's start)
-
-    private static final double LOW_UNCERTAINTY_THRESHOLD = 9.8;   // Arcs with uncertainty lower than that are processed as arcs
-    private static final double HIGH_UNCERTAINTY_THRESHOLD = 10;    // Arcs with uncertainty higher than that are processed as segments
+    private static final double LOW_UNCERTAINTY_THRESHOLD = 0.6;   // Arcs with uncertainty lower than that are processed as arcs
+    private static final double HIGH_UNCERTAINTY_THRESHOLD = 10.0;    // Arcs with uncertainty higher than that are processed as segments
 
 
     private byte[] windowData;
@@ -69,46 +64,36 @@ public class Vectorizer
         do
         {
             lastPoints.addLast(current);
-            int sampleCount = segmentCounter <= INITIAL_SAMPLE_COUNT ? INITIAL_SAMPLE_COUNT : SAMPLE_COUNT;
+            int sampleCount = segmentCounter <= INITIAL_SAMPLE_COUNT ? INITIAL_SAMPLE_COUNT : (matchedArc == null ? SAMPLE_COUNT : (int)((double) matchedArc.getCircle().getRadius() * 2 * (Math.PI / 15)));
             while (lastPoints.size() > sampleCount)
                 lastPoints.removeFirst();
             segmentPoints.addLast(current);
 
             segmentCounter++;
             currentSegment.setTo(current);
-            boolean previousToolpathIsArc = result.size() > 0 && result.get(result.size() - 1) instanceof Arc;
 
             boolean restart = false;
 
             if (segmentCounter == INITIAL_SAMPLE_COUNT)
             {
                 angle = calculateAngle(currentSegment.getFrom(), current);
-                double segmentDeviation = calculateSegmentDeviation(segmentPoints);
-                matchedArc = fitArc(segmentPoints, segmentDeviation, 0);
+                matchedArc = fitArc(segmentPoints, calculateSegmentDeviation(segmentPoints));
             }
             else if (segmentCounter > INITIAL_SAMPLE_COUNT)
             {
                 if (matchedArc != null && matchedArc.getUncertainty() >= LOW_UNCERTAINTY_THRESHOLD)
-                {
-                    double segmentDeviation = calculateSegmentDeviation(segmentPoints);
-                    double margin = DEVIATION_MARGIN;
-                    if (segmentCounter < SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN_LIMIT && previousToolpathIsArc)
-                        margin = SEGMENT_FOLLOWING_ARC_DEVIATION_MARGIN;
-                    matchedArc = fitArc(segmentPoints, segmentDeviation, margin);
-                }
+                    matchedArc = fitArc(segmentPoints, calculateSegmentDeviation(segmentPoints));
 
                 if (matchedArc != null && matchedArc.getUncertainty() < LOW_UNCERTAINTY_THRESHOLD)
                     restart = calculateSegmentDeviation(lastPoints) < calculateArcDeviation(lastPoints, matchedArc.getCircle().getCenter(), matchedArc.getCircle().getRadius());
-                else if (matchedArc == null)
+                else if (matchedArc == null || segmentCounter >  (double)matchedArc.getCircle().getRadius() * 2 * (Math.PI / 15))
                     restart = Math.abs(calculateAngle(lastPoints.getFirst(), lastPoints.getLast()) - angle) > ANGULAR_THRESHOLD;
             }
 
             if (restart)
             {
-                Curve curve = getCurve(calculateAngle(lastPoints.get(0), current), lastPoints.get(0));
-                if (previousToolpathIsArc)
-                    curve = attemptMerge(curve);
 
+                Curve curve = getCurve(calculateAngle(lastPoints.get(0), current), lastPoints.get(0));
                 result.add(curve);
                 currentSegment = new Line(current, current);
                 segmentPoints.clear();
@@ -140,41 +125,6 @@ public class Vectorizer
         }
 
         return false;
-    }
-
-    private Curve attemptMerge(Curve curve)
-    {
-        Arc prevArc = (Arc) result.get(result.size() - 1);
-        boolean merge = false;
-
-        if (curve instanceof Line)
-        {
-            double arcDeviation = calculateArcDeviation(segmentPoints, prevArc.getCenter(), prevArc.getRadius());
-            double ratio = arcDeviation / calculateSegmentDeviation(segmentPoints);
-            if (ratio < 1 || (segmentPoints.size() < 1.5 * INITIAL_SAMPLE_COUNT && ratio < 5))
-                merge = true;
-        }
-        if (curve instanceof Arc)
-        {
-            Arc arc = (Arc) curve;
-            int centersDistanceThreshold = (int)(0.4 * arc.getRadius());
-            if (prevArc.getCenter().distanceTo(arc.getCenter()) <= centersDistanceThreshold && prevArc.getRadius() == arc.getRadius())
-                merge = true;
-            else
-            {
-                double prevArcDeviation = calculateArcDeviation(segmentPoints, prevArc.getCenter(), prevArc.getRadius());
-                if (prevArcDeviation / calculateArcDeviation(segmentPoints, matchedArc.getCircle().getCenter(), matchedArc.getCircle().getRadius()) < 5)
-                    merge = true;
-            }
-        }
-
-        if (merge)
-        {
-            result.remove(result.size() - 1);
-            curve = new Arc(prevArc.getFrom(), curve.getTo(), prevArc.getCenter(), prevArc.getRadius(), prevArc.isClockwise());
-        }
-
-        return curve;
     }
 
     private Curve getCurve(double heading, Point headingStartPoint)
@@ -222,7 +172,7 @@ public class Vectorizer
         return Math.sqrt(deviation);
     }
 
-    private MatchedArc fitArc(LinkedList<Point> points, double segmentDeviation, double margin)
+    private MatchedArc fitArc(LinkedList<Point> points, double segmentDeviation)
     {
         double minDeviation = Double.MAX_VALUE;
         Circle bestFit = null;

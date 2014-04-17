@@ -15,7 +15,7 @@ import java.util.*;
 
 public class ChainDetector
 {
-    private static final int ROUNDING_FACTOR = 10;
+    private static final int ROUNDING_FACTOR = 30;
 
     private List<Toolpath> toolpaths;
 
