@@ -35,7 +35,8 @@ public class TimeEstimator
     private final static double feedAcceleration = (double) Settings.getFeedAcceleration() / Settings.RESOLUTION;
     private final static double arcFeed = (double) Settings.getArcFeed() / Settings.RESOLUTION / 60;
 
-    public static double calculateTotalDuration(List<Toolpath> toolpaths, double feed, double zFeed, double clearance, double safetyHeight, boolean includeFeed)
+    public static double calculateTotalDuration(List<Toolpath> toolpaths, double feed, double zFeed, double clearance, double safetyHeight, boolean includeFeed,
+                                                int mergeTolerance)
     {
         Point currentLocation = new Point(0, 0);
         double totalTime = 0;
@@ -52,8 +53,7 @@ public class TimeEstimator
             if (t instanceof CuttingToolpath)
             {
                 Curve curve = ((CuttingToolpath) t).getCurve();
-                if (Math.abs(currentLocation.getX() - curve.getFrom().getX()) > Settings.ROUNDING ||
-                        Math.abs(currentLocation.getY() - curve.getFrom().getY()) > Settings.ROUNDING)
+                if (currentLocation.distanceTo(curve.getFrom()) > mergeTolerance)
                 {
                     double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / Settings.RESOLUTION,
                             xRapids, xRapidAcceleration);

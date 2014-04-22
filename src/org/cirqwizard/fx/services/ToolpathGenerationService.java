@@ -182,7 +182,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     List<Toolpath> toolpaths = generator.generate();
                     if (toolpaths == null || toolpaths.size() == 0)
                         return null;
-                    toolpaths = new ToolpathMerger(toolpaths).merge();
+                    final int mergeTolerance = toolDiameter.intValue() / 4;
+                    toolpaths = new ToolpathMerger(toolpaths, mergeTolerance).merge();
 
                     if (!settings.isTracesAdditionalPassesPadsOnly())
                     {
@@ -202,7 +203,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                             List<Toolpath> additionalToolpaths = generator.generate();
                             if (additionalToolpaths == null || additionalToolpaths.size() == 0)
                                 continue;
-                            toolpaths.addAll(new ToolpathMerger(additionalToolpaths).merge());
+                            toolpaths.addAll(new ToolpathMerger(additionalToolpaths, mergeTolerance).merge());
                         }
                     }
                     else if (settings.getTracesAdditionalPasses() > 0)
@@ -219,14 +220,14 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                                 overallProgressProperty.bind(additionalGenerator.progressProperty());
                             }
                         });
-                        toolpaths.addAll(new ToolpathMerger(additionalGenerator.generate()).merge());
+                        toolpaths.addAll(new ToolpathMerger(additionalGenerator.generate(), mergeTolerance).merge());
                     }
 
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 
                     final Optimizer optimizer = new Optimizer(chains, feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
-                            clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION);
+                            clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION, mergeTolerance);
                     Platform.runLater(new Runnable()
                     {
                         @Override
@@ -252,7 +253,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                                     long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
                                             feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
                                             clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
-                                            true);
+                                            true, mergeTolerance);
                                     String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
                                             ":" + format.format(totalDuration % 60);
                                     return "Estimated machining time: " + time;

@@ -44,17 +44,19 @@ public class Optimizer
     private double zFeed;
     private double clearance;
     private double safetyHeight;
+    private int mergeTolerance;
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
     private ObjectProperty<List<Toolpath>> currentBestSolutionProperty = new SimpleObjectProperty<>();
 
-    public Optimizer(List<Chain> chains, double feed, double zFeed, double clearance, double safetyHeight)
+    public Optimizer(List<Chain> chains, double feed, double zFeed, double clearance, double safetyHeight, int mergeTolerance)
     {
         this.environment = new Environment(chains);
         this.feed = feed;
         this.zFeed = zFeed;
         this.clearance = clearance;
         this.safetyHeight = safetyHeight;
+        this.mergeTolerance = mergeTolerance;
     }
 
     public List<Chain> optimize()
@@ -80,7 +82,7 @@ public class Optimizer
                         currentBestSolutionProperty.setValue(l);
                     }
                 });
-                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, clearance, safetyHeight, false);
+                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, clearance, safetyHeight, false, mergeTolerance);
                 if (Math.abs(lastEvaluation - bestResult) < MIN_IMPROVEMENT)
                     break;
                 lastEvaluation = bestResult;
