@@ -53,6 +53,8 @@ public class ComponentPlacementController extends SceneController implements Ini
     @FXML private TitledPane pickupPane;
     @FXML private RealNumberTextField pickupX;
     @FXML private RealNumberTextField pickupY;
+    @FXML private Button gotoPickupButton;
+    @FXML private Button pickupButton;
     @FXML private Button gotoTargetButton;
     @FXML private Button pickupNGoButton;
 
@@ -66,6 +68,9 @@ public class ComponentPlacementController extends SceneController implements Ini
     @FXML private RealNumberTextField targetX;
     @FXML private RealNumberTextField targetY;
     @FXML private RealNumberTextField targetAngle;
+
+    @FXML private Button moveHeadAwayButton;
+    @FXML private Button vacuumOffButton;
 
     private ObservableList<String> componentNames = FXCollections.observableArrayList();
     private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
@@ -155,6 +160,12 @@ public class ComponentPlacementController extends SceneController implements Ini
         pickupY.setIntegerValue(context.getFeeder().getYForRow(y + feederOffsetY, context.getFeederRow()));
 
         gotoTargetButton.setDisable(true);
+
+        boolean noMachineConnected = getMainApplication().getCNCController() == null;
+        gotoPickupButton.setDisable(noMachineConnected);
+        pickupButton.setDisable(noMachineConnected);
+        moveHeadAwayButton.setDisable(noMachineConnected);
+        vacuumOffButton.setDisable(noMachineConnected);
     }
 
     private void updateComponent()

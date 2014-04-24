@@ -50,7 +50,7 @@ public class SerialInterfaceFactory
                 return new SerialInterfaceImpl(port.getName(), 38400);
         }
 
-        return new SerialInterfaceStub();
+        return null;
     }
 
 }

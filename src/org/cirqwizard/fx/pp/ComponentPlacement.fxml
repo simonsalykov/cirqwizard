@@ -8,10 +8,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
-
+<?import org.cirqwizard.fx.controls.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
+<?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.pp.ComponentPlacementController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.pp.ComponentPlacementController">
   <children>
     <Label fx:id="header" layoutX="50.0" layoutY="56.0" styleClass="h1" text="Placing component" />
     <TitledPane fx:id="pickupPane" animated="false" collapsible="false" layoutX="49.0" layoutY="280.0" prefHeight="256.0" text="Pickup">
@@ -32,8 +33,8 @@
             </HBox>
             <VBox id="VBox" alignment="CENTER" layoutX="31.0" layoutY="88.0" prefWidth="140.0" spacing="5.0">
               <children>
-                <Button mnemonicParsing="false" onAction="#gotoPickup" prefWidth="140.0" text="Go to pickup" />
-                <Button mnemonicParsing="false" onAction="#pickup" prefWidth="140.0" text="Pickup">
+                <Button fx:id="gotoPickupButton" mnemonicParsing="false" onAction="#gotoPickup" prefWidth="140.0" text="Go to pickup" />
+                <Button fx:id="pickupButton" mnemonicParsing="false" onAction="#pickup" prefWidth="140.0" text="Pickup">
                   <VBox.margin>
                     <Insets />
                   </VBox.margin>
@@ -94,8 +95,8 @@
                     <RealNumberTextField fx:id="manualZ" onAction="#manualZUpdated" prefWidth="75.0" />
                   </children>
                 </HBox>
-                <Button mnemonicParsing="false" onAction="#moveHeadAway" prefWidth="160.0" text="Move head away" />
-                <Button mnemonicParsing="false" onAction="#vacuumOff" prefWidth="160.0" text="Vacuum off" />
+                <Button fx:id="moveHeadAwayButton" mnemonicParsing="false" onAction="#moveHeadAway" prefWidth="160.0" text="Move head away" />
+                <Button fx:id="vacuumOffButton" mnemonicParsing="false" onAction="#vacuumOff" prefWidth="160.0" text="Vacuum off" />
               </children>
             </VBox>
           </children>
