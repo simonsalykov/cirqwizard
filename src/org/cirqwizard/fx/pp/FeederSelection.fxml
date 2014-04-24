@@ -7,14 +7,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
-
+<?import org.cirqwizard.fx.controls.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
+<?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.pp.FeederSelectionController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.pp.FeederSelectionController">
   <children>
     <Label fx:id="header" layoutX="57.0" layoutY="64.0" styleClass="h1" text="Placing component" />
     <Label layoutX="93.0" layoutY="161.0" prefHeight="67.0" prefWidth="555.0" text="Put a reel with components on a components panel and select components panel size, row on the panel and components pitch in the reel below. If you don't want to place this component, just click Continue." wrapText="true" />
-    <Button layoutX="93.0" layoutY="251.0" mnemonicParsing="false" onAction="#moveHeadAway" text="Move head away" />
+    <Button fx:id="moveHeadAwayButton" layoutX="93.0" layoutY="251.0" mnemonicParsing="false" onAction="#moveHeadAway" text="Move head away" />
     <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="337.0" text="Components panel">
       <content>
         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="94.0" prefWidth="116.0">

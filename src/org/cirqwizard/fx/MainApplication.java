@@ -100,7 +100,11 @@ public class MainApplication extends Application
                 serialInterface = null;
             }
         }
-        cncController = new CNCController(serialInterface, this);
+
+        if (serialInterface == null)
+            cncController = null;
+        else
+            cncController = new CNCController(serialInterface, this);
     }
 
     @Override

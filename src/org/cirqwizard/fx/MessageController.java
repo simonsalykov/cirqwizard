@@ -71,6 +71,7 @@ public class MessageController extends SceneController
                 moveAwayButton.setVisible(true);
             break;
         }
+        moveAwayButton.setDisable(getMainApplication().getCNCController() == null);
         continueButton.setVisible(getMainApplication().getState() != State.TERMINAL);
     }
 

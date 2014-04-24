@@ -19,6 +19,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
@@ -31,6 +32,7 @@ import java.util.ResourceBundle;
 public class ManualMovementController extends SceneController implements Initializable
 {
     @FXML private Parent view;
+    @FXML private Button homeButton;
     @FXML public RealNumberTextField xPositionTextField;
     @FXML public RealNumberTextField yPositionTextField;
     @FXML public RealNumberTextField zPositionTextField;
@@ -50,6 +52,16 @@ public class ManualMovementController extends SceneController implements Initial
         xPositionTextField.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
         yPositionTextField.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
         zPositionTextField.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
+    }
+
+    @Override
+    public void refresh()
+    {
+        boolean noMachineConnected = getMainApplication().getCNCController() == null;
+        homeButton.setDisable(noMachineConnected);
+        xPositionTextField.setDisable(noMachineConnected);
+        yPositionTextField.setDisable(noMachineConnected);
+        zPositionTextField.setDisable(noMachineConnected);
     }
 
     private class KeyboardHandler implements EventHandler<KeyEvent>
