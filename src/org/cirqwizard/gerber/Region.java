@@ -64,6 +64,6 @@ public class Region extends GerberPrimitive
             if (p.getMin().getY() < min.getY())
                 min = new Point(min.getX(), p.getMin().getY());
         }
-        return min.subtract(new Point(aperture.getWidth() / 2, aperture.getHeight() / 2));
+        return min;
     }
 }
