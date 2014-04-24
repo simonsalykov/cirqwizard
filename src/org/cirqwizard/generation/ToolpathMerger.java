@@ -24,33 +24,36 @@ import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class ToolpathMerger
 {
-    private static final double MERGE_THRESHOLD = 20.0;
-    private static final int ROUNDING_FACTOR = 10;
-    private static final double ARC_CENTER_THRESHOLD = 50.0;
-
     private List<Toolpath> toolpaths;
+    private HashMap<Point, ArrayList<Toolpath>> verticesMap = new HashMap<>();
+    private int tolerance;
+    private int roundingFactor;
 
-    public ToolpathMerger(List<Toolpath> toolpaths)
+    public ToolpathMerger(List<Toolpath> toolpaths, int tolerance)
     {
         this.toolpaths = toolpaths;
+        this.tolerance = tolerance;
+        this.roundingFactor = tolerance * 2;
     }
 
     public List<Toolpath> merge()
     {
         double comparisonThreshold = Math.PI / 60;  // 3 degrees
 
-        HashMap<Point, ArrayList<Toolpath>> map = getVerticesMap(toolpaths);
+        initVerticesMap(toolpaths);
 
         ArrayList<Toolpath> toBeRemoved = new ArrayList<>();
 
-        for (Point p : map.keySet())
+        for (Point p : verticesMap.keySet())
         {
-            ArrayList<Toolpath> toMerge = map.get(p);
+
+            ArrayList<Toolpath> toMerge = verticesMap.get(p);
             for (int i = 0; i < toMerge.size(); i++)
             {
                 boolean merge = false;
@@ -70,24 +73,24 @@ public class ToolpathMerger
                         continue;
 
                     boolean l1Inversed = false;
-                    if (!c1.getTo().equals(p, MERGE_THRESHOLD))
+                    if (!c1.getTo().equals(p, roundingFactor))
                     {
                         c1 = c1.reverse();
                         l1Inversed = true;
                     }
-                    if (!c2.getFrom().equals(p, MERGE_THRESHOLD))
+                    if (!c2.getFrom().equals(p, roundingFactor))
                         c2 = c2.reverse();
 
                     if (t1 instanceof LinearToolpath && t2 instanceof LinearToolpath)
                     {
                         Line l1 = (Line) c1;
                         Line l2 = (Line) c2;
-                        if (l2.getFrom().equals(l1.getTo(), MERGE_THRESHOLD))
+                        if (l2.getFrom().equals(l1.getTo(), tolerance))
                         {
                             if (l1.getFrom().equals(l2.getTo())) // Removing duplicate segments
                             {
                                 toBeRemoved.add(t2);
-                                map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
+                                removeVertices(c2.getTo(), t2);
                                 continue;
                             }
                             else if (Math.abs(Math.abs(l1.angleToX() - l2.angleToX()) - Math.PI) < comparisonThreshold) // Removing overlapping segments
@@ -95,13 +98,13 @@ public class ToolpathMerger
                                 if (l1.length() > l2.length())
                                 {
                                     toBeRemoved.add(t2);
-                                    map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
+                                    removeVertices(c2.getTo(), t2);
                                     continue;
                                 }
                                 else
                                 {
                                     toBeRemoved.add(t1);
-                                    map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t1);
+                                    removeVertices(c2.getTo(), t1);
                                     break;
                                 }
                             }
@@ -119,10 +122,9 @@ public class ToolpathMerger
                     {
                         Arc a1 = (Arc) c1;
                         Arc a2 = (Arc) c2;
-                        if (a1.getTo().equals(a2.getFrom(), MERGE_THRESHOLD) && a1.isClockwise() == a2.isClockwise())
+                        if (a1.getTo().equals(a2.getFrom(), tolerance) && a1.isClockwise() == a2.isClockwise())
                         {
-                            if (a1.getCenter().equals(a2.getCenter(), ARC_CENTER_THRESHOLD) &&
-                                    Math.abs(a1.getRadius() - a2.getRadius()) < ARC_CENTER_THRESHOLD)
+                            if (a1.getCenter().equals(a2.getCenter()) && a1.getRadius() == a2.getRadius())
                                 merge = true;
                         }
                     }
@@ -134,11 +136,12 @@ public class ToolpathMerger
                             curve.setFrom(c2.getTo());
                         else
                             curve.setTo(c2.getTo());
-                        if (curve instanceof Arc && c2.getTo().equals(c1.getFrom(), MERGE_THRESHOLD))
+                        if (curve instanceof Arc && c2.getTo().equals(c1.getFrom(), tolerance))
                             curve.setTo(curve.getFrom());
                         toBeRemoved.add(t2);
-                        map.get(c2.getTo().round(ROUNDING_FACTOR)).remove(t2);
-                        map.get(c2.getTo().round(ROUNDING_FACTOR)).add(t1);
+                        removeVertices(c2.getFrom(), t2);
+                        removeVertices(c2.getTo(), t2);
+                        addVertices(c2.getTo(), t1);
                         break;
 
                     }
@@ -166,32 +169,58 @@ public class ToolpathMerger
         return result;
     }
 
-    private HashMap<Point, ArrayList<Toolpath>> getVerticesMap(List<Toolpath> toolpaths)
+    private void initVerticesMap(List<Toolpath> toolpaths)
     {
-        HashMap<Point, ArrayList<Toolpath>> map = new HashMap<>();
         for (Toolpath t : toolpaths)
         {
-            Point from = ((CuttingToolpath)t).getCurve().getFrom().round(ROUNDING_FACTOR);
-            Point to = ((CuttingToolpath)t).getCurve().getTo().round(ROUNDING_FACTOR);
-
-            ArrayList<Toolpath> list = map.get(from);
-            if (list == null)
-            {
-                list = new ArrayList<>();
-                map.put(from, list);
-            }
-            list.add(t);
-
-            list = map.get(to);
-            if (list == null)
-            {
-                list = new ArrayList<>();
-                map.put(to, list);
-            }
-            list.add(t);
+            Curve curve = ((CuttingToolpath) t).getCurve();
+            addVertices(curve.getFrom(), t);
+            addVertices(curve.getTo(), t);
         }
+    }
 
-        return map;
+    private List<Point> getPointsForVertex(Point point)
+    {
+        Point p1 = new Point(point.getX() / roundingFactor * roundingFactor, point.getY() / roundingFactor * roundingFactor);
+        Point p2 = p1.add(new Point(roundingFactor, 0));
+        Point p3 = p1.add(new Point(0, roundingFactor));
+        Point p4 = p1.add(new Point(roundingFactor, roundingFactor));
+        return Arrays.asList(p1, p2, p3, p4);
+    }
+
+    private void addVertices(Point point, Toolpath toolpath)
+    {
+        addVertex(getPointsForVertex(point), toolpath);
+    }
+
+    private void removeVertices(Point point, Toolpath toolpath)
+    {
+        removeVertex(getPointsForVertex(point), toolpath);
+    }
+
+    private void addVertex(List<Point> vertices, Toolpath toolpath)
+    {
+        for (Point p : vertices)
+        {
+            ArrayList<Toolpath> list = verticesMap.get(p);
+            if (list == null)
+            {
+                list = new ArrayList<>();
+                verticesMap.put(p, list);
+            }
+            if (!list.contains(toolpath))
+                list.add(toolpath);
+        }
+    }
+
+    private void removeVertex(List<Point> vertices, Toolpath toolpath)
+    {
+        for (Point p : vertices)
+        {
+            ArrayList<Toolpath> list = verticesMap.get(p);
+            if (list != null)
+                list.remove(toolpath);
+        }
     }
 
 }

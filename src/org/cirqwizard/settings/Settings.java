@@ -27,7 +27,7 @@ import java.util.prefs.Preferences;
 public class Settings
 {
     public static final int RESOLUTION = 1000;
-    public static final int ROUNDING = 10;
+    public static final int ROUNDING = 30;
 
     private final static int X_RAPIDS = 1_500_000;
     private final static int Y_RAPIDS = 1_000_000;

@@ -1,41 +1,29 @@
 package org.cirqwizard.generation;
 
-import org.cirqwizard.geom.Point;
+import org.cirqwizard.geom.Circle;
 
 /**
  * Created by simon on 11/12/13.
  */
 public class MatchedArc
 {
-    private Point center;
-    private int radius;
+    private Circle circle;
     private double uncertainty;
 
-    public MatchedArc(Point center, int radius, double uncertainty)
+    public MatchedArc(Circle circle, double uncertainty)
     {
-        this.center = center;
-        this.radius = radius;
+        this.circle = circle;
         this.uncertainty = uncertainty;
     }
 
-    public Point getCenter()
+    public Circle getCircle()
     {
-        return center;
+        return circle;
     }
 
-    public void setCenter(Point center)
+    public void setCircle(Circle circle)
     {
-        this.center = center;
-    }
-
-    public int getRadius()
-    {
-        return radius;
-    }
-
-    public void setRadius(int radius)
-    {
-        this.radius = radius;
+        this.circle = circle;
     }
 
     public double getUncertainty()

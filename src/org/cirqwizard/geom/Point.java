@@ -87,7 +87,12 @@ public class Point implements Serializable
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        return equals((Point) o, 1);
+        Point point = (Point) o;
+
+        if (x != point.x) return false;
+        if (y != point.y) return false;
+
+        return true;
     }
 
     public boolean equals(Point o, double precision)
