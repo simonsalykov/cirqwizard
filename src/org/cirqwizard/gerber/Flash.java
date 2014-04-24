@@ -63,7 +63,7 @@ public class Flash extends GerberPrimitive
     @Override
     public Point getMin()
     {
-        return point;
+        return point.subtract(new Point(aperture.getWidth() / 2, aperture.getHeight() / 2));
     }
 
 }

@@ -57,9 +57,15 @@ public class RectangularAperture extends Aperture
     }
 
     @Override
-    public int getWidth(double angle)
+    public int getWidth()
     {
-        return Math.max(dimensions[0], dimensions[1]);
+        return dimensions[0];
+    }
+
+    @Override
+    public int getHeight()
+    {
+        return dimensions[1];
     }
 
     @Override

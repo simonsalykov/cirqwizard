@@ -79,8 +79,8 @@ public class CircularShape extends InterpolatingShape
         else
             y = Math.min(arc.getFrom().getY(), arc.getTo().getY());
 
-        x -= aperture.getWidth(0) / 2;
-        y -= aperture.getWidth(0) / 2;
+        x -= aperture.getWidth() / 2;
+        y -= aperture.getHeight() / 2;
 
         return new Point(x, y);
     }

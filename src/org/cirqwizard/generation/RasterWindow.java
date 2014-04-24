@@ -65,7 +65,7 @@ public class RasterWindow
         {
             LinearShape linearShape = (LinearShape) primitive;
             int cap = linearShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
-            g.setStroke(new BasicStroke((float) ((linearShape.getAperture().getWidth(0) + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            g.setStroke(new BasicStroke((float) ((linearShape.getAperture().getWidth() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
             g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY()));
         }
@@ -73,7 +73,7 @@ public class RasterWindow
         {
             CircularShape circularShape = (CircularShape) primitive;
             int cap = circularShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
-            g.setStroke(new BasicStroke((float) ((circularShape.getAperture().getWidth(0) + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            g.setStroke(new BasicStroke((float) ((circularShape.getAperture().getWidth() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
             g.draw(new Arc2D.Double(circularShape.getArc().getCenter().getX() - circularShape.getArc().getRadius(),
                     circularShape.getArc().getCenter().getY() - circularShape.getArc().getRadius(),
                     circularShape.getArc().getRadius() * 2, circularShape.getArc().getRadius() * 2,

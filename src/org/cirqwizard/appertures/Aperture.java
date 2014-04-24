@@ -48,7 +48,8 @@ public abstract class Aperture
 
     public abstract boolean isVisible();
 
-    public abstract int getWidth(double angle);
+    public abstract int getWidth();
+    public abstract int getHeight();
 
     public abstract int getCircumRadius();
 

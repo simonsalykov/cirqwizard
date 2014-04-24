@@ -8,6 +8,7 @@ public class PolygonalAperture extends Aperture
 {
     private ArrayList<Point> points = new ArrayList<Point>();
     private int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
+    private int minY = Integer.MIN_VALUE, maxY = Integer.MAX_VALUE;
 
     public PolygonalAperture(ArrayList<Point> points)
     {
@@ -18,6 +19,8 @@ public class PolygonalAperture extends Aperture
         {
             maxX = Math.max(maxX, p.getX());
             minX = Math.min(minX, p.getX());
+            maxY = Math.max(maxY, p.getY());
+            minY = Math.min(minY, p.getY());
         }
     }
 
@@ -60,9 +63,15 @@ public class PolygonalAperture extends Aperture
     }
 
     @Override
-    public int getWidth(double angle)
+    public int getWidth()
     {
         return maxX - minX;
+    }
+
+    @Override
+    public int getHeight()
+    {
+        return maxY - minY;
     }
 
     @Override

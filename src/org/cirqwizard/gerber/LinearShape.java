@@ -62,8 +62,9 @@ public class LinearShape extends InterpolatingShape
     @Override
     public Point getMin()
     {
-        return new Point(line.getFrom().getX() < line.getTo().getX() ? line.getFrom().getX() : line.getTo().getX(),
+        Point p = new Point(line.getFrom().getX() < line.getTo().getX() ? line.getFrom().getX() : line.getTo().getX(),
                 line.getFrom().getY() < line.getTo().getY() ? line.getFrom().getY() : line.getTo().getY());
+        return p.subtract(new Point(aperture.getWidth() / 2, aperture.getHeight() / 2));
     }
 
 }

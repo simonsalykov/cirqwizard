@@ -48,7 +48,13 @@ public class CircularAperture extends Aperture
     }
 
     @Override
-    public int getWidth(double angle)
+    public int getWidth()
+    {
+        return diameter;
+    }
+
+    @Override
+    public int getHeight()
     {
         return diameter;
     }

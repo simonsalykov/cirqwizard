@@ -54,12 +54,12 @@ public class MillingLayer extends Layer
             if (element instanceof LinearShape)
             {
                 LinearShape shape = (LinearShape) element;
-                toolpaths.add(new LinearToolpath(element.getAperture().getWidth(0), shape.getFrom(), shape.getTo()));
+                toolpaths.add(new LinearToolpath(element.getAperture().getWidth(), shape.getFrom(), shape.getTo()));
             }
             else if (element instanceof CircularShape)
             {
                 CircularShape shape = (CircularShape) element;
-                toolpaths.add(new CircularToolpath(element.getAperture().getWidth(0), shape.getFrom(), shape.getTo(), shape.getArc().getCenter(), shape.getArc().getRadius(),
+                toolpaths.add(new CircularToolpath(element.getAperture().getWidth(), shape.getFrom(), shape.getTo(), shape.getArc().getCenter(), shape.getArc().getRadius(),
                         shape.getArc().isClockwise()));
             }
         }

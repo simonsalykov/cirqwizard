@@ -60,11 +60,6 @@ public class OvalAperture extends Aperture
         return height > 0 && width > 0;
     }
 
-    public int getWidth(double angle)
-    {
-        return width > height ? width : height;
-    }
-
     @Override
     public Aperture rotate(boolean clockwise)
     {

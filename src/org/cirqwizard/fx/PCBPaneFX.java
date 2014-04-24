@@ -172,7 +172,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         {
             LinearShape linearShape = (LinearShape) primitive;
             g.setLineCap(linearShape.getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
-            g.setLineWidth(linearShape.getAperture().getWidth(0));
+            g.setLineWidth(linearShape.getAperture().getWidth());
             g.strokeLine(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY());
         }
@@ -180,7 +180,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         {
             CircularShape circularShape = (CircularShape) primitive;
             g.setLineCap(circularShape.getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
-            g.setLineWidth(circularShape.getAperture().getWidth(0));
+            g.setLineWidth(circularShape.getAperture().getWidth());
             g.strokeArc(circularShape.getArc().getCenter().getX() - circularShape.getArc().getRadius(),
                     circularShape.getArc().getCenter().getY() - circularShape.getArc().getRadius(),
                     circularShape.getArc().getRadius() * 2, circularShape.getArc().getRadius() * 2,

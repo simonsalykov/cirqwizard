@@ -57,10 +57,10 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
             LinearShape linearShape = (LinearShape) primitive;
             Line line = new Line(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY());
-            line.setStrokeWidth(linearShape.getAperture().getWidth(0));
+            line.setStrokeWidth(linearShape.getAperture().getWidth());
             if (linearShape.getAperture() instanceof CircularAperture)
                 line.setStrokeLineCap(StrokeLineCap.ROUND);
-            if (linearShape.getAperture().getWidth(0) == 0)
+            if (linearShape.getAperture().getWidth() == 0)
                 line.setClip(new Rectangle(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                         linearShape.getTo().getX() - linearShape.getFrom().getX(), linearShape.getTo().getY() - linearShape.getFrom().getY()));
             return Arrays.asList((Shape)line);
@@ -72,7 +72,7 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
                     circularShape.getArc().getRadius(), circularShape.getArc().getRadius(),
                     -Math.toDegrees(circularShape.getArc().getStart()),
                     Math.toDegrees(circularShape.getArc().getAngle()) * (circularShape.getArc().isClockwise() ? 1 : -1));
-            arc.setStrokeWidth(circularShape.getAperture().getWidth(0));
+            arc.setStrokeWidth(circularShape.getAperture().getWidth());
             if (circularShape.getAperture() instanceof CircularAperture)
                 arc.setStrokeLineCap(StrokeLineCap.ROUND);
             return Arrays.asList((Shape)arc);

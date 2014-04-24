@@ -14,11 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.appertures;
 
-import org.cirqwizard.math.RealNumber;
-
-import java.awt.*;
-
-
 public class OctagonalAperture extends Aperture
 {
     private int diameter;
@@ -59,7 +54,13 @@ public class OctagonalAperture extends Aperture
     }
 
     @Override
-    public int getWidth(double angle)
+    public int getWidth()
+    {
+        return diameter;
+    }
+
+    @Override
+    public int getHeight()
     {
         return diameter;
     }

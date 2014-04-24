@@ -53,7 +53,13 @@ public class ApertureMacro extends Aperture
     }
 
     @Override
-    public int getWidth(double angle)
+    public int getWidth()
+    {
+        return 0;
+    }
+
+    @Override
+    public int getHeight()
     {
         return 0;
     }
