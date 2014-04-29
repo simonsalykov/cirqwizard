@@ -64,7 +64,9 @@ public class LinearShape extends InterpolatingShape
     {
         Point p = new Point(line.getFrom().getX() < line.getTo().getX() ? line.getFrom().getX() : line.getTo().getX(),
                 line.getFrom().getY() < line.getTo().getY() ? line.getFrom().getY() : line.getTo().getY());
-        return p.subtract(new Point(aperture.getWidth() / 2, aperture.getHeight() / 2));
+        if (aperture != null)
+            p = p.subtract(new Point(aperture.getWidth() / 2, aperture.getHeight() / 2));
+        return p;
     }
 
 }
