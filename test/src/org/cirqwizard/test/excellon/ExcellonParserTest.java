@@ -160,6 +160,35 @@ public class ExcellonParserTest
     }
 
     @Test
+    public void testUltiboardFile() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "INCH,TZ\n" +
+                "VER,1\n" +
+                "FMAT,2\n" +
+                "DETECT,ON\n" +
+                "ATC,ON\n" +
+                "T1C0.02362\n" +
+                "T2C0.05118\n" +
+                "T3C0.03500\n" +
+                "T4C0.03917\n" +
+                "T5C0.15748\n" +
+                "T6C0.04331\n" +
+                "T7C0.03937\n" +
+                "T8C0.03150\n" +
+                "%\n" +
+                "T1\n" +
+                "X5.05000Y2.69000\n";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(128270, 68326), points.get(0).getPoint());
+        assertEquals(600, points.get(0).getToolDiameter());
+    }
+
+    @Test
     public void testMetricCoordinates() throws IOException
     {
         String fileContent = "M48\n" +

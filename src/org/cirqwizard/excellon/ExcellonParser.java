@@ -34,7 +34,7 @@ public class ExcellonParser
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
-    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?(X-?\\d+)?(Y-?\\d+)?");
+    private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?(X-?[0123456789\\.]+)?(Y-?[0123456789\\.]+)?");
     private final static Pattern MEASUREMENT_SYSTEM_PATTERN = Pattern.compile("(INCH|METRIC),?(LZ|TZ)?");
 
     private HashMap<Integer, Integer> tools = new HashMap<>();
@@ -174,7 +174,14 @@ public class ExcellonParser
         if (negative)
             str = str.substring(1);
 
-        int decimalPartStart = str.length() - decimalPlaces;
+        int decimalPartStart = str.indexOf('.');
+        if (decimalPartStart >= 0)
+        {
+            str = str.replace(".", "");
+            decimalPlaces = str.length() - decimalPartStart;
+        }
+        if (decimalPartStart < 0)
+            decimalPartStart = str.length() - decimalPlaces;
         decimalPartStart = Math.max(decimalPartStart, 0);
         long number = Long.valueOf(str.substring(decimalPartStart)) * coordinatesCoversionRatio;
         for (int i = 0; i < decimalPlaces; i++)

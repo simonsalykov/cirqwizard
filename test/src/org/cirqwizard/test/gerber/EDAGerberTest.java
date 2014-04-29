@@ -82,7 +82,7 @@ public class EDAGerberTest
         assertEquals(LinearShape.class, p.getClass());
         l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
-        assertEquals(0, p.getAperture().getWidth(0));
+        assertEquals(0, p.getAperture().getWidth());
         assertEquals(new Point(254, 31254), l.getFrom());
         assertEquals(new Point(30754, 31254), l.getTo());
 
