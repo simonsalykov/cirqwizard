@@ -793,19 +793,23 @@ public class Settings
 
     public void resetToDefaults()
     {
-        Field[] propertyNames = PropertyNames.class.getDeclaredFields();
+        Field[] properties = PropertyNames.class.getDeclaredFields();
 
-        for (Field p : propertyNames)
+        for (Field p : properties)
         {
-            String propertyName = p.getName();
+            String property = p.getName();
+            String defaultValue = null;
+            String propertyName = null;
 
-            if (propertyName.startsWith("INTERFACE"))
+            if (property.startsWith("INTERFACE"))
                 continue;
 
-            String defaultValue = null;
+            p.setAccessible(true);
+
             try
             {
-                Field field = DefaultValues.class.getDeclaredField(propertyName);
+                propertyName = String.valueOf(p.get(this));
+                Field field = DefaultValues.class.getDeclaredField(property);
                 field.setAccessible(true);
 
                 if (field.getType().getSimpleName().equals("int"))
@@ -819,12 +823,11 @@ public class Settings
             }
             catch (IllegalAccessException e)
             {
-                //that's fine
+                //this should never happen
             }
-
             set(propertyName, defaultValue);
         }
-
+        flush();
     }
 
     public static int getXRapids()
