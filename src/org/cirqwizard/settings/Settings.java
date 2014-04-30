@@ -699,7 +699,6 @@ public class Settings
 
     public List<String> getRecentFiles()
     {
-        resetToDefaults();
         ArrayList<String> files = new ArrayList<String>();
         for (int i = 1; i <= 5; i++)
         {
