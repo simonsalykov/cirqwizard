@@ -627,4 +627,9 @@ public class SettingsController extends SceneController implements Initializable
         importPPRegex.setText(settings.getImportPPRegex());
     }
 
+    public void resetToDefaults()
+    {
+        getMainApplication().getSettings().resetToDefaults();
+        refresh();
+    }
 }
