@@ -33,9 +33,8 @@ public class TimeEstimator
     private final static double yRapidAcceleration = (double)Settings.getYRapidAcceleration() / Settings.RESOLUTION;
     private final static double zRapidAcceleration = (double)Settings.getZRapidAcceleration() / Settings.RESOLUTION;
     private final static double feedAcceleration = (double) Settings.getFeedAcceleration() / Settings.RESOLUTION;
-    private final static double arcFeed = (double) Settings.getArcFeed() / Settings.RESOLUTION / 60;
 
-    public static double calculateTotalDuration(List<Toolpath> toolpaths, double feed, double zFeed, double clearance, double safetyHeight, boolean includeFeed,
+    public static double calculateTotalDuration(List<Toolpath> toolpaths, double feed, double zFeed, double arcFeed, double clearance, double safetyHeight, boolean includeFeed,
                                                 int mergeTolerance)
     {
         Point currentLocation = new Point(0, 0);

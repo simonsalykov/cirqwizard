@@ -25,7 +25,6 @@ import javafx.scene.control.TextField;
 import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.Settings;
 
@@ -50,6 +49,7 @@ public class SettingsController extends SceneController implements Initializable
 
     @FXML private RealNumberTextField tracesToolDiameter;
     @FXML private RealNumberTextField tracesFeedXY;
+    @FXML private TextField tracesFeedArc;
     @FXML private RealNumberTextField tracesFeedZ;
     @FXML private RealNumberTextField tracesSpeed;
     @FXML private RealNumberTextField tracesClearance;
@@ -68,6 +68,7 @@ public class SettingsController extends SceneController implements Initializable
     @FXML private RealNumberTextField drillingWorkingHeight;
 
     @FXML private RealNumberTextField contourFeedXY;
+    @FXML private TextField contourFeedArc;
     @FXML private RealNumberTextField contourFeedZ;
     @FXML private RealNumberTextField contourSpeed;
     @FXML private RealNumberTextField contourClearance;
@@ -269,6 +270,18 @@ public class SettingsController extends SceneController implements Initializable
                     getMainApplication().getSettings().setDefaultTracesFeedZ(integer2);
             }
         });
+        tracesFeedArc.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                try
+                {
+                    getMainApplication().getSettings().setDefaultTracesFeedArc(Integer.valueOf(s2));
+                }
+                catch (NumberFormatException e) {}
+            }
+        });
         tracesClearance.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
         {
             @Override
@@ -408,6 +421,18 @@ public class SettingsController extends SceneController implements Initializable
             {
                 if (integer2 != null)
                     getMainApplication().getSettings().setDefaultContourFeedZ(integer2);
+            }
+        });
+        contourFeedArc.textProperty().addListener(new ChangeListener<String>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
+            {
+                try
+                {
+                    getMainApplication().getSettings().setDefaultContourFeedArc(Integer.valueOf(s2));
+                }
+                catch (NumberFormatException e) {}
             }
         });
         contourSpeed.realNumberTextProperty().addListener(new ChangeListener<String>()
@@ -587,6 +612,7 @@ public class SettingsController extends SceneController implements Initializable
         tracesToolDiameter.setIntegerValue(settings.getDefaultTraceToolDiameter());
         tracesFeedXY.setIntegerValue(settings.getDefaultTracesFeedXY());
         tracesFeedZ.setIntegerValue(settings.getDefaultTracesFeedZ());
+        tracesFeedArc.setText(String.valueOf(settings.getDefaultTracesFeedArc()));
         tracesSpeed.setText(settings.getDefaultTracesSpeed());
         tracesClearance.setIntegerValue(settings.getDefaultTracesClearance());
         tracesSafetyHeight.setIntegerValue(settings.getDefaultTracesSafetyHeight());
@@ -605,6 +631,7 @@ public class SettingsController extends SceneController implements Initializable
 
         contourFeedXY.setIntegerValue(settings.getDefaultContourFeedXY());
         contourFeedZ.setIntegerValue(settings.getDefaultContourFeedZ());
+        contourFeedArc.setText(String.valueOf(settings.getDefaultContourFeedArc()));
         contourSpeed.setText(settings.getDefaultContourSpeed());
         contourClearance.setIntegerValue(settings.getDefaultContourClearance());
         contourSafetyHeight.setIntegerValue(settings.getDefaultContourSafetyHeight());
