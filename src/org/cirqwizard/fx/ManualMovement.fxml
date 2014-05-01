@@ -9,13 +9,15 @@
 <?import javafx.scene.paint.*?>
 <?import org.cirqwizard.fx.controls.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
+<?scenebuilder-classpath-element ../../../../out/production/cirqwizard?>
+<?scenebuilder-stylesheet ../../../../out/production/cirqwizard/org/cirqwizard/fx/cirqwizard.css?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.ManualMovementController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.ManualMovementController">
   <children>
     <Label layoutX="77.0" layoutY="80.0" styleClass="h1" text="Manual machine control" />
     <Button fx:id="homeButton" layoutX="107.0" layoutY="255.0" mnemonicParsing="false" onAction="#home" text="Home" />
     <Button layoutY="517.0" mnemonicParsing="false" onAction="#goBack" text="Go back" AnchorPane.rightAnchor="90.0" />
-    <GridPane layoutX="107.0" layoutY="316.0" prefWidth="161.0">
+    <GridPane layoutX="107.0" layoutY="316.0" prefWidth="89.0">
       <children>
         <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
@@ -25,8 +27,8 @@
         <RealNumberTextField id="zPosition" fx:id="zPositionTextField" onAction="#goToUpdatedCoordinates" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       </children>
       <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="98.0" />
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="99.0" minWidth="10.0" prefWidth="63.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.0" minWidth="10.0" prefWidth="30.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="111.0" minWidth="10.0" prefWidth="59.0" />
       </columnConstraints>
       <rowConstraints>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -35,5 +37,10 @@
       </rowConstraints>
     </GridPane>
     <Label alignment="TOP_LEFT" layoutX="107.0" layoutY="140.0" prefHeight="90.0" prefWidth="635.0" text="On this screen you can move any axis of your device - type a value in a corresponding field and press Enter. Or use up and down arrow keys to move in small increments. Don't forget to home the machine if it hasn't been done already." wrapText="true" />
+    <Label layoutX="238.0" layoutY="228.0" text="G-Code input:" />
+    <TextArea layoutX="238.0" layoutY="247.0" prefHeight="69.0" prefWidth="490.0" wrapText="true" />
+    <Button layoutX="664.0" layoutY="324.0" mnemonicParsing="false" text="Send" />
+    <TextArea layoutX="238.0" layoutY="357.0" prefHeight="69.0" prefWidth="490.0" wrapText="true" />
+    <Label layoutX="238.0" layoutY="336.0" text="Response:" />
   </children>
 </AnchorPane>
