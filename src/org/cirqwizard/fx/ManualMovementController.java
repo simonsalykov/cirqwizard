@@ -19,11 +19,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.math.RealNumber;
+
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
@@ -33,11 +36,15 @@ public class ManualMovementController extends SceneController implements Initial
 {
     @FXML private Parent view;
     @FXML private Button homeButton;
+    @FXML private Button sendGCodeButton;
+    @FXML private TextArea gCodeInputTextArea;
     @FXML public RealNumberTextField xPositionTextField;
     @FXML public RealNumberTextField yPositionTextField;
     @FXML public RealNumberTextField zPositionTextField;
 
     private static final DecimalFormat coordinatesFormat = new DecimalFormat("0.00");
+
+    private SerialInterfaceService serialService;
 
     @Override
     public Parent getView()
@@ -58,7 +65,10 @@ public class ManualMovementController extends SceneController implements Initial
     public void refresh()
     {
         boolean noMachineConnected = getMainApplication().getCNCController() == null;
+        serialService = noMachineConnected ? null : new SerialInterfaceService(getMainApplication());
         homeButton.setDisable(noMachineConnected);
+        sendGCodeButton.disableProperty().unbind();
+        sendGCodeButton.setDisable(noMachineConnected);
         xPositionTextField.setDisable(noMachineConnected);
         yPositionTextField.setDisable(noMachineConnected);
         zPositionTextField.setDisable(noMachineConnected);
@@ -94,6 +104,13 @@ public class ManualMovementController extends SceneController implements Initial
     {
         getMainApplication().getCNCController().moveTo(xPositionTextField.getIntegerValue(), yPositionTextField.getIntegerValue(),
                 zPositionTextField.getIntegerValue());
+    }
+
+    public void executeGCode()
+    {
+        sendGCodeButton.disableProperty().bind(serialService.runningProperty());
+        serialService.setProgram(gCodeInputTextArea.getText());
+        serialService.restart();
     }
 
     public void home()

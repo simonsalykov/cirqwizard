@@ -38,9 +38,9 @@
     </GridPane>
     <Label alignment="TOP_LEFT" layoutX="107.0" layoutY="140.0" prefHeight="90.0" prefWidth="635.0" text="On this screen you can move any axis of your device - type a value in a corresponding field and press Enter. Or use up and down arrow keys to move in small increments. Don't forget to home the machine if it hasn't been done already." wrapText="true" />
     <Label layoutX="238.0" layoutY="228.0" text="G-Code input:" />
-    <TextArea layoutX="238.0" layoutY="247.0" prefHeight="69.0" prefWidth="490.0" wrapText="true" />
-    <Button layoutX="664.0" layoutY="324.0" mnemonicParsing="false" text="Send" />
-    <TextArea layoutX="238.0" layoutY="357.0" prefHeight="69.0" prefWidth="490.0" wrapText="true" />
+    <TextArea fx:id="gCodeInputTextArea" layoutX="238.0" layoutY="247.0" prefHeight="69.0" prefWidth="490.0" wrapText="true" />
+    <Button fx:id="sendGCodeButton" layoutX="664.0" layoutY="324.0" mnemonicParsing="false" text="Send" onAction="#executeGCode" />
+    <TextArea fx:id="responseTextArea" editable="false" layoutX="238.0" layoutY="357.0" prefHeight="69.0" prefWidth="490.0" wrapText="true" />
     <Label layoutX="238.0" layoutY="336.0" text="Response:" />
   </children>
 </AnchorPane>
