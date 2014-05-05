@@ -46,6 +46,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 {
     private IntegerProperty toolDiameter = new SimpleIntegerProperty();
     private IntegerProperty feedProperty = new SimpleIntegerProperty();
+    private IntegerProperty arcFeedProperty = new SimpleIntegerProperty();
     private IntegerProperty zFeedProperty = new SimpleIntegerProperty();
     private IntegerProperty clearanceProperty = new SimpleIntegerProperty();
     private IntegerProperty safetyHeightProperty = new SimpleIntegerProperty();
@@ -81,6 +82,11 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
     public IntegerProperty feedProperty()
     {
         return feedProperty;
+    }
+
+    public IntegerProperty arcFeedProperty()
+    {
+        return arcFeedProperty;
     }
 
     public IntegerProperty zFeedProperty()
@@ -227,7 +233,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 
                     final Optimizer optimizer = new Optimizer(chains, feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
-                            clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION, mergeTolerance);
+                            arcFeedProperty.doubleValue() / Settings.RESOLUTION / 60, clearanceProperty.doubleValue() / Settings.RESOLUTION,
+                            safetyHeightProperty.doubleValue() / Settings.RESOLUTION, mergeTolerance);
                     Platform.runLater(new Runnable()
                     {
                         @Override
@@ -252,7 +259,8 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                                 {
                                     long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
                                             feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
-                                            clearanceProperty.doubleValue() / Settings.RESOLUTION, safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
+                                            arcFeedProperty.doubleValue() / Settings.RESOLUTION / 60, clearanceProperty.doubleValue() / Settings.RESOLUTION,
+                                            safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
                                             true, mergeTolerance);
                                     String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
                                             ":" + format.format(totalDuration % 60);

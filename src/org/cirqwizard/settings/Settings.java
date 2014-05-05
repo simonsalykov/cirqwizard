@@ -55,6 +55,7 @@ public class Settings
 
         private static final String TRACES_TOOL_DIAMETER = "v12.defaults.traces.tool.diameter";
         private static final String TRACES_FEED_XY = "v12.defaults.traces.feed.xy";
+        private static final String TRACES_FEED_ARC = "v12.defaults.traces.feed.arc";
         private static final String TRACES_FEED_Z = "v12.defaults.traces.feed.z";
         private static final String TRACES_SPEED = "defaults.traces.speed";
         private static final String TRACES_CLEARANCE = "v12.defaults.traces.clearance";
@@ -73,6 +74,7 @@ public class Settings
         private static final String DRILLING_WORKING_HEIGHT = "v12.defaults.drilling.working.height";
 
         private static final String CONTOUR_FEED_XY = "v12.defaults.contour.feed.xy";
+        private static final String CONTOUR_FEED_ARC = "v12.defaults.contour.feed.arc";
         private static final String CONTOUR_FEED_Z = "v12.defaults.contour.feed.z";
         private static final String CONTOUR_SPEED = "defaults.contour.speed";
         private static final String CONTOUR_CLEARANCE = "v12.defaults.contour.clearance";
@@ -119,6 +121,7 @@ public class Settings
         private static final int TRACES_TOOL_DIAMETER = (int)(0.3 * RESOLUTION);
         private static final int TRACES_FEED_XY = 300 * RESOLUTION;
         private static final int TRACES_FEED_Z = 200 * RESOLUTION;
+        private static final int TRACES_FEED_ARC = 50;
         private static final String TRACES_SPEED = "1390";
         private static final int TRACES_CLEARANCE = 5 * RESOLUTION;
         private static final int TRACES_SAFETY_HEIGHT = 2 * RESOLUTION;
@@ -135,6 +138,7 @@ public class Settings
 
         private static final int CONTOUR_FEED_XY = 300 * RESOLUTION;
         private static final int CONTOUR_FEED_Z = 200 * RESOLUTION;
+        private static final int CONTOUR_FEED_ARC = 50;
         private static final String CONTOUR_SPEED = "1390";
         private static final int CONTOUR_CLEARANCE = 5 * RESOLUTION;
         private static final int CONTOUR_SAFETY_HEIGHT = 2 * RESOLUTION;
@@ -320,6 +324,16 @@ public class Settings
         set(PropertyNames.TRACES_FEED_Z, feed);
     }
 
+    public Integer getDefaultTracesFeedArc()
+    {
+        return preferences.getInt(PropertyNames.TRACES_FEED_ARC, DefaultValues.TRACES_FEED_ARC);
+    }
+
+    public void setDefaultTracesFeedArc(int feed)
+    {
+        set(PropertyNames.TRACES_FEED_ARC, feed);
+    }
+
     public String getDefaultTracesSpeed()
     {
         return preferences.get(PropertyNames.TRACES_SPEED, DefaultValues.TRACES_SPEED);
@@ -485,6 +499,16 @@ public class Settings
     public void setDefaultContourFeedZ(int feed)
     {
         set(PropertyNames.CONTOUR_FEED_Z, feed);
+    }
+
+    public Integer getDefaultContourFeedArc()
+    {
+        return preferences.getInt(PropertyNames.CONTOUR_FEED_ARC, DefaultValues.CONTOUR_FEED_ARC);
+    }
+
+    public void setDefaultContourFeedArc(int feed)
+    {
+        set(PropertyNames.CONTOUR_FEED_ARC, feed);
     }
 
     public String getDefaultContourSpeed()

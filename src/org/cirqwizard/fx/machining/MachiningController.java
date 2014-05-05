@@ -285,6 +285,8 @@ public class MachiningController extends SceneController implements Initializabl
             pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
             pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
+
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
         }
         else if (state == State.DRILLING)
         {
@@ -318,6 +320,8 @@ public class MachiningController extends SceneController implements Initializabl
             pcbPane.setGerberPrimitives(null);
             pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
+
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
         }
         else if (state == State.DISPENSING)
         {
@@ -441,8 +445,9 @@ public class MachiningController extends SceneController implements Initializabl
 
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
+            int arcFeed = (feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
             TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state, settings);
-            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(),
+            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
                     clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultTracesWorkingHeight(),
                     settings.getDefaultTracesSpeed());
 
@@ -456,8 +461,9 @@ public class MachiningController extends SceneController implements Initializabl
         }
         else if (state == State.MILLING_CONTOUR)
         {
+            int arcFeed = (feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
             MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(),
+            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
                     clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultContourWorkingHeight(),
                     settings.getDefaultContourSpeed());
         }

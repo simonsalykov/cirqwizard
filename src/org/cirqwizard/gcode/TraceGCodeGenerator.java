@@ -53,7 +53,7 @@ public class TraceGCodeGenerator
         return state == State.MILLING_TOP_INSULATION ? context.getTopTracesLayer().getToolpaths() : context.getBottomTracesLayer().getToolpaths();
     }
 
-    public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int clearance, int safetyHeight,
+    public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,
                            int millingDepth, String spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
@@ -95,7 +95,7 @@ public class TraceGCodeGenerator
                 Arc arc = (Arc)curve;
                 postprocessor.circularInterpolation(str, state == State.MILLING_BOTTOM_INSULATION ? !arc.isClockwise() : arc.isClockwise(),
                         getX(arc.getTo().getX()), arc.getTo().getY(), millingDepth, getX(arc.getCenter().getX() - arc.getFrom().getX()),
-                        arc.getCenter().getY() - arc.getFrom().getY(), xyFeed);
+                        arc.getCenter().getY() - arc.getFrom().getY(), arcFeed);
             }
             prevLocation = curve.getTo();
         }

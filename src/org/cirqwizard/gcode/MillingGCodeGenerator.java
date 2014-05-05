@@ -34,7 +34,7 @@ public class MillingGCodeGenerator
         this.context = context;
     }
 
-    public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int clearance, int safetyHeight,
+    public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,
                            int millingDepth, String spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
@@ -67,7 +67,7 @@ public class MillingGCodeGenerator
                 Arc arc = (Arc) curve;
                 postprocessor.circularInterpolation(str, arc.isClockwise(), arc.getTo().getX(), arc.getTo().getY(),
                         millingDepth, arc.getCenter().getX() - arc.getFrom().getX(),
-                        arc.getCenter().getY() - arc.getFrom().getY(), xyFeed);
+                        arc.getCenter().getY() - arc.getFrom().getY(), arcFeed);
             }
             prevLocation = curve.getTo();
         }
