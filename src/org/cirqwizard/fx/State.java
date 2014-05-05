@@ -406,7 +406,9 @@ public enum State
                 public State getPrevState(Context context)
                 {
                     context.setG54Z(null);
-                    return INSERTING_DRILL;
+                    if (context.getCurrentDrill() > 0)
+                        return INSERTING_DRILL;
+                    return ESTABLISHING_G54_FOR_DRILLING;
                 }
 
                 @Override
