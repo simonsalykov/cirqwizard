@@ -92,10 +92,18 @@ public class RasterWindow
             for (GerberPrimitive segment : region.getSegments())
             {
                 if (segment instanceof LinearShape)
-                    polygon.lineTo(((LinearShape)segment).getTo().getX(), ((LinearShape)segment).getTo().getY());
+                {
+                    LinearShape linearShape = (LinearShape) segment;
+                    polygon.lineTo(linearShape.getTo().getX(), linearShape.getTo().getY());
+                    g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
+                            linearShape.getTo().getX(), linearShape.getTo().getY()));
+                }
                 else if (segment instanceof CircularShape)
                 {
                     Arc arc = ((CircularShape) segment).getArc();
+                    g.draw(new Arc2D.Double(arc.getCenter().getX() - arc.getRadius(), arc.getCenter().getY() - arc.getRadius(),
+                            arc.getRadius() * 2, arc.getRadius() * 2,
+                            -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), Arc2D.OPEN));
                     polygon.append(new Arc2D.Double(arc.getCenter().getX() - arc.getRadius(),
                             arc.getCenter().getY() - arc.getRadius(),
                             arc.getRadius() * 2, arc.getRadius() * 2,
