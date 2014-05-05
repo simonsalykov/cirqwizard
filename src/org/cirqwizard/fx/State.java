@@ -407,9 +407,7 @@ public enum State
                 {
                     context.setG54Z(null);
                     if (context.getCurrentDrill() > 0)
-                    {
                         return INSERTING_DRILL;
-                    }
                     return ESTABLISHING_G54_FOR_DRILLING;
                 }
 
