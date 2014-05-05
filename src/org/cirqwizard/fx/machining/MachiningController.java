@@ -286,7 +286,7 @@ public class MachiningController extends SceneController implements Initializabl
             pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
             pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() / 100 * settings.getDefaultTracesFeedArc());
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
         }
         else if (state == State.DRILLING)
         {
@@ -321,7 +321,7 @@ public class MachiningController extends SceneController implements Initializabl
             pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
 
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() / 100 * settings.getDefaultContourFeedArc());
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
         }
         else if (state == State.DISPENSING)
         {
