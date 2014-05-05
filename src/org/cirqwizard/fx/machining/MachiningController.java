@@ -445,7 +445,7 @@ public class MachiningController extends SceneController implements Initializabl
 
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
-            int arcFeed = (feed.getIntegerValue() / 100 * settings.getDefaultTracesFeedArc());
+            int arcFeed = (feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
             TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state, settings);
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
                     clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultTracesWorkingHeight(),
@@ -461,7 +461,7 @@ public class MachiningController extends SceneController implements Initializabl
         }
         else if (state == State.MILLING_CONTOUR)
         {
-            int arcFeed = (feed.getIntegerValue() / 100 * settings.getDefaultContourFeedArc());
+            int arcFeed = (feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
             MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
                     clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultContourWorkingHeight(),
