@@ -173,7 +173,7 @@ public class MachiningController extends SceneController implements Initializabl
                     selectAll();
                     event.consume();
                 }
-                else if (keyZoomIn.match(event) && "+".equals(event.getText())) // Workaround for PCBCAM-95
+                else if (keyZoomIn.match(event) && ("+".equals(event.getText()) || !System.getProperty("os.name").startsWith("Mac"))) // Workaround for PCBCAM-95 and CQ-86
                 {
                     zoomIn();
                     event.consume();
