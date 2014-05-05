@@ -69,7 +69,7 @@ public class ToolpathMerger
                     Curve c1 = ((CuttingToolpath)t1).getCurve();
                     Curve c2 = ((CuttingToolpath)t2).getCurve();
 
-                    if (t1 == t2)
+                    if (t1 == t2 || toBeRemoved.contains(t1) || toBeRemoved.contains(t2))
                         continue;
 
                     boolean l1Inversed = false;
@@ -104,7 +104,7 @@ public class ToolpathMerger
                                 else
                                 {
                                     toBeRemoved.add(t1);
-                                    removeVertices(c2.getTo(), t1);
+                                    removeVertices(c1.getFrom(), t1);
                                     break;
                                 }
                             }
