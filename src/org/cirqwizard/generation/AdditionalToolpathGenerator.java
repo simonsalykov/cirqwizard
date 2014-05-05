@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
+import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
@@ -52,7 +53,6 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
         this.toolDiameter = toolDiameter;
         this.threadCount = threadCount;
         this.primitives = primitives;
-        initRadii();
     }
 
     public List<Toolpath> generate()
@@ -87,26 +87,28 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
                         Flash flash = (Flash) primitive;
                         ArrayList<GerberPrimitive> primitivesCopy = new ArrayList<>(primitives);
                         primitivesCopy.remove(flash);
-                        int x = flash.getX() - flash.getAperture().getCircumRadius() * 2;
-                        int y = flash.getY() - flash.getAperture().getCircumRadius() * 2;
+                        int windowSize = (flash.getAperture().getCircumRadius() + (inflation * (passes + 1) * overlap / 100)) * 2;
+                        int x = flash.getX() - windowSize;
+                        int y = flash.getY() - windowSize;
                         x = Math.max(0, x);
                         y = Math.max(0, y);
                         Point windowOffset = new Point(x, y);
-                        int windowWidth = Math.min(flash.getAperture().getCircumRadius() * 4, width - x);
-                        int windowHeight = Math.min(flash.getAperture().getCircumRadius() * 4, height - y);
+                        int windowWidth = Math.min(windowSize * 2, width - x);
+                        int windowHeight = Math.min(windowSize * 2, height - y);
                         for (int i = 0; i < passes; i++)
                         {
                             RasterWindow window = new RasterWindow(new Point(x, y), windowWidth, windowHeight);
                             window.render(primitivesCopy, toolDiameter / 2);
                             int inflation = toolDiameter / 2 + toolDiameter * (100 - overlap) / 100 * (1 + i);
-                            window.render(Arrays.asList((GerberPrimitive)flash), inflation);
+                            window.render(Arrays.asList((GerberPrimitive) flash), inflation);
                             SimpleEdgeDetector detector = new SimpleEdgeDetector(window.getBufferedImage());
                             window = null; // Helping GC to reclaim memory consumed by rendered image
                             detector.process();
                             if (detector.getOutput() != null)
                             {
+                                List<Circle> knownCircles = translateKnownCircles(windowOffset, getKnownCircles(inflation));
                                 List<Toolpath> toolpaths =
-                                        new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, translateKnownCircles(windowOffset)).process();
+                                        new Tracer(detector.getOutput(), windowWidth, windowHeight, inflation, toolDiameter, knownCircles).process();
                                 detector = null;  // Helping GC to reclaim memory consumed by processed image
                                 for (Toolpath t : toolpaths)
                                 {

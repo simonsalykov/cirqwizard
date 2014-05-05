@@ -40,12 +40,11 @@ public class AbstractToolpathGenerator
     protected int inflation;
     protected List<GerberPrimitive> primitives;
 
-    protected ArrayList<Circle> knownCircles = new ArrayList<>();
-
     protected DoubleProperty progressProperty = new SimpleDoubleProperty();
 
-    protected void initRadii()
+    protected List<Circle> getKnownCircles(int inflation)
     {
+        ArrayList<Circle> knownCircles = new ArrayList<>();
         for (GerberPrimitive primitive : primitives)
         {
             if (primitive.getAperture() instanceof CircularAperture)
@@ -76,7 +75,7 @@ public class AbstractToolpathGenerator
                 }
             }
         }
-
+        return knownCircles;
     }
 
     public DoubleProperty progressProperty()
@@ -85,7 +84,7 @@ public class AbstractToolpathGenerator
     }
 
 
-    protected List<Circle> translateKnownCircles(Point offset)
+    protected List<Circle> translateKnownCircles(Point offset, List<Circle> knownCircles)
     {
         ArrayList<Circle> translatedCircles = new ArrayList<>();
         for (Circle circle : knownCircles)

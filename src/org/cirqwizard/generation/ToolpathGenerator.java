@@ -17,7 +17,6 @@ package org.cirqwizard.generation;
 import javafx.application.Platform;
 import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.toolpath.Toolpath;
@@ -39,6 +38,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
     private int height;
     private int toolDiameter;
     private int threadCount;
+    private List<Circle> knownCircles;
 
 
     public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount)
@@ -49,7 +49,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
         this.toolDiameter = toolDiameter;
         this.primitives = primitives;
         this.threadCount = threadCount;
-        initRadii();
+        knownCircles = getKnownCircles(inflation);
     }
 
     public List<Toolpath> generate()
@@ -101,7 +101,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
                 });
 
                 Point offset = new Point(x, y);
-                List<Circle> translatedCircles = translateKnownCircles(offset);
+                List<Circle> translatedCircles = translateKnownCircles(offset, knownCircles);
 
                 int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, width - x);
                 int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, height - y);
