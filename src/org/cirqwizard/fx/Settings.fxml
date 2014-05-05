@@ -321,5 +321,6 @@
         </Tab>
       </tabs>
     </TabPane>
+    <Button layoutX="65.0" layoutY="531.0" mnemonicParsing="false" onAction="#resetToDefaults" text="Reset to defaults" />
   </children>
 </AnchorPane>

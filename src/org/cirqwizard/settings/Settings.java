@@ -18,8 +18,10 @@ import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.logging.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -788,6 +790,44 @@ public class Settings
         preferences.putInt(PropertyNames.INTERFACE_TEST_CUT_DIRECTION, direction);
     }
 
+    public void resetToDefaults()
+    {
+        Field[] properties = PropertyNames.class.getDeclaredFields();
+
+        for (Field p : properties)
+        {
+            String property = p.getName();
+            String defaultValue = null;
+            String propertyName = null;
+
+            if (property.startsWith("INTERFACE"))
+                continue;
+
+            p.setAccessible(true);
+
+            try
+            {
+                propertyName = String.valueOf(p.get(this));
+                Field field = DefaultValues.class.getDeclaredField(property);
+                field.setAccessible(true);
+
+                if (field.getType().getSimpleName().equals("int"))
+                    defaultValue = String.valueOf(field.getInt(this));
+                else if(field.getType().getSimpleName().equals("String"))
+                    defaultValue = String.valueOf(field.get(this));
+            }
+            catch (NoSuchFieldException e)
+            {
+                LoggerFactory.getApplicationLogger().log(Level.INFO, "There is no default value for parameter " + p.getName());
+            }
+            catch (IllegalAccessException e)
+            {
+                //this should never happen
+            }
+            set(propertyName, defaultValue);
+        }
+        flush();
+    }
 
     public static int getXRapids()
     {
