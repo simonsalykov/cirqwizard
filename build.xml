@@ -18,7 +18,6 @@
         <mkdir dir="${build}"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${deploy}"/>
-        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${javafx.lib.ant-javafx.jar}" />
     </target>
 
     <target name="clean">
@@ -52,6 +51,10 @@
     </target>
 
     <target name="package" depends="clean,compile">
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+                 uri="javafx:com.sun.javafx.tools.ant"
+                 classpath="${javafx.lib.ant-javafx.jar}:${res}"/>
+
         <fx:application id="cirQWizard"
                         name="cirQWizard"
                         version = "${application.version}"
