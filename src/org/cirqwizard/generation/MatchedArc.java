@@ -35,4 +35,13 @@ public class MatchedArc
     {
         this.uncertainty = uncertainty;
     }
+
+    @Override
+    public String toString()
+    {
+        return "MatchedArc{" +
+                "circle=" + circle +
+                ", uncertainty=" + uncertainty +
+                '}';
+    }
 }

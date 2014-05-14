@@ -15,18 +15,20 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import org.cirqwizard.geom.*;
+import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Vectorizer
 {
     private static final int INITIAL_SAMPLE_COUNT = (int)(0.15 * Settings.RESOLUTION);                    // Amount of samples to process before trying to decide which curve it is
-    private static final int MAX_UNCERTAIN_SAMPLES = (int)(0.3 * Settings.RESOLUTION);
     private static final int SAMPLE_COUNT = (int)(0.1 * Settings.RESOLUTION);                            // Amount of last processed points to hold for deviation calculation
     private static final double ANGULAR_THRESHOLD = Math.toRadians(3);      // Threshold of angular difference which results in a new segment start
+    private static final int MAX_ARC_DEVIATION = 10; // Tolerated deviation of the distance from arc's center to its points from the radius
 
     private static final double LOW_UNCERTAINTY_THRESHOLD = 0.6;   // Arcs with uncertainty lower than that are processed as arcs
     private static final double HIGH_UNCERTAINTY_THRESHOLD = 10.0;    // Arcs with uncertainty higher than that are processed as segments
@@ -85,7 +87,7 @@ public class Vectorizer
                     matchedArc = fitArc(segmentPoints, calculateSegmentDeviation(segmentPoints));
 
                 if (matchedArc != null && matchedArc.getUncertainty() < LOW_UNCERTAINTY_THRESHOLD)
-                    restart = calculateSegmentDeviation(lastPoints) < calculateArcDeviation(lastPoints, matchedArc.getCircle().getCenter(), matchedArc.getCircle().getRadius());
+                    restart = Math.abs(matchedArc.getCircle().getRadius() - matchedArc.getCircle().getCenter().distanceTo(current)) >= MAX_ARC_DEVIATION;
                 else if (matchedArc == null || segmentCounter >  (double)matchedArc.getCircle().getRadius() * 2 * (Math.PI / 15))
                     restart = Math.abs(calculateAngle(lastPoints.getFirst(), lastPoints.getLast()) - angle) > ANGULAR_THRESHOLD;
             }
@@ -140,6 +142,10 @@ public class Vectorizer
             headingCenterAngle -= Math.PI * 2;
 
         boolean clockwise = headingCenterAngle > 0;
+        int r1 = (int)matchedArc.getCircle().getCenter().distanceTo(currentSegment.getFrom());
+        int r2 = (int)matchedArc.getCircle().getCenter().distanceTo(currentSegment.getTo());
+        if (Math.abs(r1 - matchedArc.getCircle().getRadius()) > MAX_ARC_DEVIATION + 1|| Math.abs(r2 - matchedArc.getCircle().getRadius()) > MAX_ARC_DEVIATION + 1)
+            LoggerFactory.getApplicationLogger().log(Level.WARNING, "Arc geometry violation: " + matchedArc + " / " + currentSegment + " / " + r1 + " | " + r2);
         return new Arc(currentSegment.getFrom(), currentSegment.getTo(), matchedArc.getCircle().getCenter(), matchedArc.getCircle().getRadius(), clockwise);
     }
 
@@ -187,6 +193,11 @@ public class Vectorizer
             }
         }
 
+        if (bestFit == null)
+            return null;
+        if (Math.abs(bestFit.getRadius() - bestFit.getCenter().distanceTo(points.getFirst())) >= MAX_ARC_DEVIATION ||
+                Math.abs(bestFit.getRadius() - bestFit.getCenter().distanceTo(points.getLast())) >= MAX_ARC_DEVIATION)
+            return null;
         double uncertainty = minDeviation / segmentDeviation;
         if (uncertainty > HIGH_UNCERTAINTY_THRESHOLD)
             return null;

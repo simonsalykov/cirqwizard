@@ -49,6 +49,7 @@ public class ToolpathMerger
         initVerticesMap(toolpaths);
 
         ArrayList<Toolpath> toBeRemoved = new ArrayList<>();
+        filterDots(toBeRemoved);
 
         for (Point p : verticesMap.keySet())
         {
@@ -167,6 +168,34 @@ public class ToolpathMerger
         System.out.println("lines: " + lines + ", arcs: " + arcs);
 
         return result;
+    }
+
+    private void filterDots(List<Toolpath> toBeRemoved)
+    {
+        for (Point p : verticesMap.keySet())
+        {
+
+            ArrayList<Toolpath> toMerge = verticesMap.get(p);
+            for (int i = 0; i < toMerge.size(); i++)
+            {
+                for (int j = i + 1; j < toMerge.size(); j++)
+                {
+                    Toolpath t1 = toMerge.get(i);
+                    Toolpath t2 = toMerge.get(j);
+
+                    if (t1 instanceof LinearToolpath)
+                    {
+                        if (((Line)((LinearToolpath) t1).getCurve()).length() < tolerance)
+                            toBeRemoved.add(t1);
+                    }
+                    else if (t2 instanceof LinearToolpath)
+                    {
+                        if (((Line)((LinearToolpath) t2).getCurve()).length() < tolerance)
+                            toBeRemoved.add(t2);
+                    }
+                }
+            }
+        }
     }
 
     private void initVerticesMap(List<Toolpath> toolpaths)
