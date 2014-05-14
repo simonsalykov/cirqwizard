@@ -14,22 +14,20 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
-import org.cirqwizard.fx.MainApplication;
-import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.serial.ExecutionException;
-import org.cirqwizard.serial.SerialException;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.serial.ExecutionException;
+import org.cirqwizard.serial.SerialException;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -38,8 +36,6 @@ public class SerialInterfaceService extends Service
     private MainApplication mainApplication;
     private List<String> programLines;
     private Property<String> executionTime = new SimpleStringProperty("");
-
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
 
     public SerialInterfaceService(MainApplication mainApplication)
     {
@@ -73,6 +69,11 @@ public class SerialInterfaceService extends Service
         return new SerialInterfaceTask();
     }
 
+    private String formatTime(long time)
+    {
+        return String.format("%02d:%02d:%02d", time / 3600, (time % 3600) / 60, time % 60);
+    }
+
     public class SerialInterfaceTask extends Task
     {
         @Override
@@ -89,7 +90,7 @@ public class SerialInterfaceService extends Service
                     }
                     mainApplication.getSerialInterface().send(programLines.get(i), 20000000);
                     updateProgress(i, programLines.size());
-                    final String s = timeFormat.format(new Date(System.currentTimeMillis() - executionStartTime));
+                    final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(new Runnable()
                     {
                         @Override

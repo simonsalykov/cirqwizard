@@ -197,7 +197,7 @@
                 <HBox id="HBox" alignment="CENTER" layoutX="102.0" layoutY="112.0" spacing="5.0">
                   <children>
                     <Label prefWidth="120.0" text="Time elapsed:" />
-                    <Label id="timeElapsed" fx:id="timeElapsedLabel" prefWidth="48.0" text="Label" />
+                    <Label id="timeElapsed" fx:id="timeElapsedLabel" prefWidth="90.0" text="Label" />
                   </children>
                 </HBox>
                 <Button layoutX="270.0" layoutY="144.0" mnemonicParsing="false" onAction="#stopExecution" text="Stop" />
