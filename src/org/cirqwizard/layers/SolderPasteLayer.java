@@ -167,6 +167,9 @@ public class SolderPasteLayer extends Layer
                     }
                 }
 
+                if (longestSide == null)
+                    continue;
+
                 double largestWidth = 0;
                 for (GerberPrimitive p : region.getSegments())
                 {
@@ -192,10 +195,10 @@ public class SolderPasteLayer extends Layer
 
     private double calculatePerpendicular(Point from, Point to, Point p)
     {
-        double dx = from.getX() - to.getX();
-        double dy = from.getY() - to.getY();
+        double dx = to.getX() - from.getX();
+        double dy = to.getY() - from.getY();
 
-        return Math.abs(dy * p.getX() - dx * p.getY() + from.getX() * to.getY() - to.getX() * from.getY()) / Math.sqrt(dx * dx + dy * dy);
+        return Math.abs(dx * (from.getY() - p.getY()) - dy * (from.getX() - p.getX())) / Math.sqrt(dx * dx + dy * dy);
     }
 
     @Override
