@@ -14,7 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -23,6 +27,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.cirqwizard.settings.Settings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -43,9 +48,11 @@ public class XYOffsetsController extends SceneController implements Initializabl
     @FXML private Button continueButton;
     @FXML private CheckBox ignoreCheckBox;
 
+    @FXML private Pane offsetImage;
 
     private final static int REFERENCE_PIN_POSITION_ON_LAMINATE = 5000;
 
+    private Canvas offsetImageCanvas;
 
     @Override
     public Parent getView()
@@ -93,6 +100,8 @@ public class XYOffsetsController extends SceneController implements Initializabl
                 checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y());
             }
         });
+        offsetImageCanvas = new Canvas(offsetImage.getPrefWidth(), offsetImage.getPrefHeight());
+        offsetImage.getChildren().addAll(offsetImageCanvas);
     }
 
     @Override
@@ -117,6 +126,7 @@ public class XYOffsetsController extends SceneController implements Initializabl
         offsetErrorLabel.setVisible(!pcbFitsLaminate);
         ignoreCheckBox.setVisible(!pcbFitsLaminate);
         continueButton.setDisable(!pcbFitsLaminate && !(ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()));
+        updateOffsetImage(context.getPcbSize(), xOffsetToPcb, yOffsetToPcb, context.getBoardWidth(), context.getBoardHeight());
     }
 
     public void updateComponents()
@@ -141,5 +151,38 @@ public class XYOffsetsController extends SceneController implements Initializabl
     {
         if (!moveZButton.isDisabled())
             getMainApplication().getCNCController().moveZ(z.getIntegerValue());
+    }
+
+    public void updateOffsetImage(PCBSize pcbSize, double pcbX, double pcbY, double pcbWidth, double pcbHeight)
+    {
+        GraphicsContext gc = offsetImageCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, offsetImageCanvas.getWidth(), offsetImageCanvas.getHeight());
+
+        double scale = 2;
+        double xOffset = (offsetImage.getPrefWidth() * Settings.RESOLUTION - pcbSize.getWidth() * scale) / 2 / Settings.RESOLUTION;
+        double yOffset = (offsetImage.getPrefHeight() * Settings.RESOLUTION - pcbSize.getHeight() * scale) / 2 / Settings.RESOLUTION;
+        double pinRadius = 1.5 * scale;
+
+        double pinX1 = (REFERENCE_PIN_POSITION_ON_LAMINATE / Settings.RESOLUTION);
+        double pinX2 = (pcbSize.getWidth() - REFERENCE_PIN_POSITION_ON_LAMINATE) / Settings.RESOLUTION;
+        double pinY1 = (REFERENCE_PIN_POSITION_ON_LAMINATE / Settings.RESOLUTION);
+        double pinY2 = (pcbSize.getHeight() - REFERENCE_PIN_POSITION_ON_LAMINATE) / Settings.RESOLUTION;
+
+        gc.setFill(Color.GRAY);
+        gc.fillRect(xOffset, yOffset, pcbSize.getWidth() * 2 / Settings.RESOLUTION, pcbSize.getHeight() * 2 / Settings.RESOLUTION);
+
+        gc.setFill(Color.WHITE);
+        gc.fillOval(pinX1 * scale + xOffset - pinRadius, pinY1 * scale + yOffset - pinRadius, pinRadius * 2, pinRadius * 2);
+        gc.fillOval(pinX2 * scale + xOffset - pinRadius, pinY1 * scale + yOffset - pinRadius, pinRadius * 2, pinRadius * 2);
+        gc.fillOval(pinX1 * scale + xOffset - pinRadius, pinY2 * scale + yOffset - pinRadius, pinRadius * 2, pinRadius * 2);
+        gc.fillOval(pinX2 * scale + xOffset - pinRadius, pinY2 * scale + yOffset - pinRadius, pinRadius * 2, pinRadius * 2);
+
+        double px = xOffset + pcbX  * scale / Settings.RESOLUTION;
+        double py = yOffset + (pcbSize.getHeight() - pcbY - pcbHeight) * scale / Settings.RESOLUTION;
+        double pw = pcbWidth * scale / Settings.RESOLUTION;
+        double ph = pcbHeight * scale / Settings.RESOLUTION;
+
+        gc.setFill(Color.rgb(191, 255, 0, 0.8));
+        gc.fillRect(px, py, pw, ph);
     }
 }
