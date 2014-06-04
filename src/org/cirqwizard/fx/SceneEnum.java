@@ -33,7 +33,8 @@ public enum SceneEnum
     FeederSelection("pp/FeederSelection.fxml"),
     ComponentPlacement("pp/ComponentPlacement.fxml"),
     About("About.fxml"),
-    ManualMovement("ManualMovement.fxml");
+    ManualMovement("ManualMovement.fxml"),
+    ManualDataInput("ManualDataInput.fxml");
 
     private String name;
 

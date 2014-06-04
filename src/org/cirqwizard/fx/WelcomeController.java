@@ -77,6 +77,11 @@ public class WelcomeController extends SceneController
         getMainApplication().setState(State.ORIENTATION);
     }
 
+    public void showManualDataInput()
+    {
+        getMainApplication().setState(State.MANUAL_DATA_INPUT);
+    }
+
     public void showSettings()
     {
         getMainApplication().setState(State.SETTINGS);

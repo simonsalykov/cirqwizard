@@ -35,6 +35,7 @@
         <Hyperlink onAction="#showSettings" text="Settings" />
         <Hyperlink onAction="#firmware" text="Flash firmware" />
         <Hyperlink onAction="#openManualMovementScreen" text="Manual control" />
+        <Hyperlink onAction="#showManualDataInput" text="MDI" />
       </children>
     </VBox>
     <Hyperlink layoutY="485.0" onAction="#showAbout" text="About cirQWizard" AnchorPane.rightAnchor="102.0" />
