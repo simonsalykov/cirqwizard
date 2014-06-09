@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Version 1.3.1 released - cirQWizard</title>
+  <title>Versions 1.3.2-1.3.9 - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//blog/2014/04/08/version-1-dot-3-1-released">
+  <link rel="canonical" href="http://cirqwizard.org//blog/2014/06/09/versions-1-dot-3-2-1-dot-3-9">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -108,7 +108,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">Version 1.3.1 Released</h1>
+      <h1 class="entry-title">Versions 1.3.2-1.3.9</h1>
     
     
       <p class="meta">
@@ -124,32 +124,81 @@
   
 
 
-<time datetime="2014-04-08T19:24:00+02:00" pubdate data-updated="true">Apr 8<span>th</span>, 2014</time>
+<time datetime="2014-06-09T14:30:00+02:00" pubdate data-updated="true">Jun 9<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Version 1.3.1 is mostly a bug fix release. Here is the list of things fixed in this version:</p>
+<div class="entry-content"><p>We&#8217;ve been in such a hurry to release these versions that we didn&#8217;t even blog about them. So, here go the release notes for all these versions. We&#8217;ll try not to postpone blogging about new releases going forward.</p>
+<h1>Version 1.3.2</h1>
 <h2>        Bug</h2>
 <ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-17'>CQ-17</a>] &#8211;         Exception on start up when using autodetect</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-30'>CQ-30</a>] &#8211;         Select all command on drilling screen selects holes irrespective of their diameter</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-77'>CQ-77</a>] &#8211;         Tabbing out of &quot;Tool diameter&quot; on machining screen doesn&#39;t trigger regeneration</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-85'>CQ-85</a>] &#8211;         Tool paths cache invalidation is inconsistent</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-90'>CQ-90</a>] &#8211;         Tool paths not regenerated when changing number of passes</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-93'>CQ-93</a>] &#8211;         <span class="caps">NPE</span> in SerialInterfaceFactory.getSerialInterfaces()</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-96'>CQ-96</a>] &#8211;         Empty lines in excellon file cause parser to fail</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-99'>CQ-99</a>] &#8211;         Arcs not supported in contour milling layer</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-100'>CQ-100</a>] &#8211;         Oval apertures not supported on solder paste layer</li>
+</ul>
+<h1>Version 1.3.3</h1>
+<h2>        Improvement</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-102'>CQ-102</a>] &#8211;         Support for LP parameter in gerbers</li>
+</ul>
+<h1>Version 1.3.4</h1>
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-69'>CQ-69</a>] &#8211;         Running gcode without connected machine doesn&#39;t produce an error</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-103'>CQ-103</a>] &#8211;         Flash width is not taken into account when board&#39;s zero point is calculated</li>
 </ul>
 <h2>        Improvement</h2>
 <ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-70'>CQ-70</a>] &#8211;         Better visibility for &quot;Go&quot; button on machining screen</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-91'>CQ-91</a>] &#8211;         Relabel &quot;Lower &amp; Test&quot; button</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-89'>CQ-89</a>] &#8211;         Improvements of tool path merge algorithm</li>
 </ul>
-<h2>        Task</h2>
+<h1>Version 1.3.5<br />
+<h2>        Bug</h1>
+</h2>
 <ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-95'>CQ-95</a>] &#8211;         Add target that runs the application to the build.xml</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-107'>CQ-107</a>] &#8211;         <span class="caps">NPE</span> in Region.getMin()</li>
+</ul>
+<h2>        Improvement</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-106'>CQ-106</a>] &#8211;         Support for decimal point in Excellon files</li>
+</ul>
+<h1>Version 1.3.6<br />
+<h2>        Bug</h1>
+</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-2'>CQ-2</a>] &#8211;         Incorrect order of screens when drilling holes</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-86'>CQ-86</a>] &#8211;         Zoom shortcuts do not work on Linux</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-104'>CQ-104</a>] &#8211;         Tool paths around polygonal apertures do not take into account tool diameter</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-108'>CQ-108</a>] &#8211;         Additional passes feature broken</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-109'>CQ-109</a>] &#8211;         Parts of tool paths sometimes disappear during merge</li>
+</ul>
+<h2>        Improvement</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-76'>CQ-76</a>] &#8211;         Separate feed for arcs</li>
+</ul>
+<h2>        New Feature</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-21'>CQ-21</a>] &#8211;         Reset settings to default</li>
+</ul>
+<h1>Version 1.3.7</h1>
+<p>Version 1.3.6 was unintentionally released with Mac OS X version built with Java 8. This version corrects this mistake with all of the platforms using Java 7 for build.</p>
+<h1>Version 1.3.8</h1>
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-105'>CQ-105</a>] &#8211;         In some cases program generates incorrect toolpaths</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-110'>CQ-110</a>] &#8211;         Elapsed time message on machining screen doesn&#39;t show hours</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-111'>CQ-111</a>] &#8211;         Application icon disappeared</li>
+</ul>
+<h1>Version 1.3.9<br />
+<h2>        Bug</h1>
+</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-113'>CQ-113</a>] &#8211;         Phantom tool paths on solder paste layer</li>
+</ul>
+<h2>        New Feature</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-3'>CQ-3</a>] &#8211;         Visual guidance on offset selection screen</li>
 </ul></div>
 
 
@@ -183,14 +232,10 @@
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/03/27/version-1-dot-3-0-released/" title="Previous Post:
-        Version 1.3.0 released">&laquo; Version 1.3.0 released</a></li>
+        href="/blog/2014/04/08/version-1-dot-3-1-released/" title="Previous Post:
+        Version 1.3.1 released">&laquo; Version 1.3.1 released</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/06/09/versions-1-dot-3-2-1-dot-3-9/"
-        title="Next Post: Versions 1.3.2-1.3.9">Versions 1.3.2-1.3.9
-        &raquo;</a></li>
       
     </ul>
   </footer>
@@ -249,8 +294,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://cirqwizard.org//blog/2014/04/08/version-1-dot-3-1-released/';
-        var disqus_url = 'http://cirqwizard.org//blog/2014/04/08/version-1-dot-3-1-released/';
+        var disqus_identifier = 'http://cirqwizard.org//blog/2014/06/09/versions-1-dot-3-2-1-dot-3-9/';
+        var disqus_url = 'http://cirqwizard.org//blog/2014/06/09/versions-1-dot-3-2-1-dot-3-9/';
         var disqus_script = 'embed.js';
       
     (function () {
