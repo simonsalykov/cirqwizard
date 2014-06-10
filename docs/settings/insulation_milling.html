@@ -112,9 +112,9 @@
     <ul>
         
         
+        
+        
         <li><a href="/docs/intro.html">Introduction</a></li>
-        
-        
         
         
         
@@ -170,10 +170,6 @@
         
         
         
-        <li><a href="/docs/settings/application.html">Settings - Application</a></li>
-        
-        
-        
         <li><a href="/docs/settings/machine.html">Settings - Machine</a></li>
         
         
@@ -186,25 +182,13 @@
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         <li><a href="/docs/settings/contour_milling.html">Settings - Contour milling</a></li>
+        
+        
+        
+        
+        
+        
         
         
         
@@ -212,7 +196,23 @@
         
         
         
-        <li><a href="/docs/settings/placement.html">Settings - Component placement</a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <li><a href="/docs/settings/placement.html">Settings - Pick&Place</a></li>
+        
+        
+        
+        <li><a href="/docs/settings/application.html">Settings - Application</a></li>
         
         
         
@@ -258,6 +258,12 @@
 		<td> mm/min </td>
 	</tr>
 	<tr>
+		<td> Feed for arcs </td>
+		<td> Feed for arcs specified as a percent from <strong>Feed XY</strong> </td>
+		<td> 50 </td>
+		<td> % </td>
+	</tr>
+	<tr>
 		<td> Speed </td>
 		<td> Value of speed parameter passed to the machine controller for milling operation (<span class="caps">PWM</span> width of control pulse in case of Cirqoid machines) </td>
 		<td> 1390 </td>
@@ -286,6 +292,24 @@
 		<td> The depth of tool engagement in laminate </td>
 		<td> -0.05 </td>
 		<td> mm </td>
+	</tr>
+	<tr>
+		<td> Additional passes </td>
+		<td> Number of additional passes around traces to increase the separation between trace and surrounding copper </td>
+		<td> 0 </td>
+		<td> times </td>
+	</tr>
+	<tr>
+		<td> Additional passes overlap </td>
+		<td> Overlap in percents between additional passes </td>
+		<td> 20 </td>
+		<td> % </td>
+	</tr>
+	<tr>
+		<td> Additional passes around pads only </td>
+		<td> This option generates additional passes only around pads, leaving the traces themselves separated by a single pass only. This can save some time and make it for easier soldering. </td>
+		<td> Not selected </td>
+		<td> </td>
 	</tr>
 </table>
 <p>All heights are specified in work coordinate system (i.e. taking into account Z offset).</p>
