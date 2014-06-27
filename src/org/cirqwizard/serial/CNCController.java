@@ -38,9 +38,14 @@ public class CNCController
 
     private void send(String str, long timeout)
     {
+        send(str, timeout, null);
+    }
+
+    private void send(String str, long timeout, StringBuilder response)
+    {
         try
         {
-            serial.send(str, timeout);
+            serial.send(str, timeout, response);
         }
         catch (SerialException e)
         {
@@ -72,23 +77,6 @@ public class CNCController
         {
             LoggerFactory.logException("InterruptedException in CNCController.send(): ", e);
         }
-    }
-
-    private String sendAndReadResponse(String req, long timeout)
-    {
-        try
-        {
-            return serial.sendAndReadResponse(req, timeout);
-        }
-        catch (SerialException e)
-        {
-            LoggerFactory.logException("Communication with controller failed: ", e);
-        }
-        catch (ExecutionException e)
-        {
-            LoggerFactory.logException("Controller returned an error", e);
-        }
-        return null;
     }
 
     private void send(String str)
@@ -243,6 +231,8 @@ public class CNCController
         StringBuilder str = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.getFirmwareVersion(str);
-        return sendAndReadResponse(str.toString(), 500);
+        StringBuilder response = new StringBuilder();
+        send(str.toString(), 500, response);
+        return response.toString();
     }
 }

@@ -19,13 +19,11 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.math.RealNumber;
-
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
@@ -102,6 +100,12 @@ public class ManualMovementController extends SceneController implements Initial
     {
         getMainApplication().getCNCController().home(getMainApplication().getSettings().getMachineYDiff());
     }
+
+    public void goToMDI()
+    {
+        getMainApplication().setState(State.MANUAL_DATA_INPUT);
+    }
+
 }
 
 

@@ -731,7 +731,7 @@ public enum State
                 @Override
                 public State getPrevState(Context context)
                 {
-                    return WELCOME;
+                    return MANUAL_MOVEMENT;
                 }
 
                 @Override

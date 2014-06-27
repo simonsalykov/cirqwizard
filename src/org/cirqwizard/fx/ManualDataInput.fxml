@@ -7,18 +7,26 @@
 
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.ManualDataInputController">
   <children>
-    <StackPane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="800.0">
+    <StackPane prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <AnchorPane id="AnchorPane" prefHeight="563.0" prefWidth="780.0">
           <children>
-            <Label layoutX="77.0" layoutY="80.0" styleClass="h1" text="Manual data input" />
-            <Button layoutY="517.0" mnemonicParsing="false" onAction="#goBack" text="Go back" AnchorPane.rightAnchor="90.0" />
-            <Label alignment="TOP_LEFT" layoutX="107.0" layoutY="140.0" prefHeight="90.0" prefWidth="635.0" text="On this screen you can control your device using GCode - type GCode in a corresponding field and press Send button." wrapText="true" />
-            <Label layoutX="77.0" layoutY="201.0" text="GCode input:" />
-            <TextArea fx:id="gCodeInputTextArea" layoutX="77.0" layoutY="225.0" prefHeight="229.0" prefWidth="378.0" wrapText="true" />
-            <Button fx:id="executeGCodeButton" layoutX="77.0" layoutY="464.0" mnemonicParsing="false" onAction="#executeGCode" prefWidth="378.0" text="Execute" />
-            <TextArea fx:id="responseTextArea" editable="false" layoutX="466.0" layoutY="225.0" prefHeight="265.0" prefWidth="260.0" wrapText="true" />
-            <Label layoutX="474.0" layoutY="197.0" text="Response:" />
+            <Label layoutX="77.0" layoutY="80.0" styleClass="h1" text="Direct GCode control" />
+            <Button mnemonicParsing="false" onAction="#goBack" text="Go back" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0" />
+            <Label alignment="TOP_LEFT" layoutY="140.0" prefHeight="47.0" prefWidth="-1.0" text="On this screen you can control your device using GCode - type GCode in a corresponding field and press Send button." wrapText="true" AnchorPane.leftAnchor="107.0" AnchorPane.rightAnchor="58.0" />
+            <VBox id="VBox" alignment="TOP_LEFT" spacing="5.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="77.0" AnchorPane.rightAnchor="266.0" AnchorPane.topAnchor="201.0">
+              <children>
+                <Label text="GCode input:" />
+                <TextArea fx:id="gCodeInputTextArea" prefHeight="-1.0" prefWidth="-1.0" wrapText="true" VBox.vgrow="ALWAYS" />
+              </children>
+            </VBox>
+            <Button fx:id="executeGCodeButton" layoutX="77.0" mnemonicParsing="false" onAction="#executeGCode" prefWidth="457.0" text="Send" AnchorPane.bottomAnchor="71.0" />
+            <VBox id="VBox" alignment="TOP_LEFT" prefWidth="170.0" spacing="5.0" AnchorPane.bottomAnchor="114.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="197.0">
+              <children>
+                <Label text="Response:" />
+                <TextArea fx:id="responseTextArea" editable="false" prefHeight="-1.0" prefWidth="-1.0" wrapText="true" VBox.vgrow="ALWAYS" />
+              </children>
+            </VBox>
           </children>
         </AnchorPane>
         <Region fx:id="veil" prefHeight="200.0" prefWidth="200.0" styleClass="pcb-veil" visible="false" />

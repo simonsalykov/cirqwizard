@@ -111,7 +111,7 @@ public class SerialInterfaceImpl implements SerialInterface
         }
     }
 
-    private void sendCommand(String command, long timeout) throws SerialException, ExecutionException, InterruptedException
+    private void sendCommand(String command, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException
     {
         timeout+= System.currentTimeMillis();
         try
@@ -135,6 +135,8 @@ public class SerialInterfaceImpl implements SerialInterface
                 String str = new String(b, 0, offset);
                 if (str.indexOf('\n') >= 0)
                 {
+                    if (response != null)
+                        response.append(str);
                     LoggerFactory.getSerialLogger().fine(str);
                     if (str.startsWith("ok"))
                         return;
@@ -151,25 +153,31 @@ public class SerialInterfaceImpl implements SerialInterface
         {
             throw new SerialException(e);
         }
-        throw new SerialException("Timout.");
+        throw new SerialException("Timeout.");
     }
 
     public void send(String str, long timeout) throws SerialException, ExecutionException, InterruptedException
     {
+        send(str, timeout, null);
+    }
+
+    public void send(String str, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException
+    {
         try
         {
+
             LineNumberReader reader = new LineNumberReader(new StringReader(str));
             String line;
             while ((line = reader.readLine()) != null)
             {
                 try
                 {
-                    sendCommand(line, timeout);
+                    sendCommand(line, timeout, response);
                 }
                 catch (SerialException e)
                 {
                     LoggerFactory.logException("Communication error detected, resending command", e);
-                    sendCommand(line, timeout);
+                    sendCommand(line, timeout, response);
                 }
             }
         }
@@ -178,52 +186,7 @@ public class SerialInterfaceImpl implements SerialInterface
             // It's not going to happen
             LoggerFactory.logException("Improbable exception", e);
         }
-    }
 
-    public String sendAndReadResponse(String req, long timeout) throws SerialException, ExecutionException
-    {
-        String responseStr = null;
-
-        timeout+= System.currentTimeMillis();
-        try
-        {
-            byte[] rxBuffer = new byte[1024];
-            int offset = 0;
-
-            inputStream.skip(inputStream.available());
-            outputStream.write(req.getBytes());
-            outputStream.write('\n');
-            LoggerFactory.getSerialLogger().fine(req + "\n");
-
-            while (System.currentTimeMillis() < timeout)
-            {
-                if (inputStream.available() > 0)
-                    offset += inputStream.read(rxBuffer, offset, rxBuffer.length - offset);
-                responseStr = new String(rxBuffer, 0, offset);
-                if (responseStr.contains("\nok"))   // some response + ack received
-                {
-                    responseStr = responseStr.substring(0, responseStr.lastIndexOf("\nok"));
-                    LoggerFactory.getSerialLogger().fine(responseStr);
-                    return responseStr.trim().equals("") ? null : responseStr;
-                }
-                else if (responseStr.startsWith("ok\r\n"))
-                    return null;
-                else if (responseStr.startsWith("nack\r\n"))
-                    throw new SerialException("Negative acknowledgement received: " + responseStr);
-                else if (responseStr.startsWith("error\r\n"))
-                    throw new ExecutionException("Execution error received from controller: " + responseStr);
-                Thread.sleep(10);
-            }
-        }
-        catch (IOException e)
-        {
-            throw new SerialException(e);
-        }
-        catch (InterruptedException e)
-        {
-            // That's fine
-        }
-        throw new SerialException("Timout.");
     }
 
     public String getPortName()
