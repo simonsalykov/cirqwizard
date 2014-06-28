@@ -38,14 +38,14 @@ public class CNCController
 
     private void send(String str, long timeout)
     {
-        send(str, timeout, null);
+        send(str, timeout, null, false);
     }
 
-    private void send(String str, long timeout, StringBuilder response)
+    private void send(String str, long timeout, StringBuilder response, boolean suppressExceptions)
     {
         try
         {
-            serial.send(str, timeout, response);
+            serial.send(str, timeout, response, suppressExceptions);
         }
         catch (SerialException e)
         {
@@ -232,7 +232,10 @@ public class CNCController
         Postprocessor post = PostProcessorFactory.getPostProcessor();
         post.getFirmwareVersion(str);
         StringBuilder response = new StringBuilder();
-        send(str.toString(), 500, response);
-        return response.toString();
+        send(str.toString(), 500, response, true);
+        String firmware = response.toString();
+        if (firmware.indexOf('\n') > 0)
+            firmware = firmware.substring(0, firmware.indexOf('\n'));
+        return firmware;
     }
 }

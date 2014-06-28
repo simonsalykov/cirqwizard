@@ -111,7 +111,7 @@ public class SerialInterfaceImpl implements SerialInterface
         }
     }
 
-    private void sendCommand(String command, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException
+    private void sendCommand(String command, long timeout, StringBuilder response, boolean suppressExceptions) throws SerialException, ExecutionException, InterruptedException
     {
         timeout+= System.currentTimeMillis();
         try
@@ -140,11 +140,13 @@ public class SerialInterfaceImpl implements SerialInterface
                     LoggerFactory.getSerialLogger().fine(str);
                     if (str.startsWith("ok"))
                         return;
-                    if (str.startsWith("nack"))
+                    if (str.startsWith("nack") && !suppressExceptions)
                         throw new SerialException("Negative acknowledgement received: " + str);
-                    if (str.startsWith("error"))
+                    if (str.startsWith("error") && !suppressExceptions)
                         throw new ExecutionException("Execution error received from controller: " + str);
-                    throw new SerialException("Unexpected confirmation received from controller: " + str);
+                    if (!suppressExceptions)
+                        throw new SerialException("Unexpected confirmation received from controller: " + str);
+                    return;
                 }
                 Thread.sleep(10);
             }
@@ -158,10 +160,10 @@ public class SerialInterfaceImpl implements SerialInterface
 
     public void send(String str, long timeout) throws SerialException, ExecutionException, InterruptedException
     {
-        send(str, timeout, null);
+        send(str, timeout, null, false);
     }
 
-    public void send(String str, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException
+    public void send(String str, long timeout, StringBuilder response, boolean suppressExceptions) throws SerialException, ExecutionException, InterruptedException
     {
         try
         {
@@ -172,12 +174,12 @@ public class SerialInterfaceImpl implements SerialInterface
             {
                 try
                 {
-                    sendCommand(line, timeout, response);
+                    sendCommand(line, timeout, response, suppressExceptions);
                 }
                 catch (SerialException e)
                 {
                     LoggerFactory.logException("Communication error detected, resending command", e);
-                    sendCommand(line, timeout, response);
+                    sendCommand(line, timeout, response, suppressExceptions);
                 }
             }
         }

@@ -45,11 +45,11 @@ public class SerialInterfaceStub implements SerialInterface
     @Override
     public void send(String str, long timeout) throws SerialException, ExecutionException, InterruptedException
     {
-        send(str, timeout, null);
+        send(str, timeout, null, false);
     }
 
     @Override
-    public void send(String str, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException
+    public void send(String str, long timeout, StringBuilder response, boolean suppressExceptions) throws SerialException, ExecutionException, InterruptedException
     {
         LoggerFactory.getSerialLogger().fine(str);
         try
