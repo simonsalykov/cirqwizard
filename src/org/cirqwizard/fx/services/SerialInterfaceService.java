@@ -41,6 +41,7 @@ public class SerialInterfaceService extends Service
     private Property<String> executionTime = new SimpleStringProperty("");
     private Property<String> responses = new SimpleObjectProperty<>("");
     private boolean readResponses;
+    private boolean suppressExceptions;
 
     private SimpleDateFormat timeFormat = new SimpleDateFormat("mm:ss");
 
@@ -51,12 +52,13 @@ public class SerialInterfaceService extends Service
 
     public void setProgram(String program)
     {
-        setProgram(program, false);
+        setProgram(program, false, false);
     }
 
-    public void setProgram(String program, boolean readResponses)
+    public void setProgram(String program, boolean readResponses, boolean suppressExceptions)
     {
         this.readResponses = readResponses;
+        this.suppressExceptions = suppressExceptions;
         programLines = new ArrayList<String>();
         LineNumberReader reader = new LineNumberReader(new StringReader(program));
         String str;
@@ -109,7 +111,15 @@ public class SerialInterfaceService extends Service
                         throw new InterruptedException();
                     }
 
-                    mainApplication.getSerialInterface().send(programLines.get(i), 20000000, responseBuilder);
+                    try
+                    {
+                        mainApplication.getSerialInterface().send(programLines.get(i), 20000000, responseBuilder);
+                    }
+                    catch (SerialException | ExecutionException e)
+                    {
+                        if (!suppressExceptions)
+                            throw e;
+                    }
                     updateProgress(i, programLines.size());
                     if (responseBuilder != null)
                         responses.setValue(responseBuilder.toString());

@@ -61,7 +61,7 @@ public class ManualDataInputController extends SceneController
 
     public void executeGCode()
     {
-        serialService.setProgram(gCodeInputTextArea.getText(), true);
+        serialService.setProgram(gCodeInputTextArea.getText(), true, true);
         serialService.restart();
     }
 
