@@ -76,6 +76,11 @@ public class SerialInterfaceService extends Service
         return executionTime;
     }
 
+    public Property<String> responsesProperty()
+    {
+        return responses;
+    }
+
     @Override
     protected Task createTask()
     {

@@ -55,12 +55,13 @@ public class ManualDataInputController extends SceneController
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
+        responseTextArea.textProperty().bind(serialService.responsesProperty());
         veil.visibleProperty().bind(serialService.runningProperty());
     }
 
     public void executeGCode()
     {
-        serialService.setProgram(gCodeInputTextArea.getText());
+        serialService.setProgram(gCodeInputTextArea.getText(), true);
         serialService.restart();
     }
 
