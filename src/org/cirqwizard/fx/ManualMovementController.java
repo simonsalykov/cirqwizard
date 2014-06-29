@@ -100,6 +100,12 @@ public class ManualMovementController extends SceneController implements Initial
     {
         getMainApplication().getCNCController().home(getMainApplication().getSettings().getMachineYDiff());
     }
+
+    public void goToMDI()
+    {
+        getMainApplication().setState(State.MANUAL_DATA_INPUT);
+    }
+
 }
 
 

@@ -702,7 +702,6 @@ public enum State
                     return PLACING_FEEDER_SELECTION;
                 }
             },
-
     TERMINAL(SceneEnum.Message)
             {
                 @Override
@@ -721,6 +720,20 @@ public enum State
                     if (context.isTopTracesSelected())
                         return MILLING_TOP_INSULATION;
                     return JOB_SELECTION;
+                }
+
+                @Override
+                public State getNextState(Context context)
+                {
+                    return null;
+                }
+            },
+    MANUAL_DATA_INPUT(SceneEnum.ManualDataInput)
+            {
+                @Override
+                public State getPrevState(Context context)
+                {
+                    return MANUAL_MOVEMENT;
                 }
 
                 @Override

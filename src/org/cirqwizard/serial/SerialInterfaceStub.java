@@ -43,7 +43,13 @@ public class SerialInterfaceStub implements SerialInterface
     }
 
     @Override
-    public void send(String str, long timeout) throws SerialException
+    public void send(String str, long timeout) throws SerialException, ExecutionException, InterruptedException
+    {
+        send(str, timeout, null);
+    }
+
+    @Override
+    public void send(String str, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException
     {
         LoggerFactory.getSerialLogger().fine(str);
         try
@@ -54,12 +60,6 @@ public class SerialInterfaceStub implements SerialInterface
         {
             // Interrupted. That's fine
         }
-    }
-
-    @Override
-    public String sendAndReadResponse(String req, long timeout) throws SerialException, ExecutionException
-    {
-        return "";
     }
 
     @Override

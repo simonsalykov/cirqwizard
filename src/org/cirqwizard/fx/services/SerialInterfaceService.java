@@ -14,6 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
+import javafx.beans.property.SimpleObjectProperty;
+import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.serial.ExecutionException;
+import org.cirqwizard.serial.SerialException;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
@@ -36,6 +41,9 @@ public class SerialInterfaceService extends Service
     private MainApplication mainApplication;
     private List<String> programLines;
     private Property<String> executionTime = new SimpleStringProperty("");
+    private Property<String> responses = new SimpleObjectProperty<>("");
+    private boolean readResponses;
+    private boolean suppressExceptions;
 
     public SerialInterfaceService(MainApplication mainApplication)
     {
@@ -44,6 +52,13 @@ public class SerialInterfaceService extends Service
 
     public void setProgram(String program)
     {
+        setProgram(program, false, false);
+    }
+
+    public void setProgram(String program, boolean readResponses, boolean suppressExceptions)
+    {
+        this.readResponses = readResponses;
+        this.suppressExceptions = suppressExceptions;
         programLines = new ArrayList<String>();
         LineNumberReader reader = new LineNumberReader(new StringReader(program));
         String str;
@@ -61,6 +76,11 @@ public class SerialInterfaceService extends Service
     public Property<String> executionTimeProperty()
     {
         return executionTime;
+    }
+
+    public Property<String> responsesProperty()
+    {
+        return responses;
     }
 
     @Override
@@ -81,6 +101,13 @@ public class SerialInterfaceService extends Service
         {
             try
             {
+                StringBuilder responseBuilder = null;
+                if (readResponses)
+                {
+                    responses.setValue("");
+                    responseBuilder = new StringBuilder();
+                }
+
                 long executionStartTime = System.currentTimeMillis();
                 for (int i = 0; i < programLines.size(); i++)
                 {
@@ -88,7 +115,18 @@ public class SerialInterfaceService extends Service
                     {
                         throw new InterruptedException();
                     }
-                    mainApplication.getSerialInterface().send(programLines.get(i), 20000000);
+
+                    try
+                    {
+                        mainApplication.getSerialInterface().send(programLines.get(i), 20000000, responseBuilder);
+                    }
+                    catch (SerialException | ExecutionException e)
+                    {
+                        if (!suppressExceptions)
+                            throw e;
+                    }
+                    if (responseBuilder != null)
+                        responses.setValue(responseBuilder.toString());
                     updateProgress(i, programLines.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(new Runnable()
