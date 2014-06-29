@@ -14,11 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.services;
 
-import javafx.beans.property.SimpleObjectProperty;
-import org.cirqwizard.fx.MainApplication;
-import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.serial.ExecutionException;
-import org.cirqwizard.serial.SerialException;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
@@ -41,7 +36,7 @@ public class SerialInterfaceService extends Service
     private MainApplication mainApplication;
     private List<String> programLines;
     private Property<String> executionTime = new SimpleStringProperty("");
-    private Property<String> responses = new SimpleObjectProperty<>("");
+    private Property<String> responses = new SimpleStringProperty("");
     private boolean readResponses;
     private boolean suppressExceptions;
 
