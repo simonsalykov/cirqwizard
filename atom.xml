@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-06-29T21:42:17+02:00</updated>
+  <updated>2014-07-14T16:21:27+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Versions 1.3.10 and 1.3.11]]></title>
+    <link href="http://cirqwizard.org//blog/2014/07/14/versions-1-dot-3-10-and-1-dot-3-11/"/>
+    <updated>2014-07-14T14:30:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2014/07/14/versions-1-dot-3-10-and-1-dot-3-11</id>
+    <content type="html"><![CDATA[<p>These two versions add a possibility to send G-code to the machine directly from cirQWizard. This functionality can be accessed from <strong>Manual Control &#8594; Direct GCode control</strong>.</p>
+<p>Version 1.3.10 had a build issue which resulted in broken functionality of firmware flashing. This was fixed in 1.3.11.</p>
+<p>Below are release notes for version 1.3.10:</p>
+Release Notes &#8211; cirQWizard &#8211; Version 1.3.10
+<h2>        New Feature</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-83'>CQ-83</a>] &#8211;         Possibility to send GCode directly to the machine</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Versions 1.3.2-1.3.9]]></title>
