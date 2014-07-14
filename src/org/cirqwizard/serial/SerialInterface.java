@@ -26,6 +26,6 @@ public interface SerialInterface
     public int readByte() throws IOException;
     public void close() throws SerialException;
     public void send(String str, long timeout) throws SerialException, ExecutionException, InterruptedException;
-    public void send(String str, long timeout, StringBuilder response) throws SerialException, ExecutionException, InterruptedException;
+    public void send(String str, long timeout, StringBuilder response, boolean suppressExceptions) throws SerialException, ExecutionException, InterruptedException;
     public String getPortName();
 }

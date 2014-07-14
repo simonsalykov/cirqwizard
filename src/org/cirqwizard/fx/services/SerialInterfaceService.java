@@ -113,7 +113,7 @@ public class SerialInterfaceService extends Service
 
                     try
                     {
-                        mainApplication.getSerialInterface().send(programLines.get(i), 20000000, responseBuilder);
+                        mainApplication.getSerialInterface().send(programLines.get(i), 20000000, responseBuilder, false);
                     }
                     catch (SerialException | ExecutionException e)
                     {
