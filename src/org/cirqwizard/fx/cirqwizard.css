@@ -137,3 +137,15 @@
 #licensePane {
      -fx-padding: 0 30 0 30;
  }
+
+
+.settings-group {
+    -fx-border-color: black;
+    -fx-border-radius: 5;
+    -fx-padding: 10 10 10 10;
+}
+
+.settings-group-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}

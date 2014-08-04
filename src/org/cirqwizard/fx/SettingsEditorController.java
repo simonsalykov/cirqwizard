@@ -1,11 +1,16 @@
 package org.cirqwizard.fx;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.cirqwizard.settings.*;
 
@@ -25,7 +30,7 @@ public class SettingsEditorController extends SceneController implements Initial
     @FXML private Parent view;
 
     @FXML private ListView<SettingsGroup> groups;
-    @FXML private VBox settingsPane;
+    @FXML private GridPane settingsPane;
 
     @Override
     public Parent getView()
@@ -52,7 +57,9 @@ public class SettingsEditorController extends SceneController implements Initial
             settingsPane.getChildren().clear();
             SettingsGroup group = groups.getSelectionModel().getSelectedItem();
             String preferenceGroupName = null;
-            VBox container = settingsPane;
+            GridPane container = settingsPane;
+            IntegerProperty rootRow = new SimpleIntegerProperty(0);
+            IntegerProperty row = null;
             for (Field f : group.getClass().getDeclaredFields())
             {
                 if (!f.isAnnotationPresent(PersistentPreference.class))
@@ -62,16 +69,28 @@ public class SettingsEditorController extends SceneController implements Initial
                     String name = f.getAnnotation(PreferenceGroup.class).name();
                     if (!name.equals(preferenceGroupName))
                     {
-                        container = new VBox(10);
-                        settingsPane.getChildren().add(container);
-                        container.getChildren().add(new Label(name));
+                        container = new GridPane();
+                        container.setHgap(10);
+                        container.setVgap(10);
+                        settingsPane.add(container, 0, rootRow.get(), 2, 1);
+                        rootRow.setValue(rootRow.get() + 1);
+                        container.getStyleClass().add("settings-group");
+                        Label header = new Label(name);
+                        header.getStyleClass().add("settings-group-header");
+                        container.add(header, 0, 0, 2, 1);
                         preferenceGroupName = name;
+                        row = new SimpleIntegerProperty(1);
                     }
                 }
                 else
+                {
                     container = settingsPane;
+                    row = rootRow;
+                }
                 UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), group.getClass()).getReadMethod().invoke(group);
-                container.getChildren().add(new Label(p.getUserName()));
+                container.add(new Label(p.getUserName()), 0, row.get());
+                container.add(new TextField(), 1, row.get());
+                row.setValue(row.get() + 1);
             }
         }
         catch (IllegalAccessException e)
