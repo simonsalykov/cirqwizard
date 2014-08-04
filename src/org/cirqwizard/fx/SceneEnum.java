@@ -27,6 +27,7 @@ public enum SceneEnum
     XYOffsets("XYOffsets.fxml"),
     Machining("machining/Machining.fxml"),
     Settings("Settings.fxml"),
+    SettingsEditor("SettingsEditor.fxml"),
     Firmware("Firmware.fxml"),
     BleedingSyringe("dispensing/SyringeBleeding.fxml"),
     PlacingOverview("pp/PlacingOverview.fxml"),

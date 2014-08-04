@@ -31,7 +31,7 @@ public enum State
                     return null;
                 }
             },
-    SETTINGS(SceneEnum.Settings)
+    SETTINGS(SceneEnum.SettingsEditor)
             {
                 @Override
                 public State getPrevState(Context context)
