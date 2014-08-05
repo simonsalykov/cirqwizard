@@ -414,7 +414,7 @@ public enum State
                 @Override
                 public State getNextState(Context context)
                 {
-                    if (context.getCurrentDrill() < context.getDrillDiameters().size() - 1)
+                    if (context.getCurrentDrill() < context.getPcbLayout().getDrillDiameters().size() - 1)
                     {
                         context.setCurrentDrill(context.getCurrentDrill() + 1);
                         return INSERTING_DRILL;
@@ -688,7 +688,7 @@ public enum State
                 @Override
                 public State getNextState(Context context)
                 {
-                    if (context.getCurrentComponent() < context.getComponentIds().size() - 1)
+                    if (context.getCurrentComponent() < context.getPcbLayout().getComponentIds().size() - 1)
                     {
                         context.setCurrentComponent(context.getCurrentComponent() + 1);
                         return PLACING_FEEDER_SELECTION;

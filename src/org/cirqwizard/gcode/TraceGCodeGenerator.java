@@ -48,7 +48,7 @@ public class TraceGCodeGenerator
 
     private List<Toolpath> getToolpaths()
     {
-        return state == State.MILLING_TOP_INSULATION ? context.getTopTracesLayer().getToolpaths() : context.getBottomTracesLayer().getToolpaths();
+        return state == State.MILLING_TOP_INSULATION ? context.getPcbLayout().getTopTracesLayer().getToolpaths() : context.getPcbLayout().getBottomTracesLayer().getToolpaths();
     }
 
     public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,

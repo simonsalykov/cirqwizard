@@ -70,7 +70,7 @@ public class PlacingOverviewController extends SceneController implements Initia
     public void refresh()
     {
         HashMap<ComponentId, Row> rowsMap = new HashMap<ComponentId, Row>();
-        for (Toolpath t : getMainApplication().getContext().getComponentsLayer().getToolpaths())
+        for (Toolpath t : getMainApplication().getContext().getPcbLayout().getComponentsLayer().getToolpaths())
         {
             PPPoint p = (PPPoint) t;
             if (rowsMap.get(p.getId()) == null)

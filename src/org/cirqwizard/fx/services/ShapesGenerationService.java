@@ -266,17 +266,17 @@ public class ShapesGenerationService extends Service<ObservableList<Shape>>
         {
             try
             {
-                if (!context.isFileLoaded())
-                    context.loadFile();
-                if (context.getTopTracesLayer() != null)
-                    addGerberPrimitives("pcb-top-trace", context.getTopTracesLayer().getElements());
-                if (context.getBottomTracesLayer() != null)
-                    addGerberPrimitives("pcb-bottom-trace", context.getBottomTracesLayer().getElements());
-                if (context.getMillingLayer() != null)
-                    addGerberPrimitives("pcb-contour-milling", context.getMillingLayer().getElements());
-                if (context.getDrillingLayer() != null)
+                if (!context.getPcbLayout().isFileLoaded())
+                    context.getPcbLayout().loadFile(context.getPcbLayout().getFileName());
+                if (context.getPcbLayout().getTopTracesLayer() != null)
+                    addGerberPrimitives("pcb-top-trace", context.getPcbLayout().getTopTracesLayer().getElements());
+                if (context.getPcbLayout().getBottomTracesLayer() != null)
+                    addGerberPrimitives("pcb-bottom-trace", context.getPcbLayout().getBottomTracesLayer().getElements());
+                if (context.getPcbLayout().getMillingLayer() != null)
+                    addGerberPrimitives("pcb-contour-milling", context.getPcbLayout().getMillingLayer().getElements());
+                if (context.getPcbLayout().getDrillingLayer() != null)
                 {
-                    for (DrillPoint p : context.getDrillingLayer().getToolpaths())
+                    for (DrillPoint p : context.getPcbLayout().getDrillingLayer().getToolpaths())
                     {
                         Shape shape = createShapeForDrillPoint(p);
                         shape.getStyleClass().add("pcb-drill-point");

@@ -90,10 +90,10 @@ public class FeederSelectionController extends SceneController implements Initia
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        ComponentId id =  context.getComponentIds().get(context.getCurrentComponent());
+        ComponentId id =  context.getPcbLayout().getComponentIds().get(context.getCurrentComponent());
 
         int count=0;
-        for (PPPoint component : context.getComponentsLayer().getPoints())
+        for (PPPoint component : context.getPcbLayout().getComponentsLayer().getPoints())
         {
             if (component.getId().equals(id))
                 count++;

@@ -143,12 +143,12 @@ public class ComponentPlacementController extends SceneController implements Ini
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        ComponentId id =  context.getComponentIds().get(context.getCurrentComponent());
+        ComponentId id =  context.getPcbLayout().getComponentIds().get(context.getCurrentComponent());
         header.setText("Placing component " + id.getPackaging() + " " + id.getValue());
 
         componentNames.clear();
-        ComponentId currentId = context.getComponentIds().get(context.getCurrentComponent());
-        for (PPPoint p : context.getComponentsLayer().getPoints())
+        ComponentId currentId = context.getPcbLayout().getComponentIds().get(context.getCurrentComponent());
+        for (PPPoint p : context.getPcbLayout().getComponentsLayer().getPoints())
             if (p.getId().equals(currentId))
                 componentNames.add(p.getName());
         componentName.getSelectionModel().select(0);
@@ -173,7 +173,7 @@ public class ComponentPlacementController extends SceneController implements Ini
     private void updateComponent()
     {
         Context context = getMainApplication().getContext();
-        for (PPPoint p : context.getComponentsLayer().getPoints())
+        for (PPPoint p : context.getPcbLayout().getComponentsLayer().getPoints())
         {
             if (p.getName().equals(componentName.getValue()))
             {

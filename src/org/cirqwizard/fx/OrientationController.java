@@ -44,13 +44,13 @@ public class OrientationController extends SceneController
 
     public void rotateCCW()
     {
-        getMainApplication().getContext().rotate(false);
+        getMainApplication().getContext().getPcbLayout().rotate(false);
         service.restart();
     }
 
     public void rotateCW()
     {
-        getMainApplication().getContext().rotate(true);
+        getMainApplication().getContext().getPcbLayout().rotate(true);
         service.restart();
     }
 

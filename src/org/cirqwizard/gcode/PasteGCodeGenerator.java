@@ -39,7 +39,7 @@ public class PasteGCodeGenerator
         postprocessor.selectWCS(str);
 
         postprocessor.rapid(str, null, null, clearance);
-        for (Toolpath toolpath : context.getSolderPasteLayer().getToolpaths())
+        for (Toolpath toolpath : context.getPcbLayout().getSolderPasteLayer().getToolpaths())
         {
             if (!toolpath.isEnabled())
                 continue;

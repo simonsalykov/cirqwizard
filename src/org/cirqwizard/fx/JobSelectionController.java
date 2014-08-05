@@ -82,17 +82,17 @@ public class JobSelectionController extends SceneController
     {
         Context context = getMainApplication().getContext();
         topTraces.setSelected(context.isTopTracesSelected());
-        topTraces.setDisable(context.getTopTracesLayer() == null);
+        topTraces.setDisable(context.getPcbLayout().getTopTracesLayer() == null);
         bottomTraces.setSelected(context.isBottomTracesSelected());
-        bottomTraces.setDisable(context.getBottomTracesLayer() == null);
+        bottomTraces.setDisable(context.getPcbLayout().getBottomTracesLayer() == null);
         drilling.setSelected(context.isDrillingSelected());
-        drilling.setDisable(context.getDrillingLayer() == null);
+        drilling.setDisable(context.getPcbLayout().getDrillingLayer() == null);
         contour.setSelected(context.isContourSelected());
-        contour.setDisable(context.getMillingLayer() == null);
+        contour.setDisable(context.getPcbLayout().getMillingLayer() == null);
         paste.setSelected(context.isPasteSelected());
-        paste.setDisable(context.getSolderPasteLayer() == null);
+        paste.setDisable(context.getPcbLayout().getSolderPasteLayer() == null);
         placing.setSelected(context.isPlacingSelected());
-        placing.setDisable(context.getComponentsLayer() == null);
+        placing.setDisable(context.getPcbLayout().getComponentsLayer() == null);
         checkSettings();
     }
 

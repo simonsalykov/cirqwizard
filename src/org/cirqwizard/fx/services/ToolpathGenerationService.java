@@ -107,15 +107,15 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
     private Layer getLayer()
     {
         if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
-            return context.getTopTracesLayer();
+            return context.getPcbLayout().getTopTracesLayer();
         if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
-            return context.getBottomTracesLayer();
+            return context.getPcbLayout().getBottomTracesLayer();
         if (mainApplication.getState() == org.cirqwizard.fx.State.DRILLING)
-            return context.getDrillingLayer();
+            return context.getPcbLayout().getDrillingLayer();
         if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_CONTOUR)
-            return context.getMillingLayer();
+            return context.getPcbLayout().getMillingLayer();
         if (mainApplication.getState() == org.cirqwizard.fx.State.DISPENSING)
-            return context.getSolderPasteLayer();
+            return context.getPcbLayout().getSolderPasteLayer();
         return null;
     }
 
@@ -146,12 +146,12 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 {
                     InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
                     int diameter = toolDiameter.getValue();
-                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter, settings.getAdditionalPasses().getValue(),
+                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(mainApplication.getState(), context.getPcbLayout().getAngle(), diameter, settings.getAdditionalPasses().getValue(),
                             settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
                     ToolpathsCache cache = null;
                     try
                     {
-                        cache = ToolpathsPersistor.loadFromFile(context.getFileName() + ".tmp");
+                        cache = ToolpathsPersistor.loadFromFile(context.getPcbLayout().getFileName() + ".tmp");
                     }
                     catch (ToolpathPersistingException e)
                     {
@@ -159,7 +159,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     }
 
                     TraceLayer traceLayer = (TraceLayer) layer;
-                    if (cache != null && cache.hasValidData(context.getFile().lastModified()))
+                    if (cache != null && cache.hasValidData(context.getPcbLayout().getFile().lastModified()))
                     {
                         if (cache.getToolpaths(cacheKey) != null)
                         {
@@ -277,11 +277,11 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     traceLayer.setToolpaths(toolpaths);
 
                     cache.setToolpaths(cacheKey, toolpaths);
-                    cache.setLastModified(mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION ? context.getTopLayerModificationDate() : context.getBottomLayerModificationDate());
+                    cache.setLastModified(mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION ? context.getPcbLayout().getTopLayerModificationDate() : context.getPcbLayout().getBottomLayerModificationDate());
 
                     try
                     {
-                        ToolpathsPersistor.saveToFile(cache, context.getFileName()  + ".tmp");
+                        ToolpathsPersistor.saveToFile(cache, context.getPcbLayout().getFileName()  + ".tmp");
                     }
                     catch (ToolpathPersistingException e)
                     {

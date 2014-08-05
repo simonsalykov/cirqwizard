@@ -48,11 +48,11 @@ public class MessageController extends SceneController
                 text.setText("Make sure the milling cutter is fully inserted.");
             break;
             case INSERTING_DRILL:
-                header.setText("Insert drill: " + context.getDrillDiameters().get(context.getCurrentDrill()) + "mm");
+                header.setText("Insert drill: " + context.getPcbLayout().getDrillDiameters().get(context.getCurrentDrill()) + "mm");
                 text.setText("Insert drill");
             break;
             case INSERTING_CUTTER_FOR_CONTOUR:
-                header.setText("Insert contour cutter: " + context.getContourMillDiameter() + "mm");
+                header.setText("Insert contour cutter: " + context.getPcbLayout().getContourMillDiameter() + "mm");
                 text.setText("Insert contour cutter");
             break;
             case INSERTING_SYRINGE:

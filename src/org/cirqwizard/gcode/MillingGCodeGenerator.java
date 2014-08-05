@@ -46,7 +46,7 @@ public class MillingGCodeGenerator
         postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOn(str, spindleSpeed);
         Point prevLocation = null;
-        for (Toolpath toolpath : context.getMillingLayer().getToolpaths())
+        for (Toolpath toolpath : context.getPcbLayout().getMillingLayer().getToolpaths())
         {
             if (!toolpath.isEnabled())
                 continue;

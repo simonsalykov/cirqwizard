@@ -292,7 +292,7 @@ public class MachiningController extends SceneController implements Initializabl
         else if (state == State.DRILLING)
         {
             toolDiameter.setDisable(true);
-            toolDiameter.setText(context.getDrillDiameters().get(context.getCurrentDrill()));
+            toolDiameter.setText(context.getPcbLayout().getDrillDiameters().get(context.getCurrentDrill()));
             DrillingSettings settings = SettingsFactory.getDrillingSettings();
             feed.setIntegerValue(settings.getFeed().getValue());
 
@@ -309,7 +309,7 @@ public class MachiningController extends SceneController implements Initializabl
         else if (state == State.MILLING_CONTOUR)
         {
             toolDiameter.setDisable(true);
-            toolDiameter.setText(context.getContourMillDiameter());
+            toolDiameter.setText(context.getPcbLayout().getContourMillDiameter());
             ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
             feed.setIntegerValue(settings.getFeedXY().getValue());
 
@@ -395,11 +395,11 @@ public class MachiningController extends SceneController implements Initializabl
         Context context = getMainApplication().getContext();
         switch (getMainApplication().getState())
         {
-            case MILLING_TOP_INSULATION: return context.getTopTracesLayer();
-            case MILLING_BOTTOM_INSULATION: return context.getBottomTracesLayer();
-            case DRILLING: return context.getDrillingLayer();
-            case MILLING_CONTOUR: return context.getMillingLayer();
-            case DISPENSING: return context.getSolderPasteLayer();
+            case MILLING_TOP_INSULATION: return context.getPcbLayout().getTopTracesLayer();
+            case MILLING_BOTTOM_INSULATION: return context.getPcbLayout().getBottomTracesLayer();
+            case DRILLING: return context.getPcbLayout().getDrillingLayer();
+            case MILLING_CONTOUR: return context.getPcbLayout().getMillingLayer();
+            case DISPENSING: return context.getPcbLayout().getSolderPasteLayer();
         }
         return null;
     }
