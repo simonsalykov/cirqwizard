@@ -26,10 +26,4 @@ public enum  DistanceUnit
         return name;
     }
 
-    @Override
-    public String toString()
-    {
-        return getName();
-    }
-
 }

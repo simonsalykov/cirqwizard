@@ -45,14 +45,13 @@ public class MainApplication extends Application
 
     private State state;
     private Context context;
-    private Settings settings;
     private SerialInterface serialInterface;
     private CNCController cncController;
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        settings = new Settings(Preferences.userRoot().node("org.cirqwizard"));
+        new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
         state = State.WELCOME;
         context = new Context();
@@ -130,11 +129,6 @@ public class MainApplication extends Application
     public Context getContext()
     {
         return context;
-    }
-
-    public Settings getSettings()
-    {
-        return settings;
     }
 
     public SceneController getSceneController(SceneEnum scene)

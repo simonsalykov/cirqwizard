@@ -14,7 +14,7 @@ public class ApplicationValues extends SettingsGroup
     private UserPreference<Integer> g54Y = new UserPreference<>();
 
     @PersistentPreference
-    private UserPreference<PCBSize> pcbSize = new UserPreference<>();
+    private UserPreference<PCBSize> pcbSize = new UserPreference<PCBSize>().setInstantiator(PCBSize::valueOf);
 
     @PersistentPreference
     private UserPreference<Integer> scrapPlaceX = new UserPreference<>();

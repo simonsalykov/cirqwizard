@@ -15,10 +15,10 @@ public class ApplicationSettings extends SettingsGroup
             Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.ALL).setInstantiator(Level::parse);
 
     @PersistentPreference
-    private UserPreference<Integer> excellonIntegerPlaces = new UserPreference<>("Excellon integer places", 2, "");
+    private UserPreference<Integer> excellonIntegerPlaces = new UserPreference<>("Excellon integer places", 2, "", PreferenceType.INTEGER);
 
     @PersistentPreference
-    private UserPreference<Integer> excellonDecimalPlaces = new UserPreference<>("Excellon decimal places", 4, "");
+    private UserPreference<Integer> excellonDecimalPlaces = new UserPreference<>("Excellon decimal places", 4, "", PreferenceType.INTEGER);
 
     @PersistentPreference
     private UserPreference<DistanceUnit> excellonUnits = new UserPreference<>("Excellon units", DistanceUnit.INCHES, "").setItems(DistanceUnit.values()).
