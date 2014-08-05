@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.Settings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -21,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import org.cirqwizard.settings.SettingsFactory;
 
 
 public class JobSelectionController extends SceneController
@@ -44,7 +46,8 @@ public class JobSelectionController extends SceneController
     private String getEmptySettings()
     {
         Settings settings = getMainApplication().getSettings();
-        
+        InsulationMillingSettings insulationMillingSettings = SettingsFactory.getInsulationMillingSettings();
+
         if (settings.getMachineYDiff() == null)
             return "You need to specify a value in settings for parameter Y axis difference (in Machine  pane)";
         if (settings.getMachineReferencePinX() == null)
@@ -60,21 +63,21 @@ public class JobSelectionController extends SceneController
 
         if (topTraces.isSelected() || bottomTraces.isSelected())
         {
-            if (settings.getDefaultTraceToolDiameter() == null)
+            if (insulationMillingSettings.getToolDiameter().getValue() == null)
                 return "You need to specify a value in settings for parameter Tool diameter (in Insulation milling pane)";
-            if (settings.getDefaultTracesFeedXY() == null)
+            if (insulationMillingSettings.getFeedXY().getValue() == null)
                 return "You need to specify a value in settings for parameter Feed XY (in Insulation milling pane)";
-            if (settings.getDefaultTracesFeedZ() == null)
+            if (insulationMillingSettings.getFeedZ().getValue() == null)
                 return "You need to specify a value in settings for parameter Feed Z (in Insulation milling pane)";
-            if (settings.getDefaultTracesSpeed().trim().isEmpty())
+            if (insulationMillingSettings.getSpeed().getValue() == null)
                 return "You need to specify a value in settings for parameter Speed (in Insulation milling pane)";
-            if (settings.getDefaultTracesClearance() == null)
+            if (insulationMillingSettings.getClearance().getValue() == null)
                 return "You need to specify a value in settings for parameter Clearance (in Insulation milling pane)";
-            if (settings.getDefaultTracesSafetyHeight() == null)
+            if (insulationMillingSettings.getSafetyHeight().getValue() == null)
                 return "You need to specify a value in settings for parameter Safety height (in Insulation milling pane)";
-            if (settings.getDefaultTracesZOffset() == null)
+            if (insulationMillingSettings.getZOffset().getValue() == null)
                 return "You need to specify a value in settings for parameter Z offset (in Insulation milling pane)";
-            if (settings.getDefaultTracesWorkingHeight() == null)
+            if (insulationMillingSettings.getWorkingHeight().getValue() == null)
                 return "You need to specify a value in settings for parameter Working height (in Insulation milling pane)";
         }
 

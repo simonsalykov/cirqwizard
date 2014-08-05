@@ -43,7 +43,9 @@ import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
+import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
@@ -271,22 +273,24 @@ public class MachiningController extends SceneController implements Initializabl
 
         stopGenerationButton.setDisable(false);
 
+        InsulationMillingSettings insulationMillingSettings = SettingsFactory.getInsulationMillingSettings();
+
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
             toolDiameter.setDisable(false);
-            toolDiameter.setIntegerValue(settings.getDefaultTraceToolDiameter());
+            toolDiameter.setIntegerValue(insulationMillingSettings.getToolDiameter().getValue());
             feed.setIntegerValue(settings.getDefaultTracesFeedXY());
 
-            clearance.setIntegerValue(settings.getDefaultTracesClearance());
-            safetyHeight.setIntegerValue(settings.getDefaultTracesSafetyHeight());
+            clearance.setIntegerValue(insulationMillingSettings.getClearance().getValue());
+            safetyHeight.setIntegerValue(insulationMillingSettings.getSafetyHeight().getValue());
             zFeed.setDisable(false);
-            zFeed.setIntegerValue(settings.getDefaultTracesFeedZ());
+            zFeed.setIntegerValue(insulationMillingSettings.getFeedZ().getValue());
 
             pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
             pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * insulationMillingSettings.getFeedArcs().getValue() / 100);
         }
         else if (state == State.DRILLING)
         {

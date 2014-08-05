@@ -17,9 +17,15 @@ public class UserPreference<T>
 
     public UserPreference(String userName, T defaultValue, String units)
     {
+        this(userName, defaultValue, units, null);
+    }
+
+    public UserPreference(String userName, T defaultValue, String units, PreferenceType type)
+    {
         this.userName = userName;
         this.defaultValue = defaultValue;
         this.units = units;
+        this.type = type;
     }
 
     public String getUserName()

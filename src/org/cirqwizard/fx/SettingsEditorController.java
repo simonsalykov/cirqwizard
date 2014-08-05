@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -73,7 +74,7 @@ public class SettingsEditorController extends SceneController implements Initial
                         container = new GridPane();
                         container.setHgap(10);
                         container.setVgap(10);
-                        settingsPane.add(container, 0, rootRow.get(), 2, 1);
+                        settingsPane.add(container, 0, rootRow.get(), 3, 1);
                         rootRow.setValue(rootRow.get() + 1);
                         container.getStyleClass().add("settings-group");
                         Label header = new Label(name);
@@ -125,6 +126,7 @@ public class SettingsEditorController extends SceneController implements Initial
                     p.setValue(Integer.valueOf(newV));
                     group.save();
                 });
+                ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
             }
             else
             {
@@ -135,6 +137,7 @@ public class SettingsEditorController extends SceneController implements Initial
                     p.setValue(newV);
                     group.save();
                 });
+                ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
             }
         }
         else if (String.class.equals(clazz))
@@ -145,6 +148,7 @@ public class SettingsEditorController extends SceneController implements Initial
                 p.setValue(newV);
                 group.save();
             });
+            ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
         }
         else if (Boolean.class.equals(clazz))
         {
