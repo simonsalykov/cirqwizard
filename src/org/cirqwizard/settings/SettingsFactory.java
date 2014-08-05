@@ -12,13 +12,14 @@ public class SettingsFactory
 
     public static InsulationMillingSettings getInsulationMillingSettings()
     {
+        insulationMillingSettings.load();
         return insulationMillingSettings;
     }
 
     public static List<SettingsGroup> getAllGroups()
     {
         ArrayList<SettingsGroup> groups = new ArrayList<>();
-        groups.add(insulationMillingSettings);
+        groups.add(getInsulationMillingSettings());
         return groups;
     }
 }

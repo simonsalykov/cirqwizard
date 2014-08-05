@@ -6,7 +6,12 @@ package org.cirqwizard.settings;
 public class InsulationMillingSettings extends SettingsGroup
 {
     @PersistentPreference
-    private UserPreference<Integer> toolDiameter = new UserPreference<>("Tool diameter", 300, "mm");
+    @PreferenceGroup(name = "Tool")
+    private UserPreference<Integer> toolDiameter = new UserPreference<>("Diameter", 300, "mm");
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Tool")
+    private UserPreference<Integer> speed = new UserPreference<>("Speed", 1390, "µs").setType(PreferenceType.INTEGER);
 
     @PersistentPreference
     @PreferenceGroup(name = "Feed")
@@ -21,18 +26,19 @@ public class InsulationMillingSettings extends SettingsGroup
     private UserPreference<Integer> feedArcs = new UserPreference<>("Arcs", 50, "%").setType(PreferenceType.PERCENT);
 
     @PersistentPreference
-    private UserPreference<Integer> speed = new UserPreference<>("Speed", 1390, "µs").setType(PreferenceType.INTEGER);
-
-    @PersistentPreference
+    @PreferenceGroup(name = "Heights")
     private UserPreference<Integer> clearance = new UserPreference<>("Clearance", 5000, "mm");
 
     @PersistentPreference
+    @PreferenceGroup(name = "Heights")
     private UserPreference<Integer> safetyHeight = new UserPreference<>("Safety height", 2000, "mm");
 
     @PersistentPreference
+    @PreferenceGroup(name = "Heights")
     private UserPreference<Integer> zOffset = new UserPreference<>("Z offset", null, "mm");
 
     @PersistentPreference
+    @PreferenceGroup(name = "Heights")
     private UserPreference<Integer> workingHeight = new UserPreference<>("Working height", -50, "mm");
 
     @PersistentPreference
