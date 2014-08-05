@@ -129,7 +129,7 @@ public class RTPostprocessor implements Postprocessor
         this.feed = feed;
     }
 
-    public void spindleOn(StringBuilder str, String speed)
+    public void spindleOn(StringBuilder str, int speed)
     {
         str.append("S").append(speed).append(" M3\n");
         str.append("G4 P2.5\n");

@@ -34,7 +34,9 @@ import org.cirqwizard.fx.SceneController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
+import org.cirqwizard.settings.PPSettings;
 import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.net.URL;
@@ -217,16 +219,16 @@ public class ComponentPlacementController extends SceneController implements Ini
 
     public void pickup()
     {
-        Settings settings = getMainApplication().getSettings();
+        PPSettings settings = SettingsFactory.getPpSettings();
         if (!atPickupLocation)
         {
             getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(),
                     getMainApplication().getSettings().getPPMoveHeight());
             rotatePP(0);
         }
-        getMainApplication().getCNCController().pickup(settings.getPPPickupHeight(), settings.getPPMoveHeight());
+        getMainApplication().getCNCController().pickup(settings.getPickupHeight().getValue(), settings.getMoveHeight().getValue());
         manualZ.setDisable(false);
-        manualZ.setIntegerValue(settings.getPPMoveHeight());
+        manualZ.setIntegerValue(settings.getMoveHeight().getValue());
         gotoTargetButton.setDisable(false);
     }
 

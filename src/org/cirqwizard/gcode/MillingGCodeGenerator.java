@@ -35,7 +35,7 @@ public class MillingGCodeGenerator
     }
 
     public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,
-                           int millingDepth, String spindleSpeed)
+                           int millingDepth, int spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);

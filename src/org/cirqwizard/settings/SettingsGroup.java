@@ -82,6 +82,29 @@ public abstract class SettingsGroup
         }
     }
 
+    public boolean validate()
+    {
+        try
+        {
+            for (Field f : getClass().getDeclaredFields())
+            {
+                if (!f.isAnnotationPresent(PersistentPreference.class))
+                    continue;
+
+                Class argumentClass = (Class) ((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
+                UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), getClass()).getReadMethod().invoke(this);
+                if (p.getValue() == null && p.getDefaultValue() == null)
+                    return false;
+            }
+        }
+        catch (IllegalAccessException | InvocationTargetException | IntrospectionException e)
+        {
+            LoggerFactory.logException("Error saving user preferences", e);
+        }
+
+        return true;
+    }
+
     @Override
     public String toString()
     {

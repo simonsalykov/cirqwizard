@@ -43,9 +43,7 @@ import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
-import org.cirqwizard.settings.InsulationMillingSettings;
-import org.cirqwizard.settings.Settings;
-import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.*;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
@@ -445,38 +443,41 @@ public class MachiningController extends SceneController implements Initializabl
     private String generateGCode()
     {
         State state = getMainApplication().getState();
-        Settings settings = getMainApplication().getSettings();
 
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
-            int arcFeed = (feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
-            TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state, settings);
+            InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+            int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
+            TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state);
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultTracesWorkingHeight(),
-                    settings.getDefaultTracesSpeed());
+                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+                    settings.getSpeed().getValue());
 
         }
         else if (state == State.DRILLING)
         {
+            DrillingSettings settings = SettingsFactory.getDrillingSettings();
             DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                    safetyHeight.getIntegerValue(), settings.getDefaultDrillingWorkingHeight(),
-                    settings.getDefaultDrillingSpeed());
+                    safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+                    settings.getSpeed().getValue());
         }
         else if (state == State.MILLING_CONTOUR)
         {
-            int arcFeed = (feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
+            ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+            int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
             MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultContourWorkingHeight(),
-                    settings.getDefaultContourSpeed());
+                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+                    settings.getSpeed().getValue());
         }
         else if (state == State.DISPENSING)
         {
+            DispensingSettings settings = SettingsFactory.getDispensingSettings();
             PasteGCodeGenerator generator = new PasteGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), settings.getDefaultDispensingPrefeedPause(),
-                    settings.getDispensingPostfeedPause(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                    settings.getDefaultDispensingWorkingHeight());
+            return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
+                    settings.getPostFeedPause().getValue(), feed.getIntegerValue(), clearance.getIntegerValue(),
+                    settings.getWorkingHeight().getValue());
         }
 
         return null;

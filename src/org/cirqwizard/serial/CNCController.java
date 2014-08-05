@@ -127,7 +127,7 @@ public class CNCController
     }
 
     public void testCut(int x, int y, int z, int clearance, int safetyHeight, int workingHeight, int xyFeed, int zFeed,
-                        String spindleSpeed, boolean horizontalDirection)
+                        int spindleSpeed, boolean horizontalDirection)
     {
         StringBuilder str  = new StringBuilder();
         Postprocessor post = PostProcessorFactory.getPostProcessor();

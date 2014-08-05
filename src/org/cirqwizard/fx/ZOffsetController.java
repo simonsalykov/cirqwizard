@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.Settings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -24,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TitledPane;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -164,10 +166,10 @@ public class ZOffsetController extends SceneController implements Initializable
     {
         if (testButton.isDisabled())
             return;
-        Settings settings = getMainApplication().getSettings();
+        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         getMainApplication().getCNCController().testCut(scrapPlaceX.getIntegerValue(), scrapPlaceY.getIntegerValue(), automaticZOffset.getIntegerValue(),
-                settings.getDefaultTracesClearance(), settings.getDefaultTracesSafetyHeight(), settings.getDefaultTracesWorkingHeight(),
-                settings.getDefaultTracesFeedXY(), settings.getDefaultTracesFeedZ(), settings.getDefaultTracesSpeed(), horizontalTestCut.isSelected());
+                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
+                settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), settings.getSpeed().getValue(), horizontalTestCut.isSelected());
     }
 
     public void lowerAndTest()

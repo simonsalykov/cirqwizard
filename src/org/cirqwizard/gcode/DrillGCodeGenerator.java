@@ -34,7 +34,7 @@ public class DrillGCodeGenerator
     }
 
     public String generate(Postprocessor postprocessor, int feed, int clearance, int safetyHeight,
-                           int drillingDepth, String spindleSpeed)
+                           int drillingDepth, int spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
