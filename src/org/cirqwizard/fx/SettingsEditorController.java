@@ -10,6 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.*;
 
 import java.beans.IntrospectionException;
@@ -18,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -99,17 +102,9 @@ public class SettingsEditorController extends SceneController implements Initial
                 row.setValue(row.get() + 1);
             }
         }
-        catch (IllegalAccessException e)
+        catch (IllegalAccessException | IntrospectionException | InvocationTargetException e)
         {
-            e.printStackTrace();
-        }
-        catch (IntrospectionException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
+            LoggerFactory.logException("Error accessing settings group", e);
         }
     }
 
@@ -140,7 +135,7 @@ public class SettingsEditorController extends SceneController implements Initial
                 ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
             }
         }
-        else if (String.class.equals(clazz))
+        else if (p.getType() == null && String.class.equals(clazz))
         {
             editor = new TextField(p.getValue() == null ? null : (String) p.getValue());
             ((TextField)editor).textProperty().addListener((v, oldV, newV) ->
@@ -162,13 +157,24 @@ public class SettingsEditorController extends SceneController implements Initial
         }
         else
         {
-            editor = new ComboBox(FXCollections.observableArrayList(p.getItems()));
+            List items = p.getItems();
+            if (p.getType() == PreferenceType.SERIAL_PORT)
+                items = SerialInterfaceFactory.getSerialInterfaces(getMainApplication().getSerialInterface());
+            editor = new ComboBox(FXCollections.observableArrayList(items));
             ((ComboBox)editor).getSelectionModel().select(p.getValue());
             ((ComboBox)editor).getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
             {
                 p.setValue(newV);
                 group.save();
             });
+            if (p.getType() == PreferenceType.SERIAL_PORT)
+            {
+                ((ComboBox)editor).getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
+                {
+                    getMainApplication().connectSerialPort((String) newV);
+                    group.save();
+                });
+            }
             editor.setPrefWidth(150);
         }
         if (editor instanceof TextField)

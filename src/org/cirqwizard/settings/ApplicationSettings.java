@@ -8,6 +8,9 @@ import java.util.logging.Level;
 public class ApplicationSettings extends SettingsGroup
 {
     @PersistentPreference
+    private UserPreference<String> serialPort = new UserPreference<>("Serial port", null, "", PreferenceType.SERIAL_PORT);
+
+    @PersistentPreference
     private UserPreference<Level> logLevel = new UserPreference<>("Log level", Level.INFO, "").setItems(Level.OFF, Level.SEVERE, Level.WARNING, Level.INFO,
             Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.ALL).setInstantiator(Level::parse);
 
@@ -37,6 +40,16 @@ public class ApplicationSettings extends SettingsGroup
     public String getPreferencesPrefix()
     {
         return "application";
+    }
+
+    public UserPreference<String> getSerialPort()
+    {
+        return serialPort;
+    }
+
+    public void setSerialPort(UserPreference<String> serialPort)
+    {
+        this.serialPort = serialPort;
     }
 
     public UserPreference<Level> getLogLevel()

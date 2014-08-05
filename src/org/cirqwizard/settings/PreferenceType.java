@@ -5,5 +5,5 @@ package org.cirqwizard.settings;
  */
 public enum PreferenceType
 {
-    INTEGER, PERCENT, COMBO_BOX;
+    INTEGER, PERCENT, COMBO_BOX, SERIAL_PORT;
 }

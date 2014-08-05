@@ -56,7 +56,7 @@ public class MainApplication extends Application
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
         state = State.WELCOME;
         context = new Context();
-        connectSerialPort(settings.getSerialPort());
+        connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
         for (SceneEnum s : SceneEnum.values())
             controllers.put(s, loadSceneController(s.getName()));
         for (Dialog d : Dialog.values())
