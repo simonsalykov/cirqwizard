@@ -32,7 +32,7 @@ import org.cirqwizard.generation.optimizer.Optimizer;
 import org.cirqwizard.generation.optimizer.TimeEstimator;
 import org.cirqwizard.layers.*;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.*;
 import org.cirqwizard.toolpath.*;
 
 import java.text.DecimalFormat;
@@ -141,14 +141,13 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                 generationStageProperty.unbind();
                 estimatedMachiningTimeProperty.unbind();
 
-                Settings settings = mainApplication.getSettings();
-
                 Layer layer = getLayer();
                 if (layer instanceof TraceLayer)
                 {
+                    InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
                     int diameter = toolDiameter.getValue();
-                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter, settings.getTracesAdditionalPasses(),
-                            settings.getTracesAdditionalPassesOverlap(), settings.isTracesAdditionalPassesPadsOnly());
+                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(mainApplication.getState(), context.getAngle(), diameter, settings.getAdditionalPasses().getValue(),
+                            settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
                     ToolpathsCache cache = null;
                     try
                     {
@@ -172,8 +171,9 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                         cache = new ToolpathsCache();
 
                     final ToolpathGenerator generator = new ToolpathGenerator();
+                    ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
                     generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                            diameter / 2, diameter, traceLayer.getElements(), settings.getProcessingThreads());
+                            diameter / 2, diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue());
                     Platform.runLater(new Runnable()
                     {
                         @Override
@@ -191,7 +191,7 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                     final int mergeTolerance = toolDiameter.intValue() / 4;
                     toolpaths = new ToolpathMerger(toolpaths, mergeTolerance).merge();
 
-                    if (!settings.isTracesAdditionalPassesPadsOnly())
+                    if (!settings.getAdditionalPassesPadsOnly().getValue())
                     {
                         Platform.runLater(new Runnable()
                         {
@@ -201,22 +201,22 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                                 generationStageProperty.setValue("Generating additional passes...");
                             }
                         });
-                        for (int i = 0 ; i < settings.getTracesAdditionalPasses(); i++)
+                        for (int i = 0 ; i < settings.getAdditionalPasses().getValue(); i++)
                         {
-                            int offset = diameter * (100 - settings.getTracesAdditionalPassesOverlap()) / 100;
+                            int offset = diameter * (100 - settings.getAdditionalPassesOverlap().getValue()) / 100;
                             generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                                    diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), settings.getProcessingThreads());
+                                    diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue());
                             List<Toolpath> additionalToolpaths = generator.generate();
                             if (additionalToolpaths == null || additionalToolpaths.size() == 0)
                                 continue;
                             toolpaths.addAll(new ToolpathMerger(additionalToolpaths, mergeTolerance).merge());
                         }
                     }
-                    else if (settings.getTracesAdditionalPasses() > 0)
+                    else if (settings.getAdditionalPasses().getValue() > 0)
                     {
                         final AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1,
-                                mainApplication.getContext().getBoardHeight() + 1, settings.getTracesAdditionalPasses(),
-                                settings.getTracesAdditionalPassesOverlap(), diameter, settings.getProcessingThreads(), traceLayer.getElements());
+                                mainApplication.getContext().getBoardHeight() + 1, settings.getAdditionalPasses().getValue(),
+                                settings.getAdditionalPassesOverlap().getValue(), diameter, applicationSettings.getProcessingThreads().getValue(), traceLayer.getElements());
                         Platform.runLater(new Runnable()
                         {
                             @Override
@@ -232,9 +232,9 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 
-                    final Optimizer optimizer = new Optimizer(chains, feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
-                            arcFeedProperty.doubleValue() / Settings.RESOLUTION / 60, clearanceProperty.doubleValue() / Settings.RESOLUTION,
-                            safetyHeightProperty.doubleValue() / Settings.RESOLUTION, mergeTolerance);
+                    final Optimizer optimizer = new Optimizer(chains, feedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, zFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60,
+                            arcFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, clearanceProperty.doubleValue() / ApplicationConstants.RESOLUTION,
+                            safetyHeightProperty.doubleValue() / ApplicationConstants.RESOLUTION, mergeTolerance);
                     Platform.runLater(new Runnable()
                     {
                         @Override
@@ -258,9 +258,9 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
                                 public String call() throws Exception
                                 {
                                     long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
-                                            feedProperty.doubleValue() / Settings.RESOLUTION / 60, zFeedProperty.doubleValue() / Settings.RESOLUTION / 60,
-                                            arcFeedProperty.doubleValue() / Settings.RESOLUTION / 60, clearanceProperty.doubleValue() / Settings.RESOLUTION,
-                                            safetyHeightProperty.doubleValue() / Settings.RESOLUTION,
+                                            feedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, zFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60,
+                                            arcFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, clearanceProperty.doubleValue() / ApplicationConstants.RESOLUTION,
+                                            safetyHeightProperty.doubleValue() / ApplicationConstants.RESOLUTION,
                                             true, mergeTolerance);
                                     String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
                                             ":" + format.format(totalDuration % 60);

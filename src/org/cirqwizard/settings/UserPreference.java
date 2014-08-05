@@ -1,5 +1,8 @@
 package org.cirqwizard.settings;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by simon on 04/08/14.
  */
@@ -10,6 +13,13 @@ public class UserPreference<T>
     private T value;
     private String units;
     private PreferenceType type;
+    private List<T> items;
+    private Instantiator instantiator;
+
+    public static interface Instantiator<T>
+    {
+        public T fromString(String str);
+    }
 
     public UserPreference()
     {
@@ -76,6 +86,33 @@ public class UserPreference<T>
     public UserPreference<T> setType(PreferenceType type)
     {
         this.type = type;
+        return this;
+    }
+
+    public List<T> getItems()
+    {
+        return items;
+    }
+
+    public void setItems(List<T> items)
+    {
+        this.items = items;
+    }
+
+    public UserPreference<T> setItems(T... items)
+    {
+        this.items = Arrays.asList(items);
+        return this;
+    }
+
+    public Instantiator getInstantiator()
+    {
+        return instantiator;
+    }
+
+    public UserPreference<T> setInstantiator(Instantiator<T> instantiator)
+    {
+        this.instantiator = instantiator;
         return this;
     }
 }

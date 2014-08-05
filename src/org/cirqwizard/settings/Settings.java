@@ -28,17 +28,6 @@ import java.util.prefs.Preferences;
 
 public class Settings
 {
-    public static final int RESOLUTION = 1000;
-    public static final int ROUNDING = 30;
-
-    private final static int X_RAPIDS = 1_500_000;
-    private final static int Y_RAPIDS = 1_000_000;
-    private final static int Z_RAPIDS = 1_000_000;
-    private final static int X_RAPID_ACCELERATION = 100_000;
-    private final static int Y_RAPID_ACCELERATION = 50_000;
-    private final static int Z_RAPID_ACCELERATION = 50_000;
-    private final static int FEED_ACCELERATION = 50_000;
-    private final static int ARC_FEED = 400_000;
 
     private static class PropertyNames
     {
@@ -111,50 +100,50 @@ public class Settings
 
     private static class DefaultValues
     {
-        private static final int MACHINE_SMALL_PCB_WIDTH = 65 * RESOLUTION;
-        private static final int MACHINE_LARGE_PCB_WIDTH = 90 * RESOLUTION;
-        private static final int MACHINE_FAR_AWAY_Y = 220 * RESOLUTION;
+        private static final int MACHINE_SMALL_PCB_WIDTH = 65 * ApplicationConstants.RESOLUTION;
+        private static final int MACHINE_LARGE_PCB_WIDTH = 90 * ApplicationConstants.RESOLUTION;
+        private static final int MACHINE_FAR_AWAY_Y = 220 * ApplicationConstants.RESOLUTION;
 
         private static final String LOGGER_LOG_LEVEL = "INFO";
         private static final int PROCESSING_THREADS = Runtime.getRuntime().availableProcessors();
 
-        private static final int TRACES_TOOL_DIAMETER = (int)(0.3 * RESOLUTION);
-        private static final int TRACES_FEED_XY = 300 * RESOLUTION;
-        private static final int TRACES_FEED_Z = 200 * RESOLUTION;
+        private static final int TRACES_TOOL_DIAMETER = (int)(0.3 * ApplicationConstants.RESOLUTION);
+        private static final int TRACES_FEED_XY = 300 * ApplicationConstants.RESOLUTION;
+        private static final int TRACES_FEED_Z = 200 * ApplicationConstants.RESOLUTION;
         private static final int TRACES_FEED_ARC = 50;
         private static final String TRACES_SPEED = "1390";
-        private static final int TRACES_CLEARANCE = 5 * RESOLUTION;
-        private static final int TRACES_SAFETY_HEIGHT = 2 * RESOLUTION;
-        private static final int TRACES_WORKING_HEIGHT = (int)(-0.05 * RESOLUTION);
+        private static final int TRACES_CLEARANCE = 5 * ApplicationConstants.RESOLUTION;
+        private static final int TRACES_SAFETY_HEIGHT = 2 * ApplicationConstants.RESOLUTION;
+        private static final int TRACES_WORKING_HEIGHT = (int)(-0.05 * ApplicationConstants.RESOLUTION);
         private static final int TRACES_ADDITIONAL_PASSES = 0;
         private static final int TRACES_ADDITIONAL_PASSES_OVERLAP = 20;
         private static final int TRACES_ADDITIONAL_PASSES_PADS_ONLY = 1;
 
-        private static final int DRILLING_FEED = 200 * RESOLUTION;
+        private static final int DRILLING_FEED = 200 * ApplicationConstants.RESOLUTION;
         private static final String DRILLING_SPEED = "1390";
-        private static final int DRILLING_CLEARANCE = 5 * RESOLUTION;
-        private static final int DRILLING_SAFETY_HEIGHT = 2 * RESOLUTION;
-        private static final int DRILLING_WORKING_HEIGHT = (int)(-2.5 * RESOLUTION);
+        private static final int DRILLING_CLEARANCE = 5 * ApplicationConstants.RESOLUTION;
+        private static final int DRILLING_SAFETY_HEIGHT = 2 * ApplicationConstants.RESOLUTION;
+        private static final int DRILLING_WORKING_HEIGHT = (int)(-2.5 * ApplicationConstants.RESOLUTION);
 
-        private static final int CONTOUR_FEED_XY = 300 * RESOLUTION;
-        private static final int CONTOUR_FEED_Z = 200 * RESOLUTION;
+        private static final int CONTOUR_FEED_XY = 300 * ApplicationConstants.RESOLUTION;
+        private static final int CONTOUR_FEED_Z = 200 * ApplicationConstants.RESOLUTION;
         private static final int CONTOUR_FEED_ARC = 50;
         private static final String CONTOUR_SPEED = "1390";
-        private static final int CONTOUR_CLEARANCE = 5 * RESOLUTION;
-        private static final int CONTOUR_SAFETY_HEIGHT = 2 * RESOLUTION;
-        private static final int CONTOUR_WORKING_HEIGHT = -2 * RESOLUTION;
+        private static final int CONTOUR_CLEARANCE = 5 * ApplicationConstants.RESOLUTION;
+        private static final int CONTOUR_SAFETY_HEIGHT = 2 * ApplicationConstants.RESOLUTION;
+        private static final int CONTOUR_WORKING_HEIGHT = -2 * ApplicationConstants.RESOLUTION;
 
-        private static final int DISPENSING_NEEDLE_DIAMETER = (int)(0.4 * RESOLUTION);
-        private static final int DISPENSING_PREFEED_PAUSE = (int)(0.1 * RESOLUTION);
-        private static final int DISPENSING_POSTFEED_PAUSE = (int)(0.2 * RESOLUTION);
-        private static final int DISPENSING_FEED = 100 * RESOLUTION;
-        private static final int DISPENSING_CLEARANCE = 5 * RESOLUTION;
+        private static final int DISPENSING_NEEDLE_DIAMETER = (int)(0.4 * ApplicationConstants.RESOLUTION);
+        private static final int DISPENSING_PREFEED_PAUSE = (int)(0.1 * ApplicationConstants.RESOLUTION);
+        private static final int DISPENSING_POSTFEED_PAUSE = (int)(0.2 * ApplicationConstants.RESOLUTION);
+        private static final int DISPENSING_FEED = 100 * ApplicationConstants.RESOLUTION;
+        private static final int DISPENSING_CLEARANCE = 5 * ApplicationConstants.RESOLUTION;
         private static final int DISPENSING_WORKING_HEIGHT = 0;
-        private static final int DISPENSING_BLEEDING_DURATION = (int)(0.5 * RESOLUTION);
+        private static final int DISPENSING_BLEEDING_DURATION = (int)(0.5 * ApplicationConstants.RESOLUTION);
 
-        private static final int PP_PICKUP_HEIGHT = (int)(-14.2 * RESOLUTION);
-        private static final int PP_MOVE_HEIGHT = (int)(0.8 * RESOLUTION);
-        private static final int PP_ROTATION_FEED = 100 * RESOLUTION;
+        private static final int PP_PICKUP_HEIGHT = (int)(-14.2 * ApplicationConstants.RESOLUTION);
+        private static final int PP_MOVE_HEIGHT = (int)(0.8 * ApplicationConstants.RESOLUTION);
+        private static final int PP_ROTATION_FEED = 100 * ApplicationConstants.RESOLUTION;
 
         private static final int IMPORT_EXCELLON_INTEGER_PLACES = 2;
         private static final int IMPORT_EXCELLON_DECIMAL_PLACES = 4;
@@ -853,43 +842,4 @@ public class Settings
         flush();
     }
 
-    public static int getXRapids()
-    {
-        return X_RAPIDS;
-    }
-
-    public static int getYRapids()
-    {
-        return Y_RAPIDS;
-    }
-
-    public static int getZRapids()
-    {
-        return Z_RAPIDS;
-    }
-
-    public static int getXRapidAcceleration()
-    {
-        return X_RAPID_ACCELERATION;
-    }
-
-    public static int getYRapidAcceleration()
-    {
-        return Y_RAPID_ACCELERATION;
-    }
-
-    public static int getZRapidAcceleration()
-    {
-        return Z_RAPID_ACCELERATION;
-    }
-
-    public static int getFeedAcceleration()
-    {
-        return FEED_ACCELERATION;
-    }
-
-    public static int getArcFeed()
-    {
-        return ARC_FEED;
-    }
 }

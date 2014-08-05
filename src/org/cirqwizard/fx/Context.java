@@ -23,7 +23,7 @@ import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.pp.PPParser;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.*;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
 import java.io.File;
@@ -37,7 +37,6 @@ import java.util.List;
 
 public class Context
 {
-    private Settings settings;
     private File file;
     private boolean fileLoaded = false;
 
@@ -80,11 +79,6 @@ public class Context
     private Feeder feeder;
     private int feederRow;
     private Integer componentPitch;
-
-    public Context(Settings settings)
-    {
-        this.settings = settings;
-    }
 
     public void reset()
     {
@@ -217,7 +211,7 @@ public class Context
         else
         {
             millingLayer.generateToolpaths();
-            contourMillDiameter = drillFormat.format((double)((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter() / Settings.RESOLUTION);
+            contourMillDiameter = drillFormat.format((double)((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter() / ApplicationConstants.RESOLUTION);
         }
         contourSelected = millingLayer != null;
     }
@@ -227,7 +221,8 @@ public class Context
         drillingLayer = new DrillingLayer();
         try
         {
-            ExcellonParser parser = new ExcellonParser(settings, new FileReader(file));
+            ApplicationSettings settings = SettingsFactory.getApplicationSettings();
+            ExcellonParser parser = new ExcellonParser(settings.getExcellonIntegerPlaces().getValue(), settings.getExcellonDecimalPlaces().getValue(), new FileReader(file));
             drillingLayer.setDrillPoints(parser.parse());
         }
         catch (IOException | RuntimeException e)
@@ -240,7 +235,7 @@ public class Context
         {
             drillDiameters = new ArrayList<>();
             for (int diameter : drillingLayer.getDrillDiameters())
-                drillDiameters.add(drillFormat.format((double)diameter / Settings.RESOLUTION));
+                drillDiameters.add(drillFormat.format((double)diameter / ApplicationConstants.RESOLUTION));
         }
         drillingSelected = drillingLayer != null;
     }
@@ -250,7 +245,7 @@ public class Context
         componentsLayer = new ComponentsLayer();
         try
         {
-            PPParser parser = new PPParser(new FileReader(file), settings.getImportPPRegex());
+            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getApplicationSettings().getCentroidFileFormat().getValue());
             componentsLayer.setPoints(parser.parse());
             componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }
@@ -393,35 +388,41 @@ public class Context
 
     public PCBSize getPcbSize()
     {
-        return pcbSize == null ? settings.getPCBSize() : pcbSize;
+        return pcbSize == null ? SettingsFactory.getApplicationValues().getPcbSize().getValue() : pcbSize;
     }
 
     public void setPcbSize(PCBSize pcbSize)
     {
         this.pcbSize = pcbSize;
-        settings.setPCBSize(pcbSize);
+        ApplicationValues values = SettingsFactory.getApplicationValues();
+        values.getPcbSize().setValue(pcbSize);
+        values.save();
     }
 
     public Integer getG54X()
     {
-        return g54X != null ? g54X : settings.getG54X();
+        return g54X != null ? g54X : SettingsFactory.getApplicationValues().getG54X().getValue();
     }
 
     public void setG54X(Integer g54X)
     {
         this.g54X = g54X;
-        settings.setG54X(g54X);
+        ApplicationValues values = SettingsFactory.getApplicationValues();
+        values.getG54X().setValue(g54X);
+        values.save();
     }
 
     public Integer getG54Y()
     {
-        return g54Y != null ? g54Y : settings.getG54Y();
+        return g54Y != null ? g54Y : SettingsFactory.getApplicationValues().getG54Y().getValue();
     }
 
     public void setG54Y(Integer g54Y)
     {
         this.g54Y = g54Y;
-        settings.setG54Y(g54Y);
+        ApplicationValues values = SettingsFactory.getApplicationValues();
+        values.getG54Y().setValue(g54Y);
+        values.save();
     }
 
     public Integer getG54Z()

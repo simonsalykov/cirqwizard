@@ -21,10 +21,7 @@ import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.post.Postprocessor;
-import org.cirqwizard.settings.InsulationMillingSettings;
-import org.cirqwizard.settings.MachineSettings;
-import org.cirqwizard.settings.Settings;
-import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.*;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -81,8 +78,8 @@ public class TraceGCodeGenerator
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
             if (prevLocation == null ||
-                    Math.abs(prevLocation.getX() - curve.getFrom().getX()) > Settings.ROUNDING ||
-                    Math.abs(prevLocation.getY() - curve.getFrom().getY()) > Settings.ROUNDING)
+                    Math.abs(prevLocation.getX() - curve.getFrom().getX()) > ApplicationConstants.ROUNDING ||
+                    Math.abs(prevLocation.getY() - curve.getFrom().getY()) > ApplicationConstants.ROUNDING)
             {
                 postprocessor.rapid(str, null, null, clearance);
                 postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), clearance);

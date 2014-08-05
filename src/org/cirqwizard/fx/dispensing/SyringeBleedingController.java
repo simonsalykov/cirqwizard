@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import org.cirqwizard.fx.SceneController;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import org.cirqwizard.settings.SettingsFactory;
 
 
 public class SyringeBleedingController extends SceneController
@@ -39,6 +40,6 @@ public class SyringeBleedingController extends SceneController
 
     public void dispense()
     {
-        getMainApplication().getCNCController().dispensePaste(getMainApplication().getSettings().getDispensingBleedingDuration());
+        getMainApplication().getCNCController().dispensePaste(SettingsFactory.getDispensingSettings().getBleedingDuration().getValue());
     }
 }

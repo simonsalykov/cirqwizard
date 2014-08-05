@@ -14,6 +14,8 @@ public class SettingsFactory
     private static ContourMillingSettings contourMillingSettings = new ContourMillingSettings();
     private static DispensingSettings dispensingSettings = new DispensingSettings();
     private static PPSettings ppSettings = new PPSettings();
+    private static ApplicationSettings applicationSettings = new ApplicationSettings();
+    private static ApplicationValues applicationValues = new ApplicationValues();
 
     public static MachineSettings getMachineSettings()
     {
@@ -47,7 +49,20 @@ public class SettingsFactory
 
     public static PPSettings getPpSettings()
     {
+        ppSettings.load();
         return ppSettings;
+    }
+
+    public static ApplicationSettings getApplicationSettings()
+    {
+        applicationSettings.load();
+        return applicationSettings;
+    }
+
+    public static ApplicationValues getApplicationValues()
+    {
+        applicationValues.load();
+        return applicationValues;
     }
 
     public static List<SettingsGroup> getAllGroups()
@@ -59,6 +74,7 @@ public class SettingsFactory
         groups.add(getContourMillingSettings());
         groups.add(getDispensingSettings());
         groups.add(getPpSettings());
+        groups.add(getApplicationSettings());
         return groups;
     }
 }

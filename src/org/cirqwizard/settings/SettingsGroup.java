@@ -33,14 +33,7 @@ public abstract class SettingsGroup
                 if (p.getValue() == null)
                     prefs.remove(f.getName());
                 else
-                {
-                    if (Integer.class.equals(argumentClass))
-                        prefs.put(f.getName(), p.getValue().toString());
-                    else if (String.class.equals(argumentClass))
-                        prefs.put(f.getName(), (String) p.getValue());
-                    else if (Boolean.class.equals(argumentClass))
-                        prefs.put(f.getName(), p.getValue().toString());
-                }
+                    prefs.put(f.getName(), p.getValue().toString());
             }
             prefs.sync();
         }
@@ -73,6 +66,11 @@ public abstract class SettingsGroup
                 {
                     String v = prefs.get(f.getName(), null);
                     p.setValue(v == null ? p.getDefaultValue() : Boolean.valueOf(v));
+                }
+                else
+                {
+                    String v = prefs.get(f.getName(), null);
+                    p.setValue(v == null ? p.getDefaultValue() : p.getInstantiator().fromString(v));
                 }
             }
         }

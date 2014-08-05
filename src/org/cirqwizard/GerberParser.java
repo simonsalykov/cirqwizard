@@ -19,7 +19,7 @@ import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.*;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -41,8 +41,8 @@ public class GerberParser
     private Region region = null;
     private HashMap<Integer, Aperture> apertures = new HashMap<>();
 
-    private static final int MM_RATIO = 1 * Settings.RESOLUTION;
-    private static final int INCHES_RATIO = (int)(25.4 * Settings.RESOLUTION);
+    private static final int MM_RATIO = 1 * ApplicationConstants.RESOLUTION;
+    private static final int INCHES_RATIO = (int)(25.4 * ApplicationConstants.RESOLUTION);
     private int unitConversionRatio = MM_RATIO;
 
     private boolean omitLeadingZeros = true;

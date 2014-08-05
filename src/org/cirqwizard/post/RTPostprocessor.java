@@ -14,7 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.post;
 
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -70,7 +70,7 @@ public class RTPostprocessor implements Postprocessor
 
     private String formatCoordinate(int number)
     {
-        return format.format((double)number / Settings.RESOLUTION);
+        return format.format((double)number / ApplicationConstants.RESOLUTION);
     }
 
     public void rapid(StringBuilder str, Integer x, Integer y, Integer z)

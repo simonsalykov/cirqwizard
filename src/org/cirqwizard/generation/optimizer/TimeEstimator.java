@@ -18,7 +18,7 @@ import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -26,13 +26,13 @@ import java.util.List;
 
 public class TimeEstimator
 {
-    private final static double xRapids = (double)Settings.getXRapids() / Settings.RESOLUTION / 60;
-    private final static double yRapids = (double)Settings.getYRapids() / Settings.RESOLUTION / 60;
-    private final static double zRapids = (double)Settings.getZRapids() / Settings.RESOLUTION / 60;
-    private final static double xRapidAcceleration = (double)Settings.getXRapidAcceleration() / Settings.RESOLUTION;
-    private final static double yRapidAcceleration = (double)Settings.getYRapidAcceleration() / Settings.RESOLUTION;
-    private final static double zRapidAcceleration = (double)Settings.getZRapidAcceleration() / Settings.RESOLUTION;
-    private final static double feedAcceleration = (double) Settings.getFeedAcceleration() / Settings.RESOLUTION;
+    private final static double xRapids = (double) ApplicationConstants.getXRapids() / ApplicationConstants.RESOLUTION / 60;
+    private final static double yRapids = (double) ApplicationConstants.getYRapids() / ApplicationConstants.RESOLUTION / 60;
+    private final static double zRapids = (double) ApplicationConstants.getZRapids() / ApplicationConstants.RESOLUTION / 60;
+    private final static double xRapidAcceleration = (double) ApplicationConstants.getXRapidAcceleration() / ApplicationConstants.RESOLUTION;
+    private final static double yRapidAcceleration = (double) ApplicationConstants.getYRapidAcceleration() / ApplicationConstants.RESOLUTION;
+    private final static double zRapidAcceleration = (double) ApplicationConstants.getZRapidAcceleration() / ApplicationConstants.RESOLUTION;
+    private final static double feedAcceleration = (double) ApplicationConstants.getFeedAcceleration() / ApplicationConstants.RESOLUTION;
 
     public static double calculateTotalDuration(List<Toolpath> toolpaths, double feed, double zFeed, double arcFeed, double clearance, double safetyHeight, boolean includeFeed,
                                                 int mergeTolerance)
@@ -54,9 +54,9 @@ public class TimeEstimator
                 Curve curve = ((CuttingToolpath) t).getCurve();
                 if (currentLocation.distanceTo(curve.getFrom()) > mergeTolerance)
                 {
-                    double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / Settings.RESOLUTION,
+                    double xRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getX() - curve.getFrom().getX()) / ApplicationConstants.RESOLUTION,
                             xRapids, xRapidAcceleration);
-                    double yRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getY() - curve.getFrom().getY()) / Settings.RESOLUTION,
+                    double yRapidTime = calculatePathDuration((double)Math.abs(currentLocation.getY() - curve.getFrom().getY()) / ApplicationConstants.RESOLUTION,
                             yRapids, yRapidAcceleration);
                     totalTime += retractTime + Math.max(xRapidTime, yRapidTime) + descentToSafetyHeight + finalDescent;
                 }
@@ -66,12 +66,12 @@ public class TimeEstimator
                     if (curve instanceof Line)
                     {
                         Line l = (Line) curve;
-                        totalTime += calculatePathDuration(l.length() / Settings.RESOLUTION, feed, feedAcceleration);
+                        totalTime += calculatePathDuration(l.length() / ApplicationConstants.RESOLUTION, feed, feedAcceleration);
                     }
                     else if (curve instanceof Arc)
                     {
                         Arc arc = (Arc) curve;
-                        totalTime += calculatePathDuration(arc.getCircumreference() / Settings.RESOLUTION, arcFeed, feedAcceleration);
+                        totalTime += calculatePathDuration(arc.getCircumreference() / ApplicationConstants.RESOLUTION, arcFeed, feedAcceleration);
                     }
                 }
                 currentLocation = curve.getTo();

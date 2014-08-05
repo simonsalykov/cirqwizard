@@ -160,7 +160,19 @@ public class SettingsEditorController extends SceneController implements Initial
                 group.save();
             });
         }
-        editor.setPrefWidth(75);
+        else
+        {
+            editor = new ComboBox(FXCollections.observableArrayList(p.getItems()));
+            ((ComboBox)editor).getSelectionModel().select(p.getValue());
+            ((ComboBox)editor).getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
+            {
+                p.setValue(newV);
+                group.save();
+            });
+            editor.setPrefWidth(150);
+        }
+        if (editor instanceof TextField)
+            editor.setPrefWidth(75);
         return editor;
     }
 

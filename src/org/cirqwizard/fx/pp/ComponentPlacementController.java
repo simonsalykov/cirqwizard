@@ -34,8 +34,8 @@ import org.cirqwizard.fx.SceneController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
+import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
-import org.cirqwizard.settings.Settings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.PPPoint;
 
@@ -77,8 +77,8 @@ public class ComponentPlacementController extends SceneController implements Ini
     private ObservableList<String> componentNames = FXCollections.observableArrayList();
     private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
 
-    private static final int feederOffsetX = 10 * Settings.RESOLUTION;
-    private static final int feederOffsetY = -15 * Settings.RESOLUTION;
+    private static final int feederOffsetX = 10 * ApplicationConstants.RESOLUTION;
+    private static final int feederOffsetY = -15 * ApplicationConstants.RESOLUTION;
 
     private static final DecimalFormat coordinatesFormat = new DecimalFormat("0.00");
 
@@ -156,9 +156,9 @@ public class ComponentPlacementController extends SceneController implements Ini
         placementPane.setDisable(true);
         manualZ.setDisable(true);
 
-        int x = getMainApplication().getSettings().getMachineReferencePinX();
+        int x = SettingsFactory.getMachineSettings().getReferencePinX().getValue();
         pickupX.setIntegerValue(x + feederOffsetX + context.getComponentPitch() / 2);
-        int y = getMainApplication().getSettings().getMachineReferencePinY();
+        int y = SettingsFactory.getMachineSettings().getReferencePinY().getValue();
         pickupY.setIntegerValue(context.getFeeder().getYForRow(y + feederOffsetY, context.getFeederRow()));
 
         gotoTargetButton.setDisable(true);
@@ -204,31 +204,33 @@ public class ComponentPlacementController extends SceneController implements Ini
 
     private void rotatePP(int angle)
     {
-        getMainApplication().getCNCController().rotatePP(angle, getMainApplication().getSettings().getPPRotationFeed());
+        getMainApplication().getCNCController().rotatePP(angle, SettingsFactory.getPpSettings().getRotationFeed().getValue());
     }
 
     public void gotoPickup()
     {
+        Integer moveHeight = SettingsFactory.getPpSettings().getMoveHeight().getValue();
         getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(),
-                getMainApplication().getSettings().getPPMoveHeight());
+                moveHeight);
         rotatePP(0);
         manualZ.setDisable(false);
-        manualZ.setIntegerValue(getMainApplication().getSettings().getPPMoveHeight());
+        manualZ.setIntegerValue(moveHeight);
         atPickupLocation = true;
     }
 
     public void pickup()
     {
         PPSettings settings = SettingsFactory.getPpSettings();
+        Integer moveHeight = settings.getMoveHeight().getValue();
         if (!atPickupLocation)
         {
             getMainApplication().getCNCController().moveTo(pickupX.getIntegerValue(), pickupY.getIntegerValue(),
-                    getMainApplication().getSettings().getPPMoveHeight());
+                    moveHeight);
             rotatePP(0);
         }
-        getMainApplication().getCNCController().pickup(settings.getPickupHeight().getValue(), settings.getMoveHeight().getValue());
+        getMainApplication().getCNCController().pickup(settings.getPickupHeight().getValue(), moveHeight);
         manualZ.setDisable(false);
-        manualZ.setIntegerValue(settings.getMoveHeight().getValue());
+        manualZ.setIntegerValue(moveHeight);
         gotoTargetButton.setDisable(false);
     }
 
@@ -253,17 +255,18 @@ public class ComponentPlacementController extends SceneController implements Ini
         int angle = targetAngle.getIntegerValue();
         if (placementAngle.getIntegerValue() != null)
             angle += placementAngle.getIntegerValue();
-        angle -= 90 * Settings.RESOLUTION;
+        angle -= 90 * ApplicationConstants.RESOLUTION;
         return angle;
     }
 
     public void gotoTarget()
     {
+        Integer moveHeight = SettingsFactory.getPpSettings().getMoveHeight().getValue();
         getMainApplication().getCNCController().moveTo(getTargetX(), getTargetY(),
-                getMainApplication().getSettings().getPPMoveHeight());
+                moveHeight);
         rotatePP(getTargetAngle());
         manualZ.setDisable(false);
-        manualZ.setIntegerValue(getMainApplication().getSettings().getPPMoveHeight());
+        manualZ.setIntegerValue(moveHeight);
         pickupPane.setDisable(true);
         placementPane.setDisable(false);
     }
@@ -282,11 +285,11 @@ public class ComponentPlacementController extends SceneController implements Ini
 
     public void place()
     {
-        Settings settings = getMainApplication().getSettings();
-        int z = settings.getPPPickupHeight() - 3 * Settings.RESOLUTION;
-        getMainApplication().getCNCController().place(z, settings.getPPMoveHeight());
+        PPSettings settings = SettingsFactory.getPpSettings();
+        int z = settings.getPickupHeight().getValue() - 3 * ApplicationConstants.RESOLUTION;
+        getMainApplication().getCNCController().place(z, settings.getMoveHeight().getValue());
         manualZ.setDisable(false);
-        manualZ.setIntegerValue(settings.getPPMoveHeight());
+        manualZ.setIntegerValue(settings.getMoveHeight().getValue());
         placementPane.setDisable(true);
         gotoTargetButton.setDisable(true);
         int selectedIndex = componentName.getSelectionModel().getSelectedIndex();
@@ -302,7 +305,7 @@ public class ComponentPlacementController extends SceneController implements Ini
 
     public void moveHeadAway()
     {
-        getMainApplication().getCNCController().moveHeadAway(getMainApplication().getSettings().getFarAwayY());
+        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 
     public void vacuumOff()

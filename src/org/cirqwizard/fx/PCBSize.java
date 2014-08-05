@@ -15,12 +15,12 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 public enum PCBSize
 {
-    Small(0, 75 * Settings.RESOLUTION, 100 * Settings.RESOLUTION),
-    Large(1, 100 * Settings.RESOLUTION, 160 * Settings.RESOLUTION);
+    Small(0, 75 * ApplicationConstants.RESOLUTION, 100 * ApplicationConstants.RESOLUTION),
+    Large(1, 100 * ApplicationConstants.RESOLUTION, 160 * ApplicationConstants.RESOLUTION);
 
     private int storeValue;
     private int width;

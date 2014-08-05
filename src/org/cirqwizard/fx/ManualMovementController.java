@@ -24,6 +24,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.math.RealNumber;
+import org.cirqwizard.settings.SettingsFactory;
+
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
@@ -98,7 +100,7 @@ public class ManualMovementController extends SceneController implements Initial
 
     public void home()
     {
-        getMainApplication().getCNCController().home(getMainApplication().getSettings().getMachineYDiff());
+        getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
     }
 
     public void goToMDI()

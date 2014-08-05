@@ -30,6 +30,7 @@ import org.cirqwizard.fx.SceneController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.net.URL;
@@ -141,7 +142,7 @@ public class FeederSelectionController extends SceneController implements Initia
 
     public void moveHeadAway()
     {
-        getMainApplication().getCNCController().moveHeadAway(getMainApplication().getSettings().getFarAwayY());
+        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 
     @Override

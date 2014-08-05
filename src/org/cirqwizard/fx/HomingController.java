@@ -17,6 +17,7 @@ package org.cirqwizard.fx;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import org.cirqwizard.settings.SettingsFactory;
 
 
 public class HomingController extends SceneController
@@ -38,7 +39,7 @@ public class HomingController extends SceneController
 
     public void home()
     {
-        getMainApplication().getCNCController().home(getMainApplication().getSettings().getMachineYDiff());
+        getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
     }
 
 

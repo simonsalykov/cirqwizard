@@ -14,8 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.pp;
 
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 
 public enum Feeder
@@ -35,7 +34,7 @@ public enum Feeder
                         case 4: offset = 39; break;
                         case 5: offset = 49.5; break;
                     }
-                    return (int)(baseY - offset * Settings.RESOLUTION);
+                    return (int)(baseY - offset * ApplicationConstants.RESOLUTION);
                 }
 
                 @Override
@@ -57,7 +56,7 @@ public enum Feeder
                         case 2: offset = 32; break;
                         case 3: offset = 46.5; break;
                     }
-                    return (int)(baseY - offset * Settings.RESOLUTION);
+                    return (int)(baseY - offset * ApplicationConstants.RESOLUTION);
                 }
 
                 @Override
@@ -79,7 +78,7 @@ public enum Feeder
                         case 2: offset = 42; break;
 
                     }
-                    return (int)(baseY - offset * Settings.RESOLUTION);
+                    return (int)(baseY - offset * ApplicationConstants.RESOLUTION);
                 }
 
                 @Override

@@ -25,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -52,9 +53,9 @@ public class MainApplication extends Application
     public void start(Stage primaryStage) throws Exception
     {
         settings = new Settings(Preferences.userRoot().node("org.cirqwizard"));
-        LoggerFactory.getApplicationLogger().setLevel(Level.parse(settings.getLogLevel()));
+        LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
         state = State.WELCOME;
-        context = new Context(settings);
+        context = new Context();
         connectSerialPort(settings.getSerialPort());
         for (SceneEnum s : SceneEnum.values())
             controllers.put(s, loadSceneController(s.getName()));

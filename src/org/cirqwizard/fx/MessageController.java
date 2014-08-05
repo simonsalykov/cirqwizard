@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.cirqwizard.settings.SettingsFactory;
 
 
 public class MessageController extends SceneController
@@ -77,7 +78,7 @@ public class MessageController extends SceneController
 
     public void moveAway()
     {
-        getMainApplication().getCNCController().moveHeadAway(getMainApplication().getSettings().getFarAwayY());
+        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 
 

@@ -16,7 +16,7 @@ package org.cirqwizard.generation;
 
 import org.cirqwizard.geom.*;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,8 +25,8 @@ import java.util.logging.Level;
 
 public class Vectorizer
 {
-    private static final int INITIAL_SAMPLE_COUNT = (int)(0.15 * Settings.RESOLUTION);                    // Amount of samples to process before trying to decide which curve it is
-    private static final int SAMPLE_COUNT = (int)(0.1 * Settings.RESOLUTION);                            // Amount of last processed points to hold for deviation calculation
+    private static final int INITIAL_SAMPLE_COUNT = (int)(0.15 * ApplicationConstants.RESOLUTION);                    // Amount of samples to process before trying to decide which curve it is
+    private static final int SAMPLE_COUNT = (int)(0.1 * ApplicationConstants.RESOLUTION);                            // Amount of last processed points to hold for deviation calculation
     private static final double ANGULAR_THRESHOLD = Math.toRadians(3);      // Threshold of angular difference which results in a new segment start
     private static final int MAX_ARC_DEVIATION = 10; // Tolerated deviation of the distance from arc's center to its points from the radius
 

@@ -21,6 +21,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.layout.VBox;
+import org.cirqwizard.settings.SettingsFactory;
 
 
 public class PCBPlacementController extends SceneController
@@ -125,6 +126,6 @@ public class PCBPlacementController extends SceneController
 
     public void moveAway()
     {
-        getMainApplication().getCNCController().moveHeadAway(getMainApplication().getSettings().getFarAwayY());
+        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 }

@@ -26,7 +26,7 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.InterpolatingShape;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -55,7 +55,7 @@ public class AbstractToolpathGenerator
                     Flash f = (Flash) primitive;
                     knownCircles.add(new Circle(f.getPoint(), aperture.getDiameter() / 2 + inflation));
                 }
-                else if (primitive instanceof InterpolatingShape && aperture.getDiameter() > 1 * Settings.RESOLUTION)
+                else if (primitive instanceof InterpolatingShape && aperture.getDiameter() > 1 * ApplicationConstants.RESOLUTION)
                 {
                     InterpolatingShape shape = (InterpolatingShape) primitive;
                     knownCircles.add(new Circle(shape.getFrom(), aperture.getDiameter() / 2 + inflation));
