@@ -21,17 +21,21 @@ import javafx.scene.Parent;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 
 public class WelcomeController extends SceneController
 {
-    @FXML
-    private Parent view;
-    @FXML
-    private GridPane recentFilesPane;
+    private static final String PREFERENCE_NAME = "interface.recent.files";
+
+    @FXML private Parent view;
+    @FXML private GridPane recentFilesPane;
 
     @Override
     public Parent getView()
@@ -42,16 +46,9 @@ public class WelcomeController extends SceneController
     @Override
     public void refresh()
     {
-        EventHandler<ActionEvent> handler = new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                loadFile(new File(((Hyperlink) event.getSource()).getText() + ".cmp"));
-            }
-        };
+        EventHandler<ActionEvent> handler = (event) -> loadFile(new File(((Hyperlink) event.getSource()).getText() + ".cmp"));
         recentFilesPane.getChildren().clear();
-        List<String> recentFiles = getMainApplication().getSettings().getRecentFiles();
+        List<String> recentFiles = getRecentFiles();
         for (int i = 0; i < recentFiles.size(); i++)
         {
             Hyperlink hyperlink = new Hyperlink(recentFiles.get(i));
@@ -72,9 +69,42 @@ public class WelcomeController extends SceneController
     private void loadFile(File file)
     {
         String filename = file.getAbsolutePath();
-        getMainApplication().getSettings().setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
+        setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
         getMainApplication().getContext().setFile(file);
         getMainApplication().setState(State.ORIENTATION);
+    }
+
+    private List<String> getRecentFiles()
+    {
+        Preferences preferences = Preferences.userRoot().node("org.cirqwizard");
+        ArrayList<String> files = new ArrayList<>();
+        for (int i = 1; i <= 5; i++)
+        {
+            String str = preferences.get(PREFERENCE_NAME + "." + i, null);
+            if (str == null)
+                break;
+            files.add(str);
+        }
+        return files;
+    }
+
+    private void setRecentFile(String file)
+    {
+        Preferences preferences = Preferences.userRoot().node("org.cirqwizard");
+        List<String> files = getRecentFiles();
+        if (files.indexOf(file) >= 0)
+            files.remove(file);
+        files.add(0, file);
+        for (int i = 0; i < Math.min(files.size(), 5); i++)
+            preferences.put(PREFERENCE_NAME + "." + (i + 1), files.get(i));
+        try
+        {
+            preferences.flush();
+        }
+        catch (BackingStoreException e)
+        {
+            LoggerFactory.logException("Could not save preferences", e);
+        }
     }
 
     public void showSettings()

@@ -16,8 +16,7 @@ package org.cirqwizard.pp;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.RealNumber;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.io.FileNotFoundException;
@@ -68,8 +67,8 @@ public class PPParser
                 }
 
                 components.add(new PPPoint(new ComponentId(packaging, value),
-                        new Point((int)(Double.valueOf(x) * Settings.RESOLUTION),
-                                (int)(Double.valueOf(y) * Settings.RESOLUTION)), (int)(Double.valueOf(angle) * Settings.RESOLUTION), name));
+                        new Point((int)(Double.valueOf(x) * ApplicationConstants.RESOLUTION),
+                                (int)(Double.valueOf(y) * ApplicationConstants.RESOLUTION)), (int)(Double.valueOf(angle) * ApplicationConstants.RESOLUTION), name));
             }
         }
         catch (FileNotFoundException e)

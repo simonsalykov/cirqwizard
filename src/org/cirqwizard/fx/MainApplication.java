@@ -25,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,18 +45,17 @@ public class MainApplication extends Application
 
     private State state;
     private Context context;
-    private Settings settings;
     private SerialInterface serialInterface;
     private CNCController cncController;
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        settings = new Settings(Preferences.userRoot().node("org.cirqwizard"));
-        LoggerFactory.getApplicationLogger().setLevel(Level.parse(settings.getLogLevel()));
+        new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
+        LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
         state = State.WELCOME;
-        context = new Context(settings);
-        connectSerialPort(settings.getSerialPort());
+        context = new Context();
+        connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
         for (SceneEnum s : SceneEnum.values())
             controllers.put(s, loadSceneController(s.getName()));
         for (Dialog d : Dialog.values())
@@ -129,11 +129,6 @@ public class MainApplication extends Application
     public Context getContext()
     {
         return context;
-    }
-
-    public Settings getSettings()
-    {
-        return settings;
     }
 
     public SceneController getSceneController(SceneEnum scene)

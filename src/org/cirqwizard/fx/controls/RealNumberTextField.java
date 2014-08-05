@@ -18,7 +18,7 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 import java.text.DecimalFormat;
 
@@ -55,7 +55,7 @@ public class RealNumberTextField extends TextField
         if (value == null)
             setText(null);
         else
-            setText(format.format((double) value / Settings.RESOLUTION));
+            setText(format.format((double) value / ApplicationConstants.RESOLUTION));
     }
 
     public RealNumberTextField()
@@ -74,7 +74,7 @@ public class RealNumberTextField extends TextField
                     try
                     {
                         newValue = newValue.trim().replace(",", ".");
-                        realNumberIntegerProperty.setValue((int)(Double.parseDouble(newValue) * Settings.RESOLUTION));
+                        realNumberIntegerProperty.setValue((int)(Double.parseDouble(newValue) * ApplicationConstants.RESOLUTION));
                         realNumberTextProperty.setValue(newValue);
                     }
                     catch (Exception e)

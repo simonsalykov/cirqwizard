@@ -31,7 +31,7 @@ public interface Postprocessor
     public void linearInterpolation(StringBuilder str, Integer x, Integer y, Integer z, Integer feed);
     public void circularInterpolation(StringBuilder str, boolean clockwise, Integer x, Integer y, Integer z, Integer i, Integer j, Integer feed);
 
-    public void spindleOn(StringBuilder str, String speed);
+    public void spindleOn(StringBuilder str, int speed);
     public void spindleOff(StringBuilder str);
 
     public void syringeOn(StringBuilder str);

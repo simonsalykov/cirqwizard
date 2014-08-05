@@ -15,29 +15,22 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 
 public enum PCBSize
 {
-    Small(0, 75 * Settings.RESOLUTION, 100 * Settings.RESOLUTION),
-    Large(1, 100 * Settings.RESOLUTION, 160 * Settings.RESOLUTION);
+    Small(75 * ApplicationConstants.RESOLUTION, 100 * ApplicationConstants.RESOLUTION),
+    Large(100 * ApplicationConstants.RESOLUTION, 160 * ApplicationConstants.RESOLUTION);
 
-    private int storeValue;
     private int width;
     private int height;
 
     public static final int PCB_SIZE_CHECK_TOLERANCE = 100;
 
-    private PCBSize(int storeValue, int width, int height)
+    private PCBSize(int width, int height)
     {
-        this.storeValue = storeValue;
         this.width = width;
         this.height = height;
-    }
-
-    public int getStoreValue()
-    {
-        return storeValue;
     }
 
     public int getWidth()
@@ -48,17 +41,6 @@ public enum PCBSize
     public int getHeight()
     {
         return height;
-    }
-
-    public static PCBSize valueOf(int i)
-    {
-        switch (i)
-        {
-            case 0: return Small;
-            case 1: return Large;
-            default:
-                return null;
-        }
     }
 
     public boolean checkFit(int width, int height)

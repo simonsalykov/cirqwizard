@@ -43,7 +43,7 @@ import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.*;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
@@ -267,38 +267,40 @@ public class MachiningController extends SceneController implements Initializabl
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
-        Settings settings = getMainApplication().getSettings();
 
         stopGenerationButton.setDisable(false);
+
+        InsulationMillingSettings insulationMillingSettings = SettingsFactory.getInsulationMillingSettings();
 
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
             toolDiameter.setDisable(false);
-            toolDiameter.setIntegerValue(settings.getDefaultTraceToolDiameter());
-            feed.setIntegerValue(settings.getDefaultTracesFeedXY());
+            toolDiameter.setIntegerValue(insulationMillingSettings.getToolDiameter().getValue());
+            feed.setIntegerValue(SettingsFactory.getInsulationMillingSettings().getFeedXY().getValue());
 
-            clearance.setIntegerValue(settings.getDefaultTracesClearance());
-            safetyHeight.setIntegerValue(settings.getDefaultTracesSafetyHeight());
+            clearance.setIntegerValue(insulationMillingSettings.getClearance().getValue());
+            safetyHeight.setIntegerValue(insulationMillingSettings.getSafetyHeight().getValue());
             zFeed.setDisable(false);
-            zFeed.setIntegerValue(settings.getDefaultTracesFeedZ());
+            zFeed.setIntegerValue(insulationMillingSettings.getFeedZ().getValue());
 
             pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
             pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * insulationMillingSettings.getFeedArcs().getValue() / 100);
         }
         else if (state == State.DRILLING)
         {
             toolDiameter.setDisable(true);
             toolDiameter.setText(context.getDrillDiameters().get(context.getCurrentDrill()));
-            feed.setIntegerValue(settings.getDefaultDrillingFeed());
+            DrillingSettings settings = SettingsFactory.getDrillingSettings();
+            feed.setIntegerValue(settings.getFeed().getValue());
 
-            clearance.setIntegerValue(settings.getDefaultDrillingClearance());
-            safetyHeight.setIntegerValue(settings.getDefaultDrillingSafetyHeight());
+            clearance.setIntegerValue(settings.getClearance().getValue());
+            safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
             zFeed.setDisable(true);
 
-            context.setG54Z(settings.getDefaultDrillingZOffset());
+            context.setG54Z(settings.getZOffset().getValue());
 
             pcbPane.setGerberColor(PCBPaneFX.DRILL_POINT_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.DRILL_POINT_COLOR);
@@ -308,34 +310,36 @@ public class MachiningController extends SceneController implements Initializabl
         {
             toolDiameter.setDisable(true);
             toolDiameter.setText(context.getContourMillDiameter());
-            feed.setIntegerValue(settings.getDefaultContourFeedXY());
+            ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+            feed.setIntegerValue(settings.getFeedXY().getValue());
 
-            clearance.setIntegerValue(settings.getDefaultContourClearance());
-            safetyHeight.setIntegerValue(settings.getDefaultContourSafetyHeight());
+            clearance.setIntegerValue(settings.getClearance().getValue());
+            safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
             zFeed.setDisable(false);
-            zFeed.setIntegerValue(settings.getDefaultContourFeedZ());
+            zFeed.setIntegerValue(settings.getFeedZ().getValue());
 
-            context.setG54Z(settings.getDefaultContourZOffset());
+            context.setG54Z(settings.getZOffset().getValue());
 
             pcbPane.setGerberPrimitives(null);
             pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
 
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
+            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
         }
         else if (state == State.DISPENSING)
         {
             toolDiameter.setDisable(false);
-            toolDiameter.setIntegerValue(settings.getDefaultDispensingNeedleDiameter());
-            feed.setIntegerValue(settings.getDefaultDispensingFeed());
+            DispensingSettings settings = SettingsFactory.getDispensingSettings();
+            toolDiameter.setIntegerValue(settings.getNeedleDiameter().getValue());
+            feed.setIntegerValue(settings.getFeed().getValue());
 
-            clearance.setIntegerValue(settings.getDefaultDispensingClearance());
+            clearance.setIntegerValue(settings.getClearance().getValue());
             safetyHeight.setIntegerValue(null);
             safetyHeight.setDisable(true);
             zFeed.setIntegerValue(null);
             zFeed.setDisable(true);
 
-            context.setG54Z(settings.getDefaultDispensingZOffset());
+            context.setG54Z(settings.getZOffset().getValue());
 
             pcbPane.setGerberColor(PCBPaneFX.SOLDER_PAD_COLOR);
             pcbPane.setToolpathColor(PCBPaneFX.PASTE_TOOLPATH_COLOR);
@@ -441,38 +445,41 @@ public class MachiningController extends SceneController implements Initializabl
     private String generateGCode()
     {
         State state = getMainApplication().getState();
-        Settings settings = getMainApplication().getSettings();
 
         if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
         {
-            int arcFeed = (feed.getIntegerValue() * settings.getDefaultTracesFeedArc() / 100);
-            TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state, settings);
+            InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+            int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
+            TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state);
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultTracesWorkingHeight(),
-                    settings.getDefaultTracesSpeed());
+                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+                    settings.getSpeed().getValue());
 
         }
         else if (state == State.DRILLING)
         {
+            DrillingSettings settings = SettingsFactory.getDrillingSettings();
             DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                    safetyHeight.getIntegerValue(), settings.getDefaultDrillingWorkingHeight(),
-                    settings.getDefaultDrillingSpeed());
+                    safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+                    settings.getSpeed().getValue());
         }
         else if (state == State.MILLING_CONTOUR)
         {
-            int arcFeed = (feed.getIntegerValue() * settings.getDefaultContourFeedArc() / 100);
+            ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+            int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
             MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
             return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getDefaultContourWorkingHeight(),
-                    settings.getDefaultContourSpeed());
+                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+                    settings.getSpeed().getValue());
         }
         else if (state == State.DISPENSING)
         {
+            DispensingSettings settings = SettingsFactory.getDispensingSettings();
             PasteGCodeGenerator generator = new PasteGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), settings.getDefaultDispensingPrefeedPause(),
-                    settings.getDispensingPostfeedPause(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                    settings.getDefaultDispensingWorkingHeight());
+            return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
+                    settings.getPostFeedPause().getValue(), feed.getIntegerValue(), clearance.getIntegerValue(),
+                    settings.getWorkingHeight().getValue());
         }
 
         return null;
@@ -515,6 +522,6 @@ public class MachiningController extends SceneController implements Initializabl
     public void moveHeadAway()
     {
         if (getMainApplication().getCNCController() != null)
-            getMainApplication().getCNCController().moveHeadAway(getMainApplication().getSettings().getFarAwayY());
+            getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 }

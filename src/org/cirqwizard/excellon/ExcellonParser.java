@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.excellon;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.toolpath.DrillPoint;
 
 import java.io.IOException;
@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 
 public class ExcellonParser
 {
-    public final static int INCHES_MM_RATIO = (int)(25.4 * Settings.RESOLUTION);
-    public final static int MM_MM_RATIO = Settings.RESOLUTION;
+    public final static int INCHES_MM_RATIO = (int)(25.4 * ApplicationConstants.RESOLUTION);
+    public final static int MM_MM_RATIO = ApplicationConstants.RESOLUTION;
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d+.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
@@ -53,21 +53,13 @@ public class ExcellonParser
 
     public ExcellonParser(Reader reader)
     {
-        this(null, reader);
+        this(2, 4, reader);
     }
 
-    public ExcellonParser(Settings settings, Reader reader)
+    public ExcellonParser(int decimalPlaces, int coordinatesCoversionRatio, Reader reader)
     {
-        if (settings != null)
-        {
-            this.decimalPlaces = settings.getImportExcellonDecimalPlaces();
-            this.coordinatesCoversionRatio = settings.getImportExcellonUnitConversionRatio();
-        }
-        else
-        {
-            this.decimalPlaces = 4;
-            this.coordinatesCoversionRatio = INCHES_MM_RATIO;
-        }
+        this.decimalPlaces = decimalPlaces;
+        this.coordinatesCoversionRatio = coordinatesCoversionRatio;
         this.reader = reader;
     }
 
@@ -149,7 +141,7 @@ public class ExcellonParser
         {
             currentDiameter = tools.get(Integer.parseInt(matcher.group(1)));
             if (currentDiameter == null)
-                currentDiameter = Integer.valueOf(matcher.group(1)) * Settings.RESOLUTION / 10 + Settings.RESOLUTION;
+                currentDiameter = Integer.valueOf(matcher.group(1)) * ApplicationConstants.RESOLUTION / 10 + ApplicationConstants.RESOLUTION;
             return;
         }
 

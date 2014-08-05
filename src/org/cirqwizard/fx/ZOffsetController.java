@@ -14,8 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.settings.Settings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -24,6 +22,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TitledPane;
+import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.settings.ApplicationValues;
+import org.cirqwizard.settings.InsulationMillingSettings;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -76,33 +78,10 @@ public class ZOffsetController extends SceneController implements Initializable
         scrapPlaceX.realNumberTextProperty().addListener(changeListener);
         scrapPlaceY.realNumberTextProperty().addListener(changeListener);
         automaticZOffset.realNumberTextProperty().addListener(changeListener);
-        scrapPlaceX.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer number, Integer number2)
-            {
-                getMainApplication().getSettings().setScrapPlaceX(number2);
-            }
-        });
-        scrapPlaceY.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
-            {
-                getMainApplication().getSettings().setScrapPlaceY(integer2);
-            }
-        });
-        ChangeListener<Boolean> testCutDirectionListener = new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
-            {
-                if (horizontalTestCut.isSelected())
-                    getMainApplication().getSettings().setTestCutDirection(0);
-                if (verticalTestCut.isSelected())
-                    getMainApplication().getSettings().setTestCutDirection(1);
-            }
-        };
+        scrapPlaceX.realNumberIntegerProperty().addListener((v, oldV, newV) -> SettingsFactory.getApplicationValues().getScrapPlaceX().setValue(newV));
+        scrapPlaceY.realNumberIntegerProperty().addListener((v, oldV, newV) -> SettingsFactory.getApplicationValues().getScrapPlaceY().setValue(newV));
+        ChangeListener<Boolean> testCutDirectionListener = (v, oldV, newV) -> SettingsFactory.getApplicationValues().getTestCutDirection().setValue(
+                horizontalTestCut.isSelected());
         horizontalTestCut.selectedProperty().addListener(testCutDirectionListener);
         verticalTestCut.selectedProperty().addListener(testCutDirectionListener);
     }
@@ -110,24 +89,21 @@ public class ZOffsetController extends SceneController implements Initializable
     @Override
     public void refresh()
     {
-        Settings settings = getMainApplication().getSettings();
-
         if (!getMainApplication().getContext().iszOffsetEstablished())
         {
             manualEntryRadioButton.setSelected(false);
             automaticEntryRadioButton.setSelected(false);
             manualZOffset.setText("");
-            automaticZOffset.setIntegerValue(settings.getDefaultTracesZOffset());
+            automaticZOffset.setIntegerValue(SettingsFactory.getInsulationMillingSettings().getZOffset().getValue());
         }
         else if (getMainApplication().getContext().getG54Z() != null)
             automaticZOffset.setIntegerValue(getMainApplication().getContext().getG54Z());
 
-        scrapPlaceX.setIntegerValue(settings.getScrapPlaceX());
-        scrapPlaceY.setIntegerValue(settings.getScrapPlaceY());
-        if (settings.getTestCutDirection() == 0)
-            horizontalTestCut.setSelected(true);
-        else if (settings.getTestCutDirection() == 1)
-            verticalTestCut.setSelected(true);
+        ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
+        scrapPlaceX.setIntegerValue(applicationValues.getScrapPlaceX().getValue());
+        scrapPlaceY.setIntegerValue(applicationValues.getScrapPlaceY().getValue());
+        if (applicationValues.getTestCutDirection().getValue() != null)
+            horizontalTestCut.setSelected(applicationValues.getTestCutDirection().getValue());
         updateComponents();
     }
 
@@ -164,10 +140,10 @@ public class ZOffsetController extends SceneController implements Initializable
     {
         if (testButton.isDisabled())
             return;
-        Settings settings = getMainApplication().getSettings();
+        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         getMainApplication().getCNCController().testCut(scrapPlaceX.getIntegerValue(), scrapPlaceY.getIntegerValue(), automaticZOffset.getIntegerValue(),
-                settings.getDefaultTracesClearance(), settings.getDefaultTracesSafetyHeight(), settings.getDefaultTracesWorkingHeight(),
-                settings.getDefaultTracesFeedXY(), settings.getDefaultTracesFeedZ(), settings.getDefaultTracesSpeed(), horizontalTestCut.isSelected());
+                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
+                settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), settings.getSpeed().getValue(), horizontalTestCut.isSelected());
     }
 
     public void lowerAndTest()

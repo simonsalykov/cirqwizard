@@ -12,35 +12,29 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.settings;
 
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import org.cirqwizard.settings.SettingsFactory;
-
-
-public class HomingController extends SceneController
+public enum  DistanceUnit
 {
-    @FXML private Parent view;
-    @FXML private Button homeButton;
+    INCHES(25_400, "Inches"), MM(1000, "Millimeters");
 
-    @Override
-    public Parent getView()
+    private int multiplier;
+    private String name;
+
+    DistanceUnit(int multiplier, String name)
     {
-        return view;
+        this.multiplier = multiplier;
+        this.name = name;
     }
 
-    @Override
-    public void refresh()
+    public int getMultiplier()
     {
-        homeButton.setDisable(getMainApplication().getCNCController() == null);
+        return multiplier;
     }
 
-    public void home()
+    public String getName()
     {
-        getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
+        return name;
     }
-
 
 }

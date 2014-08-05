@@ -21,7 +21,7 @@ import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.post.Postprocessor;
-import org.cirqwizard.settings.Settings;
+import org.cirqwizard.settings.*;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -34,13 +34,11 @@ public class TraceGCodeGenerator
 {
     private Context context;
     private State state;
-    private Settings settings;
 
-    public TraceGCodeGenerator(Context context, State state, Settings settings)
+    public TraceGCodeGenerator(Context context, State state)
     {
         this.context = context;
         this.state = state;
-        this.settings = settings;
     }
 
     private int getX(int x)
@@ -54,7 +52,7 @@ public class TraceGCodeGenerator
     }
 
     public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,
-                           int millingDepth, String spindleSpeed)
+                           int millingDepth, int spindleSpeed)
     {
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
@@ -62,8 +60,9 @@ public class TraceGCodeGenerator
         int g54X = context.getG54X();
         if (state == State.MILLING_BOTTOM_INSULATION)
         {
-            int laminateWidth = context.getPcbSize() == PCBSize.Small ? settings.getMachineSmallPCBWidth() : settings.getMachineLargePCBWidth();
-            int pinX = settings.getMachineReferencePinX();
+            MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+            int laminateWidth = context.getPcbSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() : machineSettings.getLargePcbWidth().getValue();
+            int pinX = machineSettings.getReferencePinX().getValue();
             g54X = pinX * 2 + laminateWidth - context.getG54X();
         }
         postprocessor.setupG54(str, g54X, context.getG54Y(), context.getG54Z());
@@ -79,8 +78,8 @@ public class TraceGCodeGenerator
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
             if (prevLocation == null ||
-                    Math.abs(prevLocation.getX() - curve.getFrom().getX()) > Settings.ROUNDING ||
-                    Math.abs(prevLocation.getY() - curve.getFrom().getY()) > Settings.ROUNDING)
+                    Math.abs(prevLocation.getX() - curve.getFrom().getX()) > ApplicationConstants.ROUNDING ||
+                    Math.abs(prevLocation.getY() - curve.getFrom().getY()) > ApplicationConstants.ROUNDING)
             {
                 postprocessor.rapid(str, null, null, clearance);
                 postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), clearance);
