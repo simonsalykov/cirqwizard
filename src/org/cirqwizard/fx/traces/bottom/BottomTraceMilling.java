@@ -12,22 +12,23 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.traces;
+package org.cirqwizard.fx.traces.bottom;
 
-public class PCBPlacement extends org.cirqwizard.fx.common.PCBPlacement
+import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.traces.TraceMilling;
+import org.cirqwizard.layers.Layer;
+
+public class BottomTraceMilling extends TraceMilling
 {
-    @Override
-    protected String getName()
-    {
-        return "Placement";
-    }
-
     @Override
     public void refresh()
     {
         super.refresh();
-        text.setText("Put the board FACE UP right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
-//        text.setText("Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
-//        text.setText("Put the board FACE UP on the SPACER.");
+        pcbPane.setGerberColor(PCBPaneFX.BOTTOM_TRACE_COLOR);
+    }
+
+    protected Layer getCurrentLayer()
+    {
+        return getMainApplication().getContext().getPcbLayout().getBottomTracesLayer();
     }
 }

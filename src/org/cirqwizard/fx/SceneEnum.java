@@ -44,7 +44,7 @@ public enum SceneEnum
 //    MainView(null, "MainView.fxml"),
 
 //    TopTraces("Top traces", null),
-//    TopTraces_PCBPlacement("Placement", null, new org.cirqwizard.fx.traces.PCBPlacement()),
+//    TopTraces_PCBPlacement("Placement", null, new org.cirqwizard.fx.traces.top.PCBPlacement()),
 //    TopTraces_InsertTool("Tool", null, new InsertTool());
 
     private String fxml;

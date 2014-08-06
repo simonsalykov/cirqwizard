@@ -22,9 +22,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.cirqwizard.fx.common.XYOffsets;
 import org.cirqwizard.fx.traces.InsertTool;
-import org.cirqwizard.fx.traces.PCBPlacement;
-import org.cirqwizard.fx.traces.TraceMilling;
 import org.cirqwizard.fx.traces.ZOffset;
+import org.cirqwizard.fx.traces.bottom.BottomTraceMilling;
+import org.cirqwizard.fx.traces.top.PCBPlacement;
+import org.cirqwizard.fx.traces.top.TopTraceMilling;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.*;
 import org.cirqwizard.settings.Settings;
@@ -57,7 +58,13 @@ public class MainApplication extends Application
                     addChild(new InsertTool().setMainApplication(this)).
                     addChild(new ZOffset().setMainApplication(this)).
                     addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new TraceMilling().setMainApplication(this)));
+                    addChild(new TopTraceMilling().setMainApplication(this))).
+            addChild(new DummyController("Bottom traces").
+                    addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
+                    addChild(new InsertTool().setMainApplication(this)).
+                    addChild(new ZOffset().setMainApplication(this)).
+                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new BottomTraceMilling().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception

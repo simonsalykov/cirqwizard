@@ -45,6 +45,12 @@ public class PCBPlacement extends ScreenController
     }
 
     @Override
+    protected String getName()
+    {
+        return "Placement";
+    }
+
+    @Override
     public void refresh()
     {
         Context context = getMainApplication().getContext();

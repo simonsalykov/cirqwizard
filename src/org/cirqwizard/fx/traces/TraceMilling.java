@@ -19,7 +19,6 @@ import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
 import org.cirqwizard.fx.machining.TraceMillingToolpathGenerationService;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
-import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
@@ -47,7 +46,6 @@ public class TraceMilling extends Machining
         zFeed.setDisable(false);
         zFeed.setIntegerValue(settings.getFeedZ().getValue());
 
-        pcbPane.setGerberColor(PCBPaneFX.TOP_TRACE_COLOR);
 //        pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
         pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
@@ -60,12 +58,6 @@ public class TraceMilling extends Machining
     {
         return new TraceMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
                 estimatedMachiningTimeProperty);
-    }
-
-    @Override
-    protected Layer getCurrentLayer()
-    {
-        return getMainApplication().getContext().getPcbLayout().getTopTracesLayer();
     }
 
     @Override
