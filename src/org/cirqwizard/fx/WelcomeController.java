@@ -71,7 +71,9 @@ public class WelcomeController extends SceneController
         String filename = file.getAbsolutePath();
         setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
         getMainApplication().getContext().setFile(file);
-        getMainApplication().setState(State.ORIENTATION);
+//        getMainApplication().setState(State.ORIENTATION);
+
+        getMainApplication().showScene(SceneEnum.MainView);
     }
 
     private List<String> getRecentFiles()

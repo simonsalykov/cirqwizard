@@ -152,3 +152,78 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
+
+#toolbar .button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 3px 6px 4px 6px;
+    -fx-border-color: transparent #6e737d transparent rgba(255,255,255,0.3) , transparent rgba(255,255,255,0.3) transparent transparent;
+    -fx-border-insets: 0, 0 1 0 1;
+}
+#toolbar .button:hover {
+    -fx-background-color: rgba(255,255,255,0.4);
+}
+
+.breadcrumb-bar {
+    -fx-padding: 0;
+}
+.breadcrumb-bar .button {
+    -fx-padding: 0 3 0 3;
+    -fx-border-color: null;
+    -fx-border-insets: 0;
+    -fx-border-image-source: url("crumb.png");
+    -fx-border-image-slice: 1 10 1 10 fill;
+    -fx-border-image-width: 1 10 1 10;
+    -fx-border-image-repeat: stretch;
+}
+.breadcrumb-bar .button:focused {
+    -fx-border-image-source: url("crumb-focused.png");
+}
+.breadcrumb-bar .button:hover {
+    -fx-background-color: null;
+    -fx-border-image-source: url("crumb-hover.png");
+}
+.breadcrumb-bar .only-button {
+    -fx-border-image-width: 0 0 0 0;
+    -fx-border-image-repeat: stretch;
+    -fx-border-image-source: url("crumb-selected.png");
+    -fx-border-color: transparent #6e737d transparent rgba(255,255,255,0.3) , transparent rgba(255,255,255,0.3) transparent transparent;
+    -fx-border-insets: 0 0 1 0, 1;
+}
+.breadcrumb-bar .only-button:hover {
+    -fx-border-image-source: url("crumb-selected.png");
+    -fx-border-image-insets: 0 0 1 0;
+}
+.breadcrumb-bar .only-button:focused {
+    -fx-border-color: -fx-focus-color;
+    -fx-border-width: 1.4;
+}
+.breadcrumb-bar .first-button {
+    -fx-border-image-insets: 0 -5 1 0;
+    -fx-border-image-width: 0 10 0 0;
+    -fx-border-image-repeat: stretch;
+    -fx-padding: 0 3 0 6;
+}
+.breadcrumb-bar .first-button:focused {
+    -fx-border-color: transparent transparent transparent -fx-focus-color;
+    -fx-border-width: 1.4;
+}
+.breadcrumb-bar .middle-button {
+    -fx-border-image-insets: 0 -5 1 -4;
+}
+.breadcrumb-bar .last-button {
+    -fx-border-image-insets: 0 0 0 -4;
+    -fx-border-image-width: 0 0 0 10;
+    -fx-border-image-repeat: stretch;
+    -fx-border-image-source: url("crumb-selected.png");
+    -fx-border-color: transparent #6e737d transparent transparent , transparent rgba(255,255,255,0.2) transparent transparent;
+    -fx-border-insets: 0 0 1 0, 1;
+}
+.breadcrumb-bar .last-button:hover {
+    -fx-border-image-source: url("crumb-selected.png");
+}
+.breadcrumb-bar .last-button:focused {
+    -fx-border-color: transparent -fx-focus-color transparent transparent;
+    -fx-border-width: 1.4;
+}

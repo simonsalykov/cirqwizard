@@ -34,7 +34,9 @@ public enum SceneEnum
     ComponentPlacement("pp/ComponentPlacement.fxml"),
     About("About.fxml"),
     ManualMovement("ManualMovement.fxml"),
-    ManualDataInput("ManualDataInput.fxml");
+    ManualDataInput("ManualDataInput.fxml"),
+
+    MainView("MainView.fxml");
 
     private String name;
 

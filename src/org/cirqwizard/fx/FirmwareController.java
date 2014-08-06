@@ -64,9 +64,11 @@ public class FirmwareController extends SceneController implements Initializable
         fileSelectionBox.setVisible(true);
         progressBarBox.setVisible(false);
 
-        String currentFimware = getMainApplication().getCNCController().getFirmwareVersion();
-        if (currentFimware != null)
-            firmwareVersion.setText("Current firmware: " + currentFimware);
+        String currentFirmware = null;
+        if (getMainApplication().getCNCController() != null)
+            currentFirmware = getMainApplication().getCNCController().getFirmwareVersion();
+        if (currentFirmware != null)
+            firmwareVersion.setText("Current firmware: " + currentFirmware);
         else
             firmwareVersion.setText("Current firmware: could not get firmware version.");
     }
