@@ -44,9 +44,15 @@ import java.util.logging.Level;
 
 public class TraceMillingToolpathGenerationService extends ToolpathGenerationService
 {
-    public TraceMillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty, StringProperty estimatedMachiningTimeProperty)
+    private Layer layer;
+    private int cacheLayerId;
+
+    public TraceMillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty, StringProperty estimatedMachiningTimeProperty,
+                                                 Layer layer, int cacheLayerId)
     {
         super(mainApplication, overallProgressProperty, estimatedMachiningTimeProperty);
+        this.layer = layer;
+        this.cacheLayerId = cacheLayerId;
     }
 
     @Override
@@ -64,11 +70,10 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
                     generationStageProperty.unbind();
                     estimatedMachiningTimeProperty.unbind();
 
-                    Layer layer = context.getPcbLayout().getTopTracesLayer();
                     InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
                     int diameter = toolDiameter.getValue();
-                    ToolpathsCacheKey cacheKey = null; //new ToolpathsCacheKey(mainApplication.getState(), context.getPcbLayout().getAngle(), diameter, settings.getAdditionalPasses().getValue(),
-//                            settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
+                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), diameter, settings.getAdditionalPasses().getValue(),
+                            settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
                     ToolpathsCache cache = null;
                     try
                     {
@@ -172,7 +177,7 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
 
                     cache.setToolpaths(cacheKey, toolpaths);
                     // TODO
-//                    cache.setLastModified(mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION ? context.getPcbLayout().getTopLayerModificationDate() : context.getPcbLayout().getBottomLayerModificationDate());
+                    cache.setLastModified(context.getPcbLayout().getTopLayerModificationDate());
 
                     try
                     {

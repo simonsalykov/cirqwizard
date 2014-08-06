@@ -24,15 +24,7 @@ import java.io.File;
 
 public class Context
 {
-
     private PCBLayout pcbLayout;
-
-    private boolean topTracesSelected;
-    private boolean bottomTracesSelected;
-    private boolean drillingSelected;
-    private boolean contourSelected;
-    private boolean pasteSelected;
-    private boolean placingSelected;
 
     private PCBSize pcbSize;
     private Integer g54X;
@@ -62,66 +54,6 @@ public class Context
     {
         pcbLayout = new PCBLayout();
         pcbLayout.setFile(file);
-    }
-
-    public boolean isTopTracesSelected()
-    {
-        return topTracesSelected;
-    }
-
-    public void setTopTracesSelected(boolean topTracesSelected)
-    {
-        this.topTracesSelected = topTracesSelected;
-    }
-
-    public boolean isBottomTracesSelected()
-    {
-        return bottomTracesSelected;
-    }
-
-    public void setBottomTracesSelected(boolean bottomTracesSelected)
-    {
-        this.bottomTracesSelected = bottomTracesSelected;
-    }
-
-    public boolean isDrillingSelected()
-    {
-        return drillingSelected;
-    }
-
-    public void setDrillingSelected(boolean drillingSelected)
-    {
-        this.drillingSelected = drillingSelected;
-    }
-
-    public boolean isContourSelected()
-    {
-        return contourSelected;
-    }
-
-    public void setContourSelected(boolean contourSelected)
-    {
-        this.contourSelected = contourSelected;
-    }
-
-    public boolean isPasteSelected()
-    {
-        return pasteSelected;
-    }
-
-    public void setPasteSelected(boolean pasteSelected)
-    {
-        this.pasteSelected = pasteSelected;
-    }
-
-    public boolean isPlacingSelected()
-    {
-        return placingSelected;
-    }
-
-    public void setPlacingSelected(boolean placingSelected)
-    {
-        this.placingSelected = placingSelected;
     }
 
     public PCBSize getPcbSize()

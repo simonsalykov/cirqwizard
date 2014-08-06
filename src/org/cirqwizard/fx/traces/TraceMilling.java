@@ -24,7 +24,7 @@ import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
-public class TraceMilling extends Machining
+public abstract class TraceMilling extends Machining
 {
     @Override
     protected String getName()
@@ -46,7 +46,6 @@ public class TraceMilling extends Machining
         zFeed.setDisable(false);
         zFeed.setIntegerValue(settings.getFeedZ().getValue());
 
-//        pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
         pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
@@ -57,15 +56,18 @@ public class TraceMilling extends Machining
     protected ToolpathGenerationService getToolpathGenerationService()
     {
         return new TraceMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty);
+                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId());
     }
+
+    protected abstract boolean mirror();
+    protected abstract int getCacheId();
 
     @Override
     protected String generateGCode()
     {
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
-        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), null);
+        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
         return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
                 clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());

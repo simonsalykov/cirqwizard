@@ -18,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import org.cirqwizard.fx.ScreenController;
-import org.cirqwizard.fx.State;
 import org.cirqwizard.settings.SettingsFactory;
 
 

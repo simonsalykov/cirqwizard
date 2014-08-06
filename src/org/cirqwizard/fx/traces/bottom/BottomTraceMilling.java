@@ -31,4 +31,16 @@ public class BottomTraceMilling extends TraceMilling
     {
         return getMainApplication().getContext().getPcbLayout().getBottomTracesLayer();
     }
+
+    @Override
+    protected boolean mirror()
+    {
+        return true;
+    }
+
+    @Override
+    protected int getCacheId()
+    {
+        return 1;
+    }
 }

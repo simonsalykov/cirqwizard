@@ -43,7 +43,6 @@ public class MainApplication extends Application
     private Stage dialogStage;
     private Scene dialogScene;
 
-    private State state;
     private Context context;
     private SerialInterface serialInterface;
     private CNCController cncController;
@@ -71,7 +70,6 @@ public class MainApplication extends Application
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
-        state = State.WELCOME;
         context = new Context();
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 

@@ -27,7 +27,6 @@ import javafx.scene.layout.Region;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.ScreenController;
-import org.cirqwizard.fx.State;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
@@ -377,8 +376,6 @@ public class Machining extends ScreenController implements Initializable
 
     protected String generateGCode()
     {
-        State state = null; //getMainApplication().getState();
-
         /*
         if (state == State.DRILLING)
         {

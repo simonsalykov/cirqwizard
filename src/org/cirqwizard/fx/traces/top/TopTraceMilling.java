@@ -33,4 +33,15 @@ public class TopTraceMilling extends TraceMilling
         return getMainApplication().getContext().getPcbLayout().getTopTracesLayer();
     }
 
+    @Override
+    protected boolean mirror()
+    {
+        return false;
+    }
+
+    @Override
+    protected int getCacheId()
+    {
+        return 0;
+    }
 }
