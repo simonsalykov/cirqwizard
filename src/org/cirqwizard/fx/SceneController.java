@@ -50,6 +50,8 @@ public abstract class SceneController
 
     public void next()
     {
+        MainViewController mainViewController = (MainViewController) getMainApplication().getSceneController(SceneEnum.MainView);
+        mainViewController.setScene(SceneTree.getNext(mainViewController.getCurrentScene()));
         if (isActive())
             getMainApplication().nextState();
     }

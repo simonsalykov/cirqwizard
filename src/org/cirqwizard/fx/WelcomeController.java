@@ -74,6 +74,7 @@ public class WelcomeController extends SceneController
 //        getMainApplication().setState(State.ORIENTATION);
 
         getMainApplication().showScene(SceneEnum.MainView);
+        ((MainViewController)getMainApplication().getSceneController(SceneEnum.MainView)).setScene(SceneEnum.Orientation);
     }
 
     private List<String> getRecentFiles()

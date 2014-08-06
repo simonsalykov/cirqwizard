@@ -29,7 +29,6 @@ import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 
@@ -57,7 +56,8 @@ public class MainApplication extends Application
         context = new Context();
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
         for (SceneEnum s : SceneEnum.values())
-            controllers.put(s, loadSceneController(s.getName()));
+            if (s.getFxml() != null)
+                controllers.put(s, loadSceneController(s.getFxml()));
         for (Dialog d : Dialog.values())
             dialogControllers.put(d, loadSceneController(d.getName()));
         this.primaryStage = primaryStage;

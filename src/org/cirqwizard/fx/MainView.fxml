@@ -14,5 +14,6 @@
             <Hyperlink text="Manual control" />
         </items>
       </ToolBar>
+      <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>
