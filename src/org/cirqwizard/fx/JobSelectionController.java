@@ -23,7 +23,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 
 
-public class JobSelectionController extends SceneController
+public class JobSelectionController extends ScreenController
 {
     @FXML private Parent view;
     @FXML private CheckBox topTraces;

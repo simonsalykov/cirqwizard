@@ -12,38 +12,17 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.traces;
 
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.Label;
+import org.cirqwizard.fx.common.Message;
 
-
-public class InfoDialogController extends ScreenController
+public class InsertTool extends Message
 {
-    @FXML Parent view;
-
-    @FXML Label header;
-    @FXML Label info;
-
     @Override
-    public Parent getView()
+    public void refresh()
     {
-        return view;
-    }
-
-    public void setHeaderText(String text)
-    {
-        header.setText(text);
-    }
-
-    public void setInfoText(String text)
-    {
-        info.setText(text);
-    }
-
-    public void ok()
-    {
-        getMainApplication().hideInfoDialog();
+        super.refresh();
+        header.setText("Insert trace milling cutter into spindle");
+        text.setText("Make sure the milling cutter is fully inserted.");
     }
 }

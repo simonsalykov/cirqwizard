@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class FirmwareController extends SceneController implements Initializable
+public class FirmwareController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
     @FXML private TextField selectedFile;

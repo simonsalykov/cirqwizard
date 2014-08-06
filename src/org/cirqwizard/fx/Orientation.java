@@ -16,22 +16,26 @@ package org.cirqwizard.fx;
 
 import org.cirqwizard.fx.services.ShapesGenerationService;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.ProgressIndicator;
 
 
-public class OrientationController extends SceneController
+public class Orientation extends ScreenController
 {
-    @FXML private Parent view;
     @FXML private PCBPane pcbPane;
     @FXML private ProgressIndicator progressIndicator;
 
     private ShapesGenerationService service;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "orientation.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Orientation";
     }
 
     public void refresh()

@@ -21,11 +21,11 @@ public class SceneTree
 {
     private static SceneEnum root = SceneEnum.Welcome.
             addChild(SceneEnum.Orientation).
-            addChild(SceneEnum.Homing).
-        addChild(SceneEnum.TopTraces.
-                addChild(SceneEnum.PCBPlacement).
-                addChild(SceneEnum.Message).
-                addChild(SceneEnum.ZOffset));
+            addChild(SceneEnum.Homing);
+//        addChild(SceneEnum.TopTraces.
+//                addChild(SceneEnum.TopTraces_PCBPlacement).
+//                addChild(SceneEnum.TopTraces_InsertTool).
+//                addChild(SceneEnum.ZOffset));
 
     public static SceneEnum getRoot()
     {

@@ -19,7 +19,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
@@ -35,19 +34,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MainViewController extends SceneController implements Initializable
+public class MainViewController extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-
     @FXML private HBox breadCrumbBarBox;
     @FXML private AnchorPane contentPane;
 
-    private SceneEnum currentScene;
+    private ScreenController currentScreen;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "MainView.fxml";
     }
 
     @Override
@@ -98,33 +95,32 @@ public class MainViewController extends SceneController implements Initializable
         b.getStyleClass().setAll("button", "last-button");
     }
 
-    public SceneEnum getCurrentScene()
+    public ScreenController getCurrentScreen()
     {
-        return currentScene;
+        return currentScreen;
     }
 
-    public void setScene(SceneEnum scene)
+    public void setScreen(ScreenController screen)
     {
-        this.currentScene = scene;
+        this.currentScreen = screen;
 
         contentPane.getChildren().clear();
-        SceneController sceneController = getMainApplication().getSceneController(scene);
-        sceneController.refresh();
-        contentPane.getChildren().add(sceneController.getView());
+        screen.refresh();
+        contentPane.getChildren().add(screen.getView());
         AnchorPane.setTopAnchor(contentPane.getChildren().get(0), 0.0);
         AnchorPane.setLeftAnchor(contentPane.getChildren().get(0), 0.0);
         AnchorPane.setRightAnchor(contentPane.getChildren().get(0), 0.0);
         AnchorPane.setBottomAnchor(contentPane.getChildren().get(0), 0.0);
-        updateBreadCrumbBar(SceneTree.getPath(scene));
+        updateBreadCrumbBar(getMainApplication().getPath(screen));
 
     }
 
-    private void updateBreadCrumbBar(List<SceneEnum> path)
+    private void updateBreadCrumbBar(List<ScreenController> path)
     {
         breadCrumbBarBox.getChildren().clear();
         for (int i = 0; i < path.size(); i++)
         {
-            final SceneEnum item = path.get(i);
+            final ScreenController item = path.get(i);
             Button b = new Button(item.getName());
             b.setFocusTraversable(false);
             b.getStyleClass().setAll("button");
@@ -138,17 +134,17 @@ public class MainViewController extends SceneController implements Initializable
                 b.getStyleClass().addAll("middle-button");
 
             List<Action> contextMenuActions = new ArrayList<>();
-            List<SceneEnum> siblings = SceneTree.getSiblings(item);
+            List<ScreenController> siblings = getMainApplication().getSiblings(item);
             if (siblings != null)
             {
-                for (SceneEnum sibling : siblings)
+                for (ScreenController sibling : siblings)
                 {
                     contextMenuActions.add(new AbstractAction(sibling.getName())
                     {
                         @Override
                         public void handle(ActionEvent event)
                         {
-                            setScene(SceneTree.getVisibleChild(sibling));
+                            setScreen(getMainApplication().getVisibleChild(sibling));
                         }
                     });
                 }
@@ -166,7 +162,7 @@ public class MainViewController extends SceneController implements Initializable
                 });
             }
             else
-                b.setOnAction((event) -> setScene(SceneTree.getVisibleChild(item)));
+                b.setOnAction((event) -> setScreen(getMainApplication().getVisibleChild(item)));
 
             breadCrumbBarBox.getChildren().add(b);
         }

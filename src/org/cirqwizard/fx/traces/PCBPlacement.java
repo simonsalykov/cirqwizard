@@ -12,34 +12,22 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.dispensing;
+package org.cirqwizard.fx.traces;
 
-import javafx.scene.control.Button;
-import org.cirqwizard.fx.ScreenController;
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import org.cirqwizard.settings.SettingsFactory;
-
-
-public class SyringeBleedingController extends ScreenController
+public class PCBPlacement extends org.cirqwizard.fx.common.PCBPlacement
 {
-    @FXML private Parent view;
-    @FXML private Button pushButton;
-
     @Override
-    public Parent getView()
+    protected String getName()
     {
-        return view;
+        return "Placement";
     }
 
     @Override
     public void refresh()
     {
-        pushButton.setDisable(getMainApplication().getCNCController() == null);
-    }
-
-    public void dispense()
-    {
-        getMainApplication().getCNCController().dispensePaste(SettingsFactory.getDispensingSettings().getBleedingDuration().getValue());
+        super.refresh();
+        text.setText("Put the board FACE UP right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
+//        text.setText("Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
+//        text.setText("Put the board FACE UP on the SPACER.");
     }
 }

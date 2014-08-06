@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 /**
  * Created by simon on 04/08/14.
  */
-public class SettingsEditorController extends SceneController implements Initializable
+public class SettingsEditorController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
 

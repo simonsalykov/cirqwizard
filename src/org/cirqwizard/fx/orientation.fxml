@@ -11,7 +11,7 @@
 <?import javafx.scene.paint.*?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.OrientationController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
   <children>
     <Label alignment="CENTER" layoutY="24.0" styleClass="h1" text="Choose orientation:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
     <StackPane fx:id="containerPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="71.0">

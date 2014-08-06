@@ -31,7 +31,7 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 
-public class ManualMovementController extends SceneController implements Initializable
+public class ManualMovementController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
     @FXML private Button homeButton;

@@ -12,34 +12,39 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.dispensing;
+package org.cirqwizard.fx;
 
-import javafx.scene.control.Button;
-import org.cirqwizard.fx.ScreenController;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import org.cirqwizard.settings.SettingsFactory;
 
 
-public class SyringeBleedingController extends ScreenController
+public class Homing extends ScreenController
 {
-    @FXML private Parent view;
-    @FXML private Button pushButton;
+    @FXML private Button homeButton;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "homing.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Homing";
     }
 
     @Override
     public void refresh()
     {
-        pushButton.setDisable(getMainApplication().getCNCController() == null);
+        homeButton.setDisable(getMainApplication().getCNCController() == null);
     }
 
-    public void dispense()
+    public void home()
     {
-        getMainApplication().getCNCController().dispensePaste(SettingsFactory.getDispensingSettings().getBleedingDuration().getValue());
+        getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
     }
+
+
 }

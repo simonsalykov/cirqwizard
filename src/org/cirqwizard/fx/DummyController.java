@@ -14,33 +14,19 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import org.cirqwizard.settings.SettingsFactory;
-
-
-public class HomingController extends SceneController
+public class DummyController extends ScreenController
 {
-    @FXML private Parent view;
-    @FXML private Button homeButton;
+    private String name;
 
-    @Override
-    public Parent getView()
+    public DummyController(String name)
     {
-        return view;
+        super();
+        this.name = name;
     }
 
     @Override
-    public void refresh()
+    protected String getName()
     {
-        homeButton.setDisable(getMainApplication().getCNCController() == null);
+        return name;
     }
-
-    public void home()
-    {
-        getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
-    }
-
-
 }

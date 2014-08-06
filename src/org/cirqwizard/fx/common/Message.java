@@ -12,34 +12,41 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.dispensing;
+package org.cirqwizard.fx.common;
 
-import javafx.scene.control.Button;
-import org.cirqwizard.fx.ScreenController;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import org.cirqwizard.fx.ScreenController;
+import org.cirqwizard.fx.State;
 import org.cirqwizard.settings.SettingsFactory;
 
 
-public class SyringeBleedingController extends ScreenController
+public class Message extends ScreenController
 {
-    @FXML private Parent view;
-    @FXML private Button pushButton;
+    @FXML protected Label header;
+    @FXML protected Label text;
+    @FXML protected Button continueButton;
+    @FXML protected Button moveAwayButton;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "/org/cirqwizard/fx/common/Message.fxml";
     }
 
     @Override
     public void refresh()
     {
-        pushButton.setDisable(getMainApplication().getCNCController() == null);
+        moveAwayButton.setVisible(false);
+        moveAwayButton.setDisable(getMainApplication().getCNCController() == null);
+        continueButton.setVisible(getMainApplication().getState() != State.TERMINAL);
     }
 
-    public void dispense()
+    public void moveAway()
     {
-        getMainApplication().getCNCController().dispensePaste(SettingsFactory.getDispensingSettings().getBleedingDuration().getValue());
+        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
+
+
 }

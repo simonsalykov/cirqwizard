@@ -15,6 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 
+import org.cirqwizard.fx.traces.InsertTool;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,8 @@ public enum SceneEnum
     Orientation("Orientation", "orientation.fxml"),
     Homing("Homing", "homing.fxml"),
     JobSelection("Job selection", "job-selection.fxml"),
-    PCBPlacement("Placement", "PCBPlacement.fxml"),
-    Message("Tool", "Message.fxml"),
+    PCBPlacement("Placement", null),
+    Message("Tool", null),
     ZOffset("Z offset", "ZOffset.fxml"),
     XYOffsets("X and Y offsets", "XYOffsets.fxml"),
     Machining("Machining", "machining/Machining.fxml"),
@@ -37,21 +39,30 @@ public enum SceneEnum
     ComponentPlacement("Placement", "pp/ComponentPlacement.fxml"),
     About("About", "About.fxml"),
     ManualMovement("Manual control", "ManualMovement.fxml"),
-    ManualDataInput("MDI", "ManualDataInput.fxml"),
+    ManualDataInput("MDI", "ManualDataInput.fxml");
 
-    MainView(null, "MainView.fxml"),
+//    MainView(null, "MainView.fxml"),
 
-    TopTraces("Top traces", null);
+//    TopTraces("Top traces", null),
+//    TopTraces_PCBPlacement("Placement", null, new org.cirqwizard.fx.traces.PCBPlacement()),
+//    TopTraces_InsertTool("Tool", null, new InsertTool());
 
     private String fxml;
     private String name;
+    private ScreenController controller;
     private SceneEnum parent;
     private List<SceneEnum> children = new ArrayList<>();
 
     private SceneEnum(String name, String fxml)
     {
+        this(name, fxml, null);
+    }
+
+    private SceneEnum(String name, String fxml, ScreenController controller)
+    {
         this.name = name;
         this.fxml = fxml;
+        this.controller = controller;
     }
 
     public String getName()
@@ -72,6 +83,11 @@ public enum SceneEnum
     public List<SceneEnum> getChildren()
     {
         return children;
+    }
+
+    public ScreenController getController()
+    {
+        return controller;
     }
 
     public SceneEnum addChild(SceneEnum child)

@@ -17,7 +17,6 @@ package org.cirqwizard.fx;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
@@ -30,17 +29,22 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 
-public class WelcomeController extends SceneController
+public class Welcome extends ScreenController
 {
     private static final String PREFERENCE_NAME = "interface.recent.files";
 
-    @FXML private Parent view;
     @FXML private GridPane recentFilesPane;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "welcome.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Home";
     }
 
     @Override
@@ -73,8 +77,8 @@ public class WelcomeController extends SceneController
         getMainApplication().getContext().setFile(file);
 //        getMainApplication().setState(State.ORIENTATION);
 
-        getMainApplication().showScene(SceneEnum.MainView);
-        ((MainViewController)getMainApplication().getSceneController(SceneEnum.MainView)).setScene(SceneEnum.Orientation);
+//        getMainApplication().showScene(SceneEnum.MainView);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
     }
 
     private List<String> getRecentFiles()

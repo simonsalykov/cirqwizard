@@ -18,7 +18,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TitledPane;
@@ -32,9 +31,8 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 
-public class ZOffsetController extends SceneController implements Initializable
+public class ZOffsetController extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
     @FXML private Button continueButton;
 
     @FXML private RadioButton manualEntryRadioButton;
@@ -56,12 +54,6 @@ public class ZOffsetController extends SceneController implements Initializable
 
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-
-    @Override
-    public Parent getView()
-    {
-        return view;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)

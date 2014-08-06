@@ -14,7 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import org.cirqwizard.fx.SceneController;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.toolpath.PPPoint;
 import org.cirqwizard.toolpath.Toolpath;
@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 
 
-public class PlacingOverviewController extends SceneController implements Initializable
+public class PlacingOverviewController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
 

@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class AboutController extends SceneController implements Initializable
+public class AboutController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
     @FXML private Label versionLabel;

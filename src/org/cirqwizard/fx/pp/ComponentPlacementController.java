@@ -30,7 +30,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.SceneController;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 
 
-public class ComponentPlacementController extends SceneController implements Initializable
+public class ComponentPlacementController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
 

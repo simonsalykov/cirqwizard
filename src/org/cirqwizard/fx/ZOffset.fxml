@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import org.cirqwizard.fx.controls.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import java.util.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
-
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.ZOffsetController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="org.cirqwizard.fx.ZOffsetController">
   <children>
     <Label layoutX="39.0" layoutY="50.0" styleClass="h1" text="We need to establish Z offset" />
     <Label layoutX="63.0" layoutY="86.0" prefHeight="55.0" prefWidth="681.0" text="Offset on Z axis is the verical distance between the cutting edge of the milling cutter when the head is in zero position and the surface of PCB." wrapText="true" />
@@ -21,11 +21,11 @@
     <RealNumberTextField fx:id="manualZOffset" layoutX="59.0" layoutY="173.0" onAction="#next" prefWidth="85.0" />
     <RadioButton fx:id="automaticEntryRadioButton" layoutX="39.0" layoutY="217.0" mnemonicParsing="false" onAction="#updateComponents" text="I want to try" toggleGroup="$selectionType" />
     <Label layoutX="79.0" layoutY="236.0" prefHeight="47.0" prefWidth="545.0" text="The head needs to be moved to the scrap place on the PCB. Here you can try milling at various offsets to figure out the right one." wrapText="true" />
-    <TitledPane fx:id="scrapPlacePane" animated="false" collapsible="false" focusTraversable="false" layoutY="300.0" prefHeight="117.0" prefWidth="229.0" text="Scrap place location" AnchorPane.leftAnchor="63.0">
+    <TitledPane fx:id="scrapPlacePane" animated="false" collapsible="false" focusTraversable="false" layoutY="300.0" prefHeight="146.0" prefWidth="244.0" text="Scrap place location" AnchorPane.leftAnchor="63.0">
       <content>
-        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="96.0" prefWidth="217.0">
+        <AnchorPane id="Content">
           <children>
-            <VBox id="VBox" alignment="CENTER" layoutX="19.0" layoutY="12.0" spacing="5.0">
+            <VBox id="VBox" alignment="CENTER" layoutX="19.0" layoutY="12.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
               <children>
                 <HBox id="HBox" alignment="CENTER" spacing="5.0">
                   <children>
@@ -41,7 +41,11 @@
                 </HBox>
               </children>
             </VBox>
-            <Button fx:id="goButton" layoutX="129.0" layoutY="24.0" mnemonicParsing="false" onAction="#moveXY" text="Go" />
+                  <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                  <Button fx:id="goButton" mnemonicParsing="false" onAction="#moveXY" text="Go" />
+                     </children>
+                  </VBox>
           </children>
         </AnchorPane>
       </content>

@@ -25,7 +25,7 @@ import javafx.scene.layout.Region;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 
 
-public class ManualDataInputController extends SceneController
+public class ManualDataInputController extends ScreenController
 {
     @FXML private Parent view;
     @FXML private Region veil;

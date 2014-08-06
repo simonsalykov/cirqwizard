@@ -30,7 +30,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.SceneController;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.State;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.services.SerialInterfaceService;
@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
-public class MachiningController extends SceneController implements Initializable
+public class MachiningController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
     @FXML private PCBPaneFX pcbPane;

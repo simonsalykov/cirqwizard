@@ -34,7 +34,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class XYOffsetsController extends SceneController implements Initializable
+public class XYOffsetsController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
 

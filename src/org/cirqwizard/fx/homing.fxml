@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.HomingController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
   <children>
     <Label layoutX="69.0" layoutY="122.0" styleClass="h1" text="The machine needs to be homed." />
     <Label layoutY="173.0" prefHeight="75.0" prefWidth="598.0" text="Homing is needed to establish zero points of the machine. Press Home button below to home the machine. If you know it's already homed you can skip this and press continue right away." wrapText="true" AnchorPane.leftAnchor="93.0" AnchorPane.rightAnchor="109.0" />

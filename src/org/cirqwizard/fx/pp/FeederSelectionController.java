@@ -26,7 +26,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.SceneController;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
@@ -34,11 +34,10 @@ import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 
-public class FeederSelectionController extends SceneController implements Initializable
+public class FeederSelectionController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
 
