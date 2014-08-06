@@ -19,6 +19,12 @@ import org.cirqwizard.fx.common.Message;
 public class InsertTool extends Message
 {
     @Override
+    protected String getName()
+    {
+        return "Tool";
+    }
+
+    @Override
     public void refresh()
     {
         super.refresh();

@@ -101,23 +101,12 @@ public abstract class ScreenController
     {
     }
 
-    public boolean isActive()
-    {
-        return this == getMainApplication().getSceneController(getMainApplication().getState().getScene());
-    }
-
     public void goBack()
     {
-        if (isActive())
-            getMainApplication().prevState();
     }
 
     public void next()
     {
         getMainApplication().setCurrentScreen(getMainApplication().getNext(getMainApplication().getCurrentScreen()));
-//        MainViewController mainViewController = (MainViewController) getMainApplication().getSceneController(SceneEnum.MainView);
-//        mainViewController.setCurrentScreen(getMainApplication().getNext(mainViewController.getCurrentScreen()));
-//        if (isActive())
-//            getMainApplication().nextState();
     }
 }

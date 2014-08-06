@@ -55,8 +55,9 @@ public class CNCController
                 @Override
                 public void run()
                 {
-                    mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong while communicating with the controller. " +
-                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
+                    // TODO
+//                    mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong while communicating with the controller. " +
+//                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
                 }
             });
         }
@@ -68,8 +69,9 @@ public class CNCController
                 @Override
                 public void run()
                 {
-                    mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong and controller returned and error. " +
-                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
+                    // TODO
+//                    mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong and controller returned and error. " +
+//                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
                 }
             });
         }

@@ -9,7 +9,7 @@
 <?import org.cirqwizard.fx.controls.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.XYOffsetsController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
   <children>
     <Label layoutX="33.0" layoutY="70.0" styleClass="h1" text="Now we need to establish X and Y offsets" visible="true" />
     <Label layoutX="81.0" layoutY="117.0" prefHeight="45.0" prefWidth="638.0" text="X and Y offsets are the distances from corresponding axes zero positions to the lower left corner of the board to be cut." wrapText="true" />

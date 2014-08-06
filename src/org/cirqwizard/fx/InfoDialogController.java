@@ -44,6 +44,6 @@ public class InfoDialogController extends ScreenController
 
     public void ok()
     {
-        getMainApplication().hideInfoDialog();
+//        getMainApplication().hideInfoDialog();
     }
 }

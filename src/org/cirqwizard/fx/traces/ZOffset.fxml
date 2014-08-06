@@ -9,7 +9,7 @@
 <?import javafx.scene.paint.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="org.cirqwizard.fx.ZOffsetController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
   <children>
     <Label layoutX="39.0" layoutY="50.0" styleClass="h1" text="We need to establish Z offset" />
     <Label layoutX="63.0" layoutY="86.0" prefHeight="55.0" prefWidth="681.0" text="Offset on Z axis is the verical distance between the cutting edge of the milling cutter when the head is in zero position and the surface of PCB." wrapText="true" />

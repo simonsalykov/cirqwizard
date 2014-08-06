@@ -12,7 +12,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.traces;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +21,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TitledPane;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.InsulationMillingSettings;
@@ -31,7 +33,7 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 
-public class ZOffsetController extends ScreenController implements Initializable
+public class ZOffset extends ScreenController implements Initializable
 {
     @FXML private Button continueButton;
 
@@ -54,18 +56,22 @@ public class ZOffsetController extends ScreenController implements Initializable
 
     private DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
+    @Override
+    protected String getFxmlName()
+    {
+        return "ZOffset.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Z offset";
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        ChangeListener<String> changeListener = new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                updateComponents();
-            }
-        };
+        ChangeListener<String> changeListener = (v, oldV, newV) -> updateComponents();
         manualZOffset.realNumberTextProperty().addListener(changeListener);
         scrapPlaceX.realNumberTextProperty().addListener(changeListener);
         scrapPlaceY.realNumberTextProperty().addListener(changeListener);

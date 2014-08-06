@@ -22,7 +22,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.services.ToolpathGenerationService;
 import org.cirqwizard.toolpath.*;
 
 import java.util.ArrayList;

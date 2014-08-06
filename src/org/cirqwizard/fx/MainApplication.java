@@ -15,22 +15,22 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.cirqwizard.fx.common.XYOffsets;
 import org.cirqwizard.fx.traces.InsertTool;
 import org.cirqwizard.fx.traces.PCBPlacement;
+import org.cirqwizard.fx.traces.TraceMilling;
+import org.cirqwizard.fx.traces.ZOffset;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.*;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.settings.SettingsFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -41,9 +41,6 @@ public class MainApplication extends Application
     private Scene scene;
     private Stage dialogStage;
     private Scene dialogScene;
-
-    private HashMap<SceneEnum, ScreenController> controllers = new HashMap<SceneEnum, ScreenController>();
-    private HashMap<Dialog, ScreenController> dialogControllers = new HashMap<Dialog, ScreenController>();
 
     private State state;
     private Context context;
@@ -57,7 +54,10 @@ public class MainApplication extends Application
             addChild(new Homing().setMainApplication(this)).
             addChild(new DummyController("Top traces").
                     addChild(new PCBPlacement().setMainApplication(this)).
-                    addChild(new InsertTool().setMainApplication(this)));
+                    addChild(new InsertTool().setMainApplication(this)).
+                    addChild(new ZOffset().setMainApplication(this)).
+                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new TraceMilling().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -68,11 +68,6 @@ public class MainApplication extends Application
         context = new Context();
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 
-//        for (SceneEnum s : SceneEnum.values())
-//            if (s.getFxml() != null)
-//                controllers.put(s, loadSceneController(s));
-//        for (Dialog d : Dialog.values())
-//            dialogControllers.put(d, loadSceneController(d));
         this.primaryStage = primaryStage;
         scene = new Scene(mainView.getView(), 800, 600);
         scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
@@ -164,56 +159,9 @@ public class MainApplication extends Application
         super.stop();
     }
 
-    private ScreenController loadSceneController(SceneEnum scene) throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(scene.getFxml()));
-        if (scene.getController() != null)
-            loader.setController(scene.getController());
-        loader.load();
-
-        ScreenController controller = loader.getController();
-        if (controller != null)
-            controller.setMainApplication(this);
-        return controller;
-    }
-
     public Context getContext()
     {
         return context;
-    }
-
-    public ScreenController getSceneController(SceneEnum scene)
-    {
-        return controllers.get(scene);
-    }
-
-    public void showScene(SceneEnum scene)
-    {
-        ScreenController controller = controllers.get(scene);
-        controller.refresh();
-        this.scene.setRoot(controller.getView());
-    }
-
-    public State getState()
-    {
-        return state;
-    }
-
-    public void setState(State state)
-    {
-        this.state = state;
-        state.onActivation(context);
-        showScene(state.getScene());
-    }
-
-    public void prevState()
-    {
-        setState(state.getPrevState(context));
-    }
-
-    public void nextState()
-    {
-        setState(state.getNextState(context));
     }
 
     public SerialInterface getSerialInterface()
@@ -260,31 +208,6 @@ public class MainApplication extends Application
             if (getVisibleChild(s) != null)
                 return getVisibleChild(s);
         return null;
-    }
-
-    public void showInfoDialog(String header, String info)
-    {
-        InfoDialogController controller = (InfoDialogController) dialogControllers.get(Dialog.INFO);
-        controller.setHeaderText(header);
-        controller.setInfoText(info);
-
-        if (dialogScene == null)
-        {
-            dialogScene = new Scene(controller.getView());
-            dialogScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
-            if(System.getProperty("os.name").startsWith("Linux"))
-                dialogScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
-        }
-        else
-            dialogScene.setRoot(controller.getView());
-
-        dialogStage.setScene(dialogScene);
-        dialogStage.show();
-    }
-
-    public void hideInfoDialog()
-    {
-        dialogStage.hide();
     }
 
     public static void main(String[] args)

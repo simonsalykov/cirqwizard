@@ -12,13 +12,16 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.common;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBSize;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,10 +37,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class XYOffsetsController extends ScreenController implements Initializable
+public class XYOffsets extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-
     @FXML private RealNumberTextField x;
     @FXML private RealNumberTextField y;
     @FXML private RealNumberTextField z;
@@ -56,51 +57,36 @@ public class XYOffsetsController extends ScreenController implements Initializab
     private Canvas offsetImageCanvas;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "XYOffsets.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "X and Y offsets";
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        ChangeListener<String> changeListener = new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                updateComponents();
-            }
-        };
+        ChangeListener<String> changeListener = (v, oldV, newV) -> updateComponents();
         x.realNumberTextProperty().addListener(changeListener);
         y.realNumberTextProperty().addListener(changeListener);
         z.realNumberTextProperty().addListener(changeListener);
-        x.realNumberIntegerProperty().addListener(new ChangeListener<Number>()
+        x.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2)
-            {
-                checkOffsetLimit(number2 == null ? null : number2.intValue(), y.getIntegerValue());
-                getMainApplication().getContext().setG54X(number2 == null ? null : number2.intValue());
-            }
+            checkOffsetLimit(newV == null ? null : newV, y.getIntegerValue());
+            getMainApplication().getContext().setG54X(newV == null ? null : newV);
         });
-        y.realNumberIntegerProperty().addListener(new ChangeListener<Number>()
+        y.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2)
-            {
-                checkOffsetLimit(x.getIntegerValue(), number2 == null ? null : number2.intValue());
-                getMainApplication().getContext().setG54Y(number2 == null ? null : number2.intValue());
-            }
+                checkOffsetLimit(x.getIntegerValue(), newV == null ? null : newV);
+                getMainApplication().getContext().setG54Y(newV == null ? null : newV);
         });
-        ignoreCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
-            {
-                checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y());
-            }
-        });
+        ignoreCheckBox.selectedProperty().addListener((v, oldV, newV) ->
+                        checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y()));
         offsetImageCanvas = new Canvas(offsetImage.getPrefWidth(), offsetImage.getPrefHeight());
         offsetImage.getChildren().addAll(offsetImageCanvas);
     }

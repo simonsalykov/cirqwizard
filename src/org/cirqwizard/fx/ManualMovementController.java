@@ -105,7 +105,7 @@ public class ManualMovementController extends ScreenController implements Initia
 
     public void goToMDI()
     {
-        getMainApplication().setState(State.MANUAL_DATA_INPUT);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualDataInputController.class));
     }
 
 }

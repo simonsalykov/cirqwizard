@@ -40,7 +40,8 @@ public class Message extends ScreenController
     {
         moveAwayButton.setVisible(false);
         moveAwayButton.setDisable(getMainApplication().getCNCController() == null);
-        continueButton.setVisible(getMainApplication().getState() != State.TERMINAL);
+        // TODO
+//        continueButton.setVisible(getMainApplication().getState() != State.TERMINAL);
     }
 
     public void moveAway()

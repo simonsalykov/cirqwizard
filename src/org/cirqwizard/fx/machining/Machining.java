@@ -16,13 +16,9 @@ package org.cirqwizard.fx.machining;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -34,16 +30,8 @@ import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.State;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.services.SerialInterfaceService;
-import org.cirqwizard.fx.services.ToolpathGenerationService;
-import org.cirqwizard.gcode.DrillGCodeGenerator;
-import org.cirqwizard.gcode.MillingGCodeGenerator;
-import org.cirqwizard.gcode.PasteGCodeGenerator;
-import org.cirqwizard.gcode.TraceGCodeGenerator;
 import org.cirqwizard.layers.Layer;
-import org.cirqwizard.layers.SolderPasteLayer;
-import org.cirqwizard.layers.TraceLayer;
-import org.cirqwizard.post.RTPostprocessor;
-import org.cirqwizard.settings.*;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
@@ -51,47 +39,52 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
-public class MachiningController extends ScreenController implements Initializable
+public class Machining extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-    @FXML private PCBPaneFX pcbPane;
-    @FXML private ScrollPane scrollPane;
-    @FXML private TitledPane offsetsPane;
-    @FXML private TitledPane miscPane;
+    @FXML protected PCBPaneFX pcbPane;
+    @FXML protected ScrollPane scrollPane;
+    @FXML protected TitledPane offsetsPane;
+    @FXML protected TitledPane miscPane;
 
-    @FXML private RealNumberTextField toolDiameter;
-    @FXML private RealNumberTextField feed;
-    @FXML private Button goButton;
-    @FXML private Button moveHeadAwayButton;
+    @FXML protected RealNumberTextField toolDiameter;
+    @FXML protected RealNumberTextField feed;
+    @FXML protected Button goButton;
+    @FXML protected Button moveHeadAwayButton;
 
-    @FXML private RealNumberTextField g54X;
-    @FXML private RealNumberTextField g54Y;
-    @FXML private RealNumberTextField g54Z;
+    @FXML protected RealNumberTextField g54X;
+    @FXML protected RealNumberTextField g54Y;
+    @FXML protected RealNumberTextField g54Z;
 
-    @FXML private RealNumberTextField clearance;
-    @FXML private RealNumberTextField safetyHeight;
-    @FXML private RealNumberTextField zFeed;
+    @FXML protected RealNumberTextField clearance;
+    @FXML protected RealNumberTextField safetyHeight;
+    @FXML protected RealNumberTextField zFeed;
 
-    @FXML private Region veil;
-    @FXML private AnchorPane gcodePane;
-    @FXML private TextArea gcodeListing;
+    @FXML protected Region veil;
+    @FXML protected AnchorPane gcodePane;
+    @FXML protected TextArea gcodeListing;
 
-    @FXML private BorderPane executionPane;
-    @FXML private ProgressBar executionProgressBar;
-    @FXML private Label timeElapsedLabel;
+    @FXML protected BorderPane executionPane;
+    @FXML protected ProgressBar executionProgressBar;
+    @FXML protected Label timeElapsedLabel;
 
-    @FXML private BorderPane generationPane;
-    @FXML private Label generationStageLabel;
-    @FXML private ProgressBar overallProgressBar;
-    @FXML private Label machiningTimeEstimationLabel;
-    private StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
-    @FXML private Button stopGenerationButton;
+    @FXML protected BorderPane generationPane;
+    @FXML protected Label generationStageLabel;
+    @FXML protected ProgressBar overallProgressBar;
+    @FXML protected Label machiningTimeEstimationLabel;
+    protected StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
+    @FXML protected Button stopGenerationButton;
 
-    private ToolpathGenerationService toolpathGenerationService;
+    protected ToolpathGenerationService toolpathGenerationService;
 
     private PCBPaneMouseHandler mouseHandler;
 
     private SerialInterfaceService serialService;
+
+    @Override
+    protected String getFxmlName()
+    {
+        return "/org/cirqwizard/fx/machining/Machining.fxml";
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -102,155 +95,112 @@ public class MachiningController extends ScreenController implements Initializab
         final KeyCodeCombination keyZoomIn = new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHORTCUT_DOWN);
         final KeyCodeCombination keyZoomOut = new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN);
 
-        scrollPane.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>()
+        scrollPane.addEventFilter(ScrollEvent.ANY, (event) ->
         {
-            @Override
-            public void handle(ScrollEvent event)
+            if (event.isShortcutDown())
             {
-                if (event.isShortcutDown())
-                {
-                    double scale = pcbPane.scaleProperty().getValue() + event.getDeltaY() / 10000.0;
-                    scale = Math.max(scale, 0.005);
-                    scale = Math.min(scale, 1);
-                    pcbPane.scaleProperty().setValue(scale);
-                    event.consume();
-                }
+                double scale = pcbPane.scaleProperty().getValue() + event.getDeltaY() / 10000.0;
+                scale = Math.max(scale, 0.005);
+                scale = Math.min(scale, 1);
+                pcbPane.scaleProperty().setValue(scale);
+                event.consume();
             }
         });
-        view.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>()
+        view.addEventFilter(KeyEvent.ANY, (event) ->
         {
-            @Override
-            public void handle(KeyEvent event)
-            {
-                if (!event.isShortcutDown())
-                    pcbPane.setCursor(Cursor.CROSSHAIR);
-                else
-                    pcbPane.setCursor(Cursor.DEFAULT);
-            }
+            if (!event.isShortcutDown())
+                pcbPane.setCursor(Cursor.CROSSHAIR);
+            else
+                pcbPane.setCursor(Cursor.DEFAULT);
         });
 
         mouseHandler = new PCBPaneMouseHandler(pcbPane);
         pcbPane.addEventFilter(MouseEvent.ANY, mouseHandler);
-        offsetsPane.expandedProperty().addListener(new ChangeListener<Boolean>()
+        offsetsPane.expandedProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean nowExpanded)
+            if (newV)
+                offsetsPane.toFront();
+            else
+                offsetsPane.toBack();
+        });
+        miscPane.expandedProperty().addListener((v, oldV, newV) ->
+        {
+            if (newV)
+                miscPane.toFront();
+            else
+                miscPane.toBack();
+        });
+        view.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
+        {
+            if (keyEnable.match(event))
             {
-                if (nowExpanded)
-                    offsetsPane.toFront();
-                else
-                    offsetsPane.toBack();
+                enableSelected();
+                event.consume();
+            }
+            else if (keyDisable.match(event))
+            {
+                disableSelected();
+                event.consume();
+            }
+            else if (keySelectAll.match(event))
+            {
+                selectAll();
+                event.consume();
+            }
+            else if (keyZoomIn.match(event) && ("+".equals(event.getText()) || !System.getProperty("os.name").startsWith("Mac"))) // Workaround for PCBCAM-95 and CQ-86
+            {
+                zoomIn();
+                event.consume();
+            }
+            else if (keyZoomOut.match(event))
+            {
+                zoomOut();
+                event.consume();
             }
         });
-        miscPane.expandedProperty().addListener(new ChangeListener<Boolean>()
+        g54X.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean nowExpanded)
-            {
-                if (nowExpanded)
-                    miscPane.toFront();
-                else
-                    miscPane.toBack();
-            }
+            if (newV != null)
+                getMainApplication().getContext().setG54X(newV);
         });
-        view.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+        g54Y.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void handle(KeyEvent event)
-            {
-                if (keyEnable.match(event))
-                {
-                    enableSelected();
-                    event.consume();
-                }
-                else if (keyDisable.match(event))
-                {
-                    disableSelected();
-                    event.consume();
-                }
-                else if (keySelectAll.match(event))
-                {
-                    selectAll();
-                    event.consume();
-                }
-                else if (keyZoomIn.match(event) && ("+".equals(event.getText()) || !System.getProperty("os.name").startsWith("Mac"))) // Workaround for PCBCAM-95 and CQ-86
-                {
-                    zoomIn();
-                    event.consume();
-                }
-                else if (keyZoomOut.match(event))
-                {
-                    zoomOut();
-                    event.consume();
-                }
-            }
+            if (newV != null)
+                getMainApplication().getContext().setG54Y(newV);
         });
-        g54X.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
+        g54Z.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
-            {
-                if (integer2 != null)
-                    getMainApplication().getContext().setG54X(integer2);
-            }
-        });
-        g54Y.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
-            {
-                if (integer2 != null)
-                    getMainApplication().getContext().setG54Y(integer2);
-            }
-        });
-        g54Z.realNumberIntegerProperty().addListener(new ChangeListener<Integer>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
-            {
-                if (integer2 != null)
-                    getMainApplication().getContext().setG54Z(integer2);
-            }
+            if (newV != null)
+                getMainApplication().getContext().setG54Z(newV);
         });
 
-        gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>()
+        gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
         {
-            @Override
-            public void handle(KeyEvent event)
+            if (event.getCode() == KeyCode.ESCAPE)
             {
-                if (event.getCode() == KeyCode.ESCAPE)
-                {
-                    hideGCodeListing();
-                    event.consume();
-                }
+                hideGCodeListing();
+                event.consume();
             }
         });
-        toolDiameter.focusedProperty().addListener(new ChangeListener<Boolean>()
+        toolDiameter.focusedProperty().addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean aBoolean2)
-            {
-                if (!aBoolean2)
-                    restartService();
-            }
+            if (!newV)
+                restartService();
         });
 
         machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
     }
 
-    @Override
-    public Parent getView()
+    protected ToolpathGenerationService getToolpathGenerationService()
     {
-        return view;
+        return null;
     }
 
     @Override
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        State state = getMainApplication().getState();
-        toolpathGenerationService = new ToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty);
+        toolpathGenerationService = getToolpathGenerationService();
         generationStageLabel.textProperty().bind(toolpathGenerationService.generationStageProperty());
         serialService = new SerialInterfaceService(getMainApplication());
         mouseHandler.setService(toolpathGenerationService);
@@ -270,26 +220,8 @@ public class MachiningController extends ScreenController implements Initializab
 
         stopGenerationButton.setDisable(false);
 
-        InsulationMillingSettings insulationMillingSettings = SettingsFactory.getInsulationMillingSettings();
-
-        if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
-        {
-            toolDiameter.setDisable(false);
-            toolDiameter.setIntegerValue(insulationMillingSettings.getToolDiameter().getValue());
-            feed.setIntegerValue(SettingsFactory.getInsulationMillingSettings().getFeedXY().getValue());
-
-            clearance.setIntegerValue(insulationMillingSettings.getClearance().getValue());
-            safetyHeight.setIntegerValue(insulationMillingSettings.getSafetyHeight().getValue());
-            zFeed.setDisable(false);
-            zFeed.setIntegerValue(insulationMillingSettings.getFeedZ().getValue());
-
-            pcbPane.setGerberColor(state == State.MILLING_TOP_INSULATION ? PCBPaneFX.TOP_TRACE_COLOR : PCBPaneFX.BOTTOM_TRACE_COLOR);
-            pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
-            pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
-
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * insulationMillingSettings.getFeedArcs().getValue() / 100);
-        }
-        else if (state == State.DRILLING)
+        /*
+        if (state == State.DRILLING)
         {
             toolDiameter.setDisable(true);
             toolDiameter.setText(context.getPcbLayout().getDrillDiameters().get(context.getCurrentDrill()));
@@ -345,6 +277,7 @@ public class MachiningController extends ScreenController implements Initializab
             pcbPane.setToolpathColor(PCBPaneFX.PASTE_TOOLPATH_COLOR);
             pcbPane.setGerberPrimitives(((SolderPasteLayer)getCurrentLayer()).getElements());
         }
+        */
 
         g54X.setIntegerValue(context.getG54X());
         g54Y.setIntegerValue(context.getG54Y());
@@ -390,17 +323,17 @@ public class MachiningController extends ScreenController implements Initializab
         pcbPane.scaleProperty().setValue(scale);
     }
 
-    private Layer getCurrentLayer()
+    protected Layer getCurrentLayer()
     {
-        Context context = getMainApplication().getContext();
-        switch (getMainApplication().getState())
-        {
-            case MILLING_TOP_INSULATION: return context.getPcbLayout().getTopTracesLayer();
-            case MILLING_BOTTOM_INSULATION: return context.getPcbLayout().getBottomTracesLayer();
-            case DRILLING: return context.getPcbLayout().getDrillingLayer();
-            case MILLING_CONTOUR: return context.getPcbLayout().getMillingLayer();
-            case DISPENSING: return context.getPcbLayout().getSolderPasteLayer();
-        }
+//        Context context = getMainApplication().getContext();
+//        switch (getMainApplication().getState())
+//        {
+//            case MILLING_TOP_INSULATION: return context.getPcbLayout().getTopTracesLayer();
+//            case MILLING_BOTTOM_INSULATION: return context.getPcbLayout().getBottomTracesLayer();
+//            case DRILLING: return context.getPcbLayout().getDrillingLayer();
+//            case MILLING_CONTOUR: return context.getPcbLayout().getMillingLayer();
+//            case DISPENSING: return context.getPcbLayout().getSolderPasteLayer();
+//        }
         return null;
     }
 
@@ -413,7 +346,7 @@ public class MachiningController extends ScreenController implements Initializab
 
     public void enableSelected()
     {
-        ArrayList<Toolpath> changedToolpaths = new ArrayList<Toolpath>();
+        ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
         for (Toolpath toolpath : getCurrentLayer().getToolpaths())
         {
             if (toolpath.isSelected())
@@ -429,7 +362,7 @@ public class MachiningController extends ScreenController implements Initializab
 
     public void disableSelected()
     {
-        ArrayList<Toolpath> changedToolpaths = new ArrayList<Toolpath>();
+        ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
         for (Toolpath toolpath : getCurrentLayer().getToolpaths())
         {
             if (toolpath.isSelected())
@@ -442,21 +375,12 @@ public class MachiningController extends ScreenController implements Initializab
         pcbPane.repaint(changedToolpaths);
     }
 
-    private String generateGCode()
+    protected String generateGCode()
     {
-        State state = getMainApplication().getState();
+        State state = null; //getMainApplication().getState();
 
-        if (state == State.MILLING_TOP_INSULATION || state == State.MILLING_BOTTOM_INSULATION)
-        {
-            InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-            int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
-            TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), state);
-            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
-                    settings.getSpeed().getValue());
-
-        }
-        else if (state == State.DRILLING)
+        /*
+        if (state == State.DRILLING)
         {
             DrillingSettings settings = SettingsFactory.getDrillingSettings();
             DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
@@ -481,7 +405,7 @@ public class MachiningController extends ScreenController implements Initializab
                     settings.getPostFeedPause().getValue(), feed.getIntegerValue(), clearance.getIntegerValue(),
                     settings.getWorkingHeight().getValue());
         }
-
+        */
         return null;
     }
 

@@ -75,7 +75,7 @@ public class JobSelectionController extends ScreenController
 
     public void showSettings()
     {
-        getMainApplication().setState(State.CHECK_SETTINGS);
+//        getMainApplication().setState(State.CHECK_SETTINGS);
     }
 
     public void refresh()

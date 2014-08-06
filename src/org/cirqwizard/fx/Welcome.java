@@ -116,21 +116,21 @@ public class Welcome extends ScreenController
 
     public void showSettings()
     {
-        getMainApplication().setState(State.SETTINGS);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditorController.class));
     }
 
     public void openManualMovementScreen()
     {
-        getMainApplication().setState(State.MANUAL_MOVEMENT);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualMovementController.class));
     }
 
     public void firmware()
     {
-        getMainApplication().setState(State.FIRMWARE);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualMovementController.class));
     }
 
     public void showAbout()
     {
-        getMainApplication().setState(State.ABOUT);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(AboutController.class));
     }
 }
