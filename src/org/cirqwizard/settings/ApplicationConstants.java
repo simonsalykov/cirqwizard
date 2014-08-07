@@ -14,8 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.settings;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 public class ApplicationConstants
 {
+    private static NumberFormat toolDiameterFormat = new DecimalFormat("0.0#");
+
     public static final int RESOLUTION = 1000;
     public static final int ROUNDING = 30;
     private final static int X_RAPIDS = 1_500_000;
@@ -65,5 +70,15 @@ public class ApplicationConstants
     public static int getArcFeed()
     {
         return ARC_FEED;
+    }
+
+    public static NumberFormat getToolDiameterFormat()
+    {
+        return toolDiameterFormat;
+    }
+
+    public static String formatToolDiameter(int diameter)
+    {
+        return toolDiameterFormat.format((double)diameter / RESOLUTION);
     }
 }

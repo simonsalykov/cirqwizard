@@ -24,8 +24,6 @@ public class PCBPlacement extends org.cirqwizard.fx.common.PCBPlacement
     {
         super.refresh();
         text.setText("Put the board FACE UP right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
-//        text.setText("Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
-//        text.setText("Put the board FACE UP on the SPACER.");
     }
 
     @Override

@@ -69,7 +69,7 @@ public class MainViewController extends ScreenController implements Initializabl
         ContextMenu contextMenu = ActionUtils.createContextMenu(Arrays.asList(millingAction, drillingAction));
 
         Button b = new Button("Home");
-        b.setOnAction((event) ->
+        b.setOnAction(event ->
         {
             Button button = (Button) event.getSource();
             final Scene scene = button.getScene();
@@ -144,14 +144,14 @@ public class MainViewController extends ScreenController implements Initializabl
                         @Override
                         public void handle(ActionEvent event)
                         {
-                            setScreen(getMainApplication().getVisibleChild(sibling));
+                            sibling.select();
                         }
                     };
                     action.setDisabled(!sibling.isEnabled());
                     contextMenuActions.add(action);
                 }
                 ContextMenu contextMenu = ActionUtils.createContextMenu(contextMenuActions);
-                b.setOnAction((event) ->
+                b.setOnAction(event ->
                 {
                     Button button = (Button) event.getSource();
                     final Scene scene = button.getScene();
@@ -164,7 +164,7 @@ public class MainViewController extends ScreenController implements Initializabl
                 });
             }
             else
-                b.setOnAction((event) -> setScreen(getMainApplication().getVisibleChild(item)));
+                b.setOnAction(event -> item.select());
 
             breadCrumbBarBox.getChildren().add(b);
         }

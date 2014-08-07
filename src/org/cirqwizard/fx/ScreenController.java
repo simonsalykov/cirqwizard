@@ -117,6 +117,20 @@ public abstract class ScreenController
 
     public void next()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getNext(getMainApplication().getCurrentScreen()));
+        getNext(this).select();
+    }
+
+    public ScreenController getNext(ScreenController scene)
+    {
+        List<ScreenController> siblings = getMainApplication().getSiblings(scene);
+        for (int i = siblings.indexOf(scene) + 1; i < siblings.size(); i++)
+            if (siblings.get(i).isMandatory() && siblings.get(i).isEnabled())
+                return siblings.get(i);
+        return getNext(scene.getParent());
+    }
+
+    public void select()
+    {
+        getMainApplication().setCurrentScreen(this);
     }
 }

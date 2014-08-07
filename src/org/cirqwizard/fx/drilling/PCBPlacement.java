@@ -12,21 +12,22 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.drilling;
 
-public class DummyController extends ScreenController
+import org.cirqwizard.fx.Context;
+
+public class PCBPlacement extends org.cirqwizard.fx.common.PCBPlacement
 {
-    private String name;
-
-    public DummyController(String name)
+    @Override
+    public void refresh()
     {
-        super();
-        this.name = name;
+        super.refresh();
+        text.setText("Put the board FACE UP on the SPACER.");
     }
 
     @Override
-    protected String getName()
+    protected Context.PcbPlacement getExpectedPlacement()
     {
-        return name;
+        return Context.PcbPlacement.FACE_UP_SPACER;
     }
 }

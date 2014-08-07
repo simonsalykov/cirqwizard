@@ -70,7 +70,7 @@ public class Machining extends ScreenController implements Initializable
     @FXML protected Label generationStageLabel;
     @FXML protected ProgressBar overallProgressBar;
     @FXML protected Label machiningTimeEstimationLabel;
-    protected StringProperty estimatedMachiningTimeProperty = new SimpleStringProperty();
+    protected StringProperty estimatedMachiningTimeProperty;
     @FXML protected Button stopGenerationButton;
 
     protected ToolpathGenerationService toolpathGenerationService;
@@ -187,6 +187,7 @@ public class Machining extends ScreenController implements Initializable
                 restartService();
         });
 
+        estimatedMachiningTimeProperty = new SimpleStringProperty();
         machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
     }
 
@@ -220,23 +221,6 @@ public class Machining extends ScreenController implements Initializable
         stopGenerationButton.setDisable(false);
 
         /*
-        if (state == State.DRILLING)
-        {
-            toolDiameter.setDisable(true);
-            toolDiameter.setText(context.getPcbLayout().getDrillDiameters().get(context.getCurrentDrill()));
-            DrillingSettings settings = SettingsFactory.getDrillingSettings();
-            feed.setIntegerValue(settings.getFeed().getValue());
-
-            clearance.setIntegerValue(settings.getClearance().getValue());
-            safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
-            zFeed.setDisable(true);
-
-            context.setG54Z(settings.getZOffset().getValue());
-
-            pcbPane.setGerberColor(PCBPaneFX.DRILL_POINT_COLOR);
-            pcbPane.setToolpathColor(PCBPaneFX.DRILL_POINT_COLOR);
-            pcbPane.setGerberPrimitives(null);
-        }
         else if (state == State.MILLING_CONTOUR)
         {
             toolDiameter.setDisable(true);

@@ -106,10 +106,6 @@ public class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 
     private Layer getLayer()
     {
-//        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_TOP_INSULATION)
-//            return context.getPcbLayout().getTopTracesLayer();
-//        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_BOTTOM_INSULATION)
-//            return context.getPcbLayout().getBottomTracesLayer();
 //        if (mainApplication.getState() == org.cirqwizard.fx.State.DRILLING)
 //            return context.getPcbLayout().getDrillingLayer();
 //        if (mainApplication.getState() == org.cirqwizard.fx.State.MILLING_CONTOUR)

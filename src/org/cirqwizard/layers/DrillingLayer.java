@@ -15,11 +15,11 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.DrillPoint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class DrillingLayer extends Layer
@@ -38,11 +38,7 @@ public class DrillingLayer extends Layer
 
     public List<Integer> getDrillDiameters()
     {
-        ArrayList<Integer> result = new ArrayList<>();
-        for (DrillPoint drillPoint : drillPoints)
-            if (!result.contains(drillPoint.getToolDiameter()))
-                result.add(drillPoint.getToolDiameter());
-        return result;
+        return drillPoints.stream().parallel().map(DrillPoint::getToolDiameter).distinct().sorted().collect(Collectors.toList());
     }
 
     @Override

@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.cirqwizard.fx.common.XYOffsets;
+import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.traces.InsertTool;
 import org.cirqwizard.fx.traces.ZOffset;
 import org.cirqwizard.fx.traces.bottom.BottomTraceMilling;
@@ -52,18 +53,20 @@ public class MainApplication extends Application
     private ScreenController root = new Welcome().setMainApplication(this).
             addChild(new Orientation().setMainApplication(this)).
             addChild(new Homing().setMainApplication(this)).
-            addChild(new DummyController("Top traces").
+            addChild(new ScreenGroup("Top traces").setMainApplication(this).
                     addChild(new PCBPlacement().setMainApplication(this)).
                     addChild(new InsertTool().setMainApplication(this)).
                     addChild(new ZOffset().setMainApplication(this)).
                     addChild(new XYOffsets().setMainApplication(this)).
                     addChild(new TopTraceMilling().setMainApplication(this))).
-            addChild(new DummyController("Bottom traces").
+            addChild(new ScreenGroup("Bottom traces").setMainApplication(this).
                     addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
                     addChild(new InsertTool().setMainApplication(this)).
                     addChild(new ZOffset().setMainApplication(this)).
                     addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new BottomTraceMilling().setMainApplication(this)));
+                    addChild(new BottomTraceMilling().setMainApplication(this))).
+            addChild(new DrillingGroup("Drilling").setMainApplication(this).
+                    addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -192,33 +195,6 @@ public class MainApplication extends Application
     public List<ScreenController> getSiblings(ScreenController scene)
     {
         return scene.getParent() == null ? null : scene.getParent().getChildren();
-    }
-
-    public ScreenController getNext(ScreenController scene)
-    {
-        List<ScreenController> siblings = getSiblings(scene);
-        ScreenController next = null;
-        for (int i = siblings.indexOf(scene) + 1; i < siblings.size(); i++)
-        {
-            if (siblings.get(i).isMandatory() && siblings.get(i).isEnabled())
-            {
-                next = siblings.get(i);
-                break;
-            }
-        }
-        if (next == null)
-            next = getNext(scene.getParent());
-        return getVisibleChild(next);
-    }
-
-    public ScreenController getVisibleChild(ScreenController screen)
-    {
-        if (screen.getView() != null)
-            return screen;
-        for (ScreenController s : screen.getChildren())
-            if (screen.isMandatory() && getVisibleChild(s) != null)
-                return getVisibleChild(s);
-        return null;
     }
 
     public static void main(String[] args)
