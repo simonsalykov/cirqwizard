@@ -24,8 +24,12 @@ import java.io.File;
 
 public class Context
 {
+    public static enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
+
     private PCBLayout pcbLayout;
 
+    private PcbPlacement pcbPlacement;
+    private Tool insertedTool;
     private PCBSize pcbSize;
     private Integer g54X;
     private Integer g54Y;
@@ -56,6 +60,26 @@ public class Context
         pcbLayout.setFile(file);
     }
 
+    public PcbPlacement getPcbPlacement()
+    {
+        return pcbPlacement;
+    }
+
+    public void setPcbPlacement(PcbPlacement pcbPlacement)
+    {
+        this.pcbPlacement = pcbPlacement;
+    }
+
+    public Tool getInsertedTool()
+    {
+        return insertedTool;
+    }
+
+    public void setInsertedTool(Tool insertedTool)
+    {
+        this.insertedTool = insertedTool;
+    }
+
     public PCBSize getPcbSize()
     {
         return pcbSize == null ? SettingsFactory.getApplicationValues().getPcbSize().getValue() : pcbSize;
@@ -71,28 +95,22 @@ public class Context
 
     public Integer getG54X()
     {
-        return g54X != null ? g54X : SettingsFactory.getApplicationValues().getG54X().getValue();
+        return g54X;
     }
 
     public void setG54X(Integer g54X)
     {
         this.g54X = g54X;
-        ApplicationValues values = SettingsFactory.getApplicationValues();
-        values.getG54X().setValue(g54X);
-        values.save();
     }
 
     public Integer getG54Y()
     {
-        return g54Y != null ? g54Y : SettingsFactory.getApplicationValues().getG54Y().getValue();
+        return g54Y;
     }
 
     public void setG54Y(Integer g54Y)
     {
         this.g54Y = g54Y;
-        ApplicationValues values = SettingsFactory.getApplicationValues();
-        values.getG54Y().setValue(g54Y);
-        values.save();
     }
 
     public Integer getG54Z()

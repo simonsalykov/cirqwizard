@@ -15,11 +15,11 @@
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 <?scenebuilder-classpath-element ../../../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
   <children>
-    <StackPane prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
-        <AnchorPane id="AnchorPane" prefHeight="563.0" prefWidth="780.0">
+        <AnchorPane id="AnchorPane">
           <children>
             <TitledPane fx:id="offsetsPane" animated="false" expanded="false" minWidth="89.0" prefWidth="168.0" text="Offsets" AnchorPane.rightAnchor="231.0" AnchorPane.topAnchor="10.0">
               <content>
@@ -86,7 +86,7 @@
                 </AnchorPane>
               </content>
             </TitledPane>
-            <ScrollPane fx:id="scrollPane" pannable="true" prefHeight="469.0" prefWidth="728.0" styleClass="pcb" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="61.0">
+            <ScrollPane fx:id="scrollPane" pannable="true" styleClass="pcb" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="61.0">
               <content>
                 <PCBPaneFX fx:id="pcbPane" />
               </content>

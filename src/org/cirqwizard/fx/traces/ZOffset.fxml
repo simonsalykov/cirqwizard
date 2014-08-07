@@ -9,19 +9,19 @@
 <?import javafx.scene.paint.*?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <Label layoutX="39.0" layoutY="50.0" styleClass="h1" text="We need to establish Z offset" />
-    <Label layoutX="63.0" layoutY="86.0" prefHeight="55.0" prefWidth="681.0" text="Offset on Z axis is the verical distance between the cutting edge of the milling cutter when the head is in zero position and the surface of PCB." wrapText="true" />
-    <RadioButton fx:id="manualEntryRadioButton" layoutX="38.0" layoutY="149.0" mnemonicParsing="false" onAction="#updateComponents" text="I know it, I'll tell you">
+    <Label layoutX="39.0" layoutY="30.0" styleClass="h1" text="We need to establish Z offset" />
+    <Label layoutX="63.0" layoutY="65.0" prefHeight="55.0" prefWidth="681.0" text="Offset on Z axis is the verical distance between the cutting edge of the milling cutter when the head is in zero position and the surface of PCB." wrapText="true" />
+    <RadioButton fx:id="manualEntryRadioButton" layoutX="38.0" layoutY="130.0" mnemonicParsing="false" onAction="#updateComponents" text="I know it, I'll tell you">
       <toggleGroup>
         <ToggleGroup fx:id="selectionType" />
       </toggleGroup>
     </RadioButton>
-    <RealNumberTextField fx:id="manualZOffset" layoutX="59.0" layoutY="173.0" onAction="#next" prefWidth="85.0" />
-    <RadioButton fx:id="automaticEntryRadioButton" layoutX="39.0" layoutY="217.0" mnemonicParsing="false" onAction="#updateComponents" text="I want to try" toggleGroup="$selectionType" />
-    <Label layoutX="79.0" layoutY="236.0" prefHeight="47.0" prefWidth="545.0" text="The head needs to be moved to the scrap place on the PCB. Here you can try milling at various offsets to figure out the right one." wrapText="true" />
-    <TitledPane fx:id="scrapPlacePane" animated="false" collapsible="false" focusTraversable="false" layoutY="300.0" prefHeight="146.0" prefWidth="244.0" text="Scrap place location" AnchorPane.leftAnchor="63.0">
+    <RealNumberTextField fx:id="manualZOffset" layoutX="59.0" layoutY="155.0" onAction="#next" prefWidth="85.0" />
+    <RadioButton fx:id="automaticEntryRadioButton" layoutX="39.0" layoutY="195.0" mnemonicParsing="false" onAction="#updateComponents" text="I want to try" toggleGroup="$selectionType" />
+    <Label layoutX="79.0" layoutY="215.0" prefHeight="47.0" prefWidth="545.0" text="The head needs to be moved to the scrap place on the PCB. Here you can try milling at various offsets to figure out the right one." wrapText="true" />
+    <TitledPane fx:id="scrapPlacePane" animated="false" collapsible="false" focusTraversable="false" layoutY="280.0" prefHeight="146.0" prefWidth="244.0" text="Scrap place location" AnchorPane.leftAnchor="63.0">
       <content>
         <AnchorPane id="Content">
           <children>
@@ -50,7 +50,7 @@
         </AnchorPane>
       </content>
     </TitledPane>
-    <TitledPane fx:id="zOffsetPane" animated="false" collapsible="false" layoutX="421.0" layoutY="302.0" prefHeight="193.0" prefWidth="307.0" text="Z offset">
+    <TitledPane fx:id="zOffsetPane" animated="false" collapsible="false" layoutX="421.0" layoutY="280.0" prefHeight="193.0" prefWidth="307.0" text="Z offset">
       <content>
         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="176.0" prefWidth="295.0">
           <children>

@@ -92,6 +92,16 @@ public abstract class ScreenController
         return null;
     }
 
+    protected boolean isMandatory()
+    {
+        return true;
+    }
+
+    protected boolean isEnabled()
+    {
+        return true;
+    }
+
     public MainApplication getMainApplication()
     {
         return mainApplication;

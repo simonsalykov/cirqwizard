@@ -14,6 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces.top;
 
+import org.cirqwizard.fx.Context;
+
 public class PCBPlacement extends org.cirqwizard.fx.common.PCBPlacement
 {
 
@@ -25,4 +27,11 @@ public class PCBPlacement extends org.cirqwizard.fx.common.PCBPlacement
 //        text.setText("Put the board FACE DOWN right on the machine bed. Make sure both the bed and PCB are clean. It is also worth checking if PCB edges are smooth.");
 //        text.setText("Put the board FACE UP on the SPACER.");
     }
+
+    @Override
+    protected Context.PcbPlacement getExpectedPlacement()
+    {
+        return Context.PcbPlacement.FACE_UP;
+    }
+
 }

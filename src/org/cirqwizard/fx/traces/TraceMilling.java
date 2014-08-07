@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces;
 
+import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
@@ -30,6 +31,14 @@ public abstract class TraceMilling extends Machining
     protected String getName()
     {
         return "Milling";
+    }
+
+    @Override
+    protected boolean isEnabled()
+    {
+        Context context = getMainApplication().getContext();
+        return InsertTool.EXPECTED_TOOL.equals(context.getInsertedTool()) &&
+                context.getG54X() != null && context.getG54Y() != null && context.getG54Z() != null;
     }
 
     @Override

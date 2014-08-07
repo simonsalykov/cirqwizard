@@ -14,10 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces;
 
+import org.cirqwizard.fx.Tool;
 import org.cirqwizard.fx.common.Message;
 
 public class InsertTool extends Message
 {
+    public static final Tool EXPECTED_TOOL = new Tool(Tool.ToolType.V_TOOL, 0);
+
     @Override
     protected String getName()
     {
@@ -28,7 +31,21 @@ public class InsertTool extends Message
     public void refresh()
     {
         super.refresh();
+        getMainApplication().getContext().setInsertedTool(null);
         header.setText("Insert trace milling cutter into spindle");
         text.setText("Make sure the milling cutter is fully inserted.");
+    }
+
+    @Override
+    protected boolean isMandatory()
+    {
+        return !EXPECTED_TOOL.equals(getMainApplication().getContext().getInsertedTool());
+    }
+
+    @Override
+    public void next()
+    {
+        getMainApplication().getContext().setInsertedTool(EXPECTED_TOOL);
+        super.next();
     }
 }

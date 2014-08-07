@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces.top;
 
+import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.traces.TraceMilling;
 import org.cirqwizard.layers.Layer;
@@ -25,6 +26,12 @@ public class TopTraceMilling extends TraceMilling
     {
         super.refresh();
         pcbPane.setGerberColor(PCBPaneFX.TOP_TRACE_COLOR);
+    }
+
+    @Override
+    protected boolean isEnabled()
+    {
+        return super.isEnabled() && Context.PcbPlacement.FACE_UP.equals(getMainApplication().getContext().getPcbPlacement());
     }
 
     @Override

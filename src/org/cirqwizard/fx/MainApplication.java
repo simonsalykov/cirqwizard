@@ -196,21 +196,27 @@ public class MainApplication extends Application
 
     public ScreenController getNext(ScreenController scene)
     {
-        int index = getSiblings(scene).indexOf(scene);
-        ScreenController next;
-        if (index < getSiblings(scene).size() - 1)
-            next = getSiblings(scene).get(index + 1);
-        else
+        List<ScreenController> siblings = getSiblings(scene);
+        ScreenController next = null;
+        for (int i = siblings.indexOf(scene) + 1; i < siblings.size(); i++)
+        {
+            if (siblings.get(i).isMandatory() && siblings.get(i).isEnabled())
+            {
+                next = siblings.get(i);
+                break;
+            }
+        }
+        if (next == null)
             next = getNext(scene.getParent());
         return getVisibleChild(next);
     }
 
-    public ScreenController getVisibleChild(ScreenController scene)
+    public ScreenController getVisibleChild(ScreenController screen)
     {
-        if (scene.getView() != null)
-            return scene;
-        for (ScreenController s : scene.getChildren())
-            if (getVisibleChild(s) != null)
+        if (screen.getView() != null)
+            return screen;
+        for (ScreenController s : screen.getChildren())
+            if (screen.isMandatory() && getVisibleChild(s) != null)
                 return getVisibleChild(s);
         return null;
     }

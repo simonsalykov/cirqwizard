@@ -69,6 +69,13 @@ public class XYOffsets extends ScreenController implements Initializable
     }
 
     @Override
+    protected boolean isMandatory()
+    {
+        Context context = getMainApplication().getContext();
+        return context.getG54X() == null || context.getG54Y() == null;
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         ChangeListener<String> changeListener = (v, oldV, newV) -> updateComponents();
@@ -79,11 +86,15 @@ public class XYOffsets extends ScreenController implements Initializable
         {
             checkOffsetLimit(newV == null ? null : newV, y.getIntegerValue());
             getMainApplication().getContext().setG54X(newV == null ? null : newV);
+            SettingsFactory.getApplicationValues().getG54X().setValue(newV);
+            SettingsFactory.getApplicationValues().save();
         });
         y.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-                checkOffsetLimit(x.getIntegerValue(), newV == null ? null : newV);
-                getMainApplication().getContext().setG54Y(newV == null ? null : newV);
+            checkOffsetLimit(x.getIntegerValue(), newV == null ? null : newV);
+            getMainApplication().getContext().setG54Y(newV == null ? null : newV);
+            SettingsFactory.getApplicationValues().getG54Y().setValue(newV);
+            SettingsFactory.getApplicationValues().save();
         });
         ignoreCheckBox.selectedProperty().addListener((v, oldV, newV) ->
                         checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y()));
@@ -94,8 +105,14 @@ public class XYOffsets extends ScreenController implements Initializable
     @Override
     public void refresh()
     {
-        x.setIntegerValue(getMainApplication().getContext().getG54X());
-        y.setIntegerValue(getMainApplication().getContext().getG54Y());
+        Integer x = getMainApplication().getContext().getG54X();
+        if (x == null)
+            x = SettingsFactory.getApplicationValues().getG54X().getValue();
+        this.x.setIntegerValue(x);
+        Integer y = getMainApplication().getContext().getG54Y();
+        if (y == null)
+            y = SettingsFactory.getApplicationValues().getG54Y().getValue();
+        this.y.setIntegerValue(y);
         updateComponents();
     }
 

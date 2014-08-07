@@ -69,6 +69,12 @@ public class ZOffset extends ScreenController implements Initializable
     }
 
     @Override
+    protected boolean isEnabled()
+    {
+        return InsertTool.EXPECTED_TOOL.equals(getMainApplication().getContext().getInsertedTool());
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
         ChangeListener<String> changeListener = (v, oldV, newV) -> updateComponents();

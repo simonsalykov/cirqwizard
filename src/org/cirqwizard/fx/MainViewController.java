@@ -139,14 +139,16 @@ public class MainViewController extends ScreenController implements Initializabl
             {
                 for (ScreenController sibling : siblings)
                 {
-                    contextMenuActions.add(new AbstractAction(sibling.getName())
+                    AbstractAction action = new AbstractAction(sibling.getName())
                     {
                         @Override
                         public void handle(ActionEvent event)
                         {
                             setScreen(getMainApplication().getVisibleChild(sibling));
                         }
-                    });
+                    };
+                    action.setDisabled(!sibling.isEnabled());
+                    contextMenuActions.add(action);
                 }
                 ContextMenu contextMenu = ActionUtils.createContextMenu(contextMenuActions);
                 b.setOnAction((event) ->

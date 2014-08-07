@@ -26,7 +26,7 @@ import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.settings.SettingsFactory;
 
 
-public class PCBPlacement extends ScreenController
+public abstract class PCBPlacement extends ScreenController
 {
     @FXML protected Button continueButton;
     @FXML protected VBox radioButtonsBox;
@@ -54,6 +54,7 @@ public class PCBPlacement extends ScreenController
     public void refresh()
     {
         Context context = getMainApplication().getContext();
+        context.setPcbPlacement(null);
         PCBSize pcbSize = context.getPcbSize();
         if (pcbSize == PCBSize.Small)
             smallPCB.setSelected(true);
@@ -65,6 +66,21 @@ public class PCBPlacement extends ScreenController
         ignoreErrorCheckbox.setSelected(false);
 
         updateComponents();
+    }
+
+    protected abstract Context.PcbPlacement getExpectedPlacement();
+
+    @Override
+    protected boolean isMandatory()
+    {
+        return !getExpectedPlacement().equals(getMainApplication().getContext().getPcbPlacement());
+    }
+
+    @Override
+    public void next()
+    {
+        getMainApplication().getContext().setPcbPlacement(getExpectedPlacement());
+        super.next();
     }
 
     private boolean checkSelectedPcbSize()
