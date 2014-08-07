@@ -35,10 +35,13 @@ import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 
-public class Machining extends ScreenController implements Initializable
+public abstract class Machining extends ScreenController implements Initializable
 {
     @FXML protected PCBPaneFX pcbPane;
     @FXML protected ScrollPane scrollPane;
@@ -220,48 +223,6 @@ public class Machining extends ScreenController implements Initializable
 
         stopGenerationButton.setDisable(false);
 
-        /*
-        else if (state == State.MILLING_CONTOUR)
-        {
-            toolDiameter.setDisable(true);
-            toolDiameter.setText(context.getPcbLayout().getContourMillDiameter());
-            ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
-            feed.setIntegerValue(settings.getFeedXY().getValue());
-
-            clearance.setIntegerValue(settings.getClearance().getValue());
-            safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
-            zFeed.setDisable(false);
-            zFeed.setIntegerValue(settings.getFeedZ().getValue());
-
-            context.setG54Z(settings.getZOffset().getValue());
-
-            pcbPane.setGerberPrimitives(null);
-            pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
-            pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
-
-            toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
-        }
-        else if (state == State.DISPENSING)
-        {
-            toolDiameter.setDisable(false);
-            DispensingSettings settings = SettingsFactory.getDispensingSettings();
-            toolDiameter.setIntegerValue(settings.getNeedleDiameter().getValue());
-            feed.setIntegerValue(settings.getFeed().getValue());
-
-            clearance.setIntegerValue(settings.getClearance().getValue());
-            safetyHeight.setIntegerValue(null);
-            safetyHeight.setDisable(true);
-            zFeed.setIntegerValue(null);
-            zFeed.setDisable(true);
-
-            context.setG54Z(settings.getZOffset().getValue());
-
-            pcbPane.setGerberColor(PCBPaneFX.SOLDER_PAD_COLOR);
-            pcbPane.setToolpathColor(PCBPaneFX.PASTE_TOOLPATH_COLOR);
-            pcbPane.setGerberPrimitives(((SolderPasteLayer)getCurrentLayer()).getElements());
-        }
-        */
-
         g54X.setIntegerValue(context.getG54X());
         g54Y.setIntegerValue(context.getG54Y());
         g54Z.setIntegerValue(context.getG54Z());
@@ -306,19 +267,7 @@ public class Machining extends ScreenController implements Initializable
         pcbPane.scaleProperty().setValue(scale);
     }
 
-    protected Layer getCurrentLayer()
-    {
-//        Context context = getMainApplication().getContext();
-//        switch (getMainApplication().getState())
-//        {
-//            case MILLING_TOP_INSULATION: return context.getPcbLayout().getTopTracesLayer();
-//            case MILLING_BOTTOM_INSULATION: return context.getPcbLayout().getBottomTracesLayer();
-//            case DRILLING: return context.getPcbLayout().getDrillingLayer();
-//            case MILLING_CONTOUR: return context.getPcbLayout().getMillingLayer();
-//            case DISPENSING: return context.getPcbLayout().getSolderPasteLayer();
-//        }
-        return null;
-    }
+    protected abstract Layer getCurrentLayer();
 
     public void selectAll()
     {
@@ -345,50 +294,18 @@ public class Machining extends ScreenController implements Initializable
 
     public void disableSelected()
     {
-        ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
-        for (Toolpath toolpath : getCurrentLayer().getToolpaths())
+        List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().parallel().
+                filter(Toolpath::isSelected).collect(Collectors.toList());
+        changedToolpaths.parallelStream().forEach(toolpath ->
         {
-            if (toolpath.isSelected())
-            {
-                toolpath.setEnabled(false);
-                toolpath.setSelected(false);
-                changedToolpaths.add(toolpath);
-            }
-        }
+            toolpath.setEnabled(false);
+            toolpath.setSelected(false);
+        });
+
         pcbPane.repaint(changedToolpaths);
     }
 
-    protected String generateGCode()
-    {
-        /*
-        if (state == State.DRILLING)
-        {
-            DrillingSettings settings = SettingsFactory.getDrillingSettings();
-            DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                    safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
-                    settings.getSpeed().getValue());
-        }
-        else if (state == State.MILLING_CONTOUR)
-        {
-            ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
-            int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
-            MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                    clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
-                    settings.getSpeed().getValue());
-        }
-        else if (state == State.DISPENSING)
-        {
-            DispensingSettings settings = SettingsFactory.getDispensingSettings();
-            PasteGCodeGenerator generator = new PasteGCodeGenerator(getMainApplication().getContext());
-            return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
-                    settings.getPostFeedPause().getValue(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                    settings.getWorkingHeight().getValue());
-        }
-        */
-        return null;
-    }
+    protected abstract String generateGCode();
 
     public void showGCodeListing()
     {

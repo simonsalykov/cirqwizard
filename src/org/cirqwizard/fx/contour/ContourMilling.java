@@ -12,69 +12,72 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.drilling;
+package org.cirqwizard.fx.contour;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.machining.DrillingToolpathGenerationService;
+import org.cirqwizard.fx.machining.ContourMillingToolpathGenerationService;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
-import org.cirqwizard.gcode.DrillGCodeGenerator;
+import org.cirqwizard.gcode.MillingGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
-import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.settings.DrillingSettings;
+import org.cirqwizard.settings.ContourMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
-public class Drilling extends Machining
+public class ContourMilling extends Machining
 {
     @Override
     protected String getName()
     {
-        return "Drilling";
+        return "Milling";
     }
 
     @Override
     public void refresh()
     {
         super.refresh();
-        toolDiameter.setDisable(true);
         Context context = getMainApplication().getContext();
-        toolDiameter.setText(ApplicationConstants.formatToolDiameter(context.getCurrentDrill()));
-        DrillingSettings settings = SettingsFactory.getDrillingSettings();
-        feed.setIntegerValue(settings.getFeed().getValue());
+        toolDiameter.setDisable(true);
+        toolDiameter.setText(context.getPcbLayout().getContourMillDiameter());
+        ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+        feed.setIntegerValue(settings.getFeedXY().getValue());
 
         clearance.setIntegerValue(settings.getClearance().getValue());
         safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
-        zFeed.setDisable(true);
+        zFeed.setDisable(false);
+        zFeed.setIntegerValue(settings.getFeedZ().getValue());
 
         context.setG54Z(settings.getZOffset().getValue());
 
-        pcbPane.setGerberColor(PCBPaneFX.DRILL_POINT_COLOR);
-        pcbPane.setToolpathColor(PCBPaneFX.DRILL_POINT_COLOR);
         pcbPane.setGerberPrimitives(null);
+        pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
+        pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
+
+        toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
     }
 
     @Override
     protected Layer getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getDrillingLayer();
+        return getMainApplication().getContext().getPcbLayout().getMillingLayer();
     }
 
     @Override
     protected ToolpathGenerationService getToolpathGenerationService()
     {
-        return new DrillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
+        return new ContourMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
                 estimatedMachiningTimeProperty);
     }
 
     @Override
     protected String generateGCode()
     {
-        DrillingSettings settings = SettingsFactory.getDrillingSettings();
-        DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
-        return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+        ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+        int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
+        MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
+        return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
+                clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());
     }
 }

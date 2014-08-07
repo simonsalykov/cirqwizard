@@ -12,34 +12,25 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.dispensing;
+package org.cirqwizard.fx.contour;
 
-import javafx.scene.control.Button;
-import org.cirqwizard.fx.ScreenController;
-import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.fx.common.Message;
 
-
-public class SyringeBleedingController extends ScreenController
+public class InsertContourMill extends Message
 {
-    @FXML private Parent view;
-    @FXML private Button pushButton;
-
     @Override
-    public Parent getView()
+    protected String getName()
     {
-        return view;
+        return "Insert contour mill";
     }
 
     @Override
     public void refresh()
     {
-        pushButton.setDisable(getMainApplication().getCNCController() == null);
-    }
-
-    public void dispense()
-    {
-        getMainApplication().getCNCController().dispensePaste(SettingsFactory.getDispensingSettings().getBleedingDuration().getValue());
+        super.refresh();
+        getMainApplication().getContext().setInsertedTool(null);
+        header.setText("Insert contour end mill: " +
+                getMainApplication().getContext().getPcbLayout().getContourMillDiameter() + "mm");
+        text.setText("Insert contour end mill");
     }
 }

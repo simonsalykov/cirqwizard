@@ -20,17 +20,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import org.cirqwizard.fx.MainApplication;
-import org.cirqwizard.layers.DrillingLayer;
+import org.cirqwizard.layers.MillingLayer;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.List;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
-public class DrillingToolpathGenerationService extends ToolpathGenerationService
+public class ContourMillingToolpathGenerationService extends ToolpathGenerationService
 {
-    public DrillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty, StringProperty estimatedMachiningTimeProperty)
+    public ContourMillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty, StringProperty estimatedMachiningTimeProperty)
     {
         super(mainApplication, overallProgressProperty, estimatedMachiningTimeProperty);
     }
@@ -50,12 +48,9 @@ public class DrillingToolpathGenerationService extends ToolpathGenerationService
                     generationStageProperty.unbind();
                     estimatedMachiningTimeProperty.unbind();
 
-                    DrillingLayer layer = context.getPcbLayout().getDrillingLayer();
-                    List<Toolpath> drillPoints = layer.getToolpaths().stream().parallel().
-                            filter((p) -> Math.abs(toolDiameter.getValue() - p.getToolDiameter()) < 50).
-                            collect(Collectors.toList());
-
-                    return FXCollections.observableArrayList(drillPoints);
+                    MillingLayer layer = context.getPcbLayout().getMillingLayer();
+                    layer.generateToolpaths();
+                    return FXCollections.observableArrayList(layer.getToolpaths());
                 }
                 catch (NumberFormatException e)
                 {

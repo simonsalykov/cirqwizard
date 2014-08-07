@@ -12,33 +12,39 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.drilling;
+package org.cirqwizard.fx.dispensing;
 
-import org.cirqwizard.fx.Tool;
-import org.cirqwizard.fx.common.Message;
+import javafx.scene.control.Button;
+import org.cirqwizard.fx.ScreenController;
+import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import org.cirqwizard.settings.SettingsFactory;
 
-public class InsertDrill extends Message
+
+public class SyringeBleeding extends ScreenController
 {
+    @FXML private Button pushButton;
+
+    @Override
+    protected String getFxmlName()
+    {
+        return "SyringeBleeding.fxml";
+    }
+
     @Override
     protected String getName()
     {
-        return "Insert drill";
+        return "Bleeding";
     }
 
     @Override
     public void refresh()
     {
-        super.refresh();
-        getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert drill: " + getMainApplication().getContext().getPcbLayout().getContourMillDiameter() + "mm");
-        text.setText("Insert drill");
+        pushButton.setDisable(getMainApplication().getCNCController() == null);
     }
 
-    @Override
-    public void next()
+    public void dispense()
     {
-        getMainApplication().getContext().setInsertedTool(
-                new Tool(Tool.ToolType.DRILL, getMainApplication().getContext().getCurrentDrill()));
-        super.next();
+        getMainApplication().getCNCController().dispensePaste(SettingsFactory.getDispensingSettings().getBleedingDuration().getValue());
     }
 }

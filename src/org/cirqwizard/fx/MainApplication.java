@@ -21,6 +21,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.cirqwizard.fx.common.XYOffsets;
+import org.cirqwizard.fx.contour.ContourMilling;
+import org.cirqwizard.fx.contour.InsertContourMill;
+import org.cirqwizard.fx.dispensing.Dispensing;
+import org.cirqwizard.fx.dispensing.InsertSyringe;
+import org.cirqwizard.fx.dispensing.SyringeBleeding;
 import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.traces.InsertTool;
 import org.cirqwizard.fx.traces.ZOffset;
@@ -32,7 +37,6 @@ import org.cirqwizard.serial.*;
 import org.cirqwizard.settings.Settings;
 import org.cirqwizard.settings.SettingsFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -66,7 +70,17 @@ public class MainApplication extends Application
                     addChild(new XYOffsets().setMainApplication(this)).
                     addChild(new BottomTraceMilling().setMainApplication(this))).
             addChild(new DrillingGroup("Drilling").setMainApplication(this).
-                    addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)));
+                    addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this))).
+            addChild(new ScreenGroup("Contour milling").setMainApplication(this).
+                    addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
+                    addChild(new InsertContourMill().setMainApplication(this)).
+                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new ContourMilling().setMainApplication(this))).
+            addChild(new ScreenGroup("Dispensing").setMainApplication(this).
+                    addChild(new InsertSyringe().setMainApplication(this)).
+                    addChild(new SyringeBleeding().setMainApplication(this)).
+                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new Dispensing().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -180,15 +194,6 @@ public class MainApplication extends Application
     public CNCController getCNCController()
     {
         return cncController;
-    }
-
-
-    public List<ScreenController> getPath(ScreenController scene)
-    {
-        ArrayList<ScreenController> path = new ArrayList<>();
-        for (; scene != null; scene = scene.getParent())
-            path.add(0, scene);
-        return path;
     }
 
 

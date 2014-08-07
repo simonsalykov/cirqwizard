@@ -111,8 +111,16 @@ public class MainViewController extends ScreenController implements Initializabl
         AnchorPane.setLeftAnchor(contentPane.getChildren().get(0), 0.0);
         AnchorPane.setRightAnchor(contentPane.getChildren().get(0), 0.0);
         AnchorPane.setBottomAnchor(contentPane.getChildren().get(0), 0.0);
-        updateBreadCrumbBar(getMainApplication().getPath(screen));
+        updateBreadCrumbBar(getPath(screen));
 
+    }
+
+    private List<ScreenController> getPath(ScreenController scene)
+    {
+        ArrayList<ScreenController> path = new ArrayList<>();
+        for (; scene != null; scene = scene.getParent())
+            path.add(0, scene);
+        return path;
     }
 
     private void updateBreadCrumbBar(List<ScreenController> path)
