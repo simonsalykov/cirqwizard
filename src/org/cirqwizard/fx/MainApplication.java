@@ -27,6 +27,9 @@ import org.cirqwizard.fx.dispensing.Dispensing;
 import org.cirqwizard.fx.dispensing.InsertSyringe;
 import org.cirqwizard.fx.dispensing.SyringeBleeding;
 import org.cirqwizard.fx.drilling.DrillingGroup;
+import org.cirqwizard.fx.pp.InsertPPHead;
+import org.cirqwizard.fx.pp.PPGroup;
+import org.cirqwizard.fx.pp.PlacingOverview;
 import org.cirqwizard.fx.traces.InsertTool;
 import org.cirqwizard.fx.traces.ZOffset;
 import org.cirqwizard.fx.traces.bottom.BottomTraceMilling;
@@ -48,7 +51,7 @@ public class MainApplication extends Application
     private Stage dialogStage;
     private Scene dialogScene;
 
-    private Context context;
+    private Context context = new Context();
     private SerialInterface serialInterface;
     private CNCController cncController;
 
@@ -80,14 +83,19 @@ public class MainApplication extends Application
                     addChild(new InsertSyringe().setMainApplication(this)).
                     addChild(new SyringeBleeding().setMainApplication(this)).
                     addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new Dispensing().setMainApplication(this)));
+                    addChild(new Dispensing().setMainApplication(this))).
+            addChild(new PPGroup("Pick and place").setMainApplication(this).
+                    addChild(new PCBPlacement().setMainApplication(this)).
+                    addChild(new InsertPPHead().setMainApplication(this)).
+                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new PlacingOverview().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
-        context = new Context();
+//        context = new Context();
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 
         this.primaryStage = primaryStage;

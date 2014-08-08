@@ -14,7 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import org.cirqwizard.layers.PCBLayout;
+import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.SettingsFactory;
@@ -26,7 +29,7 @@ public class Context
 {
     public static enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
 
-    private PCBLayout pcbLayout;
+    private ObjectProperty<PCBLayout> pcbLayout = new SimpleObjectProperty<>();
 
     private PcbPlacement pcbPlacement;
     private Tool insertedTool;
@@ -44,20 +47,25 @@ public class Context
 
     private String dispensingNeedleDiameter;
 
-    private int currentComponent;
+    private ComponentId currentComponent;
     private Feeder feeder;
     private int feederRow;
     private Integer componentPitch;
 
     public PCBLayout getPcbLayout()
     {
+        return pcbLayout.get();
+    }
+
+    public ObjectProperty<PCBLayout> pcbLayoutProperty()
+    {
         return pcbLayout;
     }
 
     public void setFile(File file)
     {
-        pcbLayout = new PCBLayout();
-        pcbLayout.setFile(file);
+        pcbLayout.setValue(new PCBLayout());
+        pcbLayout.getValue().setFile(file);
     }
 
     public PcbPlacement getPcbPlacement()
@@ -173,12 +181,12 @@ public class Context
         this.dispensingNeedleDiameter = dispensingNeedleDiameter;
     }
 
-    public int getCurrentComponent()
+    public ComponentId getCurrentComponent()
     {
         return currentComponent;
     }
 
-    public void setCurrentComponent(int currentComponent)
+    public void setCurrentComponent(ComponentId currentComponent)
     {
         this.currentComponent = currentComponent;
     }

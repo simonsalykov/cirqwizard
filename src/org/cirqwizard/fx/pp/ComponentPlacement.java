@@ -14,15 +14,12 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -43,12 +40,11 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 
-public class ComponentPlacementController extends ScreenController implements Initializable
+public class ComponentPlacement extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-
     @FXML private Label header;
     @FXML private ComboBox<String> componentName;
 
@@ -74,7 +70,7 @@ public class ComponentPlacementController extends ScreenController implements In
     @FXML private Button moveHeadAwayButton;
     @FXML private Button vacuumOffButton;
 
-    private ObservableList<String> componentNames = FXCollections.observableArrayList();
+    private ObservableList<String> componentNames;
     private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
 
     private static final int feederOffsetX = 10 * ApplicationConstants.RESOLUTION;
@@ -87,23 +83,23 @@ public class ComponentPlacementController extends ScreenController implements In
     private Integer placementZ;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "ComponentPlacement.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Placement";
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
+        componentNames = FXCollections.observableArrayList();
         componentName.setItems(componentNames);
-        componentName.valueProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                updateComponent();
-            }
-        });
+        componentName.valueProperty().addListener((v, oldV, newV) -> updateComponent());
 
         KeyboardHandler keyboardHandler = new KeyboardHandler();
         pickupX.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
@@ -143,14 +139,11 @@ public class ComponentPlacementController extends ScreenController implements In
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        ComponentId id =  context.getPcbLayout().getComponentIds().get(context.getCurrentComponent());
-        header.setText("Placing component " + id.getPackaging() + " " + id.getValue());
+        ComponentId id =  context.getCurrentComponent();
+        header.setText(id.getPackaging() + " " + id.getValue());
 
-        componentNames.clear();
-        ComponentId currentId = context.getPcbLayout().getComponentIds().get(context.getCurrentComponent());
-        for (PPPoint p : context.getPcbLayout().getComponentsLayer().getPoints())
-            if (p.getId().equals(currentId))
-                componentNames.add(p.getName());
+        componentNames.setAll(context.getPcbLayout().getComponentsLayer().getPoints().stream().
+                filter(p -> p.getId().equals(id)).map(PPPoint::getName).collect(Collectors.toList()));
         componentName.getSelectionModel().select(0);
         pickupNGoButton.setDisable(true);
         placementPane.setDisable(true);

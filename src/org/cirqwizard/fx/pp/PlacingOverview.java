@@ -34,12 +34,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 
-public class PlacingOverviewController extends ScreenController implements Initializable
+public class PlacingOverview extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-
     @FXML private TableView<Row> table;
     @FXML private TableColumn<Row, String> packageColumn;
     @FXML private TableColumn<Row, String> valueColumn;
@@ -49,18 +48,24 @@ public class PlacingOverviewController extends ScreenController implements Initi
     private ObservableList<Row> rows;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "PlacingOverview.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Overview";
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        packageColumn.setCellValueFactory(new PropertyValueFactory<Row, String>("packaging"));
-        valueColumn.setCellValueFactory(new PropertyValueFactory<Row, String>("value"));
-        quantityColumn.setCellValueFactory(new PropertyValueFactory<Row, Integer>("quantity"));
-        namesColumn.setCellValueFactory(new PropertyValueFactory<Row, String>("names"));
+        packageColumn.setCellValueFactory(new PropertyValueFactory<>("packaging"));
+        valueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        namesColumn.setCellValueFactory(new PropertyValueFactory<>("names"));
 
         rows = FXCollections.observableArrayList();
         table.setItems(rows);
@@ -69,7 +74,7 @@ public class PlacingOverviewController extends ScreenController implements Initi
     @Override
     public void refresh()
     {
-        HashMap<ComponentId, Row> rowsMap = new HashMap<ComponentId, Row>();
+        HashMap<ComponentId, Row> rowsMap = new HashMap<>();
         for (Toolpath t : getMainApplication().getContext().getPcbLayout().getComponentsLayer().getToolpaths())
         {
             PPPoint p = (PPPoint) t;

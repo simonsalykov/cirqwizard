@@ -51,7 +51,7 @@ public class DrillingToolpathGenerationService extends ToolpathGenerationService
                     estimatedMachiningTimeProperty.unbind();
 
                     DrillingLayer layer = context.getPcbLayout().getDrillingLayer();
-                    List<Toolpath> drillPoints = layer.getToolpaths().stream().parallel().
+                    List<Toolpath> drillPoints = layer.getToolpaths().stream().
                             filter((p) -> Math.abs(toolDiameter.getValue() - p.getToolDiameter()) < 50).
                             collect(Collectors.toList());
 

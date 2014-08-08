@@ -12,19 +12,19 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.contour;
+package org.cirqwizard.fx.pp;
 
 import org.cirqwizard.fx.Tool;
 import org.cirqwizard.fx.common.Message;
 
-public class InsertContourMill extends Message
+public class InsertPPHead extends Message
 {
-    private static final Tool EXPECTED_TOOL = new Tool(Tool.ToolType.CONTOUR_END_MILL, 0);
+    private final static Tool EXPECTED_TOOL = new Tool(Tool.ToolType.PICK_AND_PLACE, 0);
 
     @Override
     protected String getName()
     {
-        return "Insert contour mill";
+        return "Insert P&P head";
     }
 
     @Override
@@ -32,11 +32,10 @@ public class InsertContourMill extends Message
     {
         super.refresh();
         getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert contour end mill: " +
-                getMainApplication().getContext().getPcbLayout().getContourMillDiameter() + "mm");
-        text.setText("Insert contour end mill");
-    }
+        header.setText("Insert pick & place header");
+        text.setText("Connect it to the vacuum outlet at the base of the machine and to the socket. Choose a needle that will work for your components.");
 
+    }
     @Override
     protected boolean isMandatory()
     {
@@ -49,4 +48,5 @@ public class InsertContourMill extends Message
         getMainApplication().getContext().setInsertedTool(EXPECTED_TOOL);
         super.next();
     }
+
 }

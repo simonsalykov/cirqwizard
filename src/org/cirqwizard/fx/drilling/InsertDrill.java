@@ -16,6 +16,7 @@ package org.cirqwizard.fx.drilling;
 
 import org.cirqwizard.fx.Tool;
 import org.cirqwizard.fx.common.Message;
+import org.cirqwizard.settings.ApplicationConstants;
 
 public class InsertDrill extends Message
 {
@@ -30,7 +31,8 @@ public class InsertDrill extends Message
     {
         super.refresh();
         getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert drill: " + getMainApplication().getContext().getPcbLayout().getContourMillDiameter() + "mm");
+        header.setText("Insert drill: " +
+                ApplicationConstants.formatToolDiameter(getMainApplication().getContext().getCurrentDrill()) + "mm");
         text.setText("Insert drill");
     }
 

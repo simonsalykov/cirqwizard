@@ -14,13 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,16 +28,13 @@ import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.PPPoint;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class FeederSelectionController extends ScreenController implements Initializable
+public class FeederSelection extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-
     @FXML private Label header;
     @FXML private Label countOfComponents;
     @FXML private RadioButton smallFeeder;
@@ -56,9 +50,15 @@ public class FeederSelectionController extends ScreenController implements Initi
     private ObservableList<Integer> rows;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "FeederSelection.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Panel";
     }
 
     @Override
@@ -66,37 +66,18 @@ public class FeederSelectionController extends ScreenController implements Initi
     {
         rows = FXCollections.observableArrayList();
         row.setItems(rows);
-
-        row.valueProperty().addListener(new ChangeListener<Integer>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer integer2)
-            {
-                updateControls();
-            }
-        });
-        pitch.realNumberTextProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                updateControls();
-            }
-        });
+        row.valueProperty().addListener((v, oldV, newV) -> updateControls());
+        pitch.realNumberTextProperty().addListener((v, oldV, newV) -> updateControls());
     }
 
     @Override
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        ComponentId id =  context.getPcbLayout().getComponentIds().get(context.getCurrentComponent());
+        ComponentId id = context.getCurrentComponent();
 
-        int count=0;
-        for (PPPoint component : context.getPcbLayout().getComponentsLayer().getPoints())
-        {
-            if (component.getId().equals(id))
-                count++;
-        }
+        long count = context.getPcbLayout().getComponentsLayer().getPoints().stream().
+                filter(c -> c.getId().equals(id)).count();
         countOfComponents.setText("You will need " + count + " such component(s)");
 
         header.setText("Placing component " + id.getPackaging() + " " + id.getValue());

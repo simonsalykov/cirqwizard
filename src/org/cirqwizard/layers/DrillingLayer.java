@@ -38,7 +38,7 @@ public class DrillingLayer extends Layer
 
     public List<Integer> getDrillDiameters()
     {
-        return drillPoints.stream().parallel().map(DrillPoint::getToolDiameter).distinct().sorted().collect(Collectors.toList());
+        return drillPoints.stream().map(DrillPoint::getToolDiameter).distinct().sorted().collect(Collectors.toList());
     }
 
     @Override

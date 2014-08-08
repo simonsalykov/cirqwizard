@@ -294,9 +294,9 @@ public abstract class Machining extends ScreenController implements Initializabl
 
     public void disableSelected()
     {
-        List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().parallel().
+        List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().
                 filter(Toolpath::isSelected).collect(Collectors.toList());
-        changedToolpaths.parallelStream().forEach(toolpath ->
+        changedToolpaths.stream().forEach(toolpath ->
         {
             toolpath.setEnabled(false);
             toolpath.setSelected(false);
