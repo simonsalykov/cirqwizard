@@ -38,6 +38,12 @@ public class Orientation extends ScreenController
         return "Orientation";
     }
 
+    @Override
+    protected boolean isEnabled()
+    {
+        return getMainApplication().getContext().getPcbLayout() != null;
+    }
+
     public void refresh()
     {
         service = new ShapesGenerationService(getMainApplication().getContext());

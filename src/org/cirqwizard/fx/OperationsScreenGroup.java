@@ -12,31 +12,18 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.common;
+package org.cirqwizard.fx;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import org.cirqwizard.fx.ScreenController;
-
-
-public class Message extends ScreenController
+public class OperationsScreenGroup extends ScreenGroup
 {
-    @FXML protected Label header;
-    @FXML protected Label text;
-    @FXML protected Button continueButton;
-
-    @Override
-    protected String getFxmlName()
+    public OperationsScreenGroup(String name)
     {
-        return "/org/cirqwizard/fx/common/Message.fxml";
+        super(name);
     }
 
     @Override
-    public void refresh()
+    protected boolean isEnabled()
     {
-        // TODO
-//        continueButton.setVisible(getMainApplication().getState() != State.TERMINAL);
+        return getMainApplication().getContext().getPcbLayout() != null;
     }
-
 }

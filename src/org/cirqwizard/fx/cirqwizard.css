@@ -153,22 +153,22 @@
     -fx-font-weight: bold;
 }
 
-#toolbar .button {
-    -fx-background-color: null;
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
-    -fx-padding: 3px 6px 4px 6px;
-    -fx-border-color: transparent #6e737d transparent rgba(255,255,255,0.3) , transparent rgba(255,255,255,0.3) transparent transparent;
-    -fx-border-insets: 0, 0 1 0 1;
+.toolbar-button {
 }
-#toolbar .button:hover {
-    -fx-background-color: rgba(255,255,255,0.4);
+.toolbar-button:hover {
 }
 
 .breadcrumb-bar {
     -fx-padding: 0;
 }
 .breadcrumb-bar .button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 3px 6px 4px 6px;
+    -fx-border-color: transparent #6e737d transparent rgba(255,255,255,0.3) , transparent rgba(255,255,255,0.3) transparent transparent;
+    -fx-border-insets: 0, 0 1 0 1;
+
     -fx-padding: 0 3 0 3;
     -fx-border-color: null;
     -fx-border-insets: 0;
@@ -181,6 +181,7 @@
     -fx-border-image-source: url("crumb-focused.png");
 }
 .breadcrumb-bar .button:hover {
+    -fx-background-color: rgba(255,255,255,0.4);
     -fx-background-color: null;
     -fx-border-image-source: url("crumb-hover.png");
 }

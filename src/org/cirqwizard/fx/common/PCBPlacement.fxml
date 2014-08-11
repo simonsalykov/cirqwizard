@@ -21,10 +21,8 @@
         <RadioButton fx:id="largePCB" mnemonicParsing="false" onAction="#updateComponents" text="I am using large PCB" toggleGroup="$pcbSize" />
       </children>
     </VBox>
-    <Button fx:id="moveAwayButton" layoutX="393.0" layoutY="267.0" mnemonicParsing="false" onAction="#moveAway" text="Move machine head away" />
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
       <children>
-        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
         <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
       </children>
     </HBox>

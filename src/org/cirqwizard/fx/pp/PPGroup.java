@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.pp;
 
 import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.fx.OperationsScreenGroup;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.ScreenGroup;
 
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PPGroup extends ScreenGroup
+public class PPGroup extends OperationsScreenGroup
 {
     private List<ScreenController> dynamicChildren;
 
@@ -39,9 +40,18 @@ public class PPGroup extends ScreenGroup
     }
 
     @Override
+    protected boolean isEnabled()
+    {
+        return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getComponentIds() != null;
+    }
+
+    @Override
     public List<ScreenController> getChildren()
     {
         List<ScreenController> children = new ArrayList<>(super.getChildren());
+        if (!isEnabled())
+            return children;
+
         children.addAll(getDynamicChildren());
         return children;
     }

@@ -20,6 +20,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import org.cirqwizard.fx.misc.About;
+import org.cirqwizard.fx.misc.Firmware;
+import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.File;
@@ -61,13 +64,14 @@ public class Welcome extends ScreenController
         }
     }
 
-    public void openFile(ActionEvent event)
+    public void openFile()
     {
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Gerber files", "*.sol", "*.cmp");
         chooser.getExtensionFilters().add(filter);
         File file = chooser.showOpenDialog(null);
-        loadFile(file);
+        if (file != null)
+            loadFile(file);
     }
 
     private void loadFile(File file)
@@ -75,9 +79,6 @@ public class Welcome extends ScreenController
         String filename = file.getAbsolutePath();
         setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
         getMainApplication().getContext().setFile(file);
-//        getMainApplication().setState(State.ORIENTATION);
-
-//        getMainApplication().showScene(SceneEnum.MainView);
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
     }
 
@@ -116,7 +117,7 @@ public class Welcome extends ScreenController
 
     public void showSettings()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditorController.class));
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditor.class));
     }
 
     public void openManualMovementScreen()
@@ -126,11 +127,11 @@ public class Welcome extends ScreenController
 
     public void firmware()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualMovementController.class));
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(Firmware.class));
     }
 
     public void showAbout()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(AboutController.class));
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(About.class));
     }
 }

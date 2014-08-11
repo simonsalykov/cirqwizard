@@ -41,10 +41,8 @@ public class XYOffsets extends ScreenController implements Initializable
 {
     @FXML private RealNumberTextField x;
     @FXML private RealNumberTextField y;
-    @FXML private RealNumberTextField z;
 
     @FXML private Button goButton;
-    @FXML private Button moveZButton;
     @FXML private Label offsetErrorLabel;
 
     @FXML private Button continueButton;
@@ -81,7 +79,6 @@ public class XYOffsets extends ScreenController implements Initializable
         ChangeListener<String> changeListener = (v, oldV, newV) -> updateComponents();
         x.realNumberTextProperty().addListener(changeListener);
         y.realNumberTextProperty().addListener(changeListener);
-        z.realNumberTextProperty().addListener(changeListener);
         x.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
             checkOffsetLimit(newV == null ? null : newV, y.getIntegerValue());
@@ -142,19 +139,12 @@ public class XYOffsets extends ScreenController implements Initializable
 
         goButton.setDisable(getMainApplication().getCNCController() == null ||
                 x.getRealNumberText() == null || y.getRealNumberText() == null);
-        moveZButton.setDisable(getMainApplication().getCNCController() == null || z.getRealNumberText() == null);
     }
 
     public void moveXY()
     {
         if (!goButton.isDisabled())
             getMainApplication().getCNCController().moveTo(x.getIntegerValue(), y.getIntegerValue());
-    }
-
-    public void moveZ()
-    {
-        if (!moveZButton.isDisabled())
-            getMainApplication().getCNCController().moveZ(z.getIntegerValue());
     }
 
     public void updateOffsetImage(PCBSize pcbSize, double pcbX, double pcbY, double pcbWidth, double pcbHeight)

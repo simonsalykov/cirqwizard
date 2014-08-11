@@ -11,7 +11,7 @@
         <items>
             <HBox fx:id="breadCrumbBarBox" fillHeight="true" styleClass="breadcrumb-bar" />
             <Region HBox.hgrow="ALWAYS" />
-            <Hyperlink text="Manual control" />
+            <Hyperlink text="Manual control" fx:id="manualControlLink" onAction="#manualControl"/>
         </items>
       </ToolBar>
       <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS" />

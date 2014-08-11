@@ -35,7 +35,6 @@ import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -51,7 +50,6 @@ public abstract class Machining extends ScreenController implements Initializabl
     @FXML protected RealNumberTextField toolDiameter;
     @FXML protected RealNumberTextField feed;
     @FXML protected Button goButton;
-    @FXML protected Button moveHeadAwayButton;
 
     @FXML protected RealNumberTextField g54X;
     @FXML protected RealNumberTextField g54Y;
@@ -209,10 +207,7 @@ public abstract class Machining extends ScreenController implements Initializabl
         mouseHandler.setService(toolpathGenerationService);
         generationPane.visibleProperty().bind(toolpathGenerationService.runningProperty());
         if (getMainApplication().getCNCController() == null)
-        {
             goButton.setDisable(true);
-            moveHeadAwayButton.setDisable(true);
-        }
         else
             goButton.disableProperty().bind(toolpathGenerationService.runningProperty());
         pcbPane.toolpathsProperty().bind(toolpathGenerationService.valueProperty());
@@ -339,11 +334,5 @@ public abstract class Machining extends ScreenController implements Initializabl
     {
         stopGenerationButton.setDisable(true);
         toolpathGenerationService.cancel();
-    }
-
-    public void moveHeadAway()
-    {
-        if (getMainApplication().getCNCController() != null)
-            getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 }

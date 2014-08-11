@@ -120,11 +120,6 @@ public class FeederSelection extends ScreenController implements Initializable
         continueButton.setDisable(row.getSelectionModel().getSelectedItem() == null || pitch.getRealNumberText() ==null);
     }
 
-    public void moveHeadAway()
-    {
-        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
-    }
-
     @Override
     public void next()
     {

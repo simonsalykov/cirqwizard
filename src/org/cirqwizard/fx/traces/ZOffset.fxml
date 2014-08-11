@@ -83,7 +83,6 @@
     </TitledPane>
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
       <children>
-        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
         <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
       </children>
     </HBox>

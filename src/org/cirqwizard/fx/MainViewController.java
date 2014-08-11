@@ -16,28 +16,30 @@ package org.cirqwizard.fx;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import org.controlsfx.control.PopOver;
 import org.controlsfx.control.action.AbstractAction;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.control.action.ActionUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
-public class MainViewController extends ScreenController implements Initializable
+public class MainViewController extends ScreenController
 {
     @FXML private HBox breadCrumbBarBox;
     @FXML private AnchorPane contentPane;
+    @FXML private Hyperlink manualControlLink;
+
+    private ManualControlPopOver manualControlPopOver = new ManualControlPopOver();
+    PopOver popOver;
 
     private ScreenController currentScreen;
 
@@ -47,53 +49,6 @@ public class MainViewController extends ScreenController implements Initializabl
         return "MainView.fxml";
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources)
-    {
-        Action millingAction = new AbstractAction("Milling")
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                System.out.println(event);
-            }
-        };
-        Action drillingAction = new AbstractAction("Drilling")
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                System.out.println(event);
-            }
-        };
-        ContextMenu contextMenu = ActionUtils.createContextMenu(Arrays.asList(millingAction, drillingAction));
-
-        Button b = new Button("Home");
-        b.setOnAction(event ->
-        {
-            Button button = (Button) event.getSource();
-            final Scene scene = button.getScene();
-            final Point2D windowCoord = new Point2D(scene.getWindow().getX(), scene.getWindow().getY());
-            final Point2D sceneCoord = new Point2D(scene.getX(), scene.getY());
-            final Point2D nodeCoord = button.localToScene(0.0, 0.0);
-            final double clickX = Math.round(windowCoord.getX() + sceneCoord.getX() + nodeCoord.getX());
-            final double clickY = Math.round(windowCoord.getY() + sceneCoord.getY() + nodeCoord.getY() + button.getHeight());
-
-            contextMenu.show((Node) event.getSource(), clickX, clickY);
-        });
-        b.getStyleClass().setAll("button", "first-button");
-        b.setFocusTraversable(false);
-        b.setMaxHeight(Double.MAX_VALUE);
-        breadCrumbBarBox.getChildren().add(b);
-        breadCrumbBarBox.getChildren().add(b = new Button("Milling"));
-        b.setMaxHeight(Double.MAX_VALUE);
-        b.setFocusTraversable(false);
-        b.getStyleClass().setAll("button", "middle-button");
-        breadCrumbBarBox.getChildren().add(b = new Button("Placement"));
-        b.setMaxHeight(Double.MAX_VALUE);
-        b.setFocusTraversable(false);
-        b.getStyleClass().setAll("button", "last-button");
-    }
 
     public ScreenController getCurrentScreen()
     {
@@ -176,6 +131,18 @@ public class MainViewController extends ScreenController implements Initializabl
 
             breadCrumbBarBox.getChildren().add(b);
         }
+    }
+
+    public void manualControl()
+    {
+        if (popOver == null)
+        {
+            popOver = new PopOver(manualControlPopOver.getView());
+            popOver.setDetachedTitle("Manual control");
+            popOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> popOver.hide(javafx.util.Duration.millis(0)));
+        }
+        popOver.show(manualControlLink);
     }
 
 }

@@ -12,12 +12,13 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.misc;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.IOException;
@@ -26,11 +27,22 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class AboutController extends ScreenController implements Initializable
+public class About extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
     @FXML private Label versionLabel;
     @FXML private ScrollPane licensePane;
+
+    @Override
+    protected String getFxmlName()
+    {
+        return "About.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "About";
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
@@ -68,9 +80,4 @@ public class AboutController extends ScreenController implements Initializable
         }
     }
 
-    @Override
-    public Parent getView()
-    {
-        return view;
-    }
 }

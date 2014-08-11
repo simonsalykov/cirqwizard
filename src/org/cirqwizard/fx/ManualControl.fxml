@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<GridPane prefHeight="300.0" prefWidth="170.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:id="view" hgap="10" vgap="15">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+  <columnConstraints>
+    <ColumnConstraints halignment="CENTER" prefWidth="50"/>
+    <ColumnConstraints prefWidth="80"/>
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints />
+    <RowConstraints />
+    <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+  </rowConstraints>
+   <children>
+       <Button mnemonicParsing="false" text="Home" prefWidth="120" GridPane.columnSpan="2" />
+        <Label text="X" GridPane.rowIndex="1" />
+        <Label text="Y" GridPane.rowIndex="2" />
+        <Label text="Z" GridPane.rowIndex="3" />
+        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Button text="Away" GridPane.rowIndex="4" prefWidth="120" GridPane.columnSpan="2"/>
+        <Button text="Tool change" prefWidth="120" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
+   </children>
+</GridPane>

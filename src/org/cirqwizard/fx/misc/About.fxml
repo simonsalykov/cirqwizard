@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.AboutController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml">
   <children>
     <Label layoutX="63.0" layoutY="49.0" styleClass="h1" text="cirQWizard" />
     <Label fx:id="versionLabel" layoutY="89.0" prefHeight="32.0" prefWidth="598.0" wrapText="true" AnchorPane.leftAnchor="91.0" AnchorPane.rightAnchor="91.0" />

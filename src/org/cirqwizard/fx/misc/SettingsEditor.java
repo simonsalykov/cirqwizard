@@ -1,4 +1,18 @@
-package org.cirqwizard.fx;
+/*
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+package org.cirqwizard.fx.misc;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,6 +23,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.SerialInterfaceFactory;
@@ -23,20 +38,21 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-/**
- * Created by simon on 04/08/14.
- */
-public class SettingsEditorController extends ScreenController implements Initializable
+public class SettingsEditor extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
-
     @FXML private ListView<SettingsGroup> groups;
     @FXML private GridPane settingsPane;
 
     @Override
-    public Parent getView()
+    protected String getFxmlName()
     {
-        return view;
+        return "SettingsEditor.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Settings";
     }
 
     @Override

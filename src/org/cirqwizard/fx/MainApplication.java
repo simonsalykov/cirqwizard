@@ -17,9 +17,7 @@ package org.cirqwizard.fx;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.cirqwizard.fx.common.XYOffsets;
 import org.cirqwizard.fx.contour.ContourMilling;
 import org.cirqwizard.fx.contour.InsertContourMill;
@@ -27,6 +25,9 @@ import org.cirqwizard.fx.dispensing.Dispensing;
 import org.cirqwizard.fx.dispensing.InsertSyringe;
 import org.cirqwizard.fx.dispensing.SyringeBleeding;
 import org.cirqwizard.fx.drilling.DrillingGroup;
+import org.cirqwizard.fx.misc.About;
+import org.cirqwizard.fx.misc.Firmware;
+import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.fx.pp.InsertPPHead;
 import org.cirqwizard.fx.pp.PPGroup;
 import org.cirqwizard.fx.pp.PlacingOverview;
@@ -48,8 +49,6 @@ public class MainApplication extends Application
 {
     private Stage primaryStage;
     private Scene scene;
-    private Stage dialogStage;
-    private Scene dialogScene;
 
     private Context context = new Context();
     private SerialInterface serialInterface;
@@ -57,45 +56,84 @@ public class MainApplication extends Application
 
     private MainViewController mainView = (MainViewController) new MainViewController().setMainApplication(this);
 
+    private ScreenController topTracesGroup = new OperationsScreenGroup("Top traces")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return  super.isEnabled() && getMainApplication().getContext().getPcbLayout().getTopTracesLayer() != null;
+            }
+        }.setMainApplication(this).
+        addChild(new PCBPlacement().setMainApplication(this)).
+        addChild(new InsertTool().setMainApplication(this)).
+        addChild(new ZOffset().setMainApplication(this)).
+        addChild(new XYOffsets().setMainApplication(this)).
+        addChild(new TopTraceMilling().setMainApplication(this));
+
+    private ScreenController bottomTracesGroup = new OperationsScreenGroup("Bottom traces")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getBottomTracesLayer() != null;
+            }
+        }.setMainApplication(this).
+            addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
+            addChild(new InsertTool().setMainApplication(this)).
+            addChild(new ZOffset().setMainApplication(this)).
+            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new BottomTraceMilling().setMainApplication(this));
+
+    private ScreenController contourMillingGroup = new OperationsScreenGroup("Contour milling")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getMillingLayer() != null;
+            }
+        }.setMainApplication(this).
+            addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
+            addChild(new InsertContourMill().setMainApplication(this)).
+            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new ContourMilling().setMainApplication(this));
+
+    private ScreenController dispensingGroup = new OperationsScreenGroup("Dispensing")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getSolderPasteLayer() != null;
+            }
+        }.setMainApplication(this).
+            addChild(new InsertSyringe().setMainApplication(this)).
+            addChild(new SyringeBleeding().setMainApplication(this)).
+            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new Dispensing().setMainApplication(this));
+
     private ScreenController root = new Welcome().setMainApplication(this).
             addChild(new Orientation().setMainApplication(this)).
             addChild(new Homing().setMainApplication(this)).
-            addChild(new ScreenGroup("Top traces").setMainApplication(this).
-                    addChild(new PCBPlacement().setMainApplication(this)).
-                    addChild(new InsertTool().setMainApplication(this)).
-                    addChild(new ZOffset().setMainApplication(this)).
-                    addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new TopTraceMilling().setMainApplication(this))).
-            addChild(new ScreenGroup("Bottom traces").setMainApplication(this).
-                    addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
-                    addChild(new InsertTool().setMainApplication(this)).
-                    addChild(new ZOffset().setMainApplication(this)).
-                    addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new BottomTraceMilling().setMainApplication(this))).
+            addChild(topTracesGroup).
+            addChild(bottomTracesGroup).
             addChild(new DrillingGroup("Drilling").setMainApplication(this).
                     addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this))).
-            addChild(new ScreenGroup("Contour milling").setMainApplication(this).
-                    addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
-                    addChild(new InsertContourMill().setMainApplication(this)).
-                    addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new ContourMilling().setMainApplication(this))).
-            addChild(new ScreenGroup("Dispensing").setMainApplication(this).
-                    addChild(new InsertSyringe().setMainApplication(this)).
-                    addChild(new SyringeBleeding().setMainApplication(this)).
-                    addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new Dispensing().setMainApplication(this))).
+            addChild(contourMillingGroup).
+            addChild(dispensingGroup).
             addChild(new PPGroup("Pick and place").setMainApplication(this).
                     addChild(new PCBPlacement().setMainApplication(this)).
                     addChild(new InsertPPHead().setMainApplication(this)).
                     addChild(new XYOffsets().setMainApplication(this)).
-                    addChild(new PlacingOverview().setMainApplication(this)));
+                    addChild(new PlacingOverview().setMainApplication(this))).
+            addChild(new ScreenGroup("Misc").setMainApplication(this).
+                    addChild(new SettingsEditor().setMainApplication(this)).
+                    addChild(new Firmware().setMainApplication(this)).
+                    addChild(new About()).setMainApplication(this));
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
-//        context = new Context();
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 
         this.primaryStage = primaryStage;
@@ -108,10 +146,6 @@ public class MainApplication extends Application
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         mainView.setScreen(root);
         primaryStage.show();
-
-        dialogStage = new Stage(StageStyle.UNDECORATED);
-        dialogStage.initOwner(primaryStage);
-        dialogStage.initModality(Modality.WINDOW_MODAL);
     }
 
     public ScreenController getScreen(Class clazz)
@@ -208,6 +242,11 @@ public class MainApplication extends Application
     public List<ScreenController> getSiblings(ScreenController scene)
     {
         return scene.getParent() == null ? null : scene.getParent().getChildren();
+    }
+
+    public Stage getPrimaryStage()
+    {
+        return primaryStage;
     }
 
     public static void main(String[] args)

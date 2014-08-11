@@ -23,7 +23,6 @@ import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.fx.ScreenController;
-import org.cirqwizard.settings.SettingsFactory;
 
 
 public abstract class PCBPlacement extends ScreenController
@@ -32,7 +31,6 @@ public abstract class PCBPlacement extends ScreenController
     @FXML protected VBox radioButtonsBox;
     @FXML protected RadioButton smallPCB;
     @FXML protected RadioButton largePCB;
-    @FXML protected Button moveAwayButton;
 
     @FXML protected VBox errorBox;
     @FXML protected CheckBox ignoreErrorCheckbox;
@@ -62,7 +60,6 @@ public abstract class PCBPlacement extends ScreenController
             largePCB.setSelected(true);
 
         errorBox.setVisible(false);
-        moveAwayButton.setDisable(getMainApplication().getCNCController() == null);
         ignoreErrorCheckbox.setSelected(false);
 
         updateComponents();
@@ -103,10 +100,5 @@ public abstract class PCBPlacement extends ScreenController
             errorBox.setVisible(true);
             continueButton.setDisable(!ignoreErrorCheckbox.isSelected());
         }
-    }
-
-    public void moveAway()
-    {
-        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 }

@@ -30,28 +30,8 @@
       </children>
     </VBox>
     <Button fx:id="goButton" layoutX="209.0" layoutY="200.0" mnemonicParsing="false" onAction="#moveXY" text="Show me where it is" />
-    <TitledPane animated="false" expanded="false" layoutX="310.0" layoutY="363.0" prefWidth="181.0" text="Move Z axis">
-      <content>
-        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="123.0" prefWidth="171.0">
-          <children>
-            <VBox id="VBox" alignment="CENTER" layoutX="24.0" layoutY="16.0" spacing="15.0">
-              <children>
-                <HBox id="HBox" alignment="CENTER" spacing="5.0">
-                  <children>
-                    <Label text="Z" />
-                    <RealNumberTextField fx:id="z" onAction="#moveZ" prefWidth="75.0" />
-                  </children>
-                </HBox>
-                <Button fx:id="moveZButton" mnemonicParsing="false" onAction="#moveZ" text="Move" />
-              </children>
-            </VBox>
-          </children>
-        </AnchorPane>
-      </content>
-    </TitledPane>
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
       <children>
-        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
         <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
       </children>
     </HBox>

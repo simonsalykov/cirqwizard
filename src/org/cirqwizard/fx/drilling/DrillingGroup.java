@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.drilling;
 
+import org.cirqwizard.fx.OperationsScreenGroup;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.ScreenGroup;
 import org.cirqwizard.fx.common.XYOffsets;
@@ -22,7 +23,7 @@ import org.cirqwizard.settings.ApplicationConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DrillingGroup extends ScreenGroup
+public class DrillingGroup extends OperationsScreenGroup
 {
     public DrillingGroup(String name)
     {
@@ -30,9 +31,18 @@ public class DrillingGroup extends ScreenGroup
     }
 
     @Override
+    protected boolean isEnabled()
+    {
+        return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getDrillingLayer() != null;
+    }
+
+    @Override
     public List<ScreenController> getChildren()
     {
         List<ScreenController> children = new ArrayList<>(super.getChildren());
+        if (!isEnabled())
+            return children;
+
         List<Integer> drillDiameters = getMainApplication().getContext().getPcbLayout().getDrillingLayer().getDrillDiameters();
         for (int d : drillDiameters)
         {

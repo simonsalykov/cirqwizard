@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.FirmwareController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
   <children>
     <Label layoutY="50.0" styleClass="h1" text="Reflashing firmware" AnchorPane.leftAnchor="51.0" />
     <Label layoutY="118.0" text="This allows you to flash a new firmware to the controller. After starting reflash process, please do not interrupt it, do not close the application or disconnect the controller. Doing so may render the device unusable." wrapText="true" AnchorPane.leftAnchor="91.0" AnchorPane.rightAnchor="91.0" />

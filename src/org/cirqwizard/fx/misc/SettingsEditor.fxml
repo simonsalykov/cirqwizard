@@ -12,7 +12,7 @@
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 <?scenebuilder-classpath-element ../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.cirqwizard.fx.SettingsEditorController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
   <children>
     <Label layoutX="51.0" layoutY="31.0" styleClass="h1" text="Settings" />
     <Button layoutX="644.0" layoutY="531.0" mnemonicParsing="false" onAction="#goBack" text="Go back" AnchorPane.bottomAnchor="43.0" />

@@ -12,9 +12,10 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.misc;
 
 import javafx.scene.layout.VBox;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.SerialInterface;
 import org.cirqwizard.stm32.STM32BootLoaderInterface;
@@ -38,9 +39,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 
-public class FirmwareController extends ScreenController implements Initializable
+public class Firmware extends ScreenController implements Initializable
 {
-    @FXML private Parent view;
     @FXML private TextField selectedFile;
     @FXML private ProgressBar flashProgress;
     @FXML private Button flashButton;
@@ -51,6 +51,18 @@ public class FirmwareController extends ScreenController implements Initializabl
     @FXML private VBox progressBarBox;
 
     private static final String ERROR_CLASS_NAME = "error-message";
+
+    @Override
+    protected String getFxmlName()
+    {
+        return "Firmware.fxml";
+    }
+
+    @Override
+    protected String getName()
+    {
+        return "Firmware";
+    }
 
     @Override
     public void refresh()
@@ -76,23 +88,10 @@ public class FirmwareController extends ScreenController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        selectedFile.textProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2)
-            {
-                flashButton.setDisable(s2 == null || s2.trim().isEmpty());
-            }
-        });
+        selectedFile.textProperty().addListener((v, oldV, newV) -> flashButton.setDisable(newV == null || newV.trim().isEmpty()));
     }
 
-    @Override
-    public Parent getView()
-    {
-        return view;
-    }
-
-    public void selectFile(ActionEvent event)
+    public void selectFile()
     {
         FileChooser chooser = new FileChooser();
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Firmware files", "*.bin");
@@ -180,14 +179,7 @@ public class FirmwareController extends ScreenController implements Initializabl
 
         private void setStatus(final String msg)
         {
-            Platform.runLater(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setInfoMessage(msg);
-                }
-            });
+            Platform.runLater(() -> setInfoMessage(msg));
         }
 
         public class SerialWriterTask extends Task
@@ -213,14 +205,10 @@ public class FirmwareController extends ScreenController implements Initializabl
                 }
                 catch (Exception e)
                 {
-                    Platform.runLater(new Runnable()
+                    Platform.runLater(() ->
                     {
-                        @Override
-                        public void run()
-                        {
-                            setErrorMessage("Communication error");
-                            flashProgress.setVisible(false);
-                        }
+                        setErrorMessage("Communication error");
+                        flashProgress.setVisible(false);
                     });
                     LoggerFactory.logException("Communication error:", e);
                 }
