@@ -22,6 +22,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
+import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.logging.LoggerFactory;
 
@@ -120,9 +121,9 @@ public class Welcome extends ScreenController
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditor.class));
     }
 
-    public void openManualMovementScreen()
+    public void openMDI()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualMovementController.class));
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualDataInput.class));
     }
 
     public void firmware()

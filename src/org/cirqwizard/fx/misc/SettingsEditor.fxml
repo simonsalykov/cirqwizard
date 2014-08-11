@@ -15,7 +15,6 @@
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
   <children>
     <Label layoutX="51.0" layoutY="31.0" styleClass="h1" text="Settings" />
-    <Button layoutX="644.0" layoutY="531.0" mnemonicParsing="false" onAction="#goBack" text="Go back" AnchorPane.bottomAnchor="43.0" />
     <Button layoutX="65.0" layoutY="531.0" mnemonicParsing="false" onAction="#resetToDefaults" text="Reset to defaults" AnchorPane.bottomAnchor="43.0" />
       <SplitPane dividerPositions="0.29797979797979796" layoutX="165.0" layoutY="179.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="100.0">
         <items>

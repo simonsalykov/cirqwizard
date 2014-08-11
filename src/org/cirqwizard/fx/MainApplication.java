@@ -27,6 +27,7 @@ import org.cirqwizard.fx.dispensing.SyringeBleeding;
 import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
+import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.fx.pp.InsertPPHead;
 import org.cirqwizard.fx.pp.PPGroup;
@@ -128,7 +129,8 @@ public class MainApplication extends Application
             addChild(new ScreenGroup("Misc").setMainApplication(this).
                     addChild(new SettingsEditor().setMainApplication(this)).
                     addChild(new Firmware().setMainApplication(this)).
-                    addChild(new About()).setMainApplication(this));
+                    addChild(new About()).setMainApplication(this).
+                    addChild(new ManualDataInput().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception

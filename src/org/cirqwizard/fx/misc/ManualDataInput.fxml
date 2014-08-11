@@ -5,14 +5,13 @@
 <?import javafx.scene.layout.*?>
 <?scenebuilder-stylesheet ../../../../out/production/cirqwizard/org/cirqwizard/fx/cirqwizard.css?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.ManualDataInputController">
+<AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
   <children>
     <StackPane prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <AnchorPane id="AnchorPane" prefHeight="563.0" prefWidth="780.0">
           <children>
             <Label layoutX="77.0" layoutY="80.0" styleClass="h1" text="Direct GCode control" />
-            <Button mnemonicParsing="false" onAction="#goBack" text="Go back" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0" />
             <Label alignment="TOP_LEFT" layoutY="140.0" prefHeight="47.0" prefWidth="-1.0" text="On this screen you can control your device using GCode - type GCode in a corresponding field and press Send button." wrapText="true" AnchorPane.leftAnchor="107.0" AnchorPane.rightAnchor="58.0" />
             <VBox id="VBox" alignment="TOP_LEFT" spacing="5.0" AnchorPane.bottomAnchor="110.0" AnchorPane.leftAnchor="77.0" AnchorPane.rightAnchor="266.0" AnchorPane.topAnchor="201.0">
               <children>

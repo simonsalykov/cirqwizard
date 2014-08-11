@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.settings.SettingsFactory;
 
@@ -105,7 +106,7 @@ public class ManualMovementController extends ScreenController implements Initia
 
     public void goToMDI()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualDataInputController.class));
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualDataInput.class));
     }
 
 }
