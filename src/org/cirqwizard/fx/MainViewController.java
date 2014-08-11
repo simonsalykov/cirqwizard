@@ -41,7 +41,7 @@ public class MainViewController extends ScreenController
     @FXML private Hyperlink offsetsLink;
     @FXML private Hyperlink manualControlLink;
 
-    private PopOver manualControlPopOver;
+    private ManualControlPopOver manualControlPopOver = new ManualControlPopOver();
     private OffsetsPopOver offsetsPopOver = new OffsetsPopOver();
 
     private ScreenController currentScreen;
@@ -99,26 +99,26 @@ public class MainViewController extends ScreenController
             else
                 b.getStyleClass().addAll("middle-button");
 
-            List<Action> contextMenuActions = new ArrayList<>();
-            List<ScreenController> siblings = getMainApplication().getSiblings(item);
-            if (siblings != null)
+            b.setOnAction(event ->
             {
-                for (ScreenController sibling : siblings)
+                List<Action> contextMenuActions = new ArrayList<>();
+                List<ScreenController> siblings = getMainApplication().getSiblings(item);
+                if (siblings != null)
                 {
-                    AbstractAction action = new AbstractAction(sibling.getName())
+                    for (ScreenController sibling : siblings)
                     {
-                        @Override
-                        public void handle(ActionEvent event)
+                        AbstractAction action = new AbstractAction(sibling.getName())
                         {
-                            sibling.select();
-                        }
-                    };
-                    action.setDisabled(!sibling.isEnabled());
-                    contextMenuActions.add(action);
-                }
-                ContextMenu contextMenu = ActionUtils.createContextMenu(contextMenuActions);
-                b.setOnAction(event ->
-                {
+                            @Override
+                            public void handle(ActionEvent event)
+                            {
+                                sibling.select();
+                            }
+                        };
+                        action.setDisabled(!sibling.isEnabled());
+                        contextMenuActions.add(action);
+                    }
+                    ContextMenu contextMenu = ActionUtils.createContextMenu(contextMenuActions);
                     Button button = (Button) event.getSource();
                     final Scene scene = button.getScene();
                     final Point2D windowCoord = new Point2D(scene.getWindow().getX(), scene.getWindow().getY());
@@ -127,10 +127,10 @@ public class MainViewController extends ScreenController
                     final double clickX = Math.round(windowCoord.getX() + sceneCoord.getX() + nodeCoord.getX());
                     final double clickY = Math.round(windowCoord.getY() + sceneCoord.getY() + nodeCoord.getY() + button.getHeight());
                     contextMenu.show((Node) event.getSource(), clickX, clickY);
-                });
-            }
-            else
-                b.setOnAction(event -> item.select());
+                }
+                else
+                    item.select();
+            });
 
             breadCrumbBarBox.getChildren().add(b);
         }
@@ -138,22 +138,23 @@ public class MainViewController extends ScreenController
 
     private void hidePopOvers()
     {
-        if (manualControlPopOver != null)
-            manualControlPopOver.hide(javafx.util.Duration.millis(0));
+        if (manualControlPopOver.getPopOver() != null)
+            manualControlPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
         if (offsetsPopOver.getPopOver() != null)
             offsetsPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
     }
 
     public void manualControl()
     {
-        if (manualControlPopOver == null)
+        if (manualControlPopOver.getPopOver() == null)
         {
-            manualControlPopOver = new PopOver(new ManualControlPopOver().getView());
-            manualControlPopOver.setDetachedTitle("Manual control");
-            manualControlPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+            manualControlPopOver.setPopOver(new PopOver(manualControlPopOver.getView()));
+            manualControlPopOver.setMainApplication(getMainApplication());
+            manualControlPopOver.getPopOver().setDetachedTitle("Manual control");
+            manualControlPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
             getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
         }
-        manualControlPopOver.show(manualControlLink);
+        manualControlPopOver.getPopOver().show(manualControlLink);
     }
 
     public void offsets()

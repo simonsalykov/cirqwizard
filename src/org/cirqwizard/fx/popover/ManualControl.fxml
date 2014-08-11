@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.geometry.Insets?>
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
 <GridPane prefHeight="300.0" prefWidth="170.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:id="view" hgap="10" vgap="15">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -22,14 +23,14 @@
       <RowConstraints />
   </rowConstraints>
    <children>
-       <Button mnemonicParsing="false" text="Home" prefWidth="120" GridPane.columnSpan="2" />
+       <Button onAction="#home" mnemonicParsing="false" text="Home" prefWidth="120" GridPane.columnSpan="2" />
         <Label text="X" GridPane.rowIndex="1" />
         <Label text="Y" GridPane.rowIndex="2" />
         <Label text="Z" GridPane.rowIndex="3" />
-        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-        <Button text="Away" GridPane.rowIndex="4" prefWidth="120" GridPane.columnSpan="2"/>
-        <Button text="Tool change" prefWidth="120" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
+        <RealNumberTextField fx:id="xTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#goToUpdatedCoordinates" />
+        <RealNumberTextField fx:id="yTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#goToUpdatedCoordinates" />
+        <RealNumberTextField fx:id="zTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" onAction="#goToUpdatedCoordinates" />
+        <Button onAction="#moveAway" text="Away" GridPane.rowIndex="4" prefWidth="120" GridPane.columnSpan="2"/>
+        <Button onAction="#moveToToolChange" text="Tool change" prefWidth="120" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
    </children>
 </GridPane>

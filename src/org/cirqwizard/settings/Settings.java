@@ -179,6 +179,8 @@ public class Settings
         setInt(INTERFACE_SCRAP_PLACE_Y, applicationValues.getScrapPlaceY());
         applicationValues.getTestCutDirection().setValue(preferences.getInt(INTERFACE_TEST_CUT_DIRECTION, 0) == 0);
 
+        preferences.putBoolean(EXPORTED, true);
+
         machineSettings.save();
         applicationSettings.save();
         insulationMillingSettings.save();
