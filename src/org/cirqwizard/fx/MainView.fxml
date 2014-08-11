@@ -11,6 +11,7 @@
         <items>
             <HBox fx:id="breadCrumbBarBox" fillHeight="true" styleClass="breadcrumb-bar" />
             <Region HBox.hgrow="ALWAYS" />
+            <Hyperlink text="Offsets" fx:id="offsetsLink" onAction="#offsets"/>
             <Hyperlink text="Manual control" fx:id="manualControlLink" onAction="#manualControl"/>
         </items>
       </ToolBar>

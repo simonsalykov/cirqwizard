@@ -32,11 +32,4 @@ public class Message extends ScreenController
         return "/org/cirqwizard/fx/common/Message.fxml";
     }
 
-    @Override
-    public void refresh()
-    {
-        // TODO
-//        continueButton.setVisible(getMainApplication().getState() != State.TERMINAL);
-    }
-
 }

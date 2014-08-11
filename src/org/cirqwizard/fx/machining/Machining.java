@@ -30,7 +30,6 @@ import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
-import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.net.URL;
@@ -44,16 +43,11 @@ public abstract class Machining extends ScreenController implements Initializabl
 {
     @FXML protected PCBPaneFX pcbPane;
     @FXML protected ScrollPane scrollPane;
-    @FXML protected TitledPane offsetsPane;
     @FXML protected TitledPane miscPane;
 
     @FXML protected RealNumberTextField toolDiameter;
     @FXML protected RealNumberTextField feed;
     @FXML protected Button goButton;
-
-    @FXML protected RealNumberTextField g54X;
-    @FXML protected RealNumberTextField g54Y;
-    @FXML protected RealNumberTextField g54Z;
 
     @FXML protected RealNumberTextField clearance;
     @FXML protected RealNumberTextField safetyHeight;
@@ -116,13 +110,6 @@ public abstract class Machining extends ScreenController implements Initializabl
 
         mouseHandler = new PCBPaneMouseHandler(pcbPane);
         pcbPane.addEventFilter(MouseEvent.ANY, mouseHandler);
-        offsetsPane.expandedProperty().addListener((v, oldV, newV) ->
-        {
-            if (newV)
-                offsetsPane.toFront();
-            else
-                offsetsPane.toBack();
-        });
         miscPane.expandedProperty().addListener((v, oldV, newV) ->
         {
             if (newV)
@@ -157,21 +144,6 @@ public abstract class Machining extends ScreenController implements Initializabl
                 zoomOut();
                 event.consume();
             }
-        });
-        g54X.realNumberIntegerProperty().addListener((v, oldV, newV) ->
-        {
-            if (newV != null)
-                getMainApplication().getContext().setG54X(newV);
-        });
-        g54Y.realNumberIntegerProperty().addListener((v, oldV, newV) ->
-        {
-            if (newV != null)
-                getMainApplication().getContext().setG54Y(newV);
-        });
-        g54Z.realNumberIntegerProperty().addListener((v, oldV, newV) ->
-        {
-            if (newV != null)
-                getMainApplication().getContext().setG54Z(newV);
         });
 
         gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
@@ -217,10 +189,6 @@ public abstract class Machining extends ScreenController implements Initializabl
         executionPane.visibleProperty().bind(serialService.runningProperty());
 
         stopGenerationButton.setDisable(false);
-
-        g54X.setIntegerValue(context.getG54X());
-        g54Y.setIntegerValue(context.getG54Y());
-        g54Z.setIntegerValue(context.getG54Z());
 
         pcbPane.setBoardWidth(context.getBoardWidth());
         pcbPane.setBoardHeight(context.getBoardHeight());

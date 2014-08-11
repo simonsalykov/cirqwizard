@@ -298,7 +298,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     public void moveHeadAway()
     {
-        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
+        // TODO
+//        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
     }
 
     public void vacuumOff()

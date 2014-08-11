@@ -14,33 +14,23 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.fx.common.Message;
 
-import java.io.IOException;
-
-public class ManualControlPopOver
+public class Terminal extends Message
 {
-    @FXML private Parent view;
-
-    public ManualControlPopOver()
+    @Override
+    protected String getName()
     {
-        try
-        {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ManualControl.fxml"));
-            loader.setController(this);
-            loader.load();
-        }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Error loading FXML", e);
-        }
+        return "All done";
     }
 
-    public Parent getView()
+    @Override
+    public void refresh()
     {
-        return view;
+        super.refresh();
+        header.setText("Congratulations!");
+        text.setText("You PCB is done.");
+        continueButton.setVisible(false);
     }
+
 }

@@ -90,15 +90,12 @@ public class Context
 
     public PCBSize getPcbSize()
     {
-        return pcbSize == null ? SettingsFactory.getApplicationValues().getPcbSize().getValue() : pcbSize;
+        return pcbSize;
     }
 
     public void setPcbSize(PCBSize pcbSize)
     {
         this.pcbSize = pcbSize;
-        ApplicationValues values = SettingsFactory.getApplicationValues();
-        values.getPcbSize().setValue(pcbSize);
-        values.save();
     }
 
     public Integer getG54X()

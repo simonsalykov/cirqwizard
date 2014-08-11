@@ -109,7 +109,9 @@ public class Settings
         setInt(MACHINE_REFERENCE_PIN_Y, machineSettings.getReferencePinY());
         setInt(MACHINE_SMALL_PCB_WIDTH, machineSettings.getSmallPcbWidth());
         setInt(MACHINE_LARGE_PCB_WIDTH, machineSettings.getLargePcbWidth());
-        setInt(MACHINE_FAR_AWAY_Y, machineSettings.getFarAwayY());
+
+        PredefinedLocationSettings predefinedLocationSettings = SettingsFactory.getPredefinedLocationSettings();
+        setInt(MACHINE_FAR_AWAY_Y, predefinedLocationSettings.getFarAwayY());
 
         ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
         setString(SERIAL_PORT_NAME, applicationSettings.getSerialPort());

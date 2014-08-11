@@ -40,7 +40,6 @@ public class FeederSelection extends ScreenController implements Initializable
     @FXML private RadioButton smallFeeder;
     @FXML private RadioButton mediumFeeder;
     @FXML private RadioButton largeFeeder;
-    @FXML private Button moveHeadAwayButton;
 
     @FXML private ComboBox<Integer> row;
     @FXML private RealNumberTextField pitch;
@@ -93,8 +92,6 @@ public class FeederSelection extends ScreenController implements Initializable
         updateRows();
 
         pitch.setIntegerValue(context.getComponentPitch() == null ? null : context.getComponentPitch());
-
-        moveHeadAwayButton.setDisable(getMainApplication().getCNCController() == null);
     }
 
     public void updateRows()

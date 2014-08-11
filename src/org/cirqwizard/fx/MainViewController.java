@@ -24,6 +24,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import org.cirqwizard.fx.popover.ManualControlPopOver;
+import org.cirqwizard.fx.popover.OffsetsPopOver;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.action.AbstractAction;
 import org.controlsfx.control.action.Action;
@@ -36,10 +38,11 @@ public class MainViewController extends ScreenController
 {
     @FXML private HBox breadCrumbBarBox;
     @FXML private AnchorPane contentPane;
+    @FXML private Hyperlink offsetsLink;
     @FXML private Hyperlink manualControlLink;
 
-    private ManualControlPopOver manualControlPopOver = new ManualControlPopOver();
-    PopOver popOver;
+    private PopOver manualControlPopOver;
+    private OffsetsPopOver offsetsPopOver = new OffsetsPopOver();
 
     private ScreenController currentScreen;
 
@@ -133,16 +136,38 @@ public class MainViewController extends ScreenController
         }
     }
 
+    private void hidePopOvers()
+    {
+        if (manualControlPopOver != null)
+            manualControlPopOver.hide(javafx.util.Duration.millis(0));
+        if (offsetsPopOver.getPopOver() != null)
+            offsetsPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
+    }
+
     public void manualControl()
     {
-        if (popOver == null)
+        if (manualControlPopOver == null)
         {
-            popOver = new PopOver(manualControlPopOver.getView());
-            popOver.setDetachedTitle("Manual control");
-            popOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> popOver.hide(javafx.util.Duration.millis(0)));
+            manualControlPopOver = new PopOver(new ManualControlPopOver().getView());
+            manualControlPopOver.setDetachedTitle("Manual control");
+            manualControlPopOver.setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
         }
-        popOver.show(manualControlLink);
+        manualControlPopOver.show(manualControlLink);
+    }
+
+    public void offsets()
+    {
+        if (offsetsPopOver.getPopOver() == null)
+        {
+            offsetsPopOver.setPopOver(new PopOver(offsetsPopOver.getView()));
+            offsetsPopOver.setMainApplication(getMainApplication());
+            offsetsPopOver.getPopOver().setDetachedTitle("Offsets");
+            offsetsPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
+        }
+        offsetsPopOver.refresh();
+        offsetsPopOver.getPopOver().show(offsetsLink);
     }
 
 }

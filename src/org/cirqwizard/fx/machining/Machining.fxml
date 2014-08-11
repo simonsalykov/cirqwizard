@@ -21,44 +21,6 @@
       <children>
         <AnchorPane id="AnchorPane">
           <children>
-            <TitledPane fx:id="offsetsPane" animated="false" expanded="false" minWidth="89.0" prefWidth="168.0" text="Offsets" AnchorPane.rightAnchor="231.0" AnchorPane.topAnchor="10.0">
-              <content>
-                <AnchorPane id="Content" minWidth="0.0" prefWidth="200.0">
-                  <children>
-                    <VBox minHeight="0.0">
-                      <children>
-                        <GridPane prefWidth="163.0">
-                          <children>
-                            <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                            <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                            <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                            <RealNumberTextField fx:id="g54X" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="0">
-                              <GridPane.margin>
-                                <Insets right="5.0" />
-                              </GridPane.margin>
-                            </RealNumberTextField>
-                            <RealNumberTextField fx:id="g54Y" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
-                            <RealNumberTextField fx:id="g54Z" prefWidth="60.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                          </children>
-                          <columnConstraints>
-                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="106.0" minWidth="10.0" prefWidth="94.0" />
-                            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="69.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints maxHeight="55.0" minHeight="-Infinity" prefHeight="29.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="69.0" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="32.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                          <VBox.margin>
-                            <Insets bottom="2.0" top="4.0" />
-                          </VBox.margin>
-                        </GridPane>
-                      </children>
-                    </VBox>
-                  </children>
-                </AnchorPane>
-              </content>
-            </TitledPane>
             <TitledPane fx:id="miscPane" animated="false" expanded="false" prefHeight="120.0" prefWidth="216.0" text="Misc" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
