@@ -27,6 +27,7 @@ public class UserPreference<T>
     private List<T> items;
     private Instantiator instantiator;
     private boolean triggersInvalidation;   // Change of this setting invalidates already generated tool paths
+    private boolean showInPopOver = true;
 
     public static interface Instantiator<T>
     {
@@ -136,6 +137,17 @@ public class UserPreference<T>
     public UserPreference<T> setTriggersInvalidation(boolean triggersInvalidation)
     {
         this.triggersInvalidation = triggersInvalidation;
+        return this;
+    }
+
+    public boolean showInPopOver()
+    {
+        return showInPopOver;
+    }
+
+    public UserPreference<T> setShowInPopOver(boolean showInPopOver)
+    {
+        this.showInPopOver = showInPopOver;
         return this;
     }
 }

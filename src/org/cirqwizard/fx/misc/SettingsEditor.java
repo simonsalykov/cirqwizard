@@ -120,16 +120,29 @@ public class SettingsEditor extends ScreenController implements Initializable
                 Class argumentClass = (Class) ((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
 
                 UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), group.getClass()).getReadMethod().invoke(group);
-                container.add(new Label(p.getUserName()), 0, row.get());
-                container.add(getEditor(argumentClass, p, group, mainApplication, listener), 1, row.get());
-                container.add(new Label(p.getUnits()), 2, row.get());
-                row.setValue(row.get() + 1);
+                if (listener == null || p.showInPopOver())
+                {
+                    container.add(new Label(p.getUserName()), 0, row.get());
+                    container.add(getEditor(argumentClass, p, group, mainApplication, listener), 1, row.get());
+                    container.add(new Label(p.getUnits()), 2, row.get());
+                    row.setValue(row.get() + 1);
+                }
             }
         }
         catch (IllegalAccessException | IntrospectionException | InvocationTargetException e)
         {
             LoggerFactory.logException("Error accessing settings group", e);
         }
+    }
+
+    private static void addInvalidationListenerToTextField(TextField textField, SettingsDependentScreenController listener)
+    {
+        textField.setOnAction((event) -> listener.settingsInvalidated());
+        textField.focusedProperty().addListener((v, oldV, newV) ->
+        {
+            if (!newV)
+                listener.settingsInvalidated();
+        });
     }
 
     private static Control getEditor(Class clazz, UserPreference p, SettingsGroup group, MainApplication mainApplication, SettingsDependentScreenController listener)
@@ -146,6 +159,8 @@ public class SettingsEditor extends ScreenController implements Initializable
                     group.save();
                 });
                 ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
+                if (p.triggersInvalidation() && listener != null)
+                    addInvalidationListenerToTextField((TextField) editor, listener);
             }
             else
             {
@@ -158,14 +173,7 @@ public class SettingsEditor extends ScreenController implements Initializable
                     group.save();
                 });
                 if (p.triggersInvalidation() && listener != null)
-                {
-                    rnEditor.setOnAction((event) -> listener.settingsInvalidated());
-                    rnEditor.focusedProperty().addListener((v, oldV, newV) ->
-                    {
-                        if (!newV)
-                            listener.settingsInvalidated();
-                    });
-                }
+                    addInvalidationListenerToTextField(rnEditor, listener);
                 rnEditor.setAlignment(Pos.CENTER_RIGHT);
             }
         }
@@ -177,6 +185,8 @@ public class SettingsEditor extends ScreenController implements Initializable
                 p.setValue(newV);
                 group.save();
             });
+            if (p.triggersInvalidation() && listener != null)
+                addInvalidationListenerToTextField((TextField) editor, listener);
             ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
         }
         else if (Boolean.class.equals(clazz))

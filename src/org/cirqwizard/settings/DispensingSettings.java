@@ -42,7 +42,7 @@ public class DispensingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Heights")
-    private UserPreference<Integer> zOffset = new UserPreference<>("Z offset", null, "mm");
+    private UserPreference<Integer> zOffset = new UserPreference<>("Z offset", (Integer) null, "mm").setShowInPopOver(false);
 
     @PersistentPreference
     @PreferenceGroup(name = "Heights")
