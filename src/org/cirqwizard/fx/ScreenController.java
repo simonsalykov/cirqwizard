@@ -17,7 +17,9 @@ package org.cirqwizard.fx;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.SettingsGroup;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -22,9 +22,9 @@ import org.cirqwizard.fx.machining.ToolpathGenerationService;
 import org.cirqwizard.gcode.DrillGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
-import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.DrillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.SettingsGroup;
 
 public class Drilling extends Machining
 {
@@ -38,15 +38,8 @@ public class Drilling extends Machining
     public void refresh()
     {
         super.refresh();
-        toolDiameter.setDisable(true);
         Context context = getMainApplication().getContext();
-        toolDiameter.setText(ApplicationConstants.formatToolDiameter(context.getCurrentDrill()));
         DrillingSettings settings = SettingsFactory.getDrillingSettings();
-        feed.setIntegerValue(settings.getFeed().getValue());
-
-        clearance.setIntegerValue(settings.getClearance().getValue());
-        safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
-        zFeed.setDisable(true);
 
         context.setG54Z(settings.getZOffset().getValue());
 
@@ -62,6 +55,12 @@ public class Drilling extends Machining
     }
 
     @Override
+    public SettingsGroup getSettingsGroup()
+    {
+        return SettingsFactory.getDrillingSettings();
+    }
+
+    @Override
     protected ToolpathGenerationService getToolpathGenerationService()
     {
         return new DrillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
@@ -73,8 +72,8 @@ public class Drilling extends Machining
     {
         DrillingSettings settings = SettingsFactory.getDrillingSettings();
         DrillGCodeGenerator generator = new DrillGCodeGenerator(getMainApplication().getContext());
-        return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), clearance.getIntegerValue(),
-                safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+        return generator.generate(new RTPostprocessor(), settings.getFeed().getValue(), settings.getClearance().getValue(),
+                settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());
     }
 }

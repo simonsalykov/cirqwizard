@@ -24,6 +24,7 @@ import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.ContourMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.SettingsGroup;
 
 public class ContourMilling extends Machining
 {
@@ -38,23 +39,18 @@ public class ContourMilling extends Machining
     {
         super.refresh();
         Context context = getMainApplication().getContext();
-        toolDiameter.setDisable(true);
-        toolDiameter.setText(context.getPcbLayout().getContourMillDiameter());
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
-        feed.setIntegerValue(settings.getFeedXY().getValue());
-
-        clearance.setIntegerValue(settings.getClearance().getValue());
-        safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
-        zFeed.setDisable(false);
-        zFeed.setIntegerValue(settings.getFeedZ().getValue());
-
         context.setG54Z(settings.getZOffset().getValue());
 
         pcbPane.setGerberPrimitives(null);
         pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
         pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
+    }
 
-        toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
+    @Override
+    public SettingsGroup getSettingsGroup()
+    {
+        return SettingsFactory.getContourMillingSettings();
     }
 
     @Override
@@ -74,10 +70,10 @@ public class ContourMilling extends Machining
     protected String generateGCode()
     {
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
-        int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
+        int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
         MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-        return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());
     }
 }

@@ -43,7 +43,6 @@ public class ContourMillingToolpathGenerationService extends ToolpathGenerationS
             {
                 try
                 {
-                    lastToolDiameter = toolDiameter.get();
                     overallProgressProperty.unbind();
                     generationStageProperty.unbind();
                     estimatedMachiningTimeProperty.unbind();

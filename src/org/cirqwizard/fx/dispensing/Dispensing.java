@@ -24,6 +24,7 @@ import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.DispensingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.SettingsGroup;
 
 public class Dispensing extends Machining
 {
@@ -37,22 +38,18 @@ public class Dispensing extends Machining
     public void refresh()
     {
         super.refresh();
-        toolDiameter.setDisable(false);
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
-        toolDiameter.setIntegerValue(settings.getNeedleDiameter().getValue());
-        feed.setIntegerValue(settings.getFeed().getValue());
-
-        clearance.setIntegerValue(settings.getClearance().getValue());
-        safetyHeight.setIntegerValue(null);
-        safetyHeight.setDisable(true);
-        zFeed.setIntegerValue(null);
-        zFeed.setDisable(true);
-
         getMainApplication().getContext().setG54Z(settings.getZOffset().getValue());
 
         pcbPane.setGerberColor(PCBPaneFX.SOLDER_PAD_COLOR);
         pcbPane.setToolpathColor(PCBPaneFX.PASTE_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(((SolderPasteLayer)getCurrentLayer()).getElements());
+    }
+
+    @Override
+    public SettingsGroup getSettingsGroup()
+    {
+        return SettingsFactory.getDispensingSettings();
     }
 
     @Override
@@ -74,7 +71,7 @@ public class Dispensing extends Machining
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
         PasteGCodeGenerator generator = new PasteGCodeGenerator(getMainApplication().getContext());
         return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
-                settings.getPostFeedPause().getValue(), feed.getIntegerValue(), clearance.getIntegerValue(),
+                settings.getPostFeedPause().getValue(), settings.getFeed().getValue(), settings.getClearance().getValue(),
                 settings.getWorkingHeight().getValue());
     }
 }

@@ -24,6 +24,7 @@ import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.SettingsGroup;
 
 public abstract class TraceMilling extends Machining
 {
@@ -42,23 +43,18 @@ public abstract class TraceMilling extends Machining
     }
 
     @Override
+    public SettingsGroup getSettingsGroup()
+    {
+        return SettingsFactory.getInsulationMillingSettings();
+    }
+
+    @Override
     public void refresh()
     {
-        toolDiameter.setDisable(false);
-        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        toolDiameter.setIntegerValue(settings.getToolDiameter().getValue());
-        feed.setIntegerValue(SettingsFactory.getInsulationMillingSettings().getFeedXY().getValue());
-
-        clearance.setIntegerValue(settings.getClearance().getValue());
-        safetyHeight.setIntegerValue(settings.getSafetyHeight().getValue());
-        zFeed.setDisable(false);
-        zFeed.setIntegerValue(settings.getFeedZ().getValue());
-
         pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
         super.refresh();
-        toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
     }
 
     @Override
@@ -76,10 +72,10 @@ public abstract class TraceMilling extends Machining
     protected String generateGCode()
     {
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        int arcFeed = (feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
+        int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
         TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
-        return generator.generate(new RTPostprocessor(), feed.getIntegerValue(), zFeed.getIntegerValue(), arcFeed,
-                clearance.getIntegerValue(), safetyHeight.getIntegerValue(), settings.getWorkingHeight().getValue(),
+        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());
     }
 }

@@ -1,53 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import org.cirqwizard.fx.*?>
-<?import org.cirqwizard.fx.PCBPane?>
-<?import org.cirqwizard.fx.controls.*?>
-<?import org.cirqwizard.fx.controls.RealNumberTextField?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 <?scenebuilder-classpath-element ../../../../../../out/production/cirqwizard?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
+<?import org.cirqwizard.fx.PCBPaneFX?>
 <AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
   <children>
     <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
         <AnchorPane id="AnchorPane">
           <children>
-            <TitledPane fx:id="miscPane" animated="false" expanded="false" prefHeight="120.0" prefWidth="216.0" text="Misc" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-              <content>
-                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="120.0" prefWidth="200.0">
-                  <children>
-                    <GridPane prefHeight="120.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                      <children>
-                        <Label text="Clearance" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <RealNumberTextField fx:id="clearance" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label text="Safety height" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <RealNumberTextField id="safetyCut" fx:id="safetyHeight" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Z axis feed" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                        <RealNumberTextField fx:id="zFeed" prefWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                      </children>
-                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      </columnConstraints>
-                      <rowConstraints>
-                        <RowConstraints maxHeight="61.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                      </rowConstraints>
-                    </GridPane>
-                  </children>
-                </AnchorPane>
-              </content>
-            </TitledPane>
             <ScrollPane fx:id="scrollPane" pannable="true" styleClass="pcb" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="61.0">
               <content>
                 <PCBPaneFX fx:id="pcbPane" />
@@ -60,18 +26,6 @@
             </HBox>
             <HBox id="HBox" alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="31.0">
               <children>
-                <HBox id="HBox" alignment="CENTER" spacing="5.0">
-                  <children>
-                    <Label text="Tool diameter" />
-                    <RealNumberTextField fx:id="toolDiameter" onAction="#restartService" prefWidth="44.0" />
-                  </children>
-                </HBox>
-                <HBox id="HBox" alignment="CENTER" spacing="5.0">
-                  <children>
-                    <Label text="Feed" />
-                    <RealNumberTextField fx:id="feed" prefWidth="44.0" />
-                  </children>
-                </HBox>
                 <Button fx:id="goButton" mnemonicParsing="false" onAction="#executeProgram" styleClass="red-background" text="Run" />
               </children>
             </HBox>

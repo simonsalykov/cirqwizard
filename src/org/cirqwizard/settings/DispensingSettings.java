@@ -18,7 +18,7 @@ public class DispensingSettings extends SettingsGroup
 {
     @PersistentPreference
     @PreferenceGroup(name = "Needle")
-    private UserPreference<Integer> needleDiameter = new UserPreference<>("Needle diameter", 400, "mm");
+    private UserPreference<Integer> needleDiameter = new UserPreference<>("Needle diameter", 400, "mm").setTriggersInvalidation(true);
 
     @PersistentPreference
     @PreferenceGroup(name = "Timing")

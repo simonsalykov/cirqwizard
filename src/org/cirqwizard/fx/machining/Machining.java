@@ -26,8 +26,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.ScreenController;
-import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.toolpath.Toolpath;
@@ -39,19 +38,12 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 
-public abstract class Machining extends ScreenController implements Initializable
+public abstract class Machining extends SettingsDependentScreenController implements Initializable
 {
     @FXML protected PCBPaneFX pcbPane;
     @FXML protected ScrollPane scrollPane;
-    @FXML protected TitledPane miscPane;
 
-    @FXML protected RealNumberTextField toolDiameter;
-    @FXML protected RealNumberTextField feed;
     @FXML protected Button goButton;
-
-    @FXML protected RealNumberTextField clearance;
-    @FXML protected RealNumberTextField safetyHeight;
-    @FXML protected RealNumberTextField zFeed;
 
     @FXML protected Region veil;
     @FXML protected AnchorPane gcodePane;
@@ -110,13 +102,6 @@ public abstract class Machining extends ScreenController implements Initializabl
 
         mouseHandler = new PCBPaneMouseHandler(pcbPane);
         pcbPane.addEventFilter(MouseEvent.ANY, mouseHandler);
-        miscPane.expandedProperty().addListener((v, oldV, newV) ->
-        {
-            if (newV)
-                miscPane.toFront();
-            else
-                miscPane.toBack();
-        });
         view.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
         {
             if (keyEnable.match(event))
@@ -154,20 +139,18 @@ public abstract class Machining extends ScreenController implements Initializabl
                 event.consume();
             }
         });
-        toolDiameter.focusedProperty().addListener((v, oldV, newV) ->
-        {
-            if (!newV)
-                restartService();
-        });
 
         estimatedMachiningTimeProperty = new SimpleStringProperty();
         machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
     }
 
-    protected ToolpathGenerationService getToolpathGenerationService()
+    @Override
+    public void settingsInvalidated()
     {
-        return null;
+        restartService();
     }
+
+    protected abstract ToolpathGenerationService getToolpathGenerationService();
 
     @Override
     public void refresh()
@@ -193,22 +176,12 @@ public abstract class Machining extends ScreenController implements Initializabl
         pcbPane.setBoardWidth(context.getBoardWidth());
         pcbPane.setBoardHeight(context.getBoardHeight());
 
-        toolpathGenerationService.toolDiameterProperty().bind(toolDiameter.realNumberIntegerProperty());
-        toolpathGenerationService.feedProperty().bind(feed.realNumberIntegerProperty());
-        if (zFeed.realNumberIntegerProperty().getValue() != null)
-            toolpathGenerationService.zFeedProperty().bind(zFeed.realNumberIntegerProperty());
-        toolpathGenerationService.clearanceProperty().bind(clearance.realNumberIntegerProperty());
-        if (safetyHeight.realNumberIntegerProperty().getValue() != null)
-            toolpathGenerationService.safetyHeightProperty().bind(safetyHeight.realNumberIntegerProperty());
         veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         toolpathGenerationService.start();
     }
 
     public void restartService()
     {
-        if (toolpathGenerationService.getLastToolDiameter() != null && toolpathGenerationService.getLastToolDiameter().equals(toolDiameter.getIntegerValue()))
-            return;
-
         veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         stopGenerationButton.setDisable(false);
         toolpathGenerationService.restart();

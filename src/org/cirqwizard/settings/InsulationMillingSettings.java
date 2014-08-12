@@ -18,7 +18,7 @@ public class InsulationMillingSettings extends SettingsGroup
 {
     @PersistentPreference
     @PreferenceGroup(name = "Tool")
-    private UserPreference<Integer> toolDiameter = new UserPreference<>("Diameter", 300, "mm");
+    private UserPreference<Integer> toolDiameter = new UserPreference<>("Diameter", 300, "mm").setTriggersInvalidation(true);
 
     @PersistentPreference
     @PreferenceGroup(name = "Tool")
@@ -54,15 +54,15 @@ public class InsulationMillingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Additional passes")
-    private UserPreference<Integer> additionalPasses = new UserPreference<>("Count", 0, "").setType(PreferenceType.INTEGER);
+    private UserPreference<Integer> additionalPasses = new UserPreference<>("Count", 0, "").setType(PreferenceType.INTEGER).setTriggersInvalidation(true);
 
     @PersistentPreference
     @PreferenceGroup(name = "Additional passes")
-    private UserPreference<Integer> additionalPassesOverlap = new UserPreference<>("Overlap", 30, "%").setType(PreferenceType.PERCENT);
+    private UserPreference<Integer> additionalPassesOverlap = new UserPreference<>("Overlap", 30, "%").setType(PreferenceType.PERCENT).setTriggersInvalidation(true);
 
     @PersistentPreference
     @PreferenceGroup(name = "Additional passes")
-    private UserPreference<Boolean> additionalPassesPadsOnly = new UserPreference<>("Only around pads", false, "");
+    private UserPreference<Boolean> additionalPassesPadsOnly = new UserPreference<>("Only around pads", false, "").setTriggersInvalidation(true);
 
     @Override
     public String getName()

@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.cirqwizard.fx.popover.ManualControlPopOver;
 import org.cirqwizard.fx.popover.OffsetsPopOver;
+import org.cirqwizard.fx.popover.SettingsPopOver;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.action.AbstractAction;
 import org.controlsfx.control.action.Action;
@@ -39,10 +40,12 @@ public class MainViewController extends ScreenController
     @FXML private HBox breadCrumbBarBox;
     @FXML private AnchorPane contentPane;
     @FXML private Hyperlink offsetsLink;
+    @FXML private Hyperlink settingsLink;
     @FXML private Hyperlink manualControlLink;
 
     private ManualControlPopOver manualControlPopOver = new ManualControlPopOver();
     private OffsetsPopOver offsetsPopOver = new OffsetsPopOver();
+    private SettingsPopOver settingsPopOver = new SettingsPopOver();
 
     private ScreenController currentScreen;
 
@@ -52,6 +55,11 @@ public class MainViewController extends ScreenController
         return "MainView.fxml";
     }
 
+    @FXML
+    public void initialize()
+    {
+        settingsLink.managedProperty().bind(settingsLink.visibleProperty());
+    }
 
     public ScreenController getCurrentScreen()
     {
@@ -70,7 +78,8 @@ public class MainViewController extends ScreenController
         AnchorPane.setRightAnchor(contentPane.getChildren().get(0), 0.0);
         AnchorPane.setBottomAnchor(contentPane.getChildren().get(0), 0.0);
         updateBreadCrumbBar(getPath(screen));
-
+        settingsLink.setVisible(screen instanceof SettingsDependentScreenController);
+        screen.getView().requestFocus();
     }
 
     private List<ScreenController> getPath(ScreenController scene)
@@ -148,6 +157,8 @@ public class MainViewController extends ScreenController
             manualControlPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
         if (offsetsPopOver.getPopOver() != null)
             offsetsPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
+        if (settingsPopOver.getPopOver() != null)
+            settingsPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
     }
 
     public void manualControl()
@@ -175,6 +186,21 @@ public class MainViewController extends ScreenController
         }
         offsetsPopOver.refresh();
         offsetsPopOver.getPopOver().show(offsetsLink);
+    }
+
+    public void settings()
+    {
+        if (settingsPopOver.getPopOver() == null)
+        {
+            settingsPopOver.setPopOver(new PopOver(settingsPopOver.getView()));
+            settingsPopOver.setMainApplication(getMainApplication());
+            settingsPopOver.getPopOver().setDetachedTitle("Settings");
+            settingsPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
+            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
+        }
+        SettingsDependentScreenController screen = (SettingsDependentScreenController) currentScreen;
+        settingsPopOver.setGroup(screen.getSettingsGroup(), screen);
+        settingsPopOver.getPopOver().show(settingsLink);
     }
 
 }

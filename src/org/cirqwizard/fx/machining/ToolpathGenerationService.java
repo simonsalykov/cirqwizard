@@ -25,20 +25,11 @@ import org.cirqwizard.toolpath.Toolpath;
 
 public abstract class ToolpathGenerationService extends Service<ObservableList<Toolpath>>
 {
-    protected IntegerProperty toolDiameter = new SimpleIntegerProperty();
-    protected IntegerProperty feedProperty = new SimpleIntegerProperty();
-    protected IntegerProperty arcFeedProperty = new SimpleIntegerProperty();
-    protected IntegerProperty zFeedProperty = new SimpleIntegerProperty();
-    protected IntegerProperty clearanceProperty = new SimpleIntegerProperty();
-    protected IntegerProperty safetyHeightProperty = new SimpleIntegerProperty();
-
     protected MainApplication mainApplication;
     protected StringProperty generationStageProperty = new SimpleStringProperty();
     protected DoubleProperty overallProgressProperty;
     protected StringProperty estimatedMachiningTimeProperty;
     protected Context context;
-
-    protected Integer lastToolDiameter;
 
     public ToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
                                      StringProperty estimatedMachiningTimeProperty)
@@ -51,41 +42,6 @@ public abstract class ToolpathGenerationService extends Service<ObservableList<T
 
     @Override
     protected abstract Task<ObservableList<Toolpath>> createTask();
-
-    public IntegerProperty toolDiameterProperty()
-    {
-        return toolDiameter;
-    }
-
-    public IntegerProperty feedProperty()
-    {
-        return feedProperty;
-    }
-
-    public IntegerProperty arcFeedProperty()
-    {
-        return arcFeedProperty;
-    }
-
-    public IntegerProperty zFeedProperty()
-    {
-        return zFeedProperty;
-    }
-
-    public IntegerProperty clearanceProperty()
-    {
-        return clearanceProperty;
-    }
-
-    public IntegerProperty safetyHeightProperty()
-    {
-        return safetyHeightProperty;
-    }
-
-    public Integer getLastToolDiameter()
-    {
-        return lastToolDiameter;
-    }
 
     public StringProperty generationStageProperty()
     {

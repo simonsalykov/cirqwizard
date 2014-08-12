@@ -20,10 +20,11 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.fx.ScreenController;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.SerialInterfaceFactory;
@@ -72,15 +73,20 @@ public class SettingsEditor extends ScreenController implements Initializable
 
     private void refreshSettingsPane()
     {
+        renderSettings(settingsPane, groups.getSelectionModel().getSelectedItem(), getMainApplication(), null);
+    }
+
+    public static void renderSettings(GridPane rootPane, SettingsGroup group, MainApplication mainApplication,
+                                      SettingsDependentScreenController listener)
+    {
         try
         {
-            settingsPane.getChildren().clear();
-            SettingsGroup group = groups.getSelectionModel().getSelectedItem();
+            rootPane.getChildren().clear();
             if (group == null)
                 return;
 
             String preferenceGroupName = null;
-            GridPane container = settingsPane;
+            GridPane container = rootPane;
             IntegerProperty rootRow = new SimpleIntegerProperty(0);
             IntegerProperty row = null;
             for (Field f : group.getClass().getDeclaredFields())
@@ -95,7 +101,7 @@ public class SettingsEditor extends ScreenController implements Initializable
                         container = new GridPane();
                         container.setHgap(10);
                         container.setVgap(10);
-                        settingsPane.add(container, 0, rootRow.get(), 3, 1);
+                        rootPane.add(container, 0, rootRow.get(), 3, 1);
                         rootRow.setValue(rootRow.get() + 1);
                         container.getStyleClass().add("settings-group");
                         Label header = new Label(name);
@@ -107,7 +113,7 @@ public class SettingsEditor extends ScreenController implements Initializable
                 }
                 else
                 {
-                    container = settingsPane;
+                    container = rootPane;
                     row = rootRow;
                 }
 
@@ -115,7 +121,7 @@ public class SettingsEditor extends ScreenController implements Initializable
 
                 UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), group.getClass()).getReadMethod().invoke(group);
                 container.add(new Label(p.getUserName()), 0, row.get());
-                container.add(getEditor(argumentClass, p, group), 1, row.get());
+                container.add(getEditor(argumentClass, p, group, mainApplication, listener), 1, row.get());
                 container.add(new Label(p.getUnits()), 2, row.get());
                 row.setValue(row.get() + 1);
             }
@@ -126,9 +132,9 @@ public class SettingsEditor extends ScreenController implements Initializable
         }
     }
 
-    private Control getEditor(Class clazz, UserPreference p, SettingsGroup group)
+    private static Control getEditor(Class clazz, UserPreference p, SettingsGroup group, MainApplication mainApplication, SettingsDependentScreenController listener)
     {
-        Control editor = null;
+        Control editor;
         if (Integer.class.equals(clazz))
         {
             if (p.getType() == PreferenceType.INTEGER || p.getType() == PreferenceType.PERCENT)
@@ -143,14 +149,24 @@ public class SettingsEditor extends ScreenController implements Initializable
             }
             else
             {
-                editor = new RealNumberTextField();
-                ((RealNumberTextField)editor).setIntegerValue(p.getValue() == null ? null : (Integer) p.getValue());
-                ((RealNumberTextField)editor).realNumberIntegerProperty().addListener((v, oldV, newV) ->
+                RealNumberTextField rnEditor = new RealNumberTextField();
+                editor = rnEditor;
+                rnEditor.setIntegerValue(p.getValue() == null ? null : (Integer) p.getValue());
+                rnEditor.realNumberIntegerProperty().addListener((v, oldV, newV) ->
                 {
                     p.setValue(newV);
                     group.save();
                 });
-                ((TextField)editor).setAlignment(Pos.CENTER_RIGHT);
+                if (p.triggersInvalidation() && listener != null)
+                {
+                    rnEditor.setOnAction((event) -> listener.settingsInvalidated());
+                    rnEditor.focusedProperty().addListener((v, oldV, newV) ->
+                    {
+                        if (!newV)
+                            listener.settingsInvalidated();
+                    });
+                }
+                rnEditor.setAlignment(Pos.CENTER_RIGHT);
             }
         }
         else if (p.getType() == null && String.class.equals(clazz))
@@ -177,7 +193,7 @@ public class SettingsEditor extends ScreenController implements Initializable
         {
             List items = p.getItems();
             if (p.getType() == PreferenceType.SERIAL_PORT)
-                items = SerialInterfaceFactory.getSerialInterfaces(getMainApplication().getSerialInterface());
+                items = SerialInterfaceFactory.getSerialInterfaces(mainApplication.getSerialInterface());
             editor = new ComboBox(FXCollections.observableArrayList(items));
             ((ComboBox)editor).getSelectionModel().select(p.getValue());
             ((ComboBox)editor).getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
@@ -189,7 +205,7 @@ public class SettingsEditor extends ScreenController implements Initializable
             {
                 ((ComboBox)editor).getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
                 {
-                    getMainApplication().connectSerialPort((String) newV);
+                    mainApplication.connectSerialPort((String) newV);
                     group.save();
                 });
             }

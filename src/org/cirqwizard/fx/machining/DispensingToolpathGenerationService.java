@@ -22,6 +22,7 @@ import javafx.concurrent.Task;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.logging.Level;
@@ -43,13 +44,12 @@ public class DispensingToolpathGenerationService extends ToolpathGenerationServi
             {
                 try
                 {
-                    lastToolDiameter = toolDiameter.get();
                     overallProgressProperty.unbind();
                     generationStageProperty.unbind();
                     estimatedMachiningTimeProperty.unbind();
 
                     SolderPasteLayer solderPasteLayer = context.getPcbLayout().getSolderPasteLayer();
-                    solderPasteLayer.generateToolpaths(toolDiameter.getValue());
+                    solderPasteLayer.generateToolpaths(SettingsFactory.getDispensingSettings().getNeedleDiameter().getValue());
                     return FXCollections.observableArrayList(solderPasteLayer.getToolpaths());
                 }
                 catch (NumberFormatException e)

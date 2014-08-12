@@ -47,6 +47,7 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
     private Layer layer;
     private int cacheLayerId;
     private long layerModificationDate;
+    private GenerationKey generationKey;
 
     public TraceMillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
                                                  StringProperty estimatedMachiningTimeProperty,
@@ -56,6 +57,48 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
         this.layer = layer;
         this.cacheLayerId = cacheLayerId;
         this.layerModificationDate = layerModificationDate;
+    }
+
+    private class GenerationKey
+    {
+        private int toolDiameter;
+        private int additionalToolpaths;
+        private int additionalToolpathsOverlap;
+        private boolean additionalToolpathsAroundPadsOnly;
+
+        private GenerationKey(int toolDiameter, int additionalToolpaths, int additionalToolpathsOverlap, boolean additionalToolpathsAroundPadsOnly)
+        {
+            this.toolDiameter = toolDiameter;
+            this.additionalToolpaths = additionalToolpaths;
+            this.additionalToolpathsOverlap = additionalToolpathsOverlap;
+            this.additionalToolpathsAroundPadsOnly = additionalToolpathsAroundPadsOnly;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            GenerationKey that = (GenerationKey) o;
+
+            if (additionalToolpaths != that.additionalToolpaths) return false;
+            if (additionalToolpathsAroundPadsOnly != that.additionalToolpathsAroundPadsOnly) return false;
+            if (additionalToolpathsOverlap != that.additionalToolpathsOverlap) return false;
+            if (toolDiameter != that.toolDiameter) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = toolDiameter;
+            result = 31 * result + additionalToolpaths;
+            result = 31 * result + additionalToolpathsOverlap;
+            result = 31 * result + (additionalToolpathsAroundPadsOnly ? 1 : 0);
+            return result;
+        }
     }
 
     @Override
@@ -68,13 +111,17 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
             {
                 try
                 {
-                    lastToolDiameter = toolDiameter.get();
+                    InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+                    GenerationKey newKey = new GenerationKey(settings.getToolDiameter().getValue(), settings.getAdditionalPasses().getValue(),
+                            settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
+                    if (generationKey != null && generationKey.equals(newKey))
+                        return null;
+
                     overallProgressProperty.unbind();
                     generationStageProperty.unbind();
                     estimatedMachiningTimeProperty.unbind();
 
-                    InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-                    int diameter = toolDiameter.getValue();
+                    int diameter = settings.getToolDiameter().getValue();
                     ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), diameter, settings.getAdditionalPasses().getValue(),
                             settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
                     ToolpathsCache cache = null;
@@ -113,7 +160,7 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
                     List<Toolpath> toolpaths = generator.generate();
                     if (toolpaths == null || toolpaths.size() == 0)
                         return null;
-                    final int mergeTolerance = toolDiameter.intValue() / 4;
+                    final int mergeTolerance = diameter / 4;
                     toolpaths = new ToolpathMerger(toolpaths, mergeTolerance).merge();
 
                     if (!settings.getAdditionalPassesPadsOnly().getValue())
@@ -146,9 +193,10 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 
-                    final Optimizer optimizer = new Optimizer(chains, feedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, zFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60,
-                            arcFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, clearanceProperty.doubleValue() / ApplicationConstants.RESOLUTION,
-                            safetyHeightProperty.doubleValue() / ApplicationConstants.RESOLUTION, mergeTolerance);
+
+                    final Optimizer optimizer = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
+                            convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
+                            convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), mergeTolerance);
                     Platform.runLater(() ->
                     {
                         generationStageProperty.setValue("Optimizing milling time...");
@@ -162,9 +210,9 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
                         estimatedMachiningTimeProperty.bind(Bindings.createStringBinding(() ->
                         {
                             long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
-                                    feedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, zFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60,
-                                    arcFeedProperty.doubleValue() / ApplicationConstants.RESOLUTION / 60, clearanceProperty.doubleValue() / ApplicationConstants.RESOLUTION,
-                                    safetyHeightProperty.doubleValue() / ApplicationConstants.RESOLUTION,
+                                    convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
+                                    convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
+                                    convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()),
                                     true, mergeTolerance);
                             String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
                                     ":" + format.format(totalDuration % 60);
@@ -180,6 +228,7 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
 
                     cache.setToolpaths(cacheKey, toolpaths);
                     cache.setLastModified(layerModificationDate);
+                    generationKey = newKey;
 
                     try
                     {
@@ -204,5 +253,10 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
                 }
             }
         };
+    }
+
+    private double convertToDouble(Integer i)
+    {
+        return i.doubleValue() / ApplicationConstants.RESOLUTION;
     }
 }
