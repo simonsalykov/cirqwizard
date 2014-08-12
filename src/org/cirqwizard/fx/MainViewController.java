@@ -22,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.cirqwizard.fx.popover.ManualControlPopOver;
@@ -68,6 +69,8 @@ public class MainViewController extends ScreenController
 
     public void setScreen(ScreenController screen)
     {
+        if (currentScreen != null && currentScreen.getShortcutHandler() != null)
+            view.removeEventFilter(KeyEvent.ANY, currentScreen.getShortcutHandler());
         this.currentScreen = screen;
 
         contentPane.getChildren().clear();
@@ -79,7 +82,8 @@ public class MainViewController extends ScreenController
         AnchorPane.setBottomAnchor(contentPane.getChildren().get(0), 0.0);
         updateBreadCrumbBar(getPath(screen));
         settingsLink.setVisible(screen instanceof SettingsDependentScreenController);
-        screen.getView().requestFocus();
+        if (currentScreen.getShortcutHandler() != null)
+            view.addEventHandler(KeyEvent.ANY, currentScreen.getShortcutHandler());
     }
 
     private List<ScreenController> getPath(ScreenController scene)

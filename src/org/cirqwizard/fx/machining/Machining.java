@@ -16,6 +16,7 @@ package org.cirqwizard.fx.machining;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -24,9 +25,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.SettingsDependentScreenController;
+import org.cirqwizard.fx.*;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.toolpath.Toolpath;
@@ -75,12 +74,6 @@ public abstract class Machining extends SettingsDependentScreenController implem
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        final KeyCombination keyEnable = new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN);
-        final KeyCombination keyDisable = new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN);
-        final KeyCombination keySelectAll = new KeyCodeCombination(KeyCode.A, KeyCombination.SHORTCUT_DOWN);
-        final KeyCodeCombination keyZoomIn = new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHORTCUT_DOWN);
-        final KeyCodeCombination keyZoomOut = new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN);
-
         scrollPane.addEventFilter(ScrollEvent.ANY, (event) ->
         {
             if (event.isShortcutDown())
@@ -102,7 +95,38 @@ public abstract class Machining extends SettingsDependentScreenController implem
 
         mouseHandler = new PCBPaneMouseHandler(pcbPane);
         pcbPane.addEventFilter(MouseEvent.ANY, mouseHandler);
-        view.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
+
+        gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
+        {
+            if (event.getCode() == KeyCode.ESCAPE)
+            {
+                hideGCodeListing();
+                event.consume();
+            }
+        });
+
+        estimatedMachiningTimeProperty = new SimpleStringProperty();
+        machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
+    }
+
+    @Override
+    public void settingsInvalidated()
+    {
+        restartService();
+    }
+
+    protected abstract ToolpathGenerationService getToolpathGenerationService();
+
+    private class ShortcutHandler implements EventHandler<KeyEvent>
+    {
+        private final KeyCombination keyEnable = new KeyCodeCombination(KeyCode.E, KeyCombination.SHORTCUT_DOWN);
+        private final KeyCombination keyDisable = new KeyCodeCombination(KeyCode.D, KeyCombination.SHORTCUT_DOWN);
+        private final KeyCombination keySelectAll = new KeyCodeCombination(KeyCode.A, KeyCombination.SHORTCUT_DOWN);
+        private final KeyCodeCombination keyZoomIn = new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHORTCUT_DOWN);
+        private final KeyCodeCombination keyZoomOut = new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN);
+
+        @Override
+        public void handle(KeyEvent event)
         {
             if (keyEnable.match(event))
             {
@@ -129,28 +153,16 @@ public abstract class Machining extends SettingsDependentScreenController implem
                 zoomOut();
                 event.consume();
             }
-        });
-
-        gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
-        {
-            if (event.getCode() == KeyCode.ESCAPE)
-            {
-                hideGCodeListing();
-                event.consume();
-            }
-        });
-
-        estimatedMachiningTimeProperty = new SimpleStringProperty();
-        machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
+        }
     }
+
+    private ShortcutHandler shortcutHandler = new ShortcutHandler();
 
     @Override
-    public void settingsInvalidated()
+    public EventHandler<? super KeyEvent> getShortcutHandler()
     {
-        restartService();
+        return shortcutHandler;
     }
-
-    protected abstract ToolpathGenerationService getToolpathGenerationService();
 
     @Override
     public void refresh()
@@ -182,6 +194,8 @@ public abstract class Machining extends SettingsDependentScreenController implem
 
     public void restartService()
     {
+        if (!toolpathGenerationService.needsRestart())
+            return;
         veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         stopGenerationButton.setDisable(false);
         toolpathGenerationService.restart();

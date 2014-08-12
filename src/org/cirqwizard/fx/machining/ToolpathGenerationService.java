@@ -43,6 +43,11 @@ public abstract class ToolpathGenerationService extends Service<ObservableList<T
     @Override
     protected abstract Task<ObservableList<Toolpath>> createTask();
 
+    public boolean needsRestart()
+    {
+        return true;
+    }
+
     public StringProperty generationStageProperty()
     {
         return generationStageProperty;

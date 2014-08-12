@@ -14,12 +14,12 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import org.cirqwizard.fx.misc.SettingsEditor;
+import javafx.scene.input.KeyEvent;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.settings.SettingsGroup;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,6 +107,11 @@ public abstract class ScreenController
     public MainApplication getMainApplication()
     {
         return mainApplication;
+    }
+
+    public EventHandler<? super KeyEvent> getShortcutHandler()
+    {
+        return null;
     }
 
     public void refresh()

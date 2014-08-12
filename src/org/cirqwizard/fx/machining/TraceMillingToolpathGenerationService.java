@@ -102,6 +102,15 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
     }
 
     @Override
+    public boolean needsRestart()
+    {
+        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+        GenerationKey newKey = new GenerationKey(settings.getToolDiameter().getValue(), settings.getAdditionalPasses().getValue(),
+                settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
+        return generationKey == null || !generationKey.equals(newKey);
+    }
+
+    @Override
     protected Task<ObservableList<Toolpath>> createTask()
     {
         return new Task<ObservableList<Toolpath>>()
@@ -116,6 +125,7 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
                             settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
                     if (generationKey != null && generationKey.equals(newKey))
                         return null;
+                    generationKey = newKey;
 
                     overallProgressProperty.unbind();
                     generationStageProperty.unbind();
@@ -228,7 +238,6 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
 
                     cache.setToolpaths(cacheKey, toolpaths);
                     cache.setLastModified(layerModificationDate);
-                    generationKey = newKey;
 
                     try
                     {

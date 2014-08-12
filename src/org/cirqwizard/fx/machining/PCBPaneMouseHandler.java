@@ -67,8 +67,6 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
                     shape.setPickOnBounds(false);
                     boolean selected = shape.intersects(Math.min(eventPoint.getX(), clickPoint.getX()), Math.min(eventPoint.getY(), clickPoint.getY()),
                             Math.abs(eventPoint.getX() - clickPoint.getX()), Math.abs(eventPoint.getY() - clickPoint.getY()));
-                    if (selected)
-                        System.out.println("^^ " + ((CuttingToolpath) toolpath).getCurve());
                     if (toolpath.isSelected() != selected)
                         changedToolpaths.add(toolpath);
                     toolpath.setSelected(selected);
