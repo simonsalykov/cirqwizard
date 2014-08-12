@@ -20,6 +20,7 @@ import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.post.PostProcessorFactory;
 import org.cirqwizard.post.Postprocessor;
+import org.controlsfx.dialog.Dialogs;
 
 
 public class CNCController
@@ -47,33 +48,13 @@ public class CNCController
         {
             serial.send(str, timeout, response, suppressExceptions);
         }
-        catch (SerialException e)
+        catch (SerialException | ExecutionException e)
         {
             LoggerFactory.logException("Communication with controller failed: ", e);
-            Platform.runLater(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    // TODO
-//                    mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong while communicating with the controller. " +
-//                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
-                }
-            });
-        }
-        catch (ExecutionException e)
-        {
-            LoggerFactory.logException("Controller returned an error", e);
-            Platform.runLater(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    // TODO
-//                    mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong and controller returned and error. " +
-//                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
-                }
-            });
+            Platform.runLater(() -> Dialogs.create().title("Oops! That's embarrassing!").owner(mainApplication.getPrimaryStage()).
+                    message("Something went wrong while communicating with the controller. " +
+                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.").
+                    masthead("Communication error").showException(e));
         }
         catch (InterruptedException e)
         {

@@ -17,6 +17,7 @@ package org.cirqwizard.serial;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Random;
 
 
 public class SerialInterfaceStub implements SerialInterface
