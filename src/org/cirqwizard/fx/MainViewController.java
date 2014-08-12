@@ -77,7 +77,11 @@ public class MainViewController extends ScreenController
     {
         ArrayList<ScreenController> path = new ArrayList<>();
         for (; scene != null; scene = scene.getParent())
+        {
+            if (scene instanceof ScreenGroup && !((ScreenGroup)scene).isVisible())
+                continue;
             path.add(0, scene);
+        }
         return path;
     }
 
@@ -107,6 +111,8 @@ public class MainViewController extends ScreenController
                 {
                     for (ScreenController sibling : siblings)
                     {
+                        if (sibling instanceof ScreenGroup && !((ScreenGroup)sibling).isVisible())
+                            continue;
                         AbstractAction action = new AbstractAction(sibling.getName())
                         {
                             @Override

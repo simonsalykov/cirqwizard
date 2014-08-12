@@ -17,6 +17,7 @@ package org.cirqwizard.fx;
 public class ScreenGroup extends ScreenController
 {
     private String name;
+    private boolean visible = true;
 
     public ScreenGroup(String name)
     {
@@ -40,6 +41,17 @@ public class ScreenGroup extends ScreenController
                 return;
             }
         }
+    }
+
+    public boolean isVisible()
+    {
+        return visible;
+    }
+
+    public ScreenGroup setVisible(boolean visible)
+    {
+        this.visible = visible;
+        return this;
     }
 
     @Override

@@ -126,7 +126,7 @@ public class MainApplication extends Application
                     addChild(new XYOffsets().setMainApplication(this)).
                     addChild(new PlacingOverview().setMainApplication(this))).
             addChild(new Terminal().setMainApplication(this)).
-            addChild(new ScreenGroup("Misc").setMainApplication(this).
+            addChild(new ScreenGroup("Misc").setVisible(false).setMainApplication(this).
                     addChild(new SettingsEditor().setMainApplication(this)).
                     addChild(new Firmware().setMainApplication(this)).
                     addChild(new About()).setMainApplication(this).
