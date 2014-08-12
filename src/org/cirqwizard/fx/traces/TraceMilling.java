@@ -44,7 +44,6 @@ public abstract class TraceMilling extends Machining
     @Override
     public void refresh()
     {
-        super.refresh();
         toolDiameter.setDisable(false);
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         toolDiameter.setIntegerValue(settings.getToolDiameter().getValue());
@@ -58,6 +57,7 @@ public abstract class TraceMilling extends Machining
         pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
+        super.refresh();
         toolpathGenerationService.arcFeedProperty().set(feed.getIntegerValue() * settings.getFeedArcs().getValue() / 100);
     }
 
@@ -65,11 +65,12 @@ public abstract class TraceMilling extends Machining
     protected ToolpathGenerationService getToolpathGenerationService()
     {
         return new TraceMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId());
+                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId(), getLayerModificationDate());
     }
 
     protected abstract boolean mirror();
     protected abstract int getCacheId();
+    protected abstract long getLayerModificationDate();
 
     @Override
     protected String generateGCode()

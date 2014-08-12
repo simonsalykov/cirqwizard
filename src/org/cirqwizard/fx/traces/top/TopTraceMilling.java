@@ -51,4 +51,10 @@ public class TopTraceMilling extends TraceMilling
     {
         return 0;
     }
+
+    @Override
+    protected long getLayerModificationDate()
+    {
+        return getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
+    }
 }

@@ -33,6 +33,7 @@ import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
+import org.cirqwizard.settings.PredefinedLocationSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.PPPoint;
 
@@ -298,8 +299,9 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     public void moveHeadAway()
     {
-        // TODO
-//        getMainApplication().getCNCController().moveHeadAway(SettingsFactory.getMachineSettings().getFarAwayY().getValue());
+        PredefinedLocationSettings settings = SettingsFactory.getPredefinedLocationSettings();
+        getMainApplication().getCNCController().moveTo(settings.getFarAwayX().getValue(),
+                settings.getFarAwayY().getValue(), settings.getFarAwayZ().getValue());
     }
 
     public void vacuumOff()

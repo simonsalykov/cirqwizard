@@ -50,4 +50,10 @@ public class BottomTraceMilling extends TraceMilling
     {
         return 1;
     }
+
+    @Override
+    protected long getLayerModificationDate()
+    {
+        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
+    }
 }

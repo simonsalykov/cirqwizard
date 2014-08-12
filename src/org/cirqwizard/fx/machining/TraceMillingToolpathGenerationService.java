@@ -46,13 +46,16 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
 {
     private Layer layer;
     private int cacheLayerId;
+    private long layerModificationDate;
 
-    public TraceMillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty, StringProperty estimatedMachiningTimeProperty,
-                                                 Layer layer, int cacheLayerId)
+    public TraceMillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
+                                                 StringProperty estimatedMachiningTimeProperty,
+                                                 Layer layer, int cacheLayerId, long layerModificationDate)
     {
         super(mainApplication, overallProgressProperty, estimatedMachiningTimeProperty);
         this.layer = layer;
         this.cacheLayerId = cacheLayerId;
+        this.layerModificationDate = layerModificationDate;
     }
 
     @Override
@@ -176,8 +179,7 @@ public class TraceMillingToolpathGenerationService extends ToolpathGenerationSer
                     traceLayer.setToolpaths(toolpaths);
 
                     cache.setToolpaths(cacheKey, toolpaths);
-                    // TODO
-                    cache.setLastModified(context.getPcbLayout().getTopLayerModificationDate());
+                    cache.setLastModified(layerModificationDate);
 
                     try
                     {
