@@ -31,6 +31,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.net.URL;
@@ -79,19 +80,20 @@ public class XYOffsets extends ScreenController implements Initializable
         ChangeListener<String> changeListener = (v, oldV, newV) -> updateComponents();
         x.realNumberTextProperty().addListener(changeListener);
         y.realNumberTextProperty().addListener(changeListener);
+        ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
         x.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
             checkOffsetLimit(newV == null ? null : newV, y.getIntegerValue());
             getMainApplication().getContext().setG54X(newV == null ? null : newV);
-            SettingsFactory.getApplicationValues().getG54X().setValue(newV);
-            SettingsFactory.getApplicationValues().save();
+            applicationValues.getG54X().setValue(newV);
+            applicationValues.save();
         });
         y.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
             checkOffsetLimit(x.getIntegerValue(), newV == null ? null : newV);
             getMainApplication().getContext().setG54Y(newV == null ? null : newV);
-            SettingsFactory.getApplicationValues().getG54Y().setValue(newV);
-            SettingsFactory.getApplicationValues().save();
+            applicationValues.getG54Y().setValue(newV);
+            applicationValues.save();
         });
         ignoreCheckBox.selectedProperty().addListener((v, oldV, newV) ->
                         checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y()));

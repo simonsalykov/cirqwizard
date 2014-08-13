@@ -103,12 +103,11 @@ public class FeederSelection extends ScreenController implements Initializable
             context.setFeeder(Feeder.MEDIUM);
         else if (largeFeeder.isSelected())
             context.setFeeder(Feeder.LARGE);
-        Integer selectedRow = row.getSelectionModel().getSelectedItem();
         rows.clear();
         if (context.getFeeder() != null)
             for (int i = 1; i < context.getFeeder().getRowCount() + 1; i++)
                 rows.add(i);
-        row.getSelectionModel().select(selectedRow);
+        row.getSelectionModel().select(context.getFeederRow());
         updateControls();
     }
 

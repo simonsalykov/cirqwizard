@@ -118,10 +118,6 @@ public abstract class ScreenController
     {
     }
 
-    public void goBack()
-    {
-    }
-
     public void next()
     {
         getNext(this).select();

@@ -106,6 +106,7 @@ public class MainApplication extends Application
                 return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getSolderPasteLayer() != null;
             }
         }.setMainApplication(this).
+            addChild(new PCBPlacement().setMainApplication(this)).
             addChild(new InsertSyringe().setMainApplication(this)).
             addChild(new SyringeBleeding().setMainApplication(this)).
             addChild(new XYOffsets().setMainApplication(this)).

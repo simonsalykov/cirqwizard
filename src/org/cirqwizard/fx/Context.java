@@ -38,14 +38,10 @@ public class Context
     private Integer g54Y;
     private Integer g54Z;
 
-    private boolean zOffsetEstablished;
-
     private int currentDrill;
 
     private int boardWidth;
     private int boardHeight;
-
-    private String dispensingNeedleDiameter;
 
     private ComponentId currentComponent;
     private Feeder feeder;
@@ -128,16 +124,6 @@ public class Context
         this.g54Z = g54Z;
     }
 
-    public boolean iszOffsetEstablished()
-    {
-        return zOffsetEstablished;
-    }
-
-    public void setzOffsetEstablished(boolean zOffsetEstablished)
-    {
-        this.zOffsetEstablished = zOffsetEstablished;
-    }
-
     public int getCurrentDrill()
     {
         return currentDrill;
@@ -166,16 +152,6 @@ public class Context
     public void setBoardWidth(int boardWidth)
     {
         this.boardWidth = boardWidth;
-    }
-
-    public String getDispensingNeedleDiameter()
-    {
-        return dispensingNeedleDiameter;
-    }
-
-    public void setDispensingNeedleDiameter(String dispensingNeedleDiameter)
-    {
-        this.dispensingNeedleDiameter = dispensingNeedleDiameter;
     }
 
     public ComponentId getCurrentComponent()

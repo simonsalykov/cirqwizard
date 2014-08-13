@@ -93,14 +93,14 @@ public class ZOffset extends ScreenController implements Initializable
     @Override
     public void refresh()
     {
-        if (!getMainApplication().getContext().iszOffsetEstablished())
+        if (getMainApplication().getContext().getG54Z() == null)
         {
             manualEntryRadioButton.setSelected(false);
             automaticEntryRadioButton.setSelected(false);
             manualZOffset.setText("");
             automaticZOffset.setIntegerValue(SettingsFactory.getInsulationMillingSettings().getZOffset().getValue());
         }
-        else if (getMainApplication().getContext().getG54Z() != null)
+        else
             automaticZOffset.setIntegerValue(getMainApplication().getContext().getG54Z());
 
         ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
@@ -163,7 +163,6 @@ public class ZOffset extends ScreenController implements Initializable
             context.setG54Z(manualZOffset.getIntegerValue());
         else if (automaticEntryRadioButton.isSelected())
             context.setG54Z(automaticZOffset.getIntegerValue());
-        context.setzOffsetEstablished(true);
 
         super.next();
     }

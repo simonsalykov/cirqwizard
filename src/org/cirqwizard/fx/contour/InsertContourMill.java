@@ -40,7 +40,7 @@ public class InsertContourMill extends Message
     @Override
     protected boolean isMandatory()
     {
-        return EXPECTED_TOOL.equals(getMainApplication().getContext().getInsertedTool());
+        return !EXPECTED_TOOL.equals(getMainApplication().getContext().getInsertedTool());
     }
 
     @Override

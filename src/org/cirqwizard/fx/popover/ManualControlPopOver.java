@@ -52,6 +52,9 @@ public class ManualControlPopOver extends PopOverController
     public void refresh()
     {
         view.setDisable(getMainApplication().getCNCController() == null);
+        xTextField.setText(null);
+        yTextField.setText(null);
+        zTextField.setText(null);
     }
 
     private class KeyboardHandler implements EventHandler<KeyEvent>

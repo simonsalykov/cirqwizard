@@ -56,7 +56,7 @@ public class SerialInterfaceService extends Service
     {
         this.readResponses = readResponses;
         this.suppressExceptions = suppressExceptions;
-        programLines = new ArrayList<String>();
+        programLines = new ArrayList<>();
         LineNumberReader reader = new LineNumberReader(new StringReader(program));
         String str;
         try
@@ -98,20 +98,15 @@ public class SerialInterfaceService extends Service
         {
             try
             {
-                StringBuilder responseBuilder = null;
+                final StringBuilder responseBuilder = new StringBuilder();
                 if (readResponses)
-                {
-                    responses.setValue("");
-                    responseBuilder = new StringBuilder();
-                }
+                    Platform.runLater(() -> responses.setValue(""));
 
                 long executionStartTime = System.currentTimeMillis();
                 for (int i = 0; i < programLines.size(); i++)
                 {
                     if (isCancelled())
-                    {
                         throw new InterruptedException();
-                    }
 
                     try
                     {
@@ -122,8 +117,8 @@ public class SerialInterfaceService extends Service
                         if (!suppressExceptions)
                             throw e;
                     }
-                    if (responseBuilder != null)
-                        responses.setValue(responseBuilder.toString());
+                    if (readResponses)
+                        Platform.runLater(() -> responses.setValue(responseBuilder.toString()));
                     updateProgress(i, programLines.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(() -> executionTime.setValue(s));

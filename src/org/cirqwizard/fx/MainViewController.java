@@ -175,6 +175,7 @@ public class MainViewController extends ScreenController
             manualControlPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
             getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
         }
+        manualControlPopOver.refresh();
         manualControlPopOver.getPopOver().show(manualControlLink);
     }
 
