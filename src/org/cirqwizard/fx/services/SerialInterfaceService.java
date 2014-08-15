@@ -19,10 +19,12 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import org.cirqwizard.fx.Dialog;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.ExecutionException;
 import org.cirqwizard.serial.SerialException;
+import org.controlsfx.dialog.Dialogs;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -54,7 +56,7 @@ public class SerialInterfaceService extends Service
     {
         this.readResponses = readResponses;
         this.suppressExceptions = suppressExceptions;
-        programLines = new ArrayList<String>();
+        programLines = new ArrayList<>();
         LineNumberReader reader = new LineNumberReader(new StringReader(program));
         String str;
         try
@@ -96,20 +98,15 @@ public class SerialInterfaceService extends Service
         {
             try
             {
-                StringBuilder responseBuilder = null;
+                final StringBuilder responseBuilder = new StringBuilder();
                 if (readResponses)
-                {
-                    responses.setValue("");
-                    responseBuilder = new StringBuilder();
-                }
+                    Platform.runLater(() -> responses.setValue(""));
 
                 long executionStartTime = System.currentTimeMillis();
                 for (int i = 0; i < programLines.size(); i++)
                 {
                     if (isCancelled())
-                    {
                         throw new InterruptedException();
-                    }
 
                     try
                     {
@@ -120,47 +117,21 @@ public class SerialInterfaceService extends Service
                         if (!suppressExceptions)
                             throw e;
                     }
-                    if (responseBuilder != null)
-                        responses.setValue(responseBuilder.toString());
+                    if (readResponses)
+                        Platform.runLater(() -> responses.setValue(responseBuilder.toString()));
                     updateProgress(i, programLines.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
-                    Platform.runLater(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            executionTime.setValue(s);
-                        }
-                    });
+                    Platform.runLater(() -> executionTime.setValue(s));
                 }
             }
-            catch (SerialException e)
+            catch (SerialException | ExecutionException e)
             {
                 LoggerFactory.logException("Error communicating with the controller", e);
                 mainApplication.getCNCController().interruptProgram();
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong while communicating with the controller. " +
-                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
-                    }
-                });
-            }
-            catch (ExecutionException e)
-            {
-                LoggerFactory.logException("Error executing a program on controller", e);
-                mainApplication.getCNCController().interruptProgram();
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mainApplication.showInfoDialog("Oops! That's embarrassing!", "Something went wrong and controller returned and error. " +
-                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.");
-                    }
-                });
+                Platform.runLater(() -> Dialogs.create().title("Oops! That's embarrassing!").owner(mainApplication.getPrimaryStage()).
+                        message("Something went wrong while communicating with the controller. " +
+                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.").
+                        masthead("Communication error").showException(e));
             }
             catch (InterruptedException e)
             {

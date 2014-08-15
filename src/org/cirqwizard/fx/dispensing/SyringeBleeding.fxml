@@ -7,11 +7,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.cirqwizard.fx.dispensing.SyringeBleedingController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
   <children>
     <HBox id="HBox" alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
       <children>
-        <Button mnemonicParsing="false" onAction="#goBack" text="Go back" />
         <Button id="continueButton" contentDisplay="LEFT" defaultButton="true" focusTraversable="true" maxHeight="-1.0" maxWidth="-1.0" minWidth="-1.0" mnemonicParsing="false" onAction="#next" prefWidth="-1.0" text="Continue" visible="true" />
       </children>
     </HBox>

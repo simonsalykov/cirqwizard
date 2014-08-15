@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" fx:controller="org.cirqwizard.fx.WelcomeController">
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
   <children>
     <Hyperlink layoutX="85.0" layoutY="116.0" onAction="#openFile" text="Open file" />
     <TitledPane animated="false" collapsible="false" layoutY="161.0" prefHeight="165.0" prefWidth="306.0" text="Recent files" AnchorPane.leftAnchor="85.0" AnchorPane.rightAnchor="100.0">
@@ -34,7 +34,7 @@
       <children>
         <Hyperlink onAction="#showSettings" text="Settings" />
         <Hyperlink onAction="#firmware" text="Flash firmware" />
-        <Hyperlink onAction="#openManualMovementScreen" text="Manual control" />
+        <Hyperlink onAction="#openMDI" text="Direct GCode control" />
       </children>
     </VBox>
     <Hyperlink layoutY="485.0" onAction="#showAbout" text="About cirQWizard" AnchorPane.rightAnchor="102.0" />

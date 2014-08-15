@@ -20,6 +20,7 @@ import java.util.List;
 public class SettingsFactory
 {
     private static MachineSettings machineSettings = new MachineSettings();
+    private static PredefinedLocationSettings predefinedLocationSettings = new PredefinedLocationSettings();
     private static InsulationMillingSettings insulationMillingSettings = new InsulationMillingSettings();
     private static DrillingSettings drillingSettings = new DrillingSettings();
     private static ContourMillingSettings contourMillingSettings = new ContourMillingSettings();
@@ -32,6 +33,12 @@ public class SettingsFactory
     {
         machineSettings.load();
         return machineSettings;
+    }
+
+    public static PredefinedLocationSettings getPredefinedLocationSettings()
+    {
+        predefinedLocationSettings.load();
+        return predefinedLocationSettings;
     }
 
     public static InsulationMillingSettings getInsulationMillingSettings()
@@ -80,6 +87,7 @@ public class SettingsFactory
     {
         ArrayList<SettingsGroup> groups = new ArrayList<>();
         groups.add(getMachineSettings());
+        groups.add(getPredefinedLocationSettings());
         groups.add(getInsulationMillingSettings());
         groups.add(getDrillingSettings());
         groups.add(getContourMillingSettings());
@@ -87,5 +95,10 @@ public class SettingsFactory
         groups.add(getPpSettings());
         groups.add(getApplicationSettings());
         return groups;
+    }
+
+    public static void resetAll()
+    {
+        getAllGroups().stream().forEach(SettingsGroup::remove);
     }
 }

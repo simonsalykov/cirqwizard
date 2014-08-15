@@ -109,7 +109,9 @@ public class Settings
         setInt(MACHINE_REFERENCE_PIN_Y, machineSettings.getReferencePinY());
         setInt(MACHINE_SMALL_PCB_WIDTH, machineSettings.getSmallPcbWidth());
         setInt(MACHINE_LARGE_PCB_WIDTH, machineSettings.getLargePcbWidth());
-        setInt(MACHINE_FAR_AWAY_Y, machineSettings.getFarAwayY());
+
+        PredefinedLocationSettings predefinedLocationSettings = SettingsFactory.getPredefinedLocationSettings();
+        setInt(MACHINE_FAR_AWAY_Y, predefinedLocationSettings.getFarAwayY());
 
         ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
         setString(SERIAL_PORT_NAME, applicationSettings.getSerialPort());
@@ -176,6 +178,8 @@ public class Settings
         setInt(INTERFACE_SCRAP_PLACE_X, applicationValues.getScrapPlaceX());
         setInt(INTERFACE_SCRAP_PLACE_Y, applicationValues.getScrapPlaceY());
         applicationValues.getTestCutDirection().setValue(preferences.getInt(INTERFACE_TEST_CUT_DIRECTION, 0) == 0);
+
+        preferences.putBoolean(EXPORTED, true);
 
         machineSettings.save();
         applicationSettings.save();

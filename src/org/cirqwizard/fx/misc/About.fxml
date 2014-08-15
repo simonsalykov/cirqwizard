@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <Label layoutX="63.0" layoutY="49.0" styleClass="h1" text="cirQWizard" />
+    <Label fx:id="versionLabel" layoutY="89.0" prefHeight="32.0" prefWidth="598.0" wrapText="true" AnchorPane.leftAnchor="91.0" AnchorPane.rightAnchor="91.0" />
+    <Label id="versionLabel" layoutY="147.0" prefHeight="56.0" prefWidth="662.0" text="This program is free software: you can redistribute it and/or modify it under the terms of the following license:" wrapText="true" AnchorPane.leftAnchor="91.0" AnchorPane.rightAnchor="91.0" />
+    <ScrollPane fx:id="licensePane" hbarPolicy="NEVER" layoutY="203.0" prefHeight="289.0" prefWidth="618.0" AnchorPane.leftAnchor="91.0" AnchorPane.rightAnchor="91.0" />
+  </children>
+</AnchorPane>

@@ -26,6 +26,8 @@ import java.util.prefs.Preferences;
 
 public abstract class SettingsGroup
 {
+    private final static String PREFERENCES_NODE_PREFIX = "org.cirqwizard.";
+
     public abstract String getName();
     public abstract String getPreferencesPrefix();
 
@@ -33,7 +35,7 @@ public abstract class SettingsGroup
     {
         try
         {
-            Preferences prefs = Preferences.userRoot().node("org.cirqwizard." + getPreferencesPrefix());
+            Preferences prefs = Preferences.userRoot().node(PREFERENCES_NODE_PREFIX + getPreferencesPrefix());
             for (Field f : getClass().getDeclaredFields())
             {
                 if (!f.isAnnotationPresent(PersistentPreference.class))
@@ -58,7 +60,7 @@ public abstract class SettingsGroup
     {
         try
         {
-            Preferences prefs = Preferences.userRoot().node("org.cirqwizard." + getPreferencesPrefix());
+            Preferences prefs = Preferences.userRoot().node(PREFERENCES_NODE_PREFIX + getPreferencesPrefix());
             for (Field f : getClass().getDeclaredFields())
             {
                 if (!f.isAnnotationPresent(PersistentPreference.class))
@@ -88,6 +90,20 @@ public abstract class SettingsGroup
         catch (IllegalAccessException | InvocationTargetException | IntrospectionException e)
         {
             LoggerFactory.logException("Error loading user preferences", e);
+        }
+    }
+
+    public void remove()
+    {
+        try
+        {
+            Preferences node = Preferences.userRoot().node(PREFERENCES_NODE_PREFIX + getPreferencesPrefix());
+            node.removeNode();
+            node.flush();
+        }
+        catch (BackingStoreException e)
+        {
+            LoggerFactory.logException("Error resetting user preferences", e);
         }
     }
 

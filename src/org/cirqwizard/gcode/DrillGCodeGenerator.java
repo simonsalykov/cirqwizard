@@ -28,11 +28,6 @@ public class DrillGCodeGenerator
         this.context = context;
     }
 
-    private int getSelectedDrillDiameter()
-    {
-        return context.getDrillingLayer().getDrillDiameters().get(context.getCurrentDrill());
-    }
-
     public String generate(Postprocessor postprocessor, int feed, int clearance, int safetyHeight,
                            int drillingDepth, int spindleSpeed)
     {
@@ -44,10 +39,9 @@ public class DrillGCodeGenerator
 
         postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOn(str, spindleSpeed);
-        int selectedDrill = getSelectedDrillDiameter();
-        for (DrillPoint drillPoint : context.getDrillingLayer().getToolpaths())
+        for (DrillPoint drillPoint : context.getPcbLayout().getDrillingLayer().getToolpaths())
         {
-            if (drillPoint.getToolDiameter() != selectedDrill || !drillPoint.isEnabled())
+            if (drillPoint.getToolDiameter() != context.getCurrentDrill() || !drillPoint.isEnabled())
                 continue;
             postprocessor.rapid(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), clearance);
             postprocessor.rapid(str, null, null, safetyHeight);

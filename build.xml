@@ -5,7 +5,7 @@
     <property name="deploy"  location="deploy"/>
     <property name="res"  location="res"/>
     <property name="javafx.lib.ant-javafx.jar" location="${java.home}/../lib/ant-javafx.jar"/>
-    <property name="classpath" location="lib/RXTXcomm.jar:${java.home}/lib/jfxrt.jar"/>
+    <property name="classpath" location="lib/RXTXcomm.jar:lib/controlsfx-8.0.6.jar:${java.home}/lib/jfxrt.jar"/>
     <property name="application.title" value="cirqwizard"/>
     <property name="application.vendor" value="cirqwizard"/>
 

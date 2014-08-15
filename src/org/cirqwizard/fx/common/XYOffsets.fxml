@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import org.cirqwizard.fx.controls.*?>
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
+
+<AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <Label layoutX="30.0" layoutY="30.0" styleClass="h1" text="Now we need to establish X and Y offsets" visible="true" />
+    <Label layoutX="70.0" layoutY="80.0" prefHeight="85.0" prefWidth="416.0" text="X and Y offsets are the distances from corresponding axes zero positions to the lower left corner of the board to be cut." wrapText="true" />
+    <VBox id="VBox" alignment="CENTER" layoutX="95.0" layoutY="186.0" spacing="10.0">
+      <children>
+        <HBox id="HBox" alignment="CENTER" spacing="10.0">
+          <children>
+            <Label text="X" />
+            <RealNumberTextField onAction="#moveXY" prefWidth="75.0" fx:id="x" />
+          </children>
+        </HBox>
+        <HBox id="HBox" alignment="CENTER" spacing="10.0">
+          <children>
+            <Label text="Y" />
+            <RealNumberTextField fx:id="y" onAction="#moveXY" prefWidth="75.0" />
+          </children>
+        </HBox>
+      </children>
+    </VBox>
+    <Button fx:id="goButton" layoutX="209.0" layoutY="200.0" mnemonicParsing="false" onAction="#moveXY" text="Show me where it is" />
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
+      </children>
+    </HBox>
+    <Label fx:id="offsetErrorLabel" layoutX="67.0" layoutY="262.0" prefHeight="38.0" prefWidth="333.0" styleClass="error-message" text="The PCB is not going to fit in the laminate with selected offsets!" visible="false" wrapText="true" />
+    <CheckBox fx:id="ignoreCheckBox" layoutX="67.0" layoutY="300.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="344.0" text="Ignore this error. I know what I'm doing." visible="false" wrapText="true" />
+    <Pane fx:id="offsetImage" layoutX="541.0" layoutY="80.0" prefHeight="340.0" prefWidth="220.0" />
+  </children>
+</AnchorPane>

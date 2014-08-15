@@ -22,7 +22,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.services.ToolpathGenerationService;
 import org.cirqwizard.toolpath.*;
 
 import java.util.ArrayList;
@@ -68,8 +67,6 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
                     shape.setPickOnBounds(false);
                     boolean selected = shape.intersects(Math.min(eventPoint.getX(), clickPoint.getX()), Math.min(eventPoint.getY(), clickPoint.getY()),
                             Math.abs(eventPoint.getX() - clickPoint.getX()), Math.abs(eventPoint.getY() - clickPoint.getY()));
-                    if (selected)
-                        System.out.println("^^ " + ((CuttingToolpath) toolpath).getCurve());
                     if (toolpath.isSelected() != selected)
                         changedToolpaths.add(toolpath);
                     toolpath.setSelected(selected);

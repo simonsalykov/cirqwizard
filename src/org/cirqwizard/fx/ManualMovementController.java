@@ -23,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.settings.SettingsFactory;
 
@@ -31,7 +32,7 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 
-public class ManualMovementController extends SceneController implements Initializable
+public class ManualMovementController extends ScreenController implements Initializable
 {
     @FXML private Parent view;
     @FXML private Button homeButton;
@@ -105,7 +106,7 @@ public class ManualMovementController extends SceneController implements Initial
 
     public void goToMDI()
     {
-        getMainApplication().setState(State.MANUAL_DATA_INPUT);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualDataInput.class));
     }
 
 }

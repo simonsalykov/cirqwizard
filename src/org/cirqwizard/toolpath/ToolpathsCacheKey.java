@@ -15,22 +15,21 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.toolpath;
 
 
-import org.cirqwizard.fx.State;
 import java.io.Serializable;
 
 
 public class ToolpathsCacheKey implements Serializable
 {
-    private State state;
+    private int layerId;
     private int angle;
     private int toolDiameter;
     private int additionalPasses;
     private int additionalPassesOverlap;
     private boolean additionalPassesAroundPadsOnly;
 
-    public ToolpathsCacheKey(State state, int angle, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly)
+    public ToolpathsCacheKey(int layerId, int angle, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly)
     {
-        this.state = state;
+        this.layerId = layerId;
         this.angle = angle;
         this.toolDiameter = toolDiameter;
         this.additionalPasses = additionalPasses;
@@ -51,7 +50,7 @@ public class ToolpathsCacheKey implements Serializable
         if (additionalPassesOverlap != that.additionalPassesOverlap) return false;
         if (angle != that.angle) return false;
         if (toolDiameter != that.toolDiameter) return false;
-        if (state != that.state) return false;
+        if (layerId != that.layerId) return false;
 
         return true;
     }
@@ -59,7 +58,7 @@ public class ToolpathsCacheKey implements Serializable
     @Override
     public int hashCode()
     {
-        int result = state != null ? state.hashCode() : 0;
+        int result = layerId;
         result = 31 * result + angle;
         result = 31 * result + toolDiameter;
         result = 31 * result + additionalPasses;
@@ -67,5 +66,4 @@ public class ToolpathsCacheKey implements Serializable
         result = 31 * result + (additionalPassesAroundPadsOnly ? 1 : 0);
         return result;
     }
-
 }

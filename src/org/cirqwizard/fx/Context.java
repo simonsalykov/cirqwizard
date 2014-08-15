@@ -14,415 +14,104 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.GerberParser;
-import org.cirqwizard.excellon.ExcellonParser;
-import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.layers.*;
-import org.cirqwizard.logging.LoggerFactory;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import org.cirqwizard.layers.PCBLayout;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
-import org.cirqwizard.pp.PPParser;
-import org.cirqwizard.settings.*;
-import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.settings.ApplicationValues;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Context
 {
-    private File file;
-    private boolean fileLoaded = false;
+    public static enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
 
-    private TraceLayer topTracesLayer;
-    private TraceLayer bottomTracesLayer;
-    private SolderPasteLayer solderPasteLayer;
-    private MillingLayer millingLayer;
-    private DrillingLayer drillingLayer;
-    private ComponentsLayer componentsLayer;
+    private ObjectProperty<PCBLayout> pcbLayout = new SimpleObjectProperty<>();
 
-    private boolean topTracesSelected;
-    private boolean bottomTracesSelected;
-    private boolean drillingSelected;
-    private boolean contourSelected;
-    private boolean pasteSelected;
-    private boolean placingSelected;
-
+    private PcbPlacement pcbPlacement;
+    private Tool insertedTool;
     private PCBSize pcbSize;
     private Integer g54X;
     private Integer g54Y;
     private Integer g54Z;
 
-    private boolean zOffsetEstablished;
-
-    private NumberFormat drillFormat = new DecimalFormat("0.0#");
-    private List<String> drillDiameters;
     private int currentDrill;
-
-    private String contourMillDiameter;
 
     private int boardWidth;
     private int boardHeight;
 
-    private int angle;
-
-    private String dispensingNeedleDiameter;
-
-    private List<ComponentId> componentIds;
-    private int currentComponent;
+    private ComponentId currentComponent;
     private Feeder feeder;
     private int feederRow;
     private Integer componentPitch;
 
-    public void reset()
+    public PCBLayout getPcbLayout()
     {
-        file = null;
-        topTracesLayer = null;
-        bottomTracesLayer = null;
-        solderPasteLayer = null;
-        millingLayer = null;
-        drillingLayer = null;
-        componentsLayer = null;
+        return pcbLayout.get();
     }
 
-    public File getFile()
+    public ObjectProperty<PCBLayout> pcbLayoutProperty()
     {
-        return file;
+        return pcbLayout;
     }
 
     public void setFile(File file)
     {
-        reset();
-        this.file = file;
-        fileLoaded = false;
+        pcbLayout.setValue(new PCBLayout());
+        pcbLayout.getValue().setFile(file);
     }
 
-    public String getFileName()
+    public PcbPlacement getPcbPlacement()
     {
-        String filename = file.getAbsolutePath();
-        return filename.substring(0, filename.lastIndexOf('.'));
+        return pcbPlacement;
     }
 
-    public boolean isFileLoaded()
+    public void setPcbPlacement(PcbPlacement pcbPlacement)
     {
-        return fileLoaded;
+        this.pcbPlacement = pcbPlacement;
     }
 
-    public TraceLayer getTopTracesLayer()
+    public Tool getInsertedTool()
     {
-        return topTracesLayer;
+        return insertedTool;
     }
 
-    public TraceLayer getBottomTracesLayer()
+    public void setInsertedTool(Tool insertedTool)
     {
-        return bottomTracesLayer;
-    }
-
-    public SolderPasteLayer getSolderPasteLayer()
-    {
-        return solderPasteLayer;
-    }
-
-    public MillingLayer getMillingLayer()
-    {
-        return millingLayer;
-    }
-
-    public DrillingLayer getDrillingLayer()
-    {
-        return drillingLayer;
-    }
-
-    public ComponentsLayer getComponentsLayer()
-    {
-        return componentsLayer;
-    }
-
-    public void loadFile()
-    {
-        String filename = getFileName();
-        openFile(filename + ".cmp");
-        openFile(filename + ".ncl");
-        openFile(filename + ".crc");
-        openFile(filename + ".sol");
-        openFile(filename + ".drd");
-        openFile(filename + ".mnt");
-        moveToOrigin();
-        fileLoaded = true;
-    }
-
-    private void openFile(String file)
-    {
-        if (!new File(file).exists())
-            return;
-        if (file.toLowerCase().endsWith(".drd"))
-            openDrilling(file);
-        else if (file.toLowerCase().endsWith(".ncl"))
-            openMilling(file);
-        else if (file.toLowerCase().endsWith(".crc"))
-            openSolderPaste(file);
-        else if (file.toLowerCase().endsWith(".sol"))
-            openBottomTraces(file);
-        else if (file.toLowerCase().endsWith(".cmp"))
-            openTopTraces(file);
-        else if (file.toLowerCase().endsWith(".mnt"))
-            openComponents(file);
-    }
-
-    private void openTopTraces(String file)
-    {
-        topTracesLayer = new TraceLayer();
-        topTracesLayer.setElements(parseGerber(file));
-        if (topTracesLayer.getElements().isEmpty())
-            topTracesLayer = null;
-        topTracesSelected = topTracesLayer != null;
-    }
-
-    private void openBottomTraces(String file)
-    {
-        bottomTracesLayer = new TraceLayer();
-        bottomTracesLayer.setElements(parseGerber(file));
-        if (bottomTracesLayer.getElements().isEmpty())
-            bottomTracesLayer = null;
-        bottomTracesSelected = bottomTracesLayer != null;
-    }
-
-    private void openSolderPaste(String file)
-    {
-        solderPasteLayer = new SolderPasteLayer();
-        solderPasteLayer.setElements(parseGerber(file));
-        if (solderPasteLayer.getElements().isEmpty())
-            solderPasteLayer = null;
-        pasteSelected = solderPasteLayer != null;
-    }
-
-    private void openMilling(String file)
-    {
-        millingLayer = new MillingLayer();
-        millingLayer.setElements(parseGerber(file));
-        if (millingLayer.getElements().isEmpty())
-            millingLayer = null;
-        else
-        {
-            millingLayer.generateToolpaths();
-            contourMillDiameter = drillFormat.format((double)((CuttingToolpath)millingLayer.getToolpaths().get(0)).getToolDiameter() / ApplicationConstants.RESOLUTION);
-        }
-        contourSelected = millingLayer != null;
-    }
-
-    private void openDrilling(String file)
-    {
-        drillingLayer = new DrillingLayer();
-        try
-        {
-            ApplicationSettings settings = SettingsFactory.getApplicationSettings();
-            ExcellonParser parser = new ExcellonParser(settings.getExcellonIntegerPlaces().getValue(), settings.getExcellonDecimalPlaces().getValue(), new FileReader(file));
-            drillingLayer.setDrillPoints(parser.parse());
-        }
-        catch (IOException | RuntimeException e)
-        {
-            LoggerFactory.logException("Could not load excellon file", e);
-        }
-        if (drillingLayer.getToolpaths() == null || drillingLayer.getToolpaths().isEmpty())
-            drillingLayer = null;
-        else
-        {
-            drillDiameters = new ArrayList<>();
-            for (int diameter : drillingLayer.getDrillDiameters())
-                drillDiameters.add(drillFormat.format((double)diameter / ApplicationConstants.RESOLUTION));
-        }
-        drillingSelected = drillingLayer != null;
-    }
-
-    private void openComponents(String file)
-    {
-        componentsLayer = new ComponentsLayer();
-        try
-        {
-            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getApplicationSettings().getCentroidFileFormat().getValue());
-            componentsLayer.setPoints(parser.parse());
-            componentIds = new ArrayList<>(componentsLayer.getComponentIds());
-        }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Could not load centroid file", e);
-        }
-        if (componentsLayer.getPoints().isEmpty())
-            componentsLayer = null;
-        placingSelected = componentsLayer != null;
-    }
-
-    public long getTopLayerModificationDate()
-    {
-        return new File(getFileName() + ".cmp").lastModified();
-    }
-
-    public long getBottomLayerModificationDate()
-    {
-        return new File(getFileName() + ".sol").lastModified();
-    }
-
-    private static ArrayList<GerberPrimitive> parseGerber(String file)
-    {
-        try
-        {
-            GerberParser parser = new GerberParser(new FileReader(file));
-            return parser.parse();
-        }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Could not load gerber file", e);
-            return null;
-        }
-    }
-
-    public ArrayList<Layer> getLayers()
-    {
-        ArrayList<Layer> layers = new ArrayList<Layer>();
-        if (topTracesLayer != null)
-            layers.add(topTracesLayer);
-        if (drillingLayer != null)
-            layers.add(drillingLayer);
-        if (millingLayer != null)
-            layers.add(millingLayer);
-        if (bottomTracesLayer != null)
-            layers.add(bottomTracesLayer);
-        if (solderPasteLayer != null)
-            layers.add(solderPasteLayer);
-        if (componentsLayer != null)
-            layers.add(componentsLayer);
-        return layers;
-    }
-
-    private void moveToOrigin()
-    {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (Layer layer : getLayers())
-        {
-            if (layer.getMinPoint().getX() < min.getX())
-                min = new Point(layer.getMinPoint().getX(), min.getY());
-            if (layer.getMinPoint().getY() < min.getY())
-                min = new Point(min.getX(), layer.getMinPoint().getY());
-        }
-        min = new Point(-min.getX(), -min.getY());
-        for (Layer layer : getLayers())
-            layer.move(min);
-    }
-
-    public void rotate(boolean clockwise)
-    {
-        angle+= clockwise ? -90 : 90;
-        angle =  angle % 360;           // reduce the angle
-        angle = (angle + 360) % 360;    // force it to be the positive
-
-        for (Layer layer : getLayers())
-            layer.rotate(clockwise);
-        moveToOrigin();
-    }
-
-    public boolean isTopTracesSelected()
-    {
-        return topTracesSelected;
-    }
-
-    public void setTopTracesSelected(boolean topTracesSelected)
-    {
-        this.topTracesSelected = topTracesSelected;
-    }
-
-    public boolean isBottomTracesSelected()
-    {
-        return bottomTracesSelected;
-    }
-
-    public void setBottomTracesSelected(boolean bottomTracesSelected)
-    {
-        this.bottomTracesSelected = bottomTracesSelected;
-    }
-
-    public boolean isDrillingSelected()
-    {
-        return drillingSelected;
-    }
-
-    public void setDrillingSelected(boolean drillingSelected)
-    {
-        this.drillingSelected = drillingSelected;
-    }
-
-    public boolean isContourSelected()
-    {
-        return contourSelected;
-    }
-
-    public void setContourSelected(boolean contourSelected)
-    {
-        this.contourSelected = contourSelected;
-    }
-
-    public boolean isPasteSelected()
-    {
-        return pasteSelected;
-    }
-
-    public void setPasteSelected(boolean pasteSelected)
-    {
-        this.pasteSelected = pasteSelected;
-    }
-
-    public boolean isPlacingSelected()
-    {
-        return placingSelected;
-    }
-
-    public void setPlacingSelected(boolean placingSelected)
-    {
-        this.placingSelected = placingSelected;
+        this.insertedTool = insertedTool;
     }
 
     public PCBSize getPcbSize()
     {
-        return pcbSize == null ? SettingsFactory.getApplicationValues().getPcbSize().getValue() : pcbSize;
+        return pcbSize;
     }
 
     public void setPcbSize(PCBSize pcbSize)
     {
         this.pcbSize = pcbSize;
-        ApplicationValues values = SettingsFactory.getApplicationValues();
-        values.getPcbSize().setValue(pcbSize);
-        values.save();
     }
 
     public Integer getG54X()
     {
-        return g54X != null ? g54X : SettingsFactory.getApplicationValues().getG54X().getValue();
+        return g54X;
     }
 
     public void setG54X(Integer g54X)
     {
         this.g54X = g54X;
-        ApplicationValues values = SettingsFactory.getApplicationValues();
-        values.getG54X().setValue(g54X);
-        values.save();
     }
 
     public Integer getG54Y()
     {
-        return g54Y != null ? g54Y : SettingsFactory.getApplicationValues().getG54Y().getValue();
+        return g54Y;
     }
 
     public void setG54Y(Integer g54Y)
     {
         this.g54Y = g54Y;
-        ApplicationValues values = SettingsFactory.getApplicationValues();
-        values.getG54Y().setValue(g54Y);
-        values.save();
     }
 
     public Integer getG54Z()
@@ -435,21 +124,6 @@ public class Context
         this.g54Z = g54Z;
     }
 
-    public boolean iszOffsetEstablished()
-    {
-        return zOffsetEstablished;
-    }
-
-    public void setzOffsetEstablished(boolean zOffsetEstablished)
-    {
-        this.zOffsetEstablished = zOffsetEstablished;
-    }
-
-    public List<String> getDrillDiameters()
-    {
-        return drillDiameters;
-    }
-
     public int getCurrentDrill()
     {
         return currentDrill;
@@ -458,11 +132,6 @@ public class Context
     public void setCurrentDrill(int currentDrill)
     {
         this.currentDrill = currentDrill;
-    }
-
-    public String getContourMillDiameter()
-    {
-        return contourMillDiameter;
     }
 
     public int getBoardHeight()
@@ -485,32 +154,12 @@ public class Context
         this.boardWidth = boardWidth;
     }
 
-    public int getAngle()
-    {
-        return angle;
-    }
-
-    public String getDispensingNeedleDiameter()
-    {
-        return dispensingNeedleDiameter;
-    }
-
-    public void setDispensingNeedleDiameter(String dispensingNeedleDiameter)
-    {
-        this.dispensingNeedleDiameter = dispensingNeedleDiameter;
-    }
-
-    public List<ComponentId> getComponentIds()
-    {
-        return componentIds;
-    }
-
-    public int getCurrentComponent()
+    public ComponentId getCurrentComponent()
     {
         return currentComponent;
     }
 
-    public void setCurrentComponent(int currentComponent)
+    public void setCurrentComponent(ComponentId currentComponent)
     {
         this.currentComponent = currentComponent;
     }

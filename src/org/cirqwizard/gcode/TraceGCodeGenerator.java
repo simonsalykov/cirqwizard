@@ -16,12 +16,13 @@ package org.cirqwizard.gcode;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBSize;
-import org.cirqwizard.fx.State;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.post.Postprocessor;
-import org.cirqwizard.settings.*;
+import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.MachineSettings;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -33,22 +34,19 @@ import java.util.List;
 public class TraceGCodeGenerator
 {
     private Context context;
-    private State state;
+    private List<? extends Toolpath> toolpaths;
+    private boolean mirror;
 
-    public TraceGCodeGenerator(Context context, State state)
+    public TraceGCodeGenerator(Context context, List<? extends Toolpath> toolpaths, boolean mirror)
     {
         this.context = context;
-        this.state = state;
+        this.toolpaths = toolpaths;
+        this.mirror = mirror;
     }
 
     private int getX(int x)
     {
-        return state == State.MILLING_BOTTOM_INSULATION ? -x : x;
-    }
-
-    private List<Toolpath> getToolpaths()
-    {
-        return state == State.MILLING_TOP_INSULATION ? context.getTopTracesLayer().getToolpaths() : context.getBottomTracesLayer().getToolpaths();
+        return mirror ? -x : x;
     }
 
     public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,
@@ -58,7 +56,7 @@ public class TraceGCodeGenerator
         postprocessor.header(str);
 
         int g54X = context.getG54X();
-        if (state == State.MILLING_BOTTOM_INSULATION)
+        if (mirror)
         {
             MachineSettings machineSettings = SettingsFactory.getMachineSettings();
             int laminateWidth = context.getPcbSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() : machineSettings.getLargePcbWidth().getValue();
@@ -72,7 +70,7 @@ public class TraceGCodeGenerator
 
         postprocessor.spindleOn(str, spindleSpeed);
         Point prevLocation = null;
-        for (Toolpath toolpath : getToolpaths())
+        for (Toolpath toolpath : toolpaths)
         {
             if (!toolpath.isEnabled())
                 continue;
@@ -92,7 +90,7 @@ public class TraceGCodeGenerator
             else if (toolpath instanceof CircularToolpath)
             {
                 Arc arc = (Arc)curve;
-                postprocessor.circularInterpolation(str, state == State.MILLING_BOTTOM_INSULATION ? !arc.isClockwise() : arc.isClockwise(),
+                postprocessor.circularInterpolation(str, mirror ? !arc.isClockwise() : arc.isClockwise(),
                         getX(arc.getTo().getX()), arc.getTo().getY(), millingDepth, getX(arc.getCenter().getX() - arc.getFrom().getX()),
                         arc.getCenter().getY() - arc.getFrom().getY(), arcFeed);
             }

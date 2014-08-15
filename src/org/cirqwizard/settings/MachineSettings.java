@@ -36,10 +36,6 @@ public class MachineSettings extends SettingsGroup
     @PreferenceGroup(name = "Reference pin distances")
     private UserPreference<Integer> largePcbWidth = new UserPreference<>("Large laminate", 90000, "mm");
 
-    @PersistentPreference
-    @PreferenceGroup(name = "Predefined locations")
-    private UserPreference<Integer> farAwayY = new UserPreference<>("Far away Y", 220000, "mm");
-
     @Override
     public String getName()
     {
@@ -102,13 +98,4 @@ public class MachineSettings extends SettingsGroup
         this.largePcbWidth = largePcbWidth;
     }
 
-    public UserPreference<Integer> getFarAwayY()
-    {
-        return farAwayY;
-    }
-
-    public void setFarAwayY(UserPreference<Integer> farAwayY)
-    {
-        this.farAwayY = farAwayY;
-    }
 }

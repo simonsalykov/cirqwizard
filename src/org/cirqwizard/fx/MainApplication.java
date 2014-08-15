@@ -14,22 +14,35 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Stage;
+import org.cirqwizard.fx.common.XYOffsets;
+import org.cirqwizard.fx.contour.ContourMilling;
+import org.cirqwizard.fx.contour.InsertContourMill;
+import org.cirqwizard.fx.dispensing.Dispensing;
+import org.cirqwizard.fx.dispensing.InsertSyringe;
+import org.cirqwizard.fx.dispensing.SyringeBleeding;
+import org.cirqwizard.fx.drilling.DrillingGroup;
+import org.cirqwizard.fx.misc.About;
+import org.cirqwizard.fx.misc.Firmware;
+import org.cirqwizard.fx.misc.ManualDataInput;
+import org.cirqwizard.fx.misc.SettingsEditor;
+import org.cirqwizard.fx.pp.InsertPPHead;
+import org.cirqwizard.fx.pp.PPGroup;
+import org.cirqwizard.fx.pp.PlacingOverview;
+import org.cirqwizard.fx.traces.InsertTool;
+import org.cirqwizard.fx.traces.ZOffset;
+import org.cirqwizard.fx.traces.bottom.BottomTraceMilling;
+import org.cirqwizard.fx.traces.top.PCBPlacement;
+import org.cirqwizard.fx.traces.top.TopTraceMilling;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.*;
 import org.cirqwizard.settings.Settings;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.cirqwizard.settings.SettingsFactory;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.logging.Level;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 
@@ -37,43 +50,142 @@ public class MainApplication extends Application
 {
     private Stage primaryStage;
     private Scene scene;
-    private Stage dialogStage;
-    private Scene dialogScene;
 
-    private HashMap<SceneEnum, SceneController> controllers = new HashMap<SceneEnum, SceneController>();
-    private HashMap<Dialog, SceneController> dialogControllers = new HashMap<Dialog, SceneController>();
-
-    private State state;
-    private Context context;
+    private Context context = new Context();
     private SerialInterface serialInterface;
     private CNCController cncController;
+
+    private MainViewController mainView = (MainViewController) new MainViewController().setMainApplication(this);
+
+    private ScreenController topTracesGroup = new OperationsScreenGroup("Top traces")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return  super.isEnabled() && getMainApplication().getContext().getPcbLayout().getTopTracesLayer() != null;
+            }
+        }.setMainApplication(this).
+        addChild(new PCBPlacement().setMainApplication(this)).
+        addChild(new InsertTool().setMainApplication(this)).
+        addChild(new ZOffset().setMainApplication(this)).
+        addChild(new XYOffsets().setMainApplication(this)).
+        addChild(new TopTraceMilling().setMainApplication(this));
+
+    private ScreenController bottomTracesGroup = new OperationsScreenGroup("Bottom traces")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getBottomTracesLayer() != null;
+            }
+        }.setMainApplication(this).
+            addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
+            addChild(new InsertTool().setMainApplication(this)).
+            addChild(new ZOffset().setMainApplication(this)).
+            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new BottomTraceMilling().setMainApplication(this));
+
+    private ScreenController contourMillingGroup = new OperationsScreenGroup("Contour milling")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getMillingLayer() != null;
+            }
+        }.setMainApplication(this).
+            addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
+            addChild(new InsertContourMill().setMainApplication(this)).
+            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new ContourMilling().setMainApplication(this));
+
+    private ScreenController dispensingGroup = new OperationsScreenGroup("Dispensing")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getSolderPasteLayer() != null;
+            }
+        }.setMainApplication(this).
+            addChild(new PCBPlacement().setMainApplication(this)).
+            addChild(new InsertSyringe().setMainApplication(this)).
+            addChild(new SyringeBleeding().setMainApplication(this)).
+            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new Dispensing().setMainApplication(this));
+
+    private ScreenController root = new Welcome().setMainApplication(this).
+            addChild(new Orientation().setMainApplication(this)).
+            addChild(new Homing().setMainApplication(this)).
+            addChild(topTracesGroup).
+            addChild(bottomTracesGroup).
+            addChild(new DrillingGroup("Drilling").setMainApplication(this).
+                    addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this))).
+            addChild(contourMillingGroup).
+            addChild(dispensingGroup).
+            addChild(new PPGroup("Pick and place").setMainApplication(this).
+                    addChild(new PCBPlacement().setMainApplication(this)).
+                    addChild(new InsertPPHead().setMainApplication(this)).
+                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new PlacingOverview().setMainApplication(this))).
+            addChild(new Terminal().setMainApplication(this)).
+            addChild(new ScreenGroup("Misc").setVisible(false).setMainApplication(this).
+                    addChild(new SettingsEditor().setMainApplication(this)).
+                    addChild(new Firmware().setMainApplication(this)).
+                    addChild(new About()).setMainApplication(this).
+                    addChild(new ManualDataInput().setMainApplication(this)));
 
     @Override
     public void start(Stage primaryStage) throws Exception
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
-        state = State.WELCOME;
-        context = new Context();
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
-        for (SceneEnum s : SceneEnum.values())
-            controllers.put(s, loadSceneController(s.getName()));
-        for (Dialog d : Dialog.values())
-            dialogControllers.put(d, loadSceneController(d.getName()));
+
         this.primaryStage = primaryStage;
-        scene = new Scene(controllers.get(SceneEnum.Welcome).getView(), 800, 600);
+        scene = new Scene(mainView.getView(), 800, 600);
         scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
         if(System.getProperty("os.name").startsWith("Linux"))
             scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
         primaryStage.setScene(scene);
         primaryStage.setTitle("cirQWizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
-        showScene(SceneEnum.Welcome);
+        mainView.setScreen(root);
         primaryStage.show();
+    }
 
-        dialogStage = new Stage(StageStyle.UNDECORATED);
-        dialogStage.initOwner(primaryStage);
-        dialogStage.initModality(Modality.WINDOW_MODAL);
+    public ScreenController getScreen(Class clazz)
+    {
+        return getScreen(root, clazz);
+    }
+
+    private ScreenController getScreen(ScreenController root, Class clazz)
+    {
+        if (clazz.equals(root.getClass()))
+            return root;
+        if (root.getChildren() != null)
+        {
+            for (ScreenController ctrl : root.getChildren())
+            {
+                ScreenController c = getScreen(ctrl, clazz);
+                if (c != null)
+                    return c;
+            }
+        }
+        return null;
+    }
+
+    public ScreenController getCurrentScreen()
+    {
+        return mainView.getCurrentScreen();
+    }
+
+    public void setCurrentScreen(ScreenController screen)
+    {
+        mainView.setScreen(screen);
+    }
+
+    public MainViewController getMainView()
+    {
+        return mainView;
     }
 
     public void connectSerialPort(String port)
@@ -115,54 +227,9 @@ public class MainApplication extends Application
         super.stop();
     }
 
-    private SceneController loadSceneController(String name) throws IOException
-    {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(name));
-        Parent root = (Parent) loader.load();
-
-        SceneController controller = (SceneController) loader.getController();
-        if (controller != null)
-            controller.setMainApplication(this);
-        return controller;
-    }
-
     public Context getContext()
     {
         return context;
-    }
-
-    public SceneController getSceneController(SceneEnum scene)
-    {
-        return controllers.get(scene);
-    }
-
-    public void showScene(SceneEnum scene)
-    {
-        SceneController controller = controllers.get(scene);
-        controller.refresh();
-        this.scene.setRoot(controller.getView());
-    }
-
-    public State getState()
-    {
-        return state;
-    }
-
-    public void setState(State state)
-    {
-        this.state = state;
-        state.onActivation(context);
-        showScene(state.getScene());
-    }
-
-    public void prevState()
-    {
-        setState(state.getPrevState(context));
-    }
-
-    public void nextState()
-    {
-        setState(state.getNextState(context));
     }
 
     public SerialInterface getSerialInterface()
@@ -176,29 +243,14 @@ public class MainApplication extends Application
     }
 
 
-    public void showInfoDialog(String header, String info)
+    public List<ScreenController> getSiblings(ScreenController scene)
     {
-        InfoDialogController controller = (InfoDialogController) dialogControllers.get(Dialog.INFO);
-        controller.setHeaderText(header);
-        controller.setInfoText(info);
-
-        if (dialogScene == null)
-        {
-            dialogScene = new Scene(controller.getView());
-            dialogScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
-            if(System.getProperty("os.name").startsWith("Linux"))
-                dialogScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
-        }
-        else
-            dialogScene.setRoot(controller.getView());
-
-        dialogStage.setScene(dialogScene);
-        dialogStage.show();
+        return scene.getParent() == null ? null : scene.getParent().getChildren();
     }
 
-    public void hideInfoDialog()
+    public Stage getPrimaryStage()
     {
-        dialogStage.hide();
+        return primaryStage;
     }
 
     public static void main(String[] args)

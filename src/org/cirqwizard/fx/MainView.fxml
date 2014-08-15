@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import org.controlsfx.control.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
+   <children>
+      <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0">
+        <items>
+            <HBox fx:id="breadCrumbBarBox" fillHeight="true" styleClass="breadcrumb-bar" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Hyperlink text="Offsets" fx:id="offsetsLink" onAction="#offsets"/>
+            <Hyperlink text="Settings" fx:id="settingsLink" onAction="#settings"/>
+            <Hyperlink text="Manual control" fx:id="manualControlLink" onAction="#manualControl"/>
+        </items>
+      </ToolBar>
+      <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS" />
+   </children>
+</VBox>

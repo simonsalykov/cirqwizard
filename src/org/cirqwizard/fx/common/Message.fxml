@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <Label fx:id="header" layoutX="91.0" layoutY="98.0" styleClass="h1" text="Label" />
+    <Label fx:id="text" alignment="TOP_LEFT" layoutX="123.0" layoutY="144.0" prefHeight="208.0" prefWidth="557.0" text="Label" wrapText="true" />
+    <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
+      <children>
+        <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
+      </children>
+    </HBox>
+  </children>
+</AnchorPane>

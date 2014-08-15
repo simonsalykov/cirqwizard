@@ -18,7 +18,7 @@ public class DispensingSettings extends SettingsGroup
 {
     @PersistentPreference
     @PreferenceGroup(name = "Needle")
-    private UserPreference<Integer> needleDiameter = new UserPreference<>("Needle diameter", 400, "mm");
+    private UserPreference<Integer> needleDiameter = new UserPreference<>("Needle diameter", 400, "mm").setTriggersInvalidation(true);
 
     @PersistentPreference
     @PreferenceGroup(name = "Timing")
@@ -42,7 +42,7 @@ public class DispensingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Heights")
-    private UserPreference<Integer> zOffset = new UserPreference<>("Z offset", null, "mm");
+    private UserPreference<Integer> zOffset = new UserPreference<>("Z offset", (Integer) null, "mm").setShowInPopOver(false);
 
     @PersistentPreference
     @PreferenceGroup(name = "Heights")
