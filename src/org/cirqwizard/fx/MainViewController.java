@@ -167,6 +167,7 @@ public class MainViewController extends ScreenController
 
     public void manualControl()
     {
+        hidePopOvers();
         if (manualControlPopOver.getPopOver() == null)
         {
             manualControlPopOver.setPopOver(new PopOver(manualControlPopOver.getView()));
@@ -181,6 +182,7 @@ public class MainViewController extends ScreenController
 
     public void offsets()
     {
+        hidePopOvers();
         if (offsetsPopOver.getPopOver() == null)
         {
             offsetsPopOver.setPopOver(new PopOver(offsetsPopOver.getView()));
@@ -195,6 +197,7 @@ public class MainViewController extends ScreenController
 
     public void settings()
     {
+        hidePopOvers();
         if (settingsPopOver.getPopOver() == null)
         {
             settingsPopOver.setPopOver(new PopOver(settingsPopOver.getView()));
