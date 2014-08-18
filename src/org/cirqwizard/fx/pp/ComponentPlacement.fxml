@@ -60,9 +60,9 @@
             <content>
               <AnchorPane id="Content">
                 <children>
-                  <VBox id="VBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox id="VBox" alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                      <GridPane>
+                      <GridPane vgap="5">
                         <children>
                           <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                           <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="1" />
