@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.fx.ScreenController;
+import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.SettingsFactory;
 
 
@@ -55,7 +56,6 @@ public abstract class PCBPlacement extends ScreenController
         Context context = getMainApplication().getContext();
         context.setPcbPlacement(null);
         PCBSize pcbSize = context.getPcbSize();
-        radioButtonsBox.setVisible(pcbSize == null);
         if (pcbSize == null)
             pcbSize = SettingsFactory.getApplicationValues().getPcbSize().getValue();
         if (pcbSize == PCBSize.Small)
@@ -99,8 +99,9 @@ public abstract class PCBPlacement extends ScreenController
             context.setPcbSize(PCBSize.Small);
         else if (largePCB.isSelected())
             context.setPcbSize(PCBSize.Large);
-        SettingsFactory.getApplicationValues().getPcbSize().setValue(context.getPcbSize());
-        SettingsFactory.getApplicationValues().save();
+        ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
+        applicationValues.getPcbSize().setValue(context.getPcbSize());
+        applicationValues.save();
 
         continueButton.setDisable(radioButtonsBox.isVisible() && !smallPCB.isSelected() && !largePCB.isSelected());
         if (context.getPcbSize() != null && !checkSelectedPcbSize())
