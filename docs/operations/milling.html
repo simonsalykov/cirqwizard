@@ -112,8 +112,6 @@
     <ul>
         
         
-        
-        
         <li><a href="/docs/intro.html">Introduction</a></li>
         
         
@@ -123,6 +121,12 @@
         <li><a href="/docs/first_start.html">First start</a></li>
         
         
+        
+        
+        
+        
+        
+        <li><a href="/docs/ui_conventions.html">User interface in two words</a></li>
         
         
         
@@ -143,10 +147,6 @@
         
         
         <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/operations_selection.html">Preparation - Operations selection</a></li>
         
         
         
@@ -174,6 +174,10 @@
         
         
         
+        <li><a href="/docs/settings/predefined_locations.html">Settings - Predefined locations</a></li>
+        
+        
+        
         <li><a href="/docs/settings/insulation_milling.html">Settings - Insulation milling</a></li>
         
         
@@ -192,23 +196,23 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <li><a href="/docs/settings/dispensing.html">Settings - Dispensing</a></li>
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <li><a href="/docs/settings/placement.html">Settings - Pick&Place</a></li>
+        <li><a href="/docs/settings/placement.html">Settings - Pick & Place</a></li>
         
         
         
@@ -236,12 +240,9 @@
 <p>Open files and select board orientation following <a href="/docs/preparation/file_selection.html">Preparation &#8211; File selection</a> and <a href="/docs/preparation/pcb_orienation.html">Preparation &#8211; <span class="caps">PCB</span> orientation</a> sections.</p>
 <h3>Machine homing</h3>
 <p>Home your machine as explained in <a href="/docs/preparation/homing.html">Preparation &#8211; Homing</a> section.</p>
-<h3>Selecting operations</h3>
-<p><img src="/images/docs/operations/cut_top_tr.png" alt="" /></p>
-<p>Select <strong>Mill top layer insulation</strong> and/or <strong>Mill bottom layer insulation</strong> as appropriate.</p>
 <h3>Placing <span class="caps">PCB</span> laminate on the machine bed</h3>
-<p><img src="/images/docs/operations/move_away.png" alt="" /></p>
-<p>As instructed, put <span class="caps">PCB</span> laminate on the machine bed and select which size of laminate you use. You can use <strong>Move head away</strong> button to get machine head out of the way.</p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/pcb_placement.png" alt="" /></p>
+<p>As instructed, put <span class="caps">PCB</span> laminate on the machine bed and select which size of laminate you use.</p>
 <h3>Inserting cutting tool</h3>
 <p>As instructed by the application, insert the tool you will be using to mill insulation in your machine&#8217;s spindle.</p>
 <h3>Establishing Z axis offset</h3>
@@ -254,53 +255,32 @@
 	<li>lower the offset by a little but until the tool makes a satisfactory cut</li>
 </ul>
 <p>This way it is possible to precisely determine Z axis offset taking all uncertainties off the result.</p>
-<p><img src="/images/docs/operations/est_z_off.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/z_offset.png" alt="" /></p>
 <p>If, by whatever means, you already know the offset and don&#8217;t need to go through the described procedure, you can select *I know it, I&#8217;ll tell you&quot; option and enter the offset in the corresponding text field.</p>
 <p>If you want to use described procedure, select <strong>I want to try</strong> option. Then enter coordinates of sacrificial place on the laminate. If you want to check where it is, push <strong>Go</strong> button &#8211; this will move the machine head to the coordinates you entered (you can also press <strong>Enter</strong> in coordinates text fields).</p>
-<p>Initial Z offset value is populated from settings. If you are using a <a href="http://cirqoid.com/">Cirqoid</a> machine, the default value in settings is a good starting point. If you are using another machine, you would need to find a safe offset to start with.</p>
+<p>Initial Z offset value is populated from settings.</p>
 <p>Pressing <strong>Test</strong> button will move the machine head to the location specified in <strong>Scrap place location</strong> pane, turn the machine spindle on, lower the head according to the Z offset specified, move the head in the selected direction, return the head to the original position and turn the spindle off. <strong>Lower and test</strong> button does the same, decreasing the Z offset value by <strong>0.02mm</strong> beforehand.</p>
 <p>Thus, the usual way to find Z offset is to select <strong>I want to try</strong> option and press <strong>Lower and test</strong> button until the tool makes a satisfactory cut.</p>
 <h3>Establishing X and Y offsets</h3>
 <p>X and Y offsets determine the location of lower left corner of your board on the laminate.</p>
-<p><img src="/images/docs/operations/xy_off.png" alt="" /></p>
-<p><strong>Show me where it is</strong> button moves the machine head to the specified location. Should you wish to be very precise in pinpointing the location on the laminate, <strong>Move Z axis</strong> pane allows you to lower the head, moving the tool closer to laminate surface.</p>
-<p>Watch out &#8211; you can crash the tool into laminate if you command it to go too low!</p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/xy_offsets.png" alt="" /></p>
+<p>The image on the right shows visualization of the board layout withing the selected laminate boundaries. <strong>Show me where it is</strong> button moves the machine head to the specified location.</p>
 <h3>Generating toolpaths</h3>
-<p><img src="/images/docs/operations/trace_gen.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/generation.png" alt="" /></p>
 <p>The program now has enough information to generate the tool paths for insulation milling of your <span class="caps">PCB</span>. Depending on your <span class="caps">PCB</span> design dimensions and complexity this might take a while.</p>
 <h3>Milling</h3>
-<p><img src="/images/docs/operations/trace_cutting.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/milling.png" alt="" /></p>
 <p>Now you need to review the tool paths generated. To zoom in or out you can use one of the following ways:</p>
 <ul>
 	<li>click on the corresponding icons in the upper left corner of <span class="caps">PCB</span> design pane</li>
 	<li>hold <strong>Ctrl</strong> (or <strong>Cmd</strong> on Mac OS X) button and use the scroll wheel of your mouse</li>
 	<li>press <strong>Ctrl+=</strong> (or <strong>Cmd+=</strong>) to zoom in, or <strong>Ctrl+-</strong> (<strong>Cmd+-</strong>) to zoom out</li>
 </ul>
-<p>If you spot a trace, which does not have a tool path generated around it, this means the clearance between this trace and neighbouring traces is too small for the tool diameter specified. Depending on your <span class="caps">PCB</span> layout and the tools that you have at your disposal, you might want to change <strong>Tool diameter</strong> parameter and regenerate tool paths (to regenerate tool paths, press <strong>Enter</strong> in <strong>Tool diameter</strong> field).</p>
+<p>If you spot a trace, which does not have a tool path generated around it, this means the clearance between this trace and neighbouring traces is too small for the tool diameter specified. Depending on your <span class="caps">PCB</span> layout and the tools that you have at your disposal, you might want to change <strong>Tool diameter</strong> parameter value in <strong>Settings</strong> popover and regenerate tool paths (to regenerate tool paths, press <strong>Enter</strong> in <strong>Tool diameter</strong> field).</p>
 <p>You can also select, which tool paths are going to be milled (this is useful if you didn&#8217;t like the result in some places and want to have another go there). Tool paths can be selected with mouse. Selected tool paths can be enabled and disabled with toolbar buttons or with keyboard shortcuts: <strong>Ctrl+E</strong> (or <strong>Cmd-E</strong> on Mac OS X) to enable, and <strong>Ctrl+D</strong> (or <strong>Cmd+D</strong>) to disable. Shortcut <strong>Ctrl+A</strong> (<strong>Cmd+A</strong>) selects all tool paths.</p>
-<p>Field <strong>Feed</strong> specifies the feed for milling operation (that is effectively a speed with which tool moves while milling the insulation). Feed is specified in mm per minute.</p>
-<p>For your convenience offsets that were entered on previous steps can be checked (and should it be necessary edited) in <strong>Offsets</strong> pop-out pane.</p>
-<p><strong>Misc</strong> pop-out pane contains several parameters that give you additional control over milling process. It&#8217;s perfectly safe to leave them as is, if you aren&#8217;t sure.</p>
-<table class="table table-bordered ">
-	<tr>
-		<th>Parameter </th>
-		<th>Meaning </th>
-	</tr>
-	<tr>
-		<td> Clearance </td>
-		<td> The height above the board, the program uses to move the tool between traces </td>
-	</tr>
-	<tr>
-		<td> Safety height </td>
-		<td> The height above the board, where tool switches from rapid descend to feed on Z axis, when descending to working level </td>
-	</tr>
-	<tr>
-		<td> Z axis feed </td>
-		<td> Feed of Z axis which is used to descend to working level </td>
-	</tr>
-</table>
+<p>For your convenience offsets that were entered on previous steps can be checked (and should it be necessary edited) in <strong>Offsets</strong> popover. The same way all of the relevant settings can be accessed and changed in <strong>Settings</strong> popover.</p>
 <p>If you wish to have a look at G-Code that will be send to the machine, you can press a button with wrench icon in the toolbar.</p>
-<p>When you are happy with all of the settings, press <strong>Go</strong> button. cirQWizard will send generated G-Code to the machine.</p>
+<p>When you are happy with all of the settings, press <strong>Run</strong> button. cirQWizard will send generated G-Code to the machine.</p>
   
     <footer>
       

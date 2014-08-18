@@ -112,8 +112,6 @@
     <ul>
         
         
-        
-        
         <li><a href="/docs/intro.html">Introduction</a></li>
         
         
@@ -123,6 +121,12 @@
         <li><a href="/docs/first_start.html">First start</a></li>
         
         
+        
+        
+        
+        
+        
+        <li><a href="/docs/ui_conventions.html">User interface in two words</a></li>
         
         
         
@@ -143,10 +147,6 @@
         
         
         <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/operations_selection.html">Preparation - Operations selection</a></li>
         
         
         
@@ -174,6 +174,10 @@
         
         
         
+        <li><a href="/docs/settings/predefined_locations.html">Settings - Predefined locations</a></li>
+        
+        
+        
         <li><a href="/docs/settings/insulation_milling.html">Settings - Insulation milling</a></li>
         
         
@@ -192,23 +196,23 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <li><a href="/docs/settings/dispensing.html">Settings - Dispensing</a></li>
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <li><a href="/docs/settings/placement.html">Settings - Pick&Place</a></li>
+        <li><a href="/docs/settings/placement.html">Settings - Pick & Place</a></li>
         
         
         
@@ -231,45 +235,55 @@
     
   </header>
   
-  <p>Machine settings include the following parameters:</p>
+  <h4>Calibration parameters</h4>
 <table class="table table-bordered ">
 	<tr>
 		<th>Parameter </th>
 		<th>Meaning </th>
 		<th>Default value </th>
+		<th>Units </th>
 	</tr>
 	<tr>
 		<td> Y axes difference </td>
 		<td> Difference between zero points of machine&#8217;s Y axes </td>
 		<td> </td>
+		<td> mm </td>
 	</tr>
 	<tr>
 		<td> Reference pin X </td>
 		<td> X coordinate of the reference pin </td>
 		<td> </td>
+		<td> mm </td>
 	</tr>
 	<tr>
 		<td> Reference pin Y </td>
 		<td> Y coordinate of the reference pin </td>
 		<td> </td>
-	</tr>
-	<tr>
-		<td> Small <span class="caps">PCB</span> width </td>
-		<td> Distance between the centers of the registration holes on the smaller of supported laminates along the X axis </td>
-		<td> 65 </td>
-	</tr>
-	<tr>
-		<td> Large <span class="caps">PCB</span> width </td>
-		<td> Distance between the centers of the registration holes on the larger of supported laminates along the X axis </td>
-		<td> 90 </td>
-	</tr>
-	<tr>
-		<td> Far away Y </td>
-		<td> Y coordinate of the position, where the machine is taken by <strong>Move head away button</strong> </td>
-		<td> 220 </td>
+		<td> mm </td>
 	</tr>
 </table>
 <p>Reference pin is a registration pin located in lower left corner of <span class="caps">PCB</span>.</p>
+<h4>Reference pin distances</h4>
+<table class="table table-bordered ">
+	<tr>
+		<th>Parameter </th>
+		<th>Meaning </th>
+		<th>Default value </th>
+		<th>Units </th>
+	</tr>
+	<tr>
+		<td> Small laminate </td>
+		<td> Distance between the centers of the registration holes on the smaller of supported laminates along the X axis </td>
+		<td> 65 </td>
+		<td> mm </td>
+	</tr>
+	<tr>
+		<td> Large laminate </td>
+		<td> Distance between the centers of the registration holes on the larger of supported laminates along the X axis </td>
+		<td> 90 </td>
+		<td> mm </td>
+	</tr>
+</table>
   
     <footer>
       

@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Preparation - Operations selection - cirQWizard</title>
+  <title>User interface in two words - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//docs/preparation/operations_selection.html">
+  <link rel="canonical" href="http://cirqwizard.org//docs/ui_conventions.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -112,8 +112,6 @@
     <ul>
         
         
-        
-        
         <li><a href="/docs/intro.html">Introduction</a></li>
         
         
@@ -123,6 +121,12 @@
         <li><a href="/docs/first_start.html">First start</a></li>
         
         
+        
+        
+        
+        
+        
+        <li><a href="/docs/ui_conventions.html">User interface in two words</a></li>
         
         
         
@@ -143,10 +147,6 @@
         
         
         <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/operations_selection.html">Preparation - Operations selection</a></li>
         
         
         
@@ -174,6 +174,10 @@
         
         
         
+        <li><a href="/docs/settings/predefined_locations.html">Settings - Predefined locations</a></li>
+        
+        
+        
         <li><a href="/docs/settings/insulation_milling.html">Settings - Insulation milling</a></li>
         
         
@@ -192,23 +196,23 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <li><a href="/docs/settings/dispensing.html">Settings - Dispensing</a></li>
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <li><a href="/docs/settings/placement.html">Settings - Pick&Place</a></li>
+        <li><a href="/docs/settings/placement.html">Settings - Pick & Place</a></li>
         
         
         
@@ -227,13 +231,24 @@
 <article role="article" class="span9">
   
   <header class="page-header">
-    <h1 class="entry-title">Preparation - Operations Selection</h1>
+    <h1 class="entry-title">User Interface in Two Words</h1>
     
   </header>
   
-  <p>Having selected <a href="/docs/preparation/pcb_orientation.html"><span class="caps">PCB</span> orientation</a> and <a href="/docs/preparation/homing.html">homed</a> the machine, you now need to select which operations you want to perform:</p>
-<p><img src="/images/docs/preparation/operations_selection.png" alt="" /></p>
-<p>Available operations depend on which files were exported from your <span class="caps">CAD</span> software.</p>
+  <p>cirQWizard, as its name suggests, takes a &#8220;wizard&#8221; approach to user interface. It leads you step by step through all of the processes necessary to produce a circuit board.</p>
+<h4>Breadcrumb bar</h4>
+<p>The main navigational aid is the breadcrumb bar in the top left corner of the screen &#8211; it shows where exactly you are in the process as well as lets you jump between different stages of <span class="caps">PCB</span> production, should you wish to take a shortcut for whatever reason.</p>
+<h4>Popovers</h4>
+<p>There are two links in the top right corner of the screen providing access to popovers accessible from every screen of the application.</p>
+<h4>Offsets popover</h4>
+<p>Offsets popover displays and allows to change current offsets.</p>
+<h4>Manual control popover</h4>
+<p>Manual control popover provides allows to move machine&#8217;s axes manually, as well send machine to one of the two predefined positions:</p>
+<ul>
+	<li>far way &#8211; where the machine moves as close to the rear end as possible, providing access to its bed</li>
+	<li>tool change &#8211; where machine moves close to the front with the Z axis as high up as possible for a tool change</li>
+</ul>
+<p>Exact positions of these locations can be specified in settings.</p>
   
     <footer>
       

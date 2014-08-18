@@ -112,8 +112,6 @@
     <ul>
         
         
-        
-        
         <li><a href="/docs/intro.html">Introduction</a></li>
         
         
@@ -123,6 +121,12 @@
         <li><a href="/docs/first_start.html">First start</a></li>
         
         
+        
+        
+        
+        
+        
+        <li><a href="/docs/ui_conventions.html">User interface in two words</a></li>
         
         
         
@@ -143,10 +147,6 @@
         
         
         <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/operations_selection.html">Preparation - Operations selection</a></li>
         
         
         
@@ -174,6 +174,10 @@
         
         
         
+        <li><a href="/docs/settings/predefined_locations.html">Settings - Predefined locations</a></li>
+        
+        
+        
         <li><a href="/docs/settings/insulation_milling.html">Settings - Insulation milling</a></li>
         
         
@@ -192,23 +196,23 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <li><a href="/docs/settings/dispensing.html">Settings - Dispensing</a></li>
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <li><a href="/docs/settings/placement.html">Settings - Pick&Place</a></li>
+        <li><a href="/docs/settings/placement.html">Settings - Pick & Place</a></li>
         
         
         
@@ -236,23 +240,21 @@
 <p>Open files and select board orientation following advices of <a href="/docs/preparation/file_selection.html">Preparation &#8211; File selection</a> and <a href="/docs/preparation/pcb_orienation.html">Preparation &#8211; <span class="caps">PCB</span> orientation</a> sections. Please note, that this operation requires a file with <strong>.mnt</strong> extension, as explained in <a href="/docs/preparation/gerber.html">Preparation &#8211; Gerber files</a></p>
 <h3>Machine homing</h3>
 <p>Home your machine as explained in <a href="/docs/preparation/homing.html">Preparation &#8211; Homing</a> section.</p>
-<h3>Selecting operations</h3>
-<p><img src="/images/docs/operations/components_placement_selection.png" alt="" /></p>
 <h3>Placing <span class="caps">PCB</span> laminate on the machine bed</h3>
-<p><img src="/images/docs/operations/move_away.png" alt="" /></p>
-<p>As instructed, put <span class="caps">PCB</span> laminate on the machine bed and select which size of laminate you use. You can use <strong>Move head away</strong> button to get machine head out of the way.</p>
+<p><img src="/images/screenshots/v1.4/pp/pcb_placement.png" alt="" /></p>
+<p>As instructed, put <span class="caps">PCB</span> laminate on the machine bed and select which size of laminate you use.</p>
 <h3>Inserting Pick-and-place head in the machine</h3>
 <p>As instructed, insert pick-and-place head in the machine and make all necessary connections.</p>
 <h3>Establishing X and Y offsets</h3>
 <p>X and Y offsets determine the location of lower left corner of your board on the laminate. Usually you would know these values from previous operations.</p>
-<p><img src="/images/docs/operations/xy_off.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/pp/xy_offsets.png" alt="" /></p>
 <p><strong>Show me where it is</strong> button moves the machine head to the specified location. Should you wish to be very precise in pinpointing the location on the laminate, <strong>Move Z axis</strong> pane allows you to lower the head, moving the tool closer to laminate surface.</p>
 <h3>Reviewing components list</h3>
-<p><img src="/images/docs/operations/components_review.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/pp/overview.png" alt="" /></p>
 <p>The program presents you a list of all the components that are going to be placed. That&#8217;s a good moment to make sure you have everything at hand.</p>
 <h3>Placing the components</h3>
 <p>The program will then guide you through the process of placing of all those components. For each type of the components you will be presented with two screens.</p>
-<p><img src="/images/docs/operations/components_feeder_selection.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/pp/panel_selection.png" alt="" /></p>
 <p>In the first screen the program asks you to put a reel or tape with components on a components panel, and specify the following values:</p>
 <table class="table table-bordered ">
 	<tr>
@@ -274,7 +276,7 @@
 </table>
 <p>These values are needed on the next stage to calculate the location of the components on the panel.</p>
 <p>Next screen gives you control over placing operation itself:</p>
-<p><img src="/images/docs/operations/components_placement.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/pp/placement.png" alt="" /></p>
 <p><strong>Component being placed</strong> combo box contains the list of components of this type.</p>
 <p><strong>Target</strong> pane contains coordinates of the selected component. It automatically updates with the data read from centroid file.</p>
 <p><strong>Pickup</strong> pane contains coordinates of component location on the panel. The coordinates are automatically calculated based on the information provided in the previous screen. It is possible to edit the coordinates to compensate for imperfections of needle and tape or to manually override pickup location, if necessary. Small adjustments can be made using <strong>Up</strong> and <strong>Down</strong> arrow keys on a keyboard. Value can be overridden by typing a new value and pressing <strong>Enter</strong>.</p>

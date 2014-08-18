@@ -112,8 +112,6 @@
     <ul>
         
         
-        
-        
         <li><a href="/docs/intro.html">Introduction</a></li>
         
         
@@ -123,6 +121,12 @@
         <li><a href="/docs/first_start.html">First start</a></li>
         
         
+        
+        
+        
+        
+        
+        <li><a href="/docs/ui_conventions.html">User interface in two words</a></li>
         
         
         
@@ -143,10 +147,6 @@
         
         
         <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/operations_selection.html">Preparation - Operations selection</a></li>
         
         
         
@@ -174,6 +174,10 @@
         
         
         
+        <li><a href="/docs/settings/predefined_locations.html">Settings - Predefined locations</a></li>
+        
+        
+        
         <li><a href="/docs/settings/insulation_milling.html">Settings - Insulation milling</a></li>
         
         
@@ -192,23 +196,23 @@
         
         
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <li><a href="/docs/settings/dispensing.html">Settings - Dispensing</a></li>
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <li><a href="/docs/settings/placement.html">Settings - Pick&Place</a></li>
+        <li><a href="/docs/settings/placement.html">Settings - Pick & Place</a></li>
         
         
         
@@ -236,41 +240,22 @@
 <p>Open files and select board orientation following advices of <a href="/docs/preparation/file_selection.html">Preparation &#8211; File selection</a> and <a href="/docs/preparation/pcb_orienation.html">Preparation &#8211; <span class="caps">PCB</span> orientation</a> sections.</p>
 <h3>Machine homing</h3>
 <p>Home your machine as explained in <a href="/docs/preparation/homing.html">Preparation &#8211; Homing</a> section.</p>
-<h3>Selecting operations</h3>
-<p><img src="/images/docs/operations/drill_hole_sel.png" alt="" /></p>
 <h3>Placing <span class="caps">PCB</span> laminate on the machine bed</h3>
-<p><img src="/images/docs/operations/move_away.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/drilling/pcb_placement.png" alt="" /></p>
 <p>As instructed, put <span class="caps">PCB</span> laminate and spacer on the machine bed and select which size of laminate you use. You can use <strong>Move head away</strong> button to get machine head out of the way.</p>
 <h3>Inserting drill</h3>
 <p>As instructed by the application, insert the drill of specified diameter in your machine&#8217;s spindle.</p>
 <h3>Establishing X and Y offsets</h3>
 <p>X and Y offsets determine the location of lower left corner of your board on the laminate.</p>
-<p><img src="/images/docs/operations/xy_off.png" alt="" /></p>
-<p><strong>Show me where it is</strong> button moves the machine head to the specified location. Should you wish to be very precise in pinpointing the location on the laminate, <strong>Move Z axis</strong> pane allows you to lower the head, moving the tool closer to laminate surface.</p>
-<p>Watch out &#8211; you can crash the drill into laminate if you command it to go too low!</p>
+<p><img src="/images/screenshots/v1.4/drilling/xy_offsets.png" alt="" /></p>
+<p>The image on the right shows visualization of the board layout withing the selected laminate boundaries. <strong>Show me where it is</strong> button moves the machine head to the specified location.</p>
 <h3>Drilling</h3>
-<p><img src="/images/docs/operations/drilling.png" alt="" /></p>
+<p><img src="/images/screenshots/v1.4/drilling/drilling.png" alt="" /></p>
 <p>The screen shows <span class="caps">PCB</span> outline and all the holes matching the diameter of the drill currently installed.</p>
 <p>You can select, which holes are going to be drilled. Holes can be selected with mouse. Selected holes can be enabled and disabled with toolbar buttons or with keyboard shortcuts: <strong>Ctrl+E</strong> (or <strong>Cmd-E</strong> on Mac OS X) to enable, and <strong>Ctrl+D</strong> (or <strong>Cmd+D</strong>) to disable. Shortcut <strong>Ctrl+A</strong> (<strong>Cmd+A</strong>) selects all holes.</p>
-<p>Field <strong>Feed</strong> specifies the feed for drilling operation (that is effectively a speed with which drill penetrates the laminate). Feed is specified in mm per minute.</p>
-<p>For your convenience offsets that were entered on previous steps can be checked (and should it be necessary edited) in <strong>Offsets</strong> pop-out pane.</p>
-<p><strong>Misc</strong> pop-out pane contains several parameters that give you additional control over drilling process. It&#8217;s perfectly safe to leave them as is, if you aren&#8217;t sure.</p>
-<table class="table table-bordered ">
-	<tr>
-		<th>Parameter </th>
-		<th>Meaning </th>
-	</tr>
-	<tr>
-		<td> Clearance </td>
-		<td> The height above the board, the program uses to move the tool between holes </td>
-	</tr>
-	<tr>
-		<td> Safety height </td>
-		<td> The height above the board, where tool switches from rapid descend to feed </td>
-	</tr>
-</table>
+<p>For your convenience offsets that were entered on previous steps can be checked (and should it be necessary edited) in <strong>Offsets</strong> popover. The same way all of the relevant settings can be accessed and changed in <strong>Settings</strong> popover.</p>
 <p>If you wish to have a look at G-Code that will be send to the machine, you can press a button with wrench icon in the toolbar.</p>
-<p>When you are happy with all of the settings, press <strong>Go</strong> button. cirQWizard will send generated G-Code to the machine.</p>
+<p>When you are happy with all of the settings, press <strong>Run</strong> button. cirQWizard will send generated G-Code to the machine.</p>
 <p>When this is don, press <strong>Continue</strong> button. If there are holes with different diameters on the board, cirQWizard will ask you to insert next drill and will present you a drilling screen for the next drill diameter.</p>
   
     <footer>

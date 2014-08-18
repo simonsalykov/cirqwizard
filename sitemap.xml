@@ -2,158 +2,166 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://cirqwizard.org//blog/2014/03/24/blog-goes-live-and-version-1-dot-2-2/</loc>
-        <lastmod>2014-03-24T15:37:18+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/2014/03/25/issue-tracking-system-up-and-running/</loc>
-        <lastmod>2014-03-25T00:37:16+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/2014/03/27/version-1-dot-3-0-released/</loc>
-        <lastmod>2014-03-27T20:01:53+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/2014/04/08/version-1-dot-3-1-released/</loc>
-        <lastmod>2014-04-08T19:30:47+02:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/2014/06/09/versions-1-dot-3-2-1-dot-3-9/</loc>
-        <lastmod>2014-06-09T15:25:15+02:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/2014/07/14/versions-1-dot-3-10-and-1-dot-3-11/</loc>
-        <lastmod>2014-07-14T16:21:09+02:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//blog/2014/08/15/major-ui-revamp-in-1-dot-4-0/</loc>
+        <lastmod>2014-08-15T18:30:57+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/archives/</loc>
-        <lastmod>2014-07-14T16:21:09+02:00</lastmod>
+        <lastmod>2014-08-15T18:30:57+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/</loc>
-        <lastmod>2014-07-14T16:21:09+02:00</lastmod>
+        <lastmod>2014-08-15T18:30:57+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/firmware.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/first_start.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/intro.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/contour_milling.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-18T11:14:28+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/dispensing.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-18T11:17:43+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/drilling.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-18T11:14:28+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/milling.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-18T11:14:28+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/placement.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-18T11:22:30+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/preparation/file_selection.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T22:59:04+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/preparation/gerber.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:22+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/preparation/homing.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/preparation/operations_selection.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T23:01:39+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/preparation/pcb_orientation.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T23:00:30+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/application.html</loc>
-        <lastmod>2014-06-10T12:33:37+02:00</lastmod>
+        <lastmod>2014-08-15T17:40:36+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/contour_milling.html</loc>
-        <lastmod>2014-06-10T11:49:11+02:00</lastmod>
+        <lastmod>2014-08-15T17:45:44+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/dispensing.html</loc>
-        <lastmod>2014-06-10T11:41:05+02:00</lastmod>
+        <lastmod>2014-08-15T17:48:21+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/drilling.html</loc>
-        <lastmod>2014-06-10T11:41:05+02:00</lastmod>
+        <lastmod>2014-08-15T17:44:41+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/insulation_milling.html</loc>
-        <lastmod>2014-06-10T11:48:06+02:00</lastmod>
+        <lastmod>2014-08-15T17:43:58+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/machine.html</loc>
-        <lastmod>2014-06-10T11:42:33+02:00</lastmod>
+        <lastmod>2014-08-15T17:41:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/placement.html</loc>
-        <lastmod>2014-06-10T11:51:02+02:00</lastmod>
+        <lastmod>2014-08-15T17:49:18+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/predefined_locations.html</loc>
+        <lastmod>2014-08-15T17:52:26+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/ui_conventions.html</loc>
+        <lastmod>2014-08-15T18:07:09+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//downloads/</loc>
-        <lastmod>2014-07-14T15:56:23+02:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/contour_milling.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/dispensing.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/drilling.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/milling.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/pp.html</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//forum/</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//</loc>
-        <lastmod>2014-07-14T16:21:09+02:00</lastmod>
+        <lastmod>2014-08-15T18:30:57+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//</loc>
-        <lastmod>2014-03-25T00:54:05+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//robots.txt</loc>
-        <lastmod>2013-10-30T16:30:03+01:00</lastmod>
+        <lastmod>2014-08-15T17:25:23+02:00</lastmod>
     </url>
 </urlset>
