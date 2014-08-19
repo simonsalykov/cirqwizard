@@ -62,15 +62,12 @@ public class RubOutGenerator
 
     private Toolpath generateToolpath(int start, int end, int y)
     {
-//        long t = System.currentTimeMillis();
         for (int yy = y - diameter / 2; yy < y + diameter / 2 - overlap; yy++)
         {
             int endIndex = yy * width + end;
             for (int index = yy * width + start; index < endIndex; index++)
                 sourceData[index] = 1;
         }
-//        t = System.currentTimeMillis() - t;
-//        System.out.println("@@ " + t);
         return new LinearToolpath(diameter, new Point(start, y), new Point(end, y));
     }
 
@@ -84,9 +81,13 @@ public class RubOutGenerator
             for (int x = 0; x < width - 1; x++)
             {
                 if (start == null && getPoint(x, y) == 0 && checkVertical(x, y))
-                        start = x;
+                    start = x;
                 else if (start != null && !checkVertical(x, y))
-                    result.add(generateToolpath(start, x, y));
+                {
+                    if (x - start > diameter / 2)
+                        result.add(generateToolpath(start, x, y));
+                    start = null;
+                }
             }
             if (start != null)
                 result.add(generateToolpath(start, width - 1, y));

@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
-import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
@@ -31,7 +30,8 @@ import java.util.logging.Level;
 public class RubOutToolpathGenerator extends AbstractToolpathGenerator
 {
     private final static int WINDOW_SIZE = 5000;
-    private final static int WINDOWS_OVERLAP = 5;
+    private final static int WINDOWS_HORIZONTAL_OVERLAP = 5;
+    private final static int WINDOWS_VERTICAL_OVERLAP = 500;
     private final static int OOM_RETRY_DELAY = 1000;
 
     private int width;
@@ -62,11 +62,10 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
     {
         final Vector<Toolpath> segments = new Vector<>();
 
-//        ExecutorService pool = Executors.newFixedThreadPool(1);
         ExecutorService pool = Executors.newFixedThreadPool(threadCount);
         for (int x = 0; x < width; x += WINDOW_SIZE)
             for (int y = 0; y < height; y += WINDOW_SIZE)
-                pool.submit(new WindowGeneratorThread(x > WINDOWS_OVERLAP ? x - WINDOWS_OVERLAP : x, y > WINDOWS_OVERLAP ? y - WINDOWS_OVERLAP : y, segments));
+                pool.submit(new WindowGeneratorThread(x > WINDOWS_HORIZONTAL_OVERLAP ? x - WINDOWS_HORIZONTAL_OVERLAP : x, y > WINDOWS_VERTICAL_OVERLAP ? y - WINDOWS_VERTICAL_OVERLAP : y, segments));
 
         try
         {
@@ -102,10 +101,10 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
 
                 Point offset = new Point(x, y);
 
-                int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, width - x);
-                int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_OVERLAP, height - y);
+                int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_HORIZONTAL_OVERLAP, width - x);
+                int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_VERTICAL_OVERLAP, height - y);
                 RasterWindow window = new RasterWindow(new Point(x, y), windowWidth, windowHeight, scale);
-                window.render(primitives, inflation);
+                window.render(primitives, inflation + toolDiameter / 2);
 
                 RubOutGenerator g = new RubOutGenerator(window.getBufferedImage(), toolDiameter, overlap);
                 window = null;

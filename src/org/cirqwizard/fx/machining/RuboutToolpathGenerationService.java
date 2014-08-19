@@ -156,10 +156,27 @@ public class RuboutToolpathGenerationService extends ToolpathGenerationService
 //                        cache = new ToolpathsCache();
 
                     List<Toolpath> toolpaths = new ArrayList<>();
-
-                    final int mergeTolerance = diameter / 4;
-                    final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
                     ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
+
+                    for (int pass = 0; pass < 2; pass++)
+                    {
+                        ToolpathGenerator g = new ToolpathGenerator();
+                        g.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                                pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue());
+                        Platform.runLater(() ->
+                        {
+                            generationStageProperty.setValue("Generating tool paths...");
+                            overallProgressProperty.bind(g.progressProperty());
+                            estimatedMachiningTimeProperty.setValue("");
+                        });
+
+                        List<Toolpath> t = g.generate();
+                        if (t == null || t.size() == 0)
+                            continue;
+                        toolpaths.addAll(new ToolpathMerger(t, diameter / 4).merge());
+                    }
+
+                    final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
                     generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
                             settings.getInitialOffset().getValue(),
                             diameter, settings.getOverlap().getValue(), traceLayer.getElements(),
@@ -172,8 +189,11 @@ public class RuboutToolpathGenerationService extends ToolpathGenerationService
                     });
 
                     List<Toolpath> t = generator.generate();
+                    final int mergeTolerance = diameter / 10;
+                    long tt = System.currentTimeMillis();
                     if (t != null && t.size() > 0)
                         toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
+
 
                     List<Chain> chains = new ChainDetector(toolpaths).detect();
 

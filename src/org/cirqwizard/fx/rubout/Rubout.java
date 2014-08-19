@@ -19,8 +19,11 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.RuboutToolpathGenerationService;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.gcode.TraceGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.TraceLayer;
+import org.cirqwizard.post.RTPostprocessor;
+import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.settings.SettingsGroup;
 
@@ -65,7 +68,13 @@ public class Rubout extends Machining
     @Override
     protected String generateGCode()
     {
-        return null;
+
+        RubOutSettings settings = SettingsFactory.getRubOutSettings();
+        int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
+        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), false);
+        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
+                settings.getSpeed().getValue());
     }
 
     @Override
