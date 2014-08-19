@@ -14,37 +14,32 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.geom.*;
-import org.cirqwizard.gerber.Flash;
+import org.cirqwizard.geom.Arc;
+import org.cirqwizard.geom.Circle;
+import org.cirqwizard.geom.Curve;
+import org.cirqwizard.geom.Line;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
 public class Tracer
 {
-    private static final int FUSE_COUNTER = 2000000;                        // Safety fuse for breaking out of loop, should it become infinite
-
-
     private byte[] windowData;
 
     private int width;
     private int height;
-    private int inflation;
     private int toolDiameter;
     private List<Circle> knownCircles;
 
-    public Tracer(byte[] windowData, int width, int height, int inflation, int toolDiameter, List<Circle> knownCircles)
+    public Tracer(byte[] windowData, int width, int height, int toolDiameter, List<Circle> knownCircles)
     {
         this.windowData = windowData;
         this.width = width;
         this.height = height;
-        this.inflation = inflation;
         this.toolDiameter = toolDiameter;
         this.knownCircles = knownCircles;
     }

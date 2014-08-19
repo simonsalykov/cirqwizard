@@ -22,7 +22,6 @@ import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.*;
-import org.cirqwizard.math.RealNumber;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -40,12 +39,25 @@ public class RasterWindow
 
     public RasterWindow(Point windowLowerLeftCorner, int width, int height)
     {
+        this(windowLowerLeftCorner, width, height, 1);
+    }
+
+    /**
+     *
+     * @param windowLowerLeftCorner - window offset (in pre-scaled coordinates)
+     * @param width width of window before scaling
+     * @param height height of window before scaling
+     * @param scale multiplier used to speed up processing time (1.0 is 1:1 scale, 0.5 is 1:2 scale, etc.)
+     */
+    public RasterWindow(Point windowLowerLeftCorner, int width, int height, double scale)
+    {
         this.windowLowerLeftCorner = windowLowerLeftCorner;
-        this.window = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
+        this.window = new BufferedImage((int)(scale * width), (int)(scale * height), BufferedImage.TYPE_BYTE_BINARY);
         g = window.createGraphics();
         g.setBackground(Color.BLACK);
         g.clearRect(0, 0, window.getWidth(), window.getHeight());
         g = window.createGraphics();
+        g.transform(AffineTransform.getScaleInstance(scale, scale));
         g.transform(AffineTransform.getTranslateInstance(-windowLowerLeftCorner.getX(), -windowLowerLeftCorner.getY()));
     }
 

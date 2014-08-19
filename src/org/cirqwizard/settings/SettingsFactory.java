@@ -22,6 +22,7 @@ public class SettingsFactory
     private static MachineSettings machineSettings = new MachineSettings();
     private static PredefinedLocationSettings predefinedLocationSettings = new PredefinedLocationSettings();
     private static InsulationMillingSettings insulationMillingSettings = new InsulationMillingSettings();
+    private static RubOutSettings rubOutSettings = new RubOutSettings();
     private static DrillingSettings drillingSettings = new DrillingSettings();
     private static ContourMillingSettings contourMillingSettings = new ContourMillingSettings();
     private static DispensingSettings dispensingSettings = new DispensingSettings();
@@ -45,6 +46,12 @@ public class SettingsFactory
     {
         insulationMillingSettings.load();
         return insulationMillingSettings;
+    }
+
+    public static RubOutSettings getRubOutSettings()
+    {
+        rubOutSettings.load();
+        return rubOutSettings;
     }
 
     public static DrillingSettings getDrillingSettings()
@@ -89,6 +96,7 @@ public class SettingsFactory
         groups.add(getMachineSettings());
         groups.add(getPredefinedLocationSettings());
         groups.add(getInsulationMillingSettings());
+        groups.add(getRubOutSettings());
         groups.add(getDrillingSettings());
         groups.add(getContourMillingSettings());
         groups.add(getDispensingSettings());
