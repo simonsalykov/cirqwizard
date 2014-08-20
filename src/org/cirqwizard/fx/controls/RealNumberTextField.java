@@ -61,28 +61,28 @@ public class RealNumberTextField extends TextField
     public RealNumberTextField()
     {
         super();
-        this.textProperty().addListener(new ChangeListener<String>()
+        this.textProperty().addListener((v, oldV, newValue) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue)
+            getStyleClass().removeAll("validation-error");
+            if (newValue == null || newValue.trim().isEmpty())
             {
-                getStyleClass().removeAll("validation-error");
-                if (newValue == null || newValue.trim().isEmpty())
-                    realNumberTextProperty.setValue(null);
-                else
+                realNumberTextProperty.setValue(null);
+                realNumberIntegerProperty.setValue(null);
+
+            }
+            else
+            {
+                try
                 {
-                    try
-                    {
-                        newValue = newValue.trim().replace(",", ".");
-                        realNumberIntegerProperty.setValue((int)(Double.parseDouble(newValue) * ApplicationConstants.RESOLUTION));
-                        realNumberTextProperty.setValue(newValue);
-                    }
-                    catch (Exception e)
-                    {
-                        getStyleClass().add("validation-error");
-                        realNumberTextProperty.setValue(null);
-                        realNumberIntegerProperty.setValue(null);
-                    }
+                    newValue = newValue.trim().replace(",", ".");
+                    realNumberIntegerProperty.setValue((int)(Double.parseDouble(newValue) * ApplicationConstants.RESOLUTION));
+                    realNumberTextProperty.setValue(newValue);
+                }
+                catch (Exception e)
+                {
+                    getStyleClass().add("validation-error");
+                    realNumberTextProperty.setValue(null);
+                    realNumberIntegerProperty.setValue(null);
                 }
             }
         });
