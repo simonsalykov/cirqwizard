@@ -44,19 +44,11 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
     }
 
     @Override
-    protected GenerationKey getGenerationKey()
-    {
-        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        return new GenerationKey(settings.getToolDiameter().getValue(), settings.getAdditionalPasses().getValue(),
-                settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
-    }
-
-    @Override
     protected ToolpathsCacheKey getCacheKey()
     {
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         return new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), settings.getToolDiameter().getValue(),
-                settings.getAdditionalPasses().getValue(), settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
+                settings.getAdditionalPasses().getValue(), settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue(), 0, 0);
     }
 
     @Override

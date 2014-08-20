@@ -23,11 +23,18 @@ public class ToolpathsCacheKey implements Serializable
     private int layerId;
     private int angle;
     private int toolDiameter;
+
+    // Insulation milling parameters
     private int additionalPasses;
     private int additionalPassesOverlap;
     private boolean additionalPassesAroundPadsOnly;
 
-    public ToolpathsCacheKey(int layerId, int angle, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly)
+    // Rub out parameters
+    private int rubOutInitialOffset;
+    private int rubOutOverlap;
+
+    public ToolpathsCacheKey(int layerId, int angle, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly,
+                             int rubOutInitialOffset, int rubOutOverlap)
     {
         this.layerId = layerId;
         this.angle = angle;
@@ -35,6 +42,8 @@ public class ToolpathsCacheKey implements Serializable
         this.additionalPasses = additionalPasses;
         this.additionalPassesOverlap = additionalPassesOverlap;
         this.additionalPassesAroundPadsOnly = additionalPassesAroundPadsOnly;
+        this.rubOutInitialOffset = rubOutInitialOffset;
+        this.rubOutOverlap = rubOutOverlap;
     }
 
     @Override
@@ -49,8 +58,10 @@ public class ToolpathsCacheKey implements Serializable
         if (additionalPassesAroundPadsOnly != that.additionalPassesAroundPadsOnly) return false;
         if (additionalPassesOverlap != that.additionalPassesOverlap) return false;
         if (angle != that.angle) return false;
-        if (toolDiameter != that.toolDiameter) return false;
         if (layerId != that.layerId) return false;
+        if (rubOutInitialOffset != that.rubOutInitialOffset) return false;
+        if (rubOutOverlap != that.rubOutOverlap) return false;
+        if (toolDiameter != that.toolDiameter) return false;
 
         return true;
     }
@@ -64,6 +75,8 @@ public class ToolpathsCacheKey implements Serializable
         result = 31 * result + additionalPasses;
         result = 31 * result + additionalPassesOverlap;
         result = 31 * result + (additionalPassesAroundPadsOnly ? 1 : 0);
+        result = 31 * result + rubOutInitialOffset;
+        result = 31 * result + rubOutOverlap;
         return result;
     }
 }

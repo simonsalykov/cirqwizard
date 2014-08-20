@@ -50,6 +50,7 @@ public class Rubout extends Machining
         pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
 
         super.refresh();
+        getMainApplication().getContext().setG54Z(SettingsFactory.getRubOutSettings().getZOffset().getValue());
     }
 
     @Override

@@ -54,6 +54,10 @@ public class RubOutSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Rub-out")
+    private UserPreference<Boolean> skipRubOut = new UserPreference<>("Skip by default", true, "").setShowInPopOver(false);
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Rub-out")
     private UserPreference<Integer> overlap = new UserPreference<>("Overlap", 20, "%").setType(PreferenceType.PERCENT).setTriggersInvalidation(true);
 
     @PersistentPreference
@@ -160,6 +164,16 @@ public class RubOutSettings extends SettingsGroup
     public void setWorkingHeight(UserPreference<Integer> workingHeight)
     {
         this.workingHeight = workingHeight;
+    }
+
+    public UserPreference<Boolean> getSkipRubOut()
+    {
+        return skipRubOut;
+    }
+
+    public void setSkipRubOut(UserPreference<Boolean> skipRubOut)
+    {
+        this.skipRubOut = skipRubOut;
     }
 
     public UserPreference<Integer> getOverlap()

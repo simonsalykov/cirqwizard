@@ -51,17 +51,11 @@ public class RuboutToolpathGenerationService extends MillingToolpathGenerationSe
     }
 
     @Override
-    protected GenerationKey getGenerationKey()
-    {
-        RubOutSettings settings = SettingsFactory.getRubOutSettings();
-        return new GenerationKey(settings.getToolDiameter().getValue(), 0, 0, false);
-    }
-
-    @Override
     protected ToolpathsCacheKey getCacheKey()
     {
-        return new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), SettingsFactory.getRubOutSettings().getToolDiameter().getValue(), 0,
-                            0, false);
+        RubOutSettings settings = SettingsFactory.getRubOutSettings();
+        return new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), settings.getToolDiameter().getValue(), 0,
+                            0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
     }
 
     @Override

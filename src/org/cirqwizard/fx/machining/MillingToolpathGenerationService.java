@@ -43,7 +43,7 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
     protected Layer layer;
     protected int cacheLayerId;
     protected long layerModificationDate;
-    protected GenerationKey generationKey;
+    protected ToolpathsCacheKey cacheKey;
 
     public MillingToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
                                                  StringProperty estimatedMachiningTimeProperty,
@@ -55,49 +55,6 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
         this.layerModificationDate = layerModificationDate;
     }
 
-    protected class GenerationKey
-    {
-        private int toolDiameter;
-        private int additionalToolpaths;
-        private int additionalToolpathsOverlap;
-        private boolean additionalToolpathsAroundPadsOnly;
-
-        public GenerationKey(int toolDiameter, int additionalToolpaths, int additionalToolpathsOverlap, boolean additionalToolpathsAroundPadsOnly)
-        {
-            this.toolDiameter = toolDiameter;
-            this.additionalToolpaths = additionalToolpaths;
-            this.additionalToolpathsOverlap = additionalToolpathsOverlap;
-            this.additionalToolpathsAroundPadsOnly = additionalToolpathsAroundPadsOnly;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            GenerationKey that = (GenerationKey) o;
-
-            if (additionalToolpaths != that.additionalToolpaths) return false;
-            if (additionalToolpathsAroundPadsOnly != that.additionalToolpathsAroundPadsOnly) return false;
-            if (additionalToolpathsOverlap != that.additionalToolpathsOverlap) return false;
-            if (toolDiameter != that.toolDiameter) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int result = toolDiameter;
-            result = 31 * result + additionalToolpaths;
-            result = 31 * result + additionalToolpathsOverlap;
-            result = 31 * result + (additionalToolpathsAroundPadsOnly ? 1 : 0);
-            return result;
-        }
-    }
-
-    protected abstract GenerationKey getGenerationKey();
     protected abstract ToolpathsCacheKey getCacheKey();
     protected abstract List<Chain> generate();
     protected abstract int getMergeTolerance();
@@ -105,7 +62,7 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
     @Override
     public boolean needsRestart()
     {
-        return generationKey == null || !generationKey.equals(getGenerationKey());
+        return cacheKey == null || !cacheKey.equals(getCacheKey());
     }
 
 
@@ -119,17 +76,14 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
             {
                 try
                 {
-                    InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-                    GenerationKey newKey = getGenerationKey();
-                    if (generationKey != null && generationKey.equals(newKey))
+                    if (!needsRestart())
                         return null;
-                    generationKey = newKey;
 
                     overallProgressProperty.unbind();
                     generationStageProperty.unbind();
                     estimatedMachiningTimeProperty.unbind();
 
-                    ToolpathsCacheKey cacheKey = getCacheKey();
+                    cacheKey = getCacheKey();
                     ToolpathsCache cache = null;
                     try
                     {
@@ -154,6 +108,7 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
 
                     List<Chain> chains = generate();
 
+                    InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
                     final Optimizer optimizer = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
                             convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
                             convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), getMergeTolerance());
