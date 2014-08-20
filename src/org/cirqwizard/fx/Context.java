@@ -60,6 +60,19 @@ public class Context
 
     public void setFile(File file)
     {
+        pcbPlacement = null;
+        insertedTool = null;
+        pcbSize = null;
+        g54X = null;
+        g54Y = null;
+        g54Z = null;
+        currentDrill = 0;
+        boardWidth = 0;
+        boardHeight = 0;
+        currentComponent = null;
+        feeder = null;
+        feederRow = 0;
+        componentPitch = 0;
         pcbLayout.setValue(new PCBLayout());
         pcbLayout.getValue().setFile(file);
     }
