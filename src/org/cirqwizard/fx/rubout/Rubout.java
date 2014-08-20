@@ -56,7 +56,7 @@ public class Rubout extends Machining
     protected ToolpathGenerationService getToolpathGenerationService()
     {
         return new RuboutToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty, getCurrentLayer(), 0, 0);
+                estimatedMachiningTimeProperty, getCurrentLayer(), 1, getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate());
     }
 
     @Override

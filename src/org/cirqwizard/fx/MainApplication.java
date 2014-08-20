@@ -58,7 +58,7 @@ public class MainApplication extends Application
 
     private MainViewController mainView = (MainViewController) new MainViewController().setMainApplication(this);
 
-    private ScreenController topTracesGroup = new OperationsScreenGroup("Top traces")
+    private ScreenController topTracesGroup = new OperationsScreenGroup("Top layer")
         {
             @Override
             protected boolean isEnabled()
@@ -67,23 +67,14 @@ public class MainApplication extends Application
             }
         }.setMainApplication(this).
         addChild(new PCBPlacement().setMainApplication(this)).
-        addChild(new InsertTool().setMainApplication(this)).
-        addChild(new ZOffset().setMainApplication(this)).
         addChild(new XYOffsets().setMainApplication(this)).
-        addChild(new TopTraceMilling().setMainApplication(this));
-
-    private ScreenController topRubOut = new OperationsScreenGroup("Top rub out")
-    {
-        @Override
-        protected boolean isEnabled()
-        {
-            return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getTopTracesLayer() != null;
-        }
-    }.setMainApplication(this).
-            addChild(new PCBPlacement().setMainApplication(this)).
+        addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
+            addChild(new InsertTool().setMainApplication(this)).
+            addChild(new ZOffset().setMainApplication(this)).
+            addChild(new TopTraceMilling().setMainApplication(this))).
+        addChild(new OperationsScreenGroup("Rub-out").setMainApplication(this).
             addChild(new org.cirqwizard.fx.rubout.InsertTool().setMainApplication(this)).
-            addChild(new XYOffsets().setMainApplication(this)).
-            addChild(new Rubout().setMainApplication(this));
+            addChild(new Rubout().setMainApplication(this)));
 
     private ScreenController bottomTracesGroup = new OperationsScreenGroup("Bottom traces")
         {
@@ -130,7 +121,6 @@ public class MainApplication extends Application
             addChild(new Orientation().setMainApplication(this)).
             addChild(new Homing().setMainApplication(this)).
             addChild(topTracesGroup).
-            addChild(topRubOut).
             addChild(bottomTracesGroup).
             addChild(new DrillingGroup("Drilling").setMainApplication(this).
                     addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this))).

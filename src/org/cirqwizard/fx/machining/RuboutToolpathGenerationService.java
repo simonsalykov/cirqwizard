@@ -41,225 +41,80 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-public class RuboutToolpathGenerationService extends ToolpathGenerationService
+public class RuboutToolpathGenerationService extends MillingToolpathGenerationService
 {
-    private Layer layer;
-    private int cacheLayerId;
-    private long layerModificationDate;
-    private GenerationKey generationKey;
-
     public RuboutToolpathGenerationService(MainApplication mainApplication, DoubleProperty overallProgressProperty,
                                            StringProperty estimatedMachiningTimeProperty,
                                            Layer layer, int cacheLayerId, long layerModificationDate)
     {
-        super(mainApplication, overallProgressProperty, estimatedMachiningTimeProperty);
-        this.layer = layer;
-        this.cacheLayerId = cacheLayerId;
-        this.layerModificationDate = layerModificationDate;
-    }
-
-    private class GenerationKey
-    {
-        private int toolDiameter;
-        private int additionalToolpaths;
-        private int additionalToolpathsOverlap;
-        private boolean additionalToolpathsAroundPadsOnly;
-
-        private GenerationKey(int toolDiameter, int additionalToolpaths, int additionalToolpathsOverlap, boolean additionalToolpathsAroundPadsOnly)
-        {
-            this.toolDiameter = toolDiameter;
-            this.additionalToolpaths = additionalToolpaths;
-            this.additionalToolpathsOverlap = additionalToolpathsOverlap;
-            this.additionalToolpathsAroundPadsOnly = additionalToolpathsAroundPadsOnly;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            GenerationKey that = (GenerationKey) o;
-
-            if (additionalToolpaths != that.additionalToolpaths) return false;
-            if (additionalToolpathsAroundPadsOnly != that.additionalToolpathsAroundPadsOnly) return false;
-            if (additionalToolpathsOverlap != that.additionalToolpathsOverlap) return false;
-            if (toolDiameter != that.toolDiameter) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int result = toolDiameter;
-            result = 31 * result + additionalToolpaths;
-            result = 31 * result + additionalToolpathsOverlap;
-            result = 31 * result + (additionalToolpathsAroundPadsOnly ? 1 : 0);
-            return result;
-        }
+        super(mainApplication, overallProgressProperty, estimatedMachiningTimeProperty, layer, cacheLayerId, layerModificationDate);
     }
 
     @Override
-    public boolean needsRestart()
+    protected GenerationKey getGenerationKey()
     {
-        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        GenerationKey newKey = new GenerationKey(settings.getToolDiameter().getValue(), settings.getAdditionalPasses().getValue(),
-                settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
-        return generationKey == null || !generationKey.equals(newKey);
+        RubOutSettings settings = SettingsFactory.getRubOutSettings();
+        return new GenerationKey(settings.getToolDiameter().getValue(), 0, 0, false);
     }
 
     @Override
-    protected Task<ObservableList<Toolpath>> createTask()
+    protected ToolpathsCacheKey getCacheKey()
     {
-        return new Task<ObservableList<Toolpath>>()
+        return new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), SettingsFactory.getRubOutSettings().getToolDiameter().getValue(), 0,
+                            0, false);
+    }
+
+    @Override
+    protected List<Chain> generate()
+    {
+        RubOutSettings settings = SettingsFactory.getRubOutSettings();
+        int diameter = settings.getToolDiameter().getValue();
+        TraceLayer traceLayer = (TraceLayer) layer;
+
+        List<Toolpath> toolpaths = new ArrayList<>();
+        for (int pass = 0; pass < 2; pass++)
         {
-            @Override
-            protected ObservableList<Toolpath> call() throws Exception
+            ToolpathGenerator g = new ToolpathGenerator();
+            g.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                    pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, traceLayer.getElements(),
+                    SettingsFactory.getApplicationSettings().getProcessingThreads().getValue());
+            Platform.runLater(() ->
             {
-                try
-                {
-                    RubOutSettings settings = SettingsFactory.getRubOutSettings();
-//                    GenerationKey newKey = new GenerationKey(settings.getToolDiameter().getValue(), settings.getAdditionalPasses().getValue(),
-//                            settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
-//                    if (generationKey != null && generationKey.equals(newKey))
-//                        return null;
-//                    generationKey = newKey;
+                generationStageProperty.setValue("Generating tool paths...");
+                overallProgressProperty.bind(g.progressProperty());
+                estimatedMachiningTimeProperty.setValue("");
+            });
 
-                    overallProgressProperty.unbind();
-                    generationStageProperty.unbind();
-                    estimatedMachiningTimeProperty.unbind();
+            List<Toolpath> t = g.generate();
+            if (t == null || t.size() == 0)
+                continue;
+            toolpaths.addAll(new ToolpathMerger(t, diameter / 4).merge());
+        }
 
-                    int diameter = settings.getToolDiameter().getValue();
-//                    ToolpathsCacheKey cacheKey = new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), diameter, settings.getAdditionalPasses().getValue(),
-//                            settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue());
-//                    ToolpathsCache cache = null;
-//                    try
-//                    {
-//                        cache = ToolpathsPersistor.loadFromFile(context.getPcbLayout().getFileName() + ".tmp");
-//                    }
-//                    catch (ToolpathPersistingException e)
-//                    {
-//                        LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
-//                    }
-//
-                    TraceLayer traceLayer = (TraceLayer) layer;
-//                    if (cache != null && cache.hasValidData(context.getPcbLayout().getFile().lastModified()))
-//                    {
-//                        if (cache.getToolpaths(cacheKey) != null)
-//                        {
-//                            traceLayer.setToolpaths(cache.getToolpaths(cacheKey));
-//                            return FXCollections.observableArrayList(cache.getToolpaths(cacheKey));
-//                        }
-//                    }
-//                    else
-//                        cache = new ToolpathsCache();
+        final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
+        generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
+                settings.getInitialOffset().getValue(),
+                diameter, settings.getOverlap().getValue(), traceLayer.getElements(),
+                SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), 1);
+        Platform.runLater(() ->
+        {
+            generationStageProperty.setValue("Generating tool paths...");
+            overallProgressProperty.bind(generator.progressProperty());
+            estimatedMachiningTimeProperty.setValue("");
+        });
 
-                    List<Toolpath> toolpaths = new ArrayList<>();
-                    ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
+        List<Toolpath> t = generator.generate();
+        final int mergeTolerance = diameter / 10;
+        if (t != null && t.size() > 0)
+            toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
 
-                    for (int pass = 0; pass < 2; pass++)
-                    {
-                        ToolpathGenerator g = new ToolpathGenerator();
-                        g.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                                pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue());
-                        Platform.runLater(() ->
-                        {
-                            generationStageProperty.setValue("Generating tool paths...");
-                            overallProgressProperty.bind(g.progressProperty());
-                            estimatedMachiningTimeProperty.setValue("");
-                        });
-
-                        List<Toolpath> t = g.generate();
-                        if (t == null || t.size() == 0)
-                            continue;
-                        toolpaths.addAll(new ToolpathMerger(t, diameter / 4).merge());
-                    }
-
-                    final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
-                    generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                            settings.getInitialOffset().getValue(),
-                            diameter, settings.getOverlap().getValue(), traceLayer.getElements(),
-                            applicationSettings.getProcessingThreads().getValue(), 1);
-                    Platform.runLater(() ->
-                    {
-                        generationStageProperty.setValue("Generating tool paths...");
-                        overallProgressProperty.bind(generator.progressProperty());
-                        estimatedMachiningTimeProperty.setValue("");
-                    });
-
-                    List<Toolpath> t = generator.generate();
-                    final int mergeTolerance = diameter / 10;
-                    long tt = System.currentTimeMillis();
-                    if (t != null && t.size() > 0)
-                        toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
-
-
-                    List<Chain> chains = new ChainDetector(toolpaths).detect();
-
-
-                    final Optimizer optimizer = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
-                            convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
-                            convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), mergeTolerance);
-                    Platform.runLater(() ->
-                    {
-                        generationStageProperty.setValue("Optimizing milling time...");
-                        overallProgressProperty.unbind();
-                        overallProgressProperty.bind(optimizer.progressProperty());
-                    });
-
-                    final DecimalFormat format = new DecimalFormat("00");
-                    Platform.runLater(() ->
-                    {
-                        estimatedMachiningTimeProperty.bind(Bindings.createStringBinding(() ->
-                        {
-                            long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
-                                    convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
-                                    convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
-                                    convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()),
-                                    true, mergeTolerance);
-                            String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +
-                                    ":" + format.format(totalDuration % 60);
-                            return "Estimated machining time: " + time;
-                        }, optimizer.currentBestSolutionProperty()));
-                    });
-                    chains = optimizer.optimize();
-
-                    toolpaths.clear();
-                    for (Chain p : chains)
-                        toolpaths.addAll(p.getSegments());
-                    traceLayer.setToolpaths(toolpaths);
-
-//                    cache.setToolpaths(cacheKey, toolpaths);
-//                    cache.setLastModified(layerModificationDate);
-//
-//                    try
-//                    {
-//                        ToolpathsPersistor.saveToFile(cache, context.getPcbLayout().getFileName()  + ".tmp");
-//                    }
-//                    catch (ToolpathPersistingException e)
-//                    {
-//                        LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
-//                    }
-
-                    return FXCollections.observableArrayList(toolpaths);
-                }
-                catch (NumberFormatException e)
-                {
-                    LoggerFactory.getApplicationLogger().log(Level.WARNING, "Could not parse tool diameter", e);
-                    throw e;
-                }
-                catch (Exception e)
-                {
-                    LoggerFactory.logException("Error generating toolpaths", e);
-                    throw e;
-                }
-            }
-        };
+        return new ChainDetector(toolpaths).detect();
     }
 
-    private double convertToDouble(Integer i)
+    @Override
+    protected int getMergeTolerance()
     {
-        return i.doubleValue() / ApplicationConstants.RESOLUTION;
+        return SettingsFactory.getRubOutSettings().getToolDiameter().getValue() / 10;
     }
+
 }
