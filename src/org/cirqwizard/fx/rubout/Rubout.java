@@ -27,12 +27,12 @@ import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.settings.SettingsGroup;
 
-public class Rubout extends Machining
+public abstract class Rubout extends Machining
 {
     @Override
     protected String getName()
     {
-        return "Rub out";
+        return "Milling";
     }
 
     @Override
@@ -53,17 +53,15 @@ public class Rubout extends Machining
         getMainApplication().getContext().setG54Z(SettingsFactory.getRubOutSettings().getZOffset().getValue());
     }
 
+    protected abstract int getCacheId();
+    protected abstract long getLayerModificationDate();
+    protected abstract boolean mirror();
+
     @Override
     protected ToolpathGenerationService getToolpathGenerationService()
     {
         return new RuboutToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty, getCurrentLayer(), 1, getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate());
-    }
-
-    @Override
-    protected Layer getCurrentLayer()
-    {
-        return getMainApplication().getContext().getPcbLayout().getTopTracesLayer();
+                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId(), getLayerModificationDate());
     }
 
     @Override
@@ -72,7 +70,7 @@ public class Rubout extends Machining
 
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
         int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
-        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), false);
+        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
         return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());
