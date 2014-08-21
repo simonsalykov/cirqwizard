@@ -128,6 +128,8 @@ public abstract class Machining extends SettingsDependentScreenController implem
         @Override
         public void handle(KeyEvent event)
         {
+            if (event.isConsumed())
+                return;
             if (keyEnable.match(event))
             {
                 enableSelected();
@@ -246,7 +248,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     {
         List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().
                 filter(Toolpath::isSelected).collect(Collectors.toList());
-        changedToolpaths.stream().forEach(toolpath ->
+        changedToolpaths.forEach(toolpath ->
         {
             toolpath.setEnabled(false);
             toolpath.setSelected(false);

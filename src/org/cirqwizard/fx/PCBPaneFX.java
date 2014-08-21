@@ -17,8 +17,6 @@ package org.cirqwizard.fx;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.Canvas;
@@ -27,13 +25,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.transform.Transform;
-import org.cirqwizard.appertures.*;
+import org.cirqwizard.appertures.CircularAperture;
+import org.cirqwizard.appertures.OctagonalAperture;
+import org.cirqwizard.appertures.OvalAperture;
+import org.cirqwizard.appertures.RectangularAperture;
 import org.cirqwizard.appertures.macro.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.*;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.DrillPoint;
 import org.cirqwizard.toolpath.LinearToolpath;
@@ -88,22 +87,8 @@ public class PCBPaneFX extends javafx.scene.layout.Region
             throw new RuntimeException(exception);
         }
 
-        scaleProperty.addListener(new ChangeListener<Double>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Double> observableValue, Double aDouble, Double aDouble2)
-            {
-                repaint();
-            }
-        });
-        toolpaths.addListener(new ChangeListener<ObservableList<Toolpath>>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends ObservableList<Toolpath>> observableValue, ObservableList<Toolpath> shapes, ObservableList<Toolpath> shapes2)
-            {
-                repaint();
-            }
-        });
+        scaleProperty.addListener((v, oldV, newV) ->  repaint());
+        toolpaths.addListener((v, oldV, newV) -> repaint());
     }
 
     public Property<ObservableList<Toolpath>> toolpathsProperty()
@@ -137,8 +122,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
     public void repaint(List<? extends Toolpath> toolpaths)
     {
         GraphicsContext g = canvas.getGraphicsContext2D();
-        for (Toolpath toolpath : toolpaths)
-            renderToolpath(g, toolpath);
+        toolpaths.forEach(t -> renderToolpath(g, t));
     }
 
     private void renderImage()
