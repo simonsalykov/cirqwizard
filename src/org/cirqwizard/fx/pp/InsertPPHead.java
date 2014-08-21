@@ -32,14 +32,14 @@ public class InsertPPHead extends Message
     {
         super.refresh();
         getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert pick & place header");
+        header.setText("Insert pick & place head");
         text.setText("Connect it to the vacuum outlet at the base of the machine and to the socket. Choose a needle that will work for your components.");
 
     }
     @Override
     protected boolean isMandatory()
     {
-        return EXPECTED_TOOL.equals(getMainApplication().getContext().getInsertedTool());
+        return !EXPECTED_TOOL.equals(getMainApplication().getContext().getInsertedTool());
     }
 
     @Override
