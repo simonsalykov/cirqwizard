@@ -70,7 +70,7 @@ public class MainViewController extends ScreenController
     public void setScreen(ScreenController screen)
     {
         if (currentScreen != null && currentScreen.getShortcutHandler() != null)
-            view.removeEventFilter(KeyEvent.ANY, currentScreen.getShortcutHandler());
+            view.removeEventFilter(KeyEvent.KEY_PRESSED, currentScreen.getShortcutHandler());
         this.currentScreen = screen;
 
         contentPane.getChildren().clear();
@@ -83,7 +83,7 @@ public class MainViewController extends ScreenController
         updateBreadCrumbBar(getPath(screen));
         settingsLink.setVisible(screen instanceof SettingsDependentScreenController);
         if (currentScreen.getShortcutHandler() != null)
-            view.addEventHandler(KeyEvent.ANY, currentScreen.getShortcutHandler());
+            view.addEventFilter(KeyEvent.KEY_PRESSED, currentScreen.getShortcutHandler());
     }
 
     private List<ScreenController> getPath(ScreenController scene)

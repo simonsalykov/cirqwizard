@@ -84,29 +84,29 @@ public class AbstractToolpathGenerator
     }
 
 
-    protected List<Circle> translateKnownCircles(Point offset, List<Circle> knownCircles)
+    protected List<Circle> translateKnownCircles(Point offset, double scale, List<Circle> knownCircles)
     {
         ArrayList<Circle> translatedCircles = new ArrayList<>();
         for (Circle circle : knownCircles)
         {
-            Point p  = translateToWindowCoordinates(circle.getCenter(), offset);
-            translatedCircles.add(new Circle(p, circle.getRadius()));
+            Point p  = translateToWindowCoordinates(circle.getCenter(), offset, scale);
+            translatedCircles.add(new Circle(p, (int)(scale * circle.getRadius())));
         }
 
         return translatedCircles;
     }
 
-    protected Point translateWindowCoordiantes(Point point, Point windowOffset)
+    protected Point translateWindowCoordiantes(Point point, Point windowOffset, double scale)
     {
-        return new Point(point.getX(), point.getY()).add(windowOffset);
+        return new Point((int)((double)point.getX() / scale), (int)((double)point.getY() / scale)).add(windowOffset);
     }
 
-    protected Point translateToWindowCoordinates(Point point, Point windowOffset)
+    protected Point translateToWindowCoordinates(Point point, Point windowOffset, double scale)
     {
-        return new Point(point.getX(), point.getY()).subtract(windowOffset);
+        return new Point((int)(scale * point.getX()), (int)(scale * point.getY())).subtract(windowOffset);
     }
 
-    protected java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset)
+    protected java.util.List<Toolpath> translateToolpaths(java.util.List<Toolpath> toolpaths, Point offset, double scale)
     {
         ArrayList<Toolpath> result = new ArrayList<>();
         for (Toolpath toolpath : toolpaths)
@@ -116,18 +116,18 @@ public class AbstractToolpathGenerator
             if (toolpath instanceof LinearToolpath)
             {
                 LinearToolpath lt = (LinearToolpath) toolpath;
-                Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset);
-                Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset);
+                Point start = translateWindowCoordiantes(lt.getCurve().getFrom(), offset, scale);
+                Point end = translateWindowCoordiantes(lt.getCurve().getTo(), offset, scale);
                 result.add(new LinearToolpath(((LinearToolpath) toolpath).getToolDiameter(), start, end));
             }
             else if (toolpath instanceof CircularToolpath)
             {
                 CircularToolpath ct = (CircularToolpath) toolpath;
                 Arc arc = (Arc) ct.getCurve();
-                Point start = translateWindowCoordiantes(ct.getCurve().getFrom(), offset);
-                Point end = translateWindowCoordiantes(ct.getCurve().getTo(), offset);
-                Point center = translateWindowCoordiantes(arc.getCenter(), offset);
-                int radius = arc.getRadius();
+                Point start = translateWindowCoordiantes(ct.getCurve().getFrom(), offset, scale);
+                Point end = translateWindowCoordiantes(ct.getCurve().getTo(), offset, scale);
+                Point center = translateWindowCoordiantes(arc.getCenter(), offset, scale);
+                int radius = (int)((double)arc.getRadius() / scale);
                 result.add(new CircularToolpath(ct.getToolDiameter(), start, end, center, radius, arc.isClockwise()));
             }
         }

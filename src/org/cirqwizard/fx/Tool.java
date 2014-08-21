@@ -16,7 +16,7 @@ package org.cirqwizard.fx;
 
 public class Tool
 {
-    public static enum ToolType {V_TOOL, CONTOUR_END_MILL, DRILL, SYRINGE, PICK_AND_PLACE}
+    public static enum ToolType {V_TOOL, RUBOUT, CONTOUR_END_MILL, DRILL, SYRINGE, PICK_AND_PLACE}
 
     private ToolType type;
     private int diameter;

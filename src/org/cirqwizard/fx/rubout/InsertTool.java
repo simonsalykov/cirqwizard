@@ -12,19 +12,19 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.pp;
+package org.cirqwizard.fx.rubout;
 
 import org.cirqwizard.fx.Tool;
 import org.cirqwizard.fx.common.Message;
 
-public class InsertPPHead extends Message
+public class InsertTool extends Message
 {
-    private final static Tool EXPECTED_TOOL = new Tool(Tool.ToolType.PICK_AND_PLACE, 0);
+    public static final Tool EXPECTED_TOOL = new Tool(Tool.ToolType.RUBOUT, 800);
 
     @Override
     protected String getName()
     {
-        return "Insert P&P head";
+        return "Tool";
     }
 
     @Override
@@ -32,10 +32,10 @@ public class InsertPPHead extends Message
     {
         super.refresh();
         getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert pick & place head");
-        text.setText("Connect it to the vacuum outlet at the base of the machine and to the socket. Choose a needle that will work for your components.");
-
+        header.setText("Insert copper rub-out tool into spindle");
+        text.setText("Make sure the tool is fully inserted.");
     }
+
     @Override
     protected boolean isMandatory()
     {

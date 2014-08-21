@@ -32,4 +32,10 @@ public class Message extends ScreenController
         return "/org/cirqwizard/fx/common/Message.fxml";
     }
 
+    @Override
+    public void next()
+    {
+        getMainApplication().getContext().setG54Z(null);
+        super.next();
+    }
 }

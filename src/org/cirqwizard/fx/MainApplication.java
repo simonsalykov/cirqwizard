@@ -32,6 +32,8 @@ import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.fx.pp.InsertPPHead;
 import org.cirqwizard.fx.pp.PPGroup;
 import org.cirqwizard.fx.pp.PlacingOverview;
+import org.cirqwizard.fx.rubout.BottomRubout;
+import org.cirqwizard.fx.rubout.TopRubout;
 import org.cirqwizard.fx.traces.InsertTool;
 import org.cirqwizard.fx.traces.ZOffset;
 import org.cirqwizard.fx.traces.bottom.BottomTraceMilling;
@@ -57,21 +59,32 @@ public class MainApplication extends Application
 
     private MainViewController mainView = (MainViewController) new MainViewController().setMainApplication(this);
 
-    private ScreenController topTracesGroup = new OperationsScreenGroup("Top traces")
+    private ScreenController topTracesGroup = new OperationsScreenGroup("Top layer")
         {
             @Override
             protected boolean isEnabled()
             {
-                return  super.isEnabled() && getMainApplication().getContext().getPcbLayout().getTopTracesLayer() != null;
+                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getTopTracesLayer() != null;
             }
         }.setMainApplication(this).
         addChild(new PCBPlacement().setMainApplication(this)).
-        addChild(new InsertTool().setMainApplication(this)).
-        addChild(new ZOffset().setMainApplication(this)).
         addChild(new XYOffsets().setMainApplication(this)).
-        addChild(new TopTraceMilling().setMainApplication(this));
+        addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
+                addChild(new InsertTool().setMainApplication(this)).
+                addChild(new ZOffset().setMainApplication(this)).
+                addChild(new TopTraceMilling().setMainApplication(this))).
+        addChild(new OperationsScreenGroup("Rub-out")
+        {
+            @Override
+            protected boolean isMandatory()
+            {
+                return !SettingsFactory.getRubOutSettings().getSkipRubOut().getValue();
+            }
+        }.setMainApplication(this).
+                        addChild(new org.cirqwizard.fx.rubout.InsertTool().setMainApplication(this)).
+                        addChild(new TopRubout().setMainApplication(this)));
 
-    private ScreenController bottomTracesGroup = new OperationsScreenGroup("Bottom traces")
+    private ScreenController bottomTracesGroup = new OperationsScreenGroup("Bottom layer")
         {
             @Override
             protected boolean isEnabled()
@@ -80,10 +93,22 @@ public class MainApplication extends Application
             }
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
-            addChild(new InsertTool().setMainApplication(this)).
-            addChild(new ZOffset().setMainApplication(this)).
             addChild(new XYOffsets().setMainApplication(this)).
-            addChild(new BottomTraceMilling().setMainApplication(this));
+            addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
+                            addChild(new InsertTool().setMainApplication(this)).
+                            addChild(new ZOffset().setMainApplication(this)).
+                            addChild(new BottomTraceMilling().setMainApplication(this))
+            ).
+            addChild(new OperationsScreenGroup("Rub-out")
+                    {
+                        @Override
+                        protected boolean isMandatory()
+                        {
+                            return !SettingsFactory.getRubOutSettings().getSkipRubOut().getValue();
+                        }
+                    }.setMainApplication(this).
+                            addChild(new org.cirqwizard.fx.rubout.InsertTool().setMainApplication(this)).
+                            addChild(new BottomRubout().setMainApplication(this)));
 
     private ScreenController contourMillingGroup = new OperationsScreenGroup("Contour milling")
         {
