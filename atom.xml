@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-08-20T14:56:44+02:00</updated>
+  <updated>2014-08-22T16:49:25+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.0 - copper rub out feature]]></title>
+    <link href="http://cirqwizard.org//blog/2014/08/21/version-1-dot-5-0-copper-rub-out-feature/"/>
+    <updated>2014-08-21T23:04:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2014/08/21/version-1-dot-5-0-copper-rub-out-feature</id>
+    <content type="html"><![CDATA[<p>Version 1.5.0 comes with the long promised copper rub out feature. That&#8217;s an additional step which you can choose to perform after insulation milling (it&#8217;s skipped by default &#8211; check the new <strong>Copper rub out</strong> section in the <strong>Settings</strong> to turn it on).</p>
+<p>As opposed to insulation milling, which simply isolates traces on the copper layer, this step completely removes copper from the places on the board, where it&#8217;s not supposed to be according to the layout. This is often required in circuits, involving radio frequencies or high voltages &#8211; unconnected copper alters electrical features of the board in undesired way.</p>
+<p>The implementation may not win the prettiest algorithm contest. It might not be the fastest algorithm on Earth either. But at least it&#8217;s here today and it gets the job done. We&#8217;ll address algorithm inefficiencies later down the road.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Major UI revamp in 1.4.0]]></title>

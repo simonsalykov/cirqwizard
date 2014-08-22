@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Settings - Machine - cirQWizard</title>
+  <title>Operations - Rub out - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//docs/settings/machine.html">
+  <link rel="canonical" href="http://cirqwizard.org//docs/operations/rubout.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -239,59 +239,25 @@
 <article role="article" class="span9">
   
   <header class="page-header">
-    <h1 class="entry-title">Settings - Machine</h1>
+    <h1 class="entry-title">Operations - Rub Out</h1>
     
   </header>
   
-  <h4>Calibration parameters</h4>
-<table class="table table-bordered ">
-	<tr>
-		<th>Parameter </th>
-		<th>Meaning </th>
-		<th>Default value </th>
-		<th>Units </th>
-	</tr>
-	<tr>
-		<td> Y axes difference </td>
-		<td> Difference between zero points of machine&#8217;s Y axes </td>
-		<td> </td>
-		<td> mm </td>
-	</tr>
-	<tr>
-		<td> Reference pin X </td>
-		<td> X coordinate of the reference pin </td>
-		<td> </td>
-		<td> mm </td>
-	</tr>
-	<tr>
-		<td> Reference pin Y </td>
-		<td> Y coordinate of the reference pin </td>
-		<td> </td>
-		<td> mm </td>
-	</tr>
-</table>
-<p>Reference pin is a registration pin located in lower left corner of <span class="caps">PCB</span>.</p>
-<h4>Reference pin distances</h4>
-<table class="table table-bordered ">
-	<tr>
-		<th>Parameter </th>
-		<th>Meaning </th>
-		<th>Default value </th>
-		<th>Units </th>
-	</tr>
-	<tr>
-		<td> Small laminate </td>
-		<td> Distance between the centers of the registration holes on the smaller of supported laminates along the X axis </td>
-		<td> 65 </td>
-		<td> mm </td>
-	</tr>
-	<tr>
-		<td> Large laminate </td>
-		<td> Distance between the centers of the registration holes on the larger of supported laminates along the X axis </td>
-		<td> 90 </td>
-		<td> mm </td>
-	</tr>
-</table>
+  <p>Copper rub out operation is the second of the copper milling operations. It may follow <a href="milling.html">insulation milling</a>. The difference is that the rub out completely removes copper from the places where it&#8217;s not supposed to be, whereas insulation milling only isolates the traces from the copper layer. Remaining unconnected copper alters electrical properties of the circuit board, which is often undesired in the layouts involving radio frequencies or high voltages.</p>
+<p>As rub out is an additional step, which is not always required, there&#8217;s an option in <strong>Settings &#8211; Rub out</strong> to skip it. This option is turned on by default. In this case, the rub out stage is skipped and the wizard continues to the next step. Rub out can still be selected manually, though.</p>
+<h3>Opening files and selecting orientation</h3>
+<p>Open files and select board orientation following <a href="/docs/preparation/file_selection.html">Preparation &#8211; File selection</a> and <a href="/docs/preparation/pcb_orienation.html">Preparation &#8211; <span class="caps">PCB</span> orientation</a> sections.</p>
+<p><img src="/images/screenshots/v1.4/rubout/milling.png" alt="" /></p>
+<p>Rub out screen is very similar to insulation milling screen, the only difference being the tool paths. So all of the same controls work on this screen as well, namely you can zoom in and out in one of the following ways:</p>
+<ul>
+	<li>click on the corresponding icons in the upper left corner of <span class="caps">PCB</span> design pane</li>
+	<li>hold <strong>Ctrl</strong> (or <strong>Cmd</strong> on Mac OS X) button and use the scroll wheel of your mouse</li>
+	<li>press <strong>Ctrl+=</strong> (or <strong>Cmd+=</strong>) to zoom in, or <strong>Ctrl+-</strong> (<strong>Cmd+-</strong>) to zoom out</li>
+</ul>
+<p>You can select, which tool paths are going to be milled (this is useful if you didn&#8217;t like the result in some places and want to have another go there). Tool paths can be selected with mouse. Selected tool paths can be enabled and disabled with toolbar buttons or with keyboard shortcuts: <strong>Ctrl+E</strong> (or <strong>Cmd-E</strong> on Mac OS X) to enable, and <strong>Ctrl+D</strong> (or <strong>Cmd+D</strong>) to disable. Shortcut <strong>Ctrl+A</strong> (<strong>Cmd+A</strong>) selects all tool paths.</p>
+<p>For your convenience offsets that were entered on previous steps can be checked (and should it be necessary edited) in <strong>Offsets</strong> popover. The same way all of the relevant settings can be accessed and changed in <strong>Settings</strong> popover.</p>
+<p>If you wish to have a look at G-Code that will be send to the machine, you can press a button with wrench icon in the toolbar.</p>
+<p>When you are happy with all of the settings, press <strong>Run</strong> button. cirQWizard will send generated G-Code to the machine.</p>
   
     <footer>
       

@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Settings - Machine - cirQWizard</title>
+  <title>Settings - Rub-out - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//docs/settings/machine.html">
+  <link rel="canonical" href="http://cirqwizard.org//docs/settings/rubout.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -239,11 +239,11 @@
 <article role="article" class="span9">
   
   <header class="page-header">
-    <h1 class="entry-title">Settings - Machine</h1>
+    <h1 class="entry-title">Settings - Rub-out</h1>
     
   </header>
   
-  <h4>Calibration parameters</h4>
+  <h4>Tool</h4>
 <table class="table table-bordered ">
 	<tr>
 		<th>Parameter </th>
@@ -252,26 +252,80 @@
 		<th>Units </th>
 	</tr>
 	<tr>
-		<td> Y axes difference </td>
-		<td> Difference between zero points of machine&#8217;s Y axes </td>
+		<td> Tool diameter </td>
+		<td> Diameter of a milling tool </td>
+		<td> 0.3 </td>
+		<td> mm </td>
+	</tr>
+	<tr>
+		<td> Speed </td>
+		<td> Value of speed parameter passed to the machine controller for milling operation (<span class="caps">PWM</span> width of control pulse in case of Cirqoid machines) </td>
+		<td> 1390 </td>
+		<td> ms </td>
+	</tr>
+</table>
+<h4>Feed</h4>
+<table class="table table-bordered ">
+	<tr>
+		<th>Parameter </th>
+		<th>Meaning </th>
+		<th>Default value </th>
+		<th>Units </th>
+	</tr>
+	<tr>
+		<td> X and Y axes </td>
+		<td> Default feed on X and Y axes (speed with which tool moves during milling) </td>
+		<td> 300 </td>
+		<td> mm/min </td>
+	</tr>
+	<tr>
+		<td> Z axis </td>
+		<td> Default feed on Z axis (speed with which tool moves descending to working height) </td>
+		<td> 200 </td>
+		<td> mm/min </td>
+	</tr>
+	<tr>
+		<td> Arcs </td>
+		<td> Feed for arcs specified as a percent from <strong>Feed XY</strong> </td>
+		<td> 50 </td>
+		<td> % </td>
+	</tr>
+</table>
+<h4>Heights</h4>
+<table class="table table-bordered ">
+	<tr>
+		<th>Parameter </th>
+		<th>Meaning </th>
+		<th>Default value </th>
+		<th>Units </th>
+	</tr>
+	<tr>
+		<td> Clearance </td>
+		<td> Default value of clearance &#8211; the height above the board, the program uses to move the tool between traces </td>
+		<td> 5 </td>
+		<td> mm </td>
+	</tr>
+	<tr>
+		<td> Safety height </td>
+		<td> Default value of safety height &#8211; the height above the board, where tool switches from rapid descend to feed on Z axis, when descending to working level </td>
+		<td> 2 </td>
+		<td> mm </td>
+	</tr>
+	<tr>
+		<td> Z offset </td>
+		<td> Z offset, which is used as a starting point in Z offset establishing procedure </td>
 		<td> </td>
 		<td> mm </td>
 	</tr>
 	<tr>
-		<td> Reference pin X </td>
-		<td> X coordinate of the reference pin </td>
-		<td> </td>
-		<td> mm </td>
-	</tr>
-	<tr>
-		<td> Reference pin Y </td>
-		<td> Y coordinate of the reference pin </td>
-		<td> </td>
+		<td> Working height </td>
+		<td> The depth of tool engagement in laminate </td>
+		<td> -0.05 </td>
 		<td> mm </td>
 	</tr>
 </table>
-<p>Reference pin is a registration pin located in lower left corner of <span class="caps">PCB</span>.</p>
-<h4>Reference pin distances</h4>
+<p>All heights are specified in work coordinate system (i.e. taking into account Z offset).</p>
+<h4>Rub-out</h4>
 <table class="table table-bordered ">
 	<tr>
 		<th>Parameter </th>
@@ -280,15 +334,21 @@
 		<th>Units </th>
 	</tr>
 	<tr>
-		<td> Small laminate </td>
-		<td> Distance between the centers of the registration holes on the smaller of supported laminates along the X axis </td>
-		<td> 65 </td>
-		<td> mm </td>
+		<td> Skip by default </td>
+		<td> If this checkbox is selected, <strong>Continue</strong> button on insulation milling screen would skip rub-out and go directly to the next screen </td>
+		<td> Selected </td>
+		<td>  </td>
 	</tr>
 	<tr>
-		<td> Large laminate </td>
-		<td> Distance between the centers of the registration holes on the larger of supported laminates along the X axis </td>
-		<td> 90 </td>
+		<td> Overlap </td>
+		<td> Overlap between rub out passes </td>
+		<td> 20 </td>
+		<td> % </td>
+	</tr>
+	<tr>
+		<td> Initial offset </td>
+		<td> Offset the rub out tool will keep away from traces </td>
+		<td> 0.2 </td>
 		<td> mm </td>
 	</tr>
 </table>
