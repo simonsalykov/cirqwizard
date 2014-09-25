@@ -77,7 +77,7 @@ public class SerialInterfaceImpl implements SerialInterface
         close();
         try
         {
-            initUSART(portName, bootloader ? 115200 : baudrate, bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
+            initUSART(portName, bootloader ? 57600 : baudrate, bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
             if (bootloader)
                 port.enableReceiveTimeout(25000);
         }
@@ -88,6 +88,12 @@ public class SerialInterfaceImpl implements SerialInterface
     }
 
     public void write(int b) throws IOException
+    {
+        outputStream.write(b);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException
     {
         outputStream.write(b);
     }

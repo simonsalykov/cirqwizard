@@ -100,11 +100,9 @@ public class STM32BootLoaderInterface
         try
         {
             int checksum = 0;
+            serialInterface.write(packet);
             for (int i = 0; i < packet.length; i++)
-            {
                 checksum ^= packet[i];
-                serialInterface.write(packet[i]);
-            }
             serialInterface.write(checksum);
         }
         catch (IOException e)

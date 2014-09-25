@@ -33,6 +33,11 @@ public class SerialInterfaceStub implements SerialInterface
     }
 
     @Override
+    public void write(byte[] b) throws IOException
+    {
+    }
+
+    @Override
     public int readByte() throws IOException
     {
         return -1;

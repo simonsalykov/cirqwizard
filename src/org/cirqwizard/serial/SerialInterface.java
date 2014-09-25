@@ -23,6 +23,7 @@ public interface SerialInterface
 
     public void setBootloaderMode(boolean bootloader) throws SerialException;
     public void write(int b) throws IOException;
+    public void write(byte[] b) throws IOException;
     public int readByte() throws IOException;
     public void close() throws SerialException;
     public void send(String str, long timeout) throws SerialException, ExecutionException, InterruptedException;
