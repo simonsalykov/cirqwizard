@@ -24,8 +24,8 @@ public class BottomTraceMilling extends TraceMilling
     @Override
     public void refresh()
     {
-        super.refresh();
         pcbPane.setGerberColor(PCBPaneFX.BOTTOM_TRACE_COLOR);
+        super.refresh();
     }
 
     @Override
