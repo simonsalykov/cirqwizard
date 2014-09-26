@@ -15,6 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.concurrent.Worker;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
@@ -39,14 +41,11 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
     private int toolDiameter;
     private int overlap;
     private int threadCount;
-    private double scale;
+    private double scale = 1; // It has to go
+    private ReadOnlyObjectProperty<Worker.State> serviceStateProperty;
 
-    public void init(int width, int height, int inflation, int toolDiameter, int overlap, List<GerberPrimitive> primitives, int threadCount)
-    {
-        init(width, height, inflation, toolDiameter, overlap, primitives, threadCount, 1);
-    }
-
-    public void init(int width, int height, int inflation, int toolDiameter, int overlap, List<GerberPrimitive> primitives, int threadCount, double scale)
+    public void init(int width, int height, int inflation, int toolDiameter, int overlap, List<GerberPrimitive> primitives, int threadCount,
+                     ReadOnlyObjectProperty<Worker.State> serviceStateProperty)
     {
         this.width = width;
         this.height = height;
@@ -55,7 +54,7 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
         this.overlap = overlap;
         this.primitives = primitives;
         this.threadCount = threadCount;
-        this.scale = scale;
+        this.serviceStateProperty = serviceStateProperty;
     }
 
     public List<Toolpath> generate()
@@ -95,6 +94,9 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
         @Override
         public void run()
         {
+            if (serviceStateProperty.getValue() == Worker.State.CANCELLED)
+                return;
+
             try
             {
                 Platform.runLater(() -> progressProperty.set(((double) y * WINDOW_SIZE + (double) x * height) / ((double) width * height)));

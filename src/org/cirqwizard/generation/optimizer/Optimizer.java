@@ -15,10 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.optimizer;
 
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
+import javafx.concurrent.Worker;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
@@ -49,8 +47,10 @@ public class Optimizer
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
     private ObjectProperty<List<Toolpath>> currentBestSolutionProperty = new SimpleObjectProperty<>();
+    private ReadOnlyObjectProperty<Worker.State> serviceStateProperty;
 
-    public Optimizer(List<Chain> chains, double feed, double zFeed, double arcFeed, double clearance, double safetyHeight, int mergeTolerance)
+    public Optimizer(List<Chain> chains, double feed, double zFeed, double arcFeed, double clearance, double safetyHeight, int mergeTolerance,
+                     ReadOnlyObjectProperty<Worker.State> serviceStateProperty)
     {
         this.environment = new Environment(chains);
         this.feed = feed;
@@ -59,6 +59,7 @@ public class Optimizer
         this.clearance = clearance;
         this.safetyHeight = safetyHeight;
         this.mergeTolerance = mergeTolerance;
+        this.serviceStateProperty = serviceStateProperty;
     }
 
     public List<Chain> optimize()
@@ -68,6 +69,9 @@ public class Optimizer
         double lastEvaluation = Double.MAX_VALUE;
         for (int i = 0; i < MAX_GENERATIONS_COUNT; i++)
         {
+            if (serviceStateProperty.getValue() == Worker.State.CANCELLED)
+                return null;
+
             progressProperty.setValue((double) i / MAX_GENERATIONS_COUNT);
             breed();
             if (i % REEVALUATION_FREQUENCY == 0)
@@ -76,14 +80,7 @@ public class Optimizer
                 final List<Toolpath> l = new ArrayList<>();
                 for (int j : mostFit.getGenes())
                     l.addAll(environment.getChains().get(j).getSegments());
-                Platform.runLater(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        currentBestSolutionProperty.setValue(l);
-                    }
-                });
+                Platform.runLater(() -> currentBestSolutionProperty.setValue(l));
                 final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, arcFeed, clearance, safetyHeight, false, mergeTolerance);
                 if (Math.abs(lastEvaluation - bestResult) < MIN_IMPROVEMENT)
                     break;

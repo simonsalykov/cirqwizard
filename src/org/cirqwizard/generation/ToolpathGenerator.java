@@ -15,6 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.concurrent.Worker;
 import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
@@ -39,14 +42,11 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
     private int toolDiameter;
     private int threadCount;
     private List<Circle> knownCircles;
-    private double scale;
+    private ReadOnlyObjectProperty<Worker.State> serviceStateProperty;
+    private double scale = 1;   // It has to go
 
-    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount)
-    {
-        init(width, height, inflation, toolDiameter, primitives, threadCount, 1);
-    }
-
-    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount, double scale)
+    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount,
+                     ReadOnlyObjectProperty<Worker.State> serviceStateProperty)
     {
         this.width = width;
         this.height = height;
@@ -54,7 +54,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
         this.toolDiameter = toolDiameter;
         this.primitives = primitives;
         this.threadCount = threadCount;
-        this.scale = scale;
+        this.serviceStateProperty = serviceStateProperty;
         knownCircles = getKnownCircles(inflation);
     }
 
@@ -65,7 +65,9 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
         ExecutorService pool = Executors.newFixedThreadPool(threadCount);
         for (int x = 0; x < width; x += WINDOW_SIZE)
             for (int y = 0; y < height; y += WINDOW_SIZE)
+            {
                 pool.submit(new WindowGeneratorThread(x > WINDOWS_OVERLAP ? x - WINDOWS_OVERLAP : x, y > WINDOWS_OVERLAP ? y - WINDOWS_OVERLAP : y, segments));
+            }
 
         try
         {
@@ -95,6 +97,9 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
         @Override
         public void run()
         {
+            if (serviceStateProperty.getValue() == Worker.State.CANCELLED)
+                return;
+
             try
             {
                 Platform.runLater(() -> progressProperty.set(((double) y * WINDOW_SIZE + (double) x * height) / ((double) width * height)));

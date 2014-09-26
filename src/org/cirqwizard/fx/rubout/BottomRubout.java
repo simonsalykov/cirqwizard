@@ -15,10 +15,18 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.rubout;
 
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.layers.Layer;
 
 public class BottomRubout extends Rubout
 {
+    @Override
+    public void refresh()
+    {
+        pcbPane.setGerberColor(PCBPaneFX.BOTTOM_TRACE_COLOR);
+        super.refresh();
+    }
+
     @Override
     protected boolean isEnabled()
     {

@@ -68,10 +68,12 @@ public class RuboutToolpathGenerationService extends MillingToolpathGenerationSe
         List<Toolpath> toolpaths = new ArrayList<>();
         for (int pass = 0; pass < 2; pass++)
         {
+            if (serviceStateProperty.getValue() == State.CANCELLED)
+                return null;
             ToolpathGenerator g = new ToolpathGenerator();
             g.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
                     pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, traceLayer.getElements(),
-                    SettingsFactory.getApplicationSettings().getProcessingThreads().getValue());
+                    SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), serviceStateProperty);
             Platform.runLater(() ->
             {
                 generationStageProperty.setValue("Generating tool paths...");
@@ -84,12 +86,14 @@ public class RuboutToolpathGenerationService extends MillingToolpathGenerationSe
                 continue;
             toolpaths.addAll(new ToolpathMerger(t, diameter / 4).merge());
         }
+        if (serviceStateProperty.getValue() == State.CANCELLED)
+            return null;
 
         final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
         generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
                 settings.getInitialOffset().getValue(),
                 diameter, settings.getOverlap().getValue(), traceLayer.getElements(),
-                SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), 1);
+                SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), serviceStateProperty);
         Platform.runLater(() ->
         {
             generationStageProperty.setValue("Generating tool paths...");
@@ -98,6 +102,8 @@ public class RuboutToolpathGenerationService extends MillingToolpathGenerationSe
         });
 
         List<Toolpath> t = generator.generate();
+        if (serviceStateProperty.getValue() == State.CANCELLED)
+            return null;
         final int mergeTolerance = diameter / 10;
         if (t != null && t.size() > 0)
             toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());

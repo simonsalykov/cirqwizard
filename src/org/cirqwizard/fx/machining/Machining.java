@@ -191,6 +191,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
         pcbPane.setBoardHeight(context.getBoardHeight());
 
         veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
+        pcbPane.repaint();
         toolpathGenerationService.start();
     }
 

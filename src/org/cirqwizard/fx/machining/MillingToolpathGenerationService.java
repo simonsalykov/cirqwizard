@@ -17,6 +17,7 @@ package org.cirqwizard.fx.machining;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -40,6 +41,8 @@ import java.util.logging.Level;
 
 public abstract class MillingToolpathGenerationService extends ToolpathGenerationService
 {
+    protected ReadOnlyObjectProperty<State> serviceStateProperty;
+
     protected Layer layer;
     protected int cacheLayerId;
     protected long layerModificationDate;
@@ -53,6 +56,7 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
         this.layer = layer;
         this.cacheLayerId = cacheLayerId;
         this.layerModificationDate = layerModificationDate;
+        this.serviceStateProperty = stateProperty();
     }
 
     protected abstract ToolpathsCacheKey getCacheKey();
@@ -107,11 +111,14 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
                         cache = new ToolpathsCache();
 
                     List<Chain> chains = generate();
+                    if (serviceStateProperty.getValue() == State.CANCELLED)
+                        return null;
 
                     InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
                     final Optimizer optimizer = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
                             convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
-                            convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), getMergeTolerance());
+                            convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), getMergeTolerance(),
+                            serviceStateProperty);
                     Platform.runLater(() ->
                     {
                         generationStageProperty.setValue("Optimizing milling time...");
@@ -134,6 +141,8 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
                         }, optimizer.currentBestSolutionProperty()))
                     );
                     chains = optimizer.optimize();
+                    if (serviceStateProperty.getValue() == State.CANCELLED)
+                        return null;
 
                     List<Toolpath> toolpaths = new ArrayList<>();
                     for (Chain p : chains)

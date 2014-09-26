@@ -16,7 +16,9 @@ package org.cirqwizard.fx.machining;
 
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.concurrent.Worker;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.generation.AdditionalToolpathGenerator;
 import org.cirqwizard.generation.ToolpathGenerator;
@@ -67,7 +69,7 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
         ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
         TraceLayer traceLayer = (TraceLayer) layer;
         generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                diameter / 2, diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue());
+                diameter / 2, diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue(), serviceStateProperty);
         Platform.runLater(() ->
         {
             generationStageProperty.setValue("Generating tool paths...");
@@ -76,6 +78,8 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
         });
 
         List<Toolpath> toolpaths = generator.generate();
+        if (serviceStateProperty.getValue() == State.CANCELLED)
+            return null;
         if (toolpaths == null || toolpaths.size() == 0)
             return null;
         final int mergeTolerance = getMergeTolerance();
@@ -88,10 +92,13 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
             {
                 int offset = diameter * (100 - settings.getAdditionalPassesOverlap().getValue()) / 100;
                 generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
-                        diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue());
+                        diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue(),
+                        serviceStateProperty);
                 List<Toolpath> additionalToolpaths = generator.generate();
                 if (additionalToolpaths == null || additionalToolpaths.size() == 0)
                     continue;
+                if (serviceStateProperty.getValue() == State.CANCELLED)
+                    return null;
                 toolpaths.addAll(new ToolpathMerger(additionalToolpaths, mergeTolerance).merge());
             }
         }
@@ -106,6 +113,8 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
                 overallProgressProperty.bind(additionalGenerator.progressProperty());
             });
             toolpaths.addAll(new ToolpathMerger(additionalGenerator.generate(), mergeTolerance).merge());
+            if (serviceStateProperty.getValue() == State.CANCELLED)
+                return null;
         }
 
 
