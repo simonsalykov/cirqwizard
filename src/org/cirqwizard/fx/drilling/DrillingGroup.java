@@ -19,6 +19,7 @@ import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.ScreenGroup;
 import org.cirqwizard.fx.common.XYOffsets;
 import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class DrillingGroup extends OperationsScreenGroup
             group.setParent(this);
             children.add(group.setMainApplication(getMainApplication()).
                     addChild(new InsertDrill().setMainApplication(getMainApplication())).
-                    addChild(new XYOffsets().setMainApplication(getMainApplication())).
+                    addChild(new XYOffsets(SettingsFactory.getDrillingSettings()).setMainApplication(getMainApplication())).
                     addChild(new Drilling().setMainApplication(getMainApplication())));
         }
 

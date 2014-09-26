@@ -107,7 +107,7 @@ public abstract class SettingsGroup
         }
     }
 
-    public boolean validate()
+    public String validate()
     {
         try
         {
@@ -116,10 +116,9 @@ public abstract class SettingsGroup
                 if (!f.isAnnotationPresent(PersistentPreference.class))
                     continue;
 
-                Class argumentClass = (Class) ((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
                 UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), getClass()).getReadMethod().invoke(this);
-                if (p.getValue() == null && p.getDefaultValue() == null)
-                    return false;
+                if (p.getType() != PreferenceType.SERIAL_PORT && p.getValue() == null && p.getDefaultValue() == null)
+                    return p.getUserName();
             }
         }
         catch (IllegalAccessException | InvocationTargetException | IntrospectionException e)
@@ -127,7 +126,7 @@ public abstract class SettingsGroup
             LoggerFactory.logException("Error saving user preferences", e);
         }
 
-        return true;
+        return null;
     }
 
     @Override

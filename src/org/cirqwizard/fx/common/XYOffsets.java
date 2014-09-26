@@ -18,21 +18,22 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.SettingsGroup;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,20 +41,29 @@ import java.util.ResourceBundle;
 
 public class XYOffsets extends ScreenController implements Initializable
 {
+    private SettingsGroup settingsGroup;
     @FXML private RealNumberTextField x;
     @FXML private RealNumberTextField y;
 
     @FXML private Button goButton;
-    @FXML private Label offsetErrorLabel;
-
     @FXML private Button continueButton;
+
+    @FXML private VBox offsetErrorPane;
     @FXML private CheckBox ignoreCheckBox;
 
-    @FXML private Pane offsetImage;
+    @FXML private Pane positionPreviewPane;
+
+    @FXML private VBox settingsMissingErrorPane;
+    @FXML private Label missingSettingLabel;
 
     private final static int REFERENCE_PIN_POSITION_ON_LAMINATE = 5000;
 
     private Canvas offsetImageCanvas;
+
+    public XYOffsets(SettingsGroup settingsGroup)
+    {
+        this.settingsGroup = settingsGroup;
+    }
 
     @Override
     protected String getFxmlName()
@@ -97,8 +107,8 @@ public class XYOffsets extends ScreenController implements Initializable
         });
         ignoreCheckBox.selectedProperty().addListener((v, oldV, newV) ->
                         checkOffsetLimit(getMainApplication().getContext().getG54X(), getMainApplication().getContext().getG54Y()));
-        offsetImageCanvas = new Canvas(offsetImage.getPrefWidth(), offsetImage.getPrefHeight());
-        offsetImage.getChildren().addAll(offsetImageCanvas);
+        offsetImageCanvas = new Canvas(positionPreviewPane.getPrefWidth(), positionPreviewPane.getPrefHeight());
+        positionPreviewPane.getChildren().addAll(offsetImageCanvas);
     }
 
     @Override
@@ -113,6 +123,18 @@ public class XYOffsets extends ScreenController implements Initializable
             y = SettingsFactory.getApplicationValues().getG54Y().getValue();
         this.y.setIntegerValue(y);
         updateComponents();
+
+        String missingSetting = SettingsFactory.getApplicationSettings().validate();
+        if (missingSetting != null)
+            missingSetting = "The following setting is not set: Application -> " + missingSetting;
+        else
+        {
+            missingSetting = settingsGroup.validate();
+            if (missingSetting != null)
+                missingSetting = "The following setting is not set: " + settingsGroup.getName() + " -> " + missingSetting;
+        }
+        settingsMissingErrorPane.setVisible(missingSetting != null);
+        missingSettingLabel.setText(missingSetting);
     }
 
     private void checkOffsetLimit(Integer x, Integer y)
@@ -126,8 +148,7 @@ public class XYOffsets extends ScreenController implements Initializable
         double yOffsetToPcb  = y - laminateY;
         boolean pcbFitsLaminate = ((xOffsetToPcb >= 0) && (xOffsetToPcb + context.getBoardWidth() <= context.getPcbSize().getWidth())) &&
             ((yOffsetToPcb >= 0) && (yOffsetToPcb + context.getBoardHeight() <= context.getPcbSize().getHeight()));
-        offsetErrorLabel.setVisible(!pcbFitsLaminate);
-        ignoreCheckBox.setVisible(!pcbFitsLaminate);
+        offsetErrorPane.setVisible(!pcbFitsLaminate);
         continueButton.setDisable(!pcbFitsLaminate && !(ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()));
         updateOffsetImage(context.getPcbSize(), xOffsetToPcb, yOffsetToPcb, context.getBoardWidth(), context.getBoardHeight());
     }
@@ -155,8 +176,8 @@ public class XYOffsets extends ScreenController implements Initializable
         gc.clearRect(0, 0, offsetImageCanvas.getWidth(), offsetImageCanvas.getHeight());
 
         double scale = 2;
-        double xOffset = (offsetImage.getPrefWidth() * ApplicationConstants.RESOLUTION - pcbSize.getWidth() * scale) / 2 / ApplicationConstants.RESOLUTION;
-        double yOffset = (offsetImage.getPrefHeight() * ApplicationConstants.RESOLUTION - pcbSize.getHeight() * scale) / 2 / ApplicationConstants.RESOLUTION;
+        double xOffset = (positionPreviewPane.getPrefWidth() * ApplicationConstants.RESOLUTION - pcbSize.getWidth() * scale) / 2 / ApplicationConstants.RESOLUTION;
+        double yOffset = (positionPreviewPane.getPrefHeight() * ApplicationConstants.RESOLUTION - pcbSize.getHeight() * scale) / 2 / ApplicationConstants.RESOLUTION;
         double pinRadius = 1.5 * scale;
 
         double pinX1 = (REFERENCE_PIN_POSITION_ON_LAMINATE / ApplicationConstants.RESOLUTION);
@@ -180,5 +201,10 @@ public class XYOffsets extends ScreenController implements Initializable
 
         gc.setFill(Color.rgb(191, 255, 0, 0.8));
         gc.fillRect(px, py, pw, ph);
+    }
+
+    public void goToSettings()
+    {
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditor.class));
     }
 }

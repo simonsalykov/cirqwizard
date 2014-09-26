@@ -35,8 +35,18 @@
         <Button fx:id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
       </children>
     </HBox>
-    <Label fx:id="offsetErrorLabel" layoutX="67.0" layoutY="262.0" prefHeight="38.0" prefWidth="333.0" styleClass="error-message" text="The PCB is not going to fit in the laminate with selected offsets!" visible="false" wrapText="true" />
-    <CheckBox fx:id="ignoreCheckBox" layoutX="67.0" layoutY="300.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="344.0" text="Ignore this error. I know what I'm doing." visible="false" wrapText="true" />
-    <Pane fx:id="offsetImage" layoutX="541.0" layoutY="80.0" prefHeight="340.0" prefWidth="220.0" />
+      <VBox fx:id="offsetErrorPane" layoutX="70.0" layoutY="262.0" prefWidth="416.0" spacing="10.0">
+         <children>
+          <Label layoutX="67.0" layoutY="262.0" styleClass="error-message" text="The PCB is not going to fit in the laminate with selected offsets!" wrapText="true" />
+          <CheckBox fx:id="ignoreCheckBox" layoutX="67.0" layoutY="300.0" mnemonicParsing="false" text="Ignore this error. I know what I'm doing." wrapText="true" />
+         </children>
+      </VBox>
+    <Pane fx:id="positionPreviewPane" layoutX="541.0" layoutY="80.0" prefHeight="340.0" prefWidth="220.0" />
+      <VBox fx:id="settingsMissingErrorPane" layoutX="70.0" layoutY="350.0" prefWidth="416.0" spacing="10.0">
+         <children>
+            <Label fx:id="missingSettingLabel" styleClass="error-message" wrapText="true" />
+            <Hyperlink text="Take me to the Settings" onAction="#goToSettings" />
+         </children>
+      </VBox>
   </children>
 </AnchorPane>

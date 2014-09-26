@@ -68,7 +68,7 @@ public class MainApplication extends Application
             }
         }.setMainApplication(this).
         addChild(new PCBPlacement().setMainApplication(this)).
-        addChild(new XYOffsets().setMainApplication(this)).
+        addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings()).setMainApplication(this)).
         addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
                 addChild(new InsertTool().setMainApplication(this)).
                 addChild(new ZOffset().setMainApplication(this)).
@@ -93,7 +93,7 @@ public class MainApplication extends Application
             }
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
-            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings()).setMainApplication(this)).
             addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
                             addChild(new InsertTool().setMainApplication(this)).
                             addChild(new ZOffset().setMainApplication(this)).
@@ -120,7 +120,7 @@ public class MainApplication extends Application
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
             addChild(new InsertContourMill().setMainApplication(this)).
-            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new XYOffsets(SettingsFactory.getContourMillingSettings()).setMainApplication(this)).
             addChild(new ContourMilling().setMainApplication(this));
 
     private ScreenController dispensingGroup = new OperationsScreenGroup("Dispensing")
@@ -134,7 +134,7 @@ public class MainApplication extends Application
             addChild(new PCBPlacement().setMainApplication(this)).
             addChild(new InsertSyringe().setMainApplication(this)).
             addChild(new SyringeBleeding().setMainApplication(this)).
-            addChild(new XYOffsets().setMainApplication(this)).
+            addChild(new XYOffsets(SettingsFactory.getDispensingSettings()).setMainApplication(this)).
             addChild(new Dispensing().setMainApplication(this));
 
     private ScreenController root = new Welcome().setMainApplication(this).
@@ -149,7 +149,7 @@ public class MainApplication extends Application
             addChild(new PPGroup("Pick and place").setMainApplication(this).
                     addChild(new PCBPlacement().setMainApplication(this)).
                     addChild(new InsertPPHead().setMainApplication(this)).
-                    addChild(new XYOffsets().setMainApplication(this)).
+                    addChild(new XYOffsets(SettingsFactory.getPpSettings()).setMainApplication(this)).
                     addChild(new PlacingOverview().setMainApplication(this))).
             addChild(new Terminal().setMainApplication(this)).
             addChild(new ScreenGroup("Misc").setVisible(false).setMainApplication(this).
