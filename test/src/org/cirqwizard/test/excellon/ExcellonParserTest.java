@@ -326,4 +326,50 @@ public class ExcellonParserTest
         assertEquals(1300, points.get(0).getToolDiameter());
     }
 
+    @Test
+    public void testAllegroFile() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "INCH,TZ\n" +
+                "T01C.013\n" +
+                "T02C.036\n" +
+                "T03C.042\n" +
+                "T04C.043\n" +
+                ";LEADER: 12 \n" +
+                ";HEADER: \n" +
+                ";CODE  : ASCII \n" +
+                "%\n" +
+                "G90\n" +
+                "T02\n" +
+                "X530000Y510000\n" +
+                "R04Y10000\n" +
+                "X500000\n" +
+                "R04Y-10000";
+
+        ExcellonParser parser = new ExcellonParser(5, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(10, points.size());
+
+        assertEquals(new Point(134620, 129540), points.get(0).getPoint());
+        assertEquals(900, points.get(0).getToolDiameter());
+        assertEquals(new Point(134620, 132080), points.get(1).getPoint());
+        assertEquals(900, points.get(1).getToolDiameter());
+        assertEquals(new Point(134620, 134620), points.get(2).getPoint());
+        assertEquals(900, points.get(2).getToolDiameter());
+        assertEquals(new Point(134620, 137160), points.get(3).getPoint());
+        assertEquals(900, points.get(3).getToolDiameter());
+        assertEquals(new Point(134620, 139700), points.get(4).getPoint());
+        assertEquals(900, points.get(4).getToolDiameter());
+        assertEquals(new Point(127000, 139700), points.get(5).getPoint());
+        assertEquals(900, points.get(5).getToolDiameter());
+        assertEquals(new Point(127000, 137160), points.get(6).getPoint());
+        assertEquals(900, points.get(6).getToolDiameter());
+        assertEquals(new Point(127000, 134620), points.get(7).getPoint());
+        assertEquals(900, points.get(7).getToolDiameter());
+        assertEquals(new Point(127000, 132080), points.get(8).getPoint());
+        assertEquals(900, points.get(8).getToolDiameter());
+        assertEquals(new Point(127000, 129540), points.get(9).getPoint());
+        assertEquals(900, points.get(9).getToolDiameter());
+    }
+
 }

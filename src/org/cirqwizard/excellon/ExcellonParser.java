@@ -32,9 +32,10 @@ public class ExcellonParser
     public final static int INCHES_MM_RATIO = (int)(25.4 * ApplicationConstants.RESOLUTION);
     public final static int MM_MM_RATIO = ApplicationConstants.RESOLUTION;
 
-    private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d+.\\d+).*");
+    private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d*.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
     private final static Pattern COORDINATES_PATTERN = Pattern.compile("(?:G01)?(X-?[0123456789\\.]+)?(Y-?[0123456789\\.]+)?");
+    private final static Pattern R_COMMAND_PATTERN = Pattern.compile("R(\\d+)(X-?[0123456789\\.]+)?(Y-?[0123456789\\.]+)?");
     private final static Pattern MEASUREMENT_SYSTEM_PATTERN = Pattern.compile("(INCH|METRIC),?(LZ|TZ)?");
 
     private HashMap<Integer, Integer> tools = new HashMap<>();
@@ -53,7 +54,7 @@ public class ExcellonParser
 
     public ExcellonParser(Reader reader)
     {
-        this(2, 4, reader);
+        this(4, INCHES_MM_RATIO, reader);
     }
 
     public ExcellonParser(int decimalPlaces, int coordinatesCoversionRatio, Reader reader)
@@ -143,6 +144,25 @@ public class ExcellonParser
             if (currentDiameter == null)
                 currentDiameter = Integer.valueOf(matcher.group(1)) * ApplicationConstants.RESOLUTION / 10 + ApplicationConstants.RESOLUTION;
             return;
+        }
+
+        matcher = R_COMMAND_PATTERN.matcher(line);
+        if (matcher.matches())
+        {
+            int repetitions = Integer.valueOf(matcher.group(1));
+            Integer deltaX = null, deltaY = null;
+            if (matcher.group(2) != null)
+                deltaX = convertCoordinate(matcher.group(2).substring(1));
+            if (matcher.group(3) != null)
+                deltaY = convertCoordinate(matcher.group(3).substring(1));
+            for (int i = 0; i < repetitions; i++)
+            {
+                if (deltaX != null)
+                    x += deltaX;
+                if (deltaY != null)
+                    y += deltaY;
+                drillPoints.add(new DrillPoint(new Point(x, y), currentDiameter));
+            }
         }
 
         matcher = COORDINATES_PATTERN.matcher(line);
