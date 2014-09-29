@@ -39,7 +39,7 @@ public class ExcellonParser
     private final static Pattern MEASUREMENT_SYSTEM_PATTERN = Pattern.compile("(INCH|METRIC),?(LZ|TZ)?");
 
     private HashMap<Integer, Integer> tools = new HashMap<>();
-    private Integer currentDiameter = null;
+    private Integer currentDiameter = 0;
     private ArrayList<DrillPoint> drillPoints = new ArrayList<>();
     private boolean header = false;
 

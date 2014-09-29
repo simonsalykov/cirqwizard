@@ -372,4 +372,19 @@ public class ExcellonParserTest
         assertEquals(900, points.get(9).getToolDiameter());
     }
 
+    @Test
+    public void testNoToolSelected() throws IOException
+    {
+        String fileContent = "%\n" +
+                "G90\n" +
+                "X0Y0\n";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(0, 0), points.get(0).getPoint());
+        assertEquals(0, points.get(0).getToolDiameter());
+    }
+
 }
