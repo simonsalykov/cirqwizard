@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-08-22T16:49:25+02:00</updated>
+  <updated>2014-09-29T17:51:56+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.1]]></title>
+    <link href="http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1/"/>
+    <updated>2014-09-29T17:48:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1</id>
+    <content type="html"><![CDATA[<p>Version 1.5.1 is mostly a bugfix release. Below are release notes with the links to the exact issues fixed:</p>
+Release Notes &#8211; cirQWizard &#8211; Version 1.5.1
+
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-92'>CQ-92</a>] &#8211;         Stop button on tool paths generation pane doesn&#39;t stop generation</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-130'>CQ-130</a>] &#8211;         Firmware update instability</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-131'>CQ-131</a>] &#8211;         Check for non-empty settings is broken</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-134'>CQ-134</a>] &#8211;         ExcellonParser fails with <span class="caps">NPE</span> if no tool is specified</li>
+</ul>
+
+<h2>        New Feature</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-133'>CQ-133</a>] &#8211;         Support for R command in Excellon files</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.0 - copper rub out feature]]></title>
