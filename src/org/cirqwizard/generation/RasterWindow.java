@@ -100,8 +100,6 @@ public class RasterWindow
 
             Path2D polygon = new GeneralPath();
 
-            float width = Math.max((float) inflation * 2, 0);
-            g.setStroke(new BasicStroke(width, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
             Point p = ((InterpolatingShape) region.getSegments().get(0)).getFrom();
             polygon.moveTo(p.getX(), p.getY());
             for (GerberPrimitive segment : region.getSegments())
@@ -110,15 +108,10 @@ public class RasterWindow
                 {
                     LinearShape linearShape = (LinearShape) segment;
                     polygon.lineTo(linearShape.getTo().getX(), linearShape.getTo().getY());
-                    g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
-                            linearShape.getTo().getX(), linearShape.getTo().getY()));
                 }
                 else if (segment instanceof CircularShape)
                 {
                     Arc arc = ((CircularShape) segment).getArc();
-                    g.draw(new Arc2D.Double(arc.getCenter().getX() - arc.getRadius(), arc.getCenter().getY() - arc.getRadius(),
-                            arc.getRadius() * 2, arc.getRadius() * 2,
-                            -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), Arc2D.OPEN));
                     polygon.append(new Arc2D.Double(arc.getCenter().getX() - arc.getRadius(),
                             arc.getCenter().getY() - arc.getRadius(),
                             arc.getRadius() * 2, arc.getRadius() * 2,
@@ -128,6 +121,30 @@ public class RasterWindow
                 }
             }
             g.fill(polygon);
+
+            float width = (float) inflation * 2;
+            if (width < 0)
+            {
+                width *= -1;
+                g.setColor(primitive.getPolarity() == GerberPrimitive.Polarity.DARK ? Color.BLACK : Color.WHITE);
+            }
+            g.setStroke(new BasicStroke(width, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
+            for (GerberPrimitive segment : region.getSegments())
+            {
+                if (segment instanceof LinearShape)
+                {
+                    LinearShape linearShape = (LinearShape) segment;
+                    g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
+                            linearShape.getTo().getX(), linearShape.getTo().getY()));
+                }
+                else if (segment instanceof CircularShape)
+                {
+                    Arc arc = ((CircularShape) segment).getArc();
+                    g.draw(new Arc2D.Double(arc.getCenter().getX() - arc.getRadius(), arc.getCenter().getY() - arc.getRadius(),
+                            arc.getRadius() * 2, arc.getRadius() * 2,
+                            -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), Arc2D.OPEN));
+                }
+            }
         }
         else if (primitive instanceof Flash)
         {
