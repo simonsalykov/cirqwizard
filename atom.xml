@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-09-29T17:51:56+02:00</updated>
+  <updated>2014-10-06T12:21:02+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,20 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.2]]></title>
+    <link href="http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-2/"/>
+    <updated>2014-10-06T11:27:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-2</id>
+    <content type="html"><![CDATA[<p>Version 1.5.2 fixes a couple of bugs:</p>
+Release Notes &#8211; cirQWizard &#8211; Version 1.5.2
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-135'>CQ-135</a>] &#8211;         Incorrect tool paths generation with clear polarity layers in gerber</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-136'>CQ-136</a>] &#8211;         Excellon files with explicitly specified positive coordinate are not parsed</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.1]]></title>
