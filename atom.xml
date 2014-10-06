@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-10-06T12:21:02+02:00</updated>
+  <updated>2014-10-06T20:12:56+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.3]]></title>
+    <link href="http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-3/"/>
+    <updated>2014-10-06T14:27:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-3</id>
+    <content type="html"><![CDATA[<p>Version 1.5.3 is another take at a bug with incorrect passes in gerbers with different polarities, which was addresses in the previous version, but wasn&#8217;t completely fixed.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.2]]></title>
