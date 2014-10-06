@@ -64,7 +64,7 @@ public class RasterWindow
     public void render(java.util.List<GerberPrimitive> primitives, int inflation)
     {
         for (GerberPrimitive primitive : primitives)
-            renderPrimitive(primitive, inflation);
+            renderPrimitive(primitive, primitive.getPolarity() == GerberPrimitive.Polarity.DARK ? inflation : -inflation);
     }
 
     private void renderPrimitive(GerberPrimitive primitive, double inflation)
@@ -77,7 +77,8 @@ public class RasterWindow
         {
             LinearShape linearShape = (LinearShape) primitive;
             int cap = linearShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
-            g.setStroke(new BasicStroke((float) ((linearShape.getAperture().getWidth() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            double width = Math.max(linearShape.getAperture().getWidth() + inflation * 2, 0);
+            g.setStroke(new BasicStroke((float) width, cap, BasicStroke.JOIN_ROUND));
             g.draw(new Line2D.Double(linearShape.getFrom().getX(), linearShape.getFrom().getY(),
                     linearShape.getTo().getX(), linearShape.getTo().getY()));
         }
@@ -85,7 +86,8 @@ public class RasterWindow
         {
             CircularShape circularShape = (CircularShape) primitive;
             int cap = circularShape.getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
-            g.setStroke(new BasicStroke((float) ((circularShape.getAperture().getWidth() + inflation * 2)), cap, BasicStroke.JOIN_ROUND));
+            double width = Math.max(circularShape.getAperture().getWidth() + inflation * 2, 0);
+            g.setStroke(new BasicStroke((float) width, cap, BasicStroke.JOIN_ROUND));
             g.draw(new Arc2D.Double(circularShape.getArc().getCenter().getX() - circularShape.getArc().getRadius(),
                     circularShape.getArc().getCenter().getY() - circularShape.getArc().getRadius(),
                     circularShape.getArc().getRadius() * 2, circularShape.getArc().getRadius() * 2,
@@ -98,7 +100,8 @@ public class RasterWindow
 
             Path2D polygon = new GeneralPath();
 
-            g.setStroke(new BasicStroke((float) inflation * 2, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
+            float width = Math.max((float) inflation * 2, 0);
+            g.setStroke(new BasicStroke(width, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
             Point p = ((InterpolatingShape) region.getSegments().get(0)).getFrom();
             polygon.moveTo(p.getX(), p.getY());
             for (GerberPrimitive segment : region.getSegments())
@@ -131,17 +134,17 @@ public class RasterWindow
             Flash flash = (Flash) primitive;
             if (flash.getAperture() instanceof CircularAperture)
             {
-                double d = ((CircularAperture)flash.getAperture()).getDiameter() + inflation * 2;
+                double d = Math.max(((CircularAperture)flash.getAperture()).getDiameter() + inflation * 2, 0);
                 double r = d / 2;
                 g.fill(new Ellipse2D.Double(flash.getX() - r, flash.getY() - r, d, d));
             }
             else if (flash.getAperture() instanceof RectangularAperture)
             {
                 RectangularAperture aperture = (RectangularAperture)flash.getAperture();
+                double w = Math.max(aperture.getDimensions()[0] + inflation * 2, 0);
+                double h = Math.max(aperture.getDimensions()[1] + inflation * 2, 0);
                 g.fill(new Rectangle2D.Double(flash.getX() - aperture.getDimensions()[0] / 2 - inflation,
-                        flash.getY() - aperture.getDimensions()[1] / 2 - inflation,
-                        aperture.getDimensions()[0] + inflation * 2,
-                        aperture.getDimensions()[1] + inflation * 2));
+                        flash.getY() - aperture.getDimensions()[1] / 2 - inflation, w, h));
             }
             else if (flash.getAperture() instanceof OctagonalAperture)
             {
@@ -166,8 +169,8 @@ public class RasterWindow
                 OvalAperture aperture = (OvalAperture)flash.getAperture();
                 double flashX = flash.getX();
                 double flashY = flash.getY();
-                double width = aperture.getWidth() + inflation * 2;
-                double height = aperture.getHeight() + inflation * 2;
+                double width = Math.max(aperture.getWidth() + inflation * 2, 0);
+                double height = Math.max(aperture.getHeight() + inflation * 2, 0);
                 double d = Math.min(width, height);
                 double l = aperture.isHorizontal() ? width - height : height - width;
                 double xOffset = aperture.isHorizontal() ? l / 2 : 0;
