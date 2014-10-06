@@ -387,4 +387,24 @@ public class ExcellonParserTest
         assertEquals(0, points.get(0).getToolDiameter());
     }
 
+    @Test
+    public void testDipTrace() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "INCH\n" +
+                "T01C0.0191\n" +
+                "%\n" +
+                "T01\n" +
+                "X+009070Y+030709\n" +
+                "T00\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(23037, 78000), points.get(0).getPoint());
+        assertEquals(500, points.get(0).getToolDiameter());
+    }
+
 }
