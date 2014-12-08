@@ -248,7 +248,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     public void disableSelected()
     {
         List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().
-                filter(Toolpath::isSelected).collect(Collectors.toList());
+                filter(Toolpath::isSelected).map(t -> (Toolpath)t).collect(Collectors.toList());
         changedToolpaths.forEach(toolpath ->
         {
             toolpath.setEnabled(false);

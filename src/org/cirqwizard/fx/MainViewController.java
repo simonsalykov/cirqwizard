@@ -14,7 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -22,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -29,9 +29,6 @@ import org.cirqwizard.fx.popover.ManualControlPopOver;
 import org.cirqwizard.fx.popover.OffsetsPopOver;
 import org.cirqwizard.fx.popover.SettingsPopOver;
 import org.controlsfx.control.PopOver;
-import org.controlsfx.control.action.AbstractAction;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.control.action.ActionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +115,8 @@ public class MainViewController extends ScreenController
 
             b.setOnAction(event ->
             {
-                List<Action> contextMenuActions = new ArrayList<>();
+
+                List<MenuItem> contextMenuItems = new ArrayList<>();
                 List<ScreenController> siblings = getMainApplication().getSiblings(item);
                 if (siblings != null)
                 {
@@ -126,18 +124,13 @@ public class MainViewController extends ScreenController
                     {
                         if (sibling instanceof ScreenGroup && !((ScreenGroup)sibling).isVisible())
                             continue;
-                        AbstractAction action = new AbstractAction(sibling.getName())
-                        {
-                            @Override
-                            public void handle(ActionEvent event)
-                            {
-                                sibling.select();
-                            }
-                        };
-                        action.setDisabled(!sibling.isEnabled());
-                        contextMenuActions.add(action);
+                        MenuItem it = new MenuItem(sibling.getName());
+                        it.setOnAction(e -> sibling.select());
+                        it.setDisable(!sibling.isEnabled());
+                        contextMenuItems.add(it);
                     }
-                    ContextMenu contextMenu = ActionUtils.createContextMenu(contextMenuActions);
+
+                    ContextMenu contextMenu = new ContextMenu(contextMenuItems.toArray(new MenuItem[contextMenuItems.size()]));
                     Button button = (Button) event.getSource();
                     final Scene scene = button.getScene();
                     final Point2D windowCoord = new Point2D(scene.getWindow().getX(), scene.getWindow().getY());
