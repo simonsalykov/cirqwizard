@@ -14,8 +14,14 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamResolution;
+import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,12 +30,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
@@ -37,6 +47,8 @@ import org.cirqwizard.settings.PredefinedLocationSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.PPPoint;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -71,6 +83,10 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @FXML private Button moveHeadAwayButton;
     @FXML private Button vacuumOffButton;
 
+    @FXML private AnchorPane regularPane;
+    @FXML private ImageView microscopeImageView;
+    @FXML private AnchorPane microscopeControlPane;
+
     private ObservableList<String> componentNames;
     private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
 
@@ -82,6 +98,9 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     private boolean atPickupLocation = false;
 
     private Integer placementZ;
+
+    private boolean microscopeStreamRunning;
+    private ObjectProperty<Image> microscopeImageProperty;
 
     @Override
     protected String getFxmlName()
@@ -109,6 +128,10 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         placementY.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
         placementAngle.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
         manualZ.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
+
+        microscopeImageProperty = new SimpleObjectProperty<>();
+        microscopeImageView.imageProperty().bind(microscopeImageProperty);
+        microscopeControlPane.visibleProperty().bind(microscopeImageView.visibleProperty());
     }
 
     private class KeyboardHandler implements EventHandler<KeyEvent>
@@ -121,11 +144,11 @@ public class ComponentPlacement extends ScreenController implements Initializabl
             RealNumberTextField textField = (RealNumberTextField) event.getSource();
             try
             {
-                RealNumber delta = textField == placementAngle ? new RealNumber(1) : new RealNumber("0.1");
+                int delta = textField == placementAngle ? 1000 : 100;
                 if (event.getCode() == KeyCode.DOWN)
-                    delta = delta.negate();
-                RealNumber currentValue = textField.getRealNumberText() == null ? new RealNumber(0) : new RealNumber(textField.getRealNumberText());
-                textField.setText(coordinatesFormat.format(currentValue.add(delta).getValue()));
+                    delta *= -1;
+                int currentValue = textField.getIntegerValue() == null ? 0 : textField.getIntegerValue();
+                textField.setText(coordinatesFormat.format(currentValue + delta));
                 textField.fireEvent(new ActionEvent());
             }
             catch (NumberFormatException e)
@@ -139,6 +162,9 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @Override
     public void refresh()
     {
+        microscopeImageView.fitWidthProperty().bind(((StackPane)getView()).widthProperty());
+        microscopeImageView.fitHeightProperty().bind(((StackPane)getView()).heightProperty());
+
         Context context = getMainApplication().getContext();
         ComponentId id =  context.getCurrentComponent();
         header.setText(id.getPackaging() + " " + id.getValue());
@@ -162,6 +188,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         pickupButton.setDisable(noMachineConnected);
         moveHeadAwayButton.setDisable(noMachineConnected);
         vacuumOffButton.setDisable(noMachineConnected);
+
+        microscopeImageView.setVisible(false);
     }
 
     private void updateComponent()
@@ -210,6 +238,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         manualZ.setDisable(false);
         manualZ.setIntegerValue(moveHeight);
         atPickupLocation = true;
+
+        showMicroscopePane();
     }
 
     public void pickup()
@@ -332,6 +362,58 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         if (!placementPane.isDisabled())
             placementZ = manualZ.getIntegerValue();
         getMainApplication().getCNCController().moveZ(manualZ.getIntegerValue());
+    }
+
+    public void showMicroscopePane()
+    {
+        regularPane.setVisible(false);
+        microscopeImageView.setVisible(true);
+
+        if (microscopeStreamRunning)
+            return;
+
+        microscopeStreamRunning = true;
+
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                Webcam webCam = Webcam.getWebcams().get(1);
+                webCam.setCustomViewSizes(new Dimension[] {WebcamResolution.UXGA.getSize()});
+                webCam.setViewSize(WebcamResolution.UXGA.getSize());
+                webCam.open();
+
+                while (microscopeStreamRunning)
+                {
+                    try
+                    {
+                        if (!microscopeImageView.isVisible())
+                        {
+                            sleep(20);
+                            continue;
+                        }
+
+                        BufferedImage grabbedImage;
+                        if ((grabbedImage = webCam.getImage()) != null)
+                        {
+                            WritableImage image = SwingFXUtils.toFXImage(grabbedImage, null);
+                            Platform.runLater(() -> microscopeImageProperty.set(image));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
+
+    public void hideMicroscopePane()
+    {
+        microscopeImageView.setVisible(false);
+        regularPane.setVisible(true);
     }
 
 }

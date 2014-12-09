@@ -11,7 +11,7 @@
 <?import javafx.scene.paint.*?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
+<AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
   <children>
     <Label alignment="CENTER" layoutY="24.0" styleClass="h1" text="Choose orientation:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
     <StackPane fx:id="containerPane" prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="120.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="71.0">
@@ -38,7 +38,7 @@
         </Button>
         <Button mnemonicParsing="false" onAction="#rotateCW" scaleX="0.75" scaleY="0.75">
           <graphic>
-            <ImageView id="rotate-cw" fitHeight="48.0001220703125" fitWidth="48.0" pickOnBounds="true">
+            <ImageView id="rotate-cw" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true">
               <image>
                 <Image url="@rotate-cw.png" preserveRatio="true" smooth="true" />
               </image>
