@@ -66,6 +66,8 @@ public class MainViewController extends ScreenController
 
     public void setScreen(ScreenController screen)
     {
+        if (currentScreen != null)
+            currentScreen.onDeactivation();
         if (currentScreen != null && currentScreen.getShortcutHandler() != null)
             view.removeEventFilter(KeyEvent.KEY_PRESSED, currentScreen.getShortcutHandler());
         this.currentScreen = screen;

@@ -118,6 +118,10 @@ public abstract class ScreenController
     {
     }
 
+    public void onDeactivation()
+    {
+    }
+
     public void next()
     {
         getNext(this).select();

@@ -36,7 +36,9 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
@@ -50,9 +52,9 @@ import org.cirqwizard.toolpath.PPPoint;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 
@@ -73,6 +75,10 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @FXML private RealNumberTextField placementX;
     @FXML private RealNumberTextField placementY;
     @FXML private RealNumberTextField placementAngle;
+    @FXML private Button placeButton;
+    @FXML private HBox placementXPane;
+    @FXML private HBox placementYPane;
+    @FXML private HBox placementAnglePane;
 
     @FXML private RealNumberTextField manualZ;
 
@@ -80,6 +86,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @FXML private RealNumberTextField targetY;
     @FXML private RealNumberTextField targetAngle;
 
+    @FXML private TitledPane manualControlPane;
     @FXML private Button moveHeadAwayButton;
     @FXML private Button vacuumOffButton;
 
@@ -87,13 +94,16 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @FXML private ImageView microscopeImageView;
     @FXML private AnchorPane microscopeControlPane;
 
+    @FXML private HBox pickupXPane;
+    @FXML private HBox pickupYPane;
+    @FXML private HBox zControlPane;
+    @FXML private HBox microscopeControlsBox;
+
     private ObservableList<String> componentNames;
     private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
 
     private static final int feederOffsetX = 10 * ApplicationConstants.RESOLUTION;
     private static final int feederOffsetY = -15 * ApplicationConstants.RESOLUTION;
-
-    private static final DecimalFormat coordinatesFormat = new DecimalFormat("0.00");
 
     private boolean atPickupLocation = false;
 
@@ -148,7 +158,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
                 if (event.getCode() == KeyCode.DOWN)
                     delta *= -1;
                 int currentValue = textField.getIntegerValue() == null ? 0 : textField.getIntegerValue();
-                textField.setText(coordinatesFormat.format(currentValue + delta));
+                textField.setIntegerValue(currentValue + delta);
                 textField.fireEvent(new ActionEvent());
             }
             catch (NumberFormatException e)
@@ -190,6 +200,13 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         vacuumOffButton.setDisable(noMachineConnected);
 
         microscopeImageView.setVisible(false);
+        startMicroscopeThread();
+    }
+
+    @Override
+    public void onDeactivation()
+    {
+        stopMicroscopeThread();
     }
 
     private void updateComponent()
@@ -239,11 +256,13 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         manualZ.setIntegerValue(moveHeight);
         atPickupLocation = true;
 
-        showMicroscopePane();
+        showMicroscopePickupPane();
     }
 
     public void pickup()
     {
+        hideMicroscopePane();
+
         PPSettings settings = SettingsFactory.getPpSettings();
         Integer moveHeight = settings.getMoveHeight().getValue();
         if (!atPickupLocation)
@@ -293,6 +312,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         manualZ.setIntegerValue(moveHeight);
         pickupPane.setDisable(true);
         placementPane.setDisable(false);
+        showMicroscopePlacementPane();
     }
 
     public void pickupAndGo()
@@ -305,10 +325,13 @@ public class ComponentPlacement extends ScreenController implements Initializabl
             manualZ.setIntegerValue(placementZ);
             manualZ.fireEvent(new ActionEvent());
         }
+        showMicroscopePlacementPane();
     }
 
     public void place()
     {
+        hideMicroscopePane();
+
         PPSettings settings = SettingsFactory.getPpSettings();
         int z = settings.getPickupHeight().getValue() - 3 * ApplicationConstants.RESOLUTION;
         getMainApplication().getCNCController().place(z, settings.getMoveHeight().getValue());
@@ -364,17 +387,42 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         getMainApplication().getCNCController().moveZ(manualZ.getIntegerValue());
     }
 
+    public void showMicroscopePickupPane()
+    {
+        microscopeControlsBox.getChildren().add(0, pickupButton);
+        microscopeControlsBox.getChildren().add(0, zControlPane);
+        microscopeControlsBox.getChildren().add(0, pickupYPane);
+        microscopeControlsBox.getChildren().add(0, pickupXPane);
+
+        showMicroscopePane();
+    }
+
+    public void showMicroscopePlacementPane()
+    {
+        microscopeControlsBox.getChildren().add(0, placeButton);
+        microscopeControlsBox.getChildren().add(0, zControlPane);
+        microscopeControlsBox.getChildren().add(0, placementAnglePane);
+        microscopeControlsBox.getChildren().add(0, placementYPane);
+        microscopeControlsBox.getChildren().add(0, placementXPane);
+
+        showMicroscopePane();
+    }
+
     public void showMicroscopePane()
     {
         regularPane.setVisible(false);
         microscopeImageView.setVisible(true);
 
+        startMicroscopeThread();
+    }
+
+    private void startMicroscopeThread()
+    {
         if (microscopeStreamRunning)
             return;
 
         microscopeStreamRunning = true;
-
-        new Thread()
+        Thread thread = new Thread()
         {
             @Override
             public void run()
@@ -407,13 +455,55 @@ public class ComponentPlacement extends ScreenController implements Initializabl
                     }
                 }
             }
-        }.start();
+        };
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void stopMicroscopeThread()
+    {
+        microscopeStreamRunning = false;
+        new Thread(() -> Webcam.getWebcams().get(1).close()).start();
     }
 
     public void hideMicroscopePane()
     {
+        if (!microscopeImageView.isVisible())
+            return;
         microscopeImageView.setVisible(false);
         regularPane.setVisible(true);
+
+        if (!pickupPane.isDisabled())
+            hideMicroscopePickupPane();
+        if (!placementPane.isDisabled())
+            hideMicroscopePlacemenentPane();
+    }
+
+    public void hideMicroscopePickupPane()
+    {
+        ((VBox)pickupPane.getContent()).getChildren().add(1, pickupButton);
+        ((VBox)pickupPane.getContent()).getChildren().add(0, pickupYPane);
+        ((VBox)pickupPane.getContent()).getChildren().add(0, pickupXPane);
+        ((VBox)manualControlPane.getContent()).getChildren().add(0, zControlPane);
+    }
+
+    public void hideMicroscopePlacemenentPane()
+    {
+        ((VBox)placementPane.getContent()).getChildren().add(0, placeButton);
+        ((VBox)placementPane.getContent()).getChildren().add(0, placementAnglePane);
+        ((VBox)placementPane.getContent()).getChildren().add(0, placementYPane);
+        ((VBox)placementPane.getContent()).getChildren().add(0, placementXPane);
+        ((VBox)manualControlPane.getContent()).getChildren().add(0, zControlPane);
+    }
+
+    public void turnMicroscopeOn()
+    {
+        if (!pickupPane.isDisabled())
+            showMicroscopePickupPane();
+        if (!placementPane.isDisabled())
+            showMicroscopePlacementPane();
+        else
+            showMicroscopePane();
     }
 
 }
