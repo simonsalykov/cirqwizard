@@ -368,7 +368,8 @@ public class GerberParser
                     region = new Region(polarity);
                 break;
                 case 37:
-                    elements.add(region);
+                    if (!region.getSegments().isEmpty())
+                        elements.add(region);
                     region = null;
                 break;
                 case 54: break;
