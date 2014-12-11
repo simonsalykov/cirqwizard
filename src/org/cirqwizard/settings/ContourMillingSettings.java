@@ -22,7 +22,7 @@ public class ContourMillingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Feeds")
-    private UserPreference<Integer> feedZ = new UserPreference<>("X axis", 200_000, "mm/min");
+    private UserPreference<Integer> feedZ = new UserPreference<>("Z axis", 200_000, "mm/min");
 
     @PersistentPreference
     @PreferenceGroup(name = "Feeds")
