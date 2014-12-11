@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2014-10-06T20:12:56+02:00</updated>
+  <updated>2014-12-11T16:59:36+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.4]]></title>
+    <link href="http://cirqwizard.org//blog/2014/12/11/version-1-dot-5-4/"/>
+    <updated>2014-12-11T16:55:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2014/12/11/version-1-dot-5-4</id>
+    <content type="html"><![CDATA[<p>This is a bug fix release. The list of addressed bugs is below:</p>
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-5'>CQ-5</a>] &#8211;         Lines are not supported on solder paste layer</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-137'>CQ-137</a>] &#8211;         Typo in contour milling settings</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-140'>CQ-140</a>] &#8211;         Empty regions cause rendering to fail</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-145'>CQ-145</a>] &#8211;         Traces milling screen gets skipped occasionally</li>
+</ul>
+<h2>        Task</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-138'>CQ-138</a>] &#8211;         Get rid off controls FX in bread crumb bar navigation</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.3]]></title>
