@@ -184,7 +184,25 @@ public class SolderPasteLayer extends Layer
                     }
                 }
 
-                fillRectangle(toolpaths, longestSide.getFrom(), longestSide.getTo(), (int)largestWidth, needleDiameter);
+                fillRectangle(toolpaths, longestSide.getFrom(), longestSide.getTo(), (int) largestWidth, needleDiameter);
+            }
+            else if (element instanceof LinearShape)
+            {
+                LinearShape line = (LinearShape) element;
+                Line l = new Line(line.getFrom(), line.getTo());
+                double angle = l.angleToX();
+                if (line.getAperture() instanceof RectangularAperture)
+                {
+                    Point appertureOffset = new Point((int)(line.getAperture().getWidth() / 2 * Math.cos(angle)),
+                            (int)(line.getAperture().getWidth() / 2 * Math.sin(angle)));
+                    l.setTo(l.getTo().add(appertureOffset));
+                    appertureOffset = new Point(-appertureOffset.getX(), -appertureOffset.getY());
+                    l.setFrom(l.getFrom().add(appertureOffset));
+                }
+                angle += Math.PI / 2;
+                Point offset = new Point((int)(line.getAperture().getWidth() / 2 * Math.cos(angle)),
+                        (int)(line.getAperture().getWidth() / 2 * Math.sin(angle)));
+                fillRectangle(toolpaths, l.getFrom().add(offset), l.getTo().add(offset), line.getAperture().getWidth(), needleDiameter);
             }
             else
             {

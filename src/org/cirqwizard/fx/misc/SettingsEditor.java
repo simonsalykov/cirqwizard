@@ -229,7 +229,7 @@ public class SettingsEditor extends ScreenController implements Initializable
     public void resetToDefaults()
     {
         if (!Dialogs.create().owner(getMainApplication().getPrimaryStage()).title("Reset confirmation").
-                message("Are you sure you want to reset all settings to default?").showConfirm().equals(Dialog.ACTION_YES))
+                message("Are you sure you want to reset all settings to default?").showConfirm().equals(Dialog.Actions.YES))
             return;
         SettingsFactory.resetAll();
         refresh();
