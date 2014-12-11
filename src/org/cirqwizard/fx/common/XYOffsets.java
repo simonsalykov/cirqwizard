@@ -122,6 +122,8 @@ public class XYOffsets extends ScreenController implements Initializable
         if (y == null)
             y = SettingsFactory.getApplicationValues().getG54Y().getValue();
         this.y.setIntegerValue(y);
+        getMainApplication().getContext().setG54X(x);
+        getMainApplication().getContext().setG54Y(y);
         updateComponents();
 
         String missingSetting = SettingsFactory.getApplicationSettings().validate();
