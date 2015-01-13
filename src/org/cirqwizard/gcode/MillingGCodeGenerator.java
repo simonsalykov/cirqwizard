@@ -40,6 +40,20 @@ public class MillingGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
+        Toolpath firstToolpath = null;
+        for (Toolpath t : context.getPcbLayout().getMillingLayer().getToolpaths())
+        {
+            if (t.isEnabled())
+            {
+                firstToolpath = t;
+                break;
+            }
+        }
+        Curve firstCurve = ((CuttingToolpath)firstToolpath).getCurve();
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
+        postprocessor.rapid(str, context.getG54X() + firstCurve.getFrom().getX(), context.getG54Y() + firstCurve.getFrom().getY(), null);
+
         postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 

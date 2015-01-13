@@ -63,6 +63,21 @@ public class TraceGCodeGenerator
             int pinX = machineSettings.getReferencePinX().getValue();
             g54X = pinX * 2 + laminateWidth - context.getG54X();
         }
+
+        Toolpath firstToolpath = null;
+        for (Toolpath t : toolpaths)
+        {
+            if (t.isEnabled())
+            {
+                firstToolpath = t;
+                break;
+            }
+        }
+        Curve firstCurve = ((CuttingToolpath)firstToolpath).getCurve();
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
+        postprocessor.rapid(str, g54X + firstCurve.getFrom().getX(), context.getG54Y() + firstCurve.getFrom().getY(), null);
+
         postprocessor.setupG54(str, g54X, context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
