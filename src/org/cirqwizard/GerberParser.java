@@ -442,7 +442,7 @@ public class GerberParser
         }
         else if (aperture != null)
         {
-            if(exposureMode == ExposureMode.FLASH || exposureMode == ExposureMode.ON && (!newX.equals(x) || !newY.equals(y)))
+            if (exposureMode == ExposureMode.FLASH || exposureMode == ExposureMode.ON)
                 elements.add(primitive);
         }
 
