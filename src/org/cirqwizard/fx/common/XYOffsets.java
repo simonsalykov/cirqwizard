@@ -81,7 +81,7 @@ public class XYOffsets extends ScreenController implements Initializable
     protected boolean isMandatory()
     {
         Context context = getMainApplication().getContext();
-        return context.getG54X() == null || context.getG54Y() == null;
+        return context.getG54X() == null || context.getG54Y() == null || settingsGroup.validate() != null;
     }
 
     @Override
