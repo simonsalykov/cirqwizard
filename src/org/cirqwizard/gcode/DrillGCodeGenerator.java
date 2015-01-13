@@ -34,6 +34,19 @@ public class DrillGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
+        DrillPoint firstPoint = null;
+        for (DrillPoint p : context.getPcbLayout().getDrillingLayer().getToolpaths())
+        {
+            if (p.getToolDiameter() == context.getCurrentDrill() && p.isEnabled())
+            {
+                firstPoint = p;
+               break;
+            }
+        }
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
+        postprocessor.rapid(str, context.getG54X() + firstPoint.getPoint().getX(), context.getG54Y() + firstPoint.getPoint().getY(), null);
+
         postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
