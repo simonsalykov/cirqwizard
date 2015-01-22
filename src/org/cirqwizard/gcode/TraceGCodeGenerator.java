@@ -76,7 +76,7 @@ public class TraceGCodeGenerator
         Curve firstCurve = ((CuttingToolpath)firstToolpath).getCurve();
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
-        postprocessor.rapid(str, g54X + firstCurve.getFrom().getX(), context.getG54Y() + firstCurve.getFrom().getY(), null);
+        postprocessor.rapid(str, g54X + getX(firstCurve.getFrom().getX()), context.getG54Y() + firstCurve.getFrom().getY(), null);
 
         postprocessor.setupG54(str, g54X, context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
