@@ -503,7 +503,7 @@ public class EDAGerberTest
         GerberParser parser = new GerberParser(new StringReader(fileContent));
         ArrayList<GerberPrimitive> elements = parser.parse();
 
-        assertEquals(9, elements.size());
+        assertEquals(5, elements.size());
 
         GerberPrimitive p = elements.get(0);
         assertEquals(CircularShape.class, p.getClass());
@@ -516,7 +516,7 @@ public class EDAGerberTest
         assertEquals(new Point(7213, 4166), arc.getCenter());
         assertEquals(true, arc.isClockwise());
 
-        p = elements.get(2);
+        p = elements.get(1);
         assertEquals(LinearShape.class, p.getClass());
         LinearShape l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());
@@ -524,7 +524,7 @@ public class EDAGerberTest
         assertEquals(new Point(5689, 5689), l.getFrom());
         assertEquals(new Point(4597, 5689), l.getTo());
 
-        p = elements.get(4);
+        p = elements.get(2);
         assertEquals(CircularShape.class, p.getClass());
         c = (CircularShape) p;
         arc = c.getArc();
@@ -535,13 +535,13 @@ public class EDAGerberTest
         assertEquals(new Point(3099, 4191), arc.getCenter());
         assertEquals(true, arc.isClockwise());
 
-        p = elements.get(6);
+        p = elements.get(3);
         assertEquals(Region.class, p.getClass());
 
         Region region = (Region) p;
         assertEquals(3, region.getSegments().size());
 
-        p = elements.get(8);
+        p = elements.get(4);
         assertEquals(LinearShape.class, p.getClass());
         l = (LinearShape) p;
         assertEquals(CircularAperture.class, p.getAperture().getClass());

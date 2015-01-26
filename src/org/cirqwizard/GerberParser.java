@@ -412,6 +412,9 @@ public class GerberParser
                     return;
             }
         }
+
+        if (dataBlock.getX() == null && dataBlock.getY() == null && dataBlock.getD() == null)
+            return;
         Integer newX = x;
         if (dataBlock.getX() != null)
             newX = dataBlock.getX();
