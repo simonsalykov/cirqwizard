@@ -118,5 +118,23 @@ public class PPParserTest
 
     }
 
+    @Test
+    public void testKiCAD() throws IOException
+    {
+        String fileContent = "Ref,Side,Val,Package,PosX,PosY,Rot\n" +
+                "C1,F.Cu,100 nF,R_0805,104.673,-81.432,90\n";
+        String regex = "(?<name>\\S+),.*,(?<value>.+?),(?<package>\\S+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*)";
+
+        PPParser parser = new PPParser(new StringReader(fileContent), regex);
+        List<PPPoint> points = parser.parse();
+
+        assertEquals(1, points.size());
+        PPPoint p = points.get(0);
+        assertEquals(new ComponentId("R_0805", "100 nF"), p.getId());
+        assertEquals(new Point(104673, -81432), p.getPoint());
+        assertEquals(90000, p.getAngle());
+        assertEquals("C1", p.getName());
+    }
+
 
 }
