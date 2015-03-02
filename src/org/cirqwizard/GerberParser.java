@@ -217,7 +217,7 @@ public class GerberParser
             MacroVectorLine vectorLine = new MacroVectorLine((int) (Double.valueOf(matcher.group(2)) * unitConversionRatio),
                     new Point((int) (Double.valueOf(matcher.group(3)) * unitConversionRatio), (int)(Double.valueOf(matcher.group(4)) * unitConversionRatio)),
                     new Point((int) (Double.valueOf(matcher.group(5)) * unitConversionRatio), (int)(Double.valueOf(matcher.group(6)) * unitConversionRatio)),
-                    Integer.valueOf(matcher.group(7)));
+                    (int)(Double.valueOf(matcher.group(7)).doubleValue()));
             apertureMacro.addPrimitive(vectorLine);
             return;
         }
