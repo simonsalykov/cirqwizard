@@ -6,11 +6,14 @@ mainClassName = 'org.cirqwizard.fx.MainApplication'
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url "http://www.sparetimelabs.com/maven2/"
+    }
 }
 
 dependencies {
     compile('org.controlsfx:controlsfx:8.0.6')
-    compile('org.rxtx:rxtx:2.1.7')
+    compile('com.sparetimelabs:purejavacomm:0.0.22')
     testCompile ('junit:junit:4.11')
 }
 

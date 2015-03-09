@@ -14,7 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.serial;
 
-import gnu.io.CommPortIdentifier;
+
+import purejavacomm.CommPortIdentifier;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -42,13 +43,13 @@ public class SerialInterfaceFactory
 
     public static SerialInterface autodetect() throws SerialException
     {
-//        Enumeration e = CommPortIdentifier.getPortIdentifiers();
-//        while (e.hasMoreElements())
-//        {
-//            CommPortIdentifier port = (CommPortIdentifier) e.nextElement();
-//            if (port.getName().startsWith("/dev/tty.usbserial") || port.getName().startsWith("/dev/ttyUSB"))
-//                return new SerialInterfaceImpl(port.getName(), 38400);
-//        }
+        Enumeration e = CommPortIdentifier.getPortIdentifiers();
+        while (e.hasMoreElements())
+        {
+            CommPortIdentifier port = (CommPortIdentifier) e.nextElement();
+            if (port.getName().startsWith("/dev/tty.usbserial") || port.getName().startsWith("/dev/ttyUSB"))
+                return new SerialInterfaceImpl(port.getName(), 38400);
+        }
 
         return null;
     }
