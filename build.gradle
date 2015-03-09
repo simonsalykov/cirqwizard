@@ -16,9 +16,14 @@ dependencies {
 
 jar {
     baseName = 'cirqwizard'
-    version =  '1.5.8'
+    version = releaseVersion
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
+}
+
+task updateVersionFile() {
+    def versionFile = new File("src/main/resources/version.number")
+    versionFile.text = releaseVersion
 }
