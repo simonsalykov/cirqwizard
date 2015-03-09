@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'org.cirqwizard.fx.MainApplication'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile('org.controlsfx:controlsfx:8.0.6')
+    compile('org.rxtx:rxtx:2.1.7')
+    testCompile ('junit:junit:4.11')
+}
+
+jar {
+    baseName = 'cirqwizard'
+    version =  '1.5.8'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
