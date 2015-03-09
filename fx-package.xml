@@ -1,0 +1,45 @@
+<project name="cirqwizard" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+             uri="javafx:com.sun.javafx.tools.ant"
+             classpath="${java.home}/../lib/ant-javafx.jar:${applicationResources}"/>
+    <fx:application id="cirQWizard"
+                    name="cirQWizard"
+                    version = "${applicationVersion}"
+                    mainClass="org.cirqwizard.fx.MainApplication" />
+
+
+    <target name="fx_jar">
+        <fx:jar destfile="${distDir}/${distName}">
+            <fx:application refid="cirQWizard"/>
+            <fx:resources>
+                <fx:fileset dir="${dependenciesDir}" includes="*"/>
+            </fx:resources>
+            <manifest>
+                <attribute name="Implementation-Vendor" value="cirQWizard"/>
+                <attribute name="Implementation-Title" value="cirQWizard"/>
+                <attribute name="Implementation-Version" value="${applicationVersion}"/>
+            </manifest>
+            <fileset dir="${applicationClasses}"/>
+            <fx:fileset dir="${applicationResources}"/>
+        </fx:jar>
+    </target>
+
+    <target name="fx_bundle">
+        <fx:deploy width="800" height="600"
+                   outdir="build/package" embedJNLP="true"
+                   outfile="cirqwizard"
+                   nativeBundles="all">
+
+            <fx:application refId="cirQWizard"/>
+            <fx:resources>
+                <fx:fileset dir="${distDir}" includes="${distName}"/>
+                <fx:fileset dir="${dependenciesDir}" includes="*"/>
+            </fx:resources>
+            <fx:info title="cirQWizard" vendor="cirQWizard"/>
+            <fx:permissions elevated="true"/>
+        </fx:deploy>
+
+    </target>
+
+</project>
