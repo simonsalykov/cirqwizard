@@ -47,7 +47,7 @@ public class SerialInterfaceFactory
         while (e.hasMoreElements())
         {
             CommPortIdentifier port = (CommPortIdentifier) e.nextElement();
-            if (port.getName().startsWith("/dev/tty.usbserial") || port.getName().startsWith("/dev/ttyUSB"))
+            if (port.getName().startsWith("tty.usbserial") || port.getName().startsWith("ttyUSB"))
                 return new SerialInterfaceImpl(port.getName(), 38400);
         }
 
