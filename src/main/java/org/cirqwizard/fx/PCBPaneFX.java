@@ -19,6 +19,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -353,7 +354,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         }
     }
 
-    public void setSelection(double x, double y, double width, double height)
+    public void setSelection(Point2D point, double width, double height)
     {
         if (selectionRectangle != null)
             getChildren().remove(selectionRectangle);
@@ -361,8 +362,8 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         selectionRectangle.setStrokeWidth(0.5);
         selectionRectangle.getStyleClass().add("pcb-selection-rect");
         // It seems that in this case transforms get converted to int somewhere down the road. So can't use them here
-        selectionRectangle.setX(x * scaleProperty().getValue());
-        selectionRectangle.setY((-y - height + boardHeight) * scaleProperty().getValue());
+        selectionRectangle.setX(point.getX() * scaleProperty().getValue());
+        selectionRectangle.setY((-point.getY() - height + boardHeight) * scaleProperty().getValue());
         selectionRectangle.setWidth(width * scaleProperty().getValue());
         selectionRectangle.setHeight(height * scaleProperty().getValue());
         getChildren().add(selectionRectangle);

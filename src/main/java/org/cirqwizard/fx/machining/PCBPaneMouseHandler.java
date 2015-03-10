@@ -30,7 +30,8 @@ import java.util.ArrayList;
 public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
 {
     private PCBPaneFX pcbPane;
-    private Point2D clickPoint;
+    private Point2D startPoint;
+    private Point2D startPointNonFlipped;
     private ToolpathGenerationService service;
 
     public PCBPaneMouseHandler(PCBPaneFX pcbPane)
@@ -43,10 +44,12 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
     {
         if (!event.isShortcutDown())
         {
+            Point2D ePoint = new Point2D(event.getX(), event.getY());
             if (event.getEventType().equals(MouseEvent.MOUSE_PRESSED))
             {
-                clickPoint = toPCBCoordinates(new Point2D(event.getX(), event.getY()));
-                pcbPane.setSelection(clickPoint.getX(), clickPoint.getY(), 0, 0);
+                startPoint = toPCBCoordinates(ePoint, pcbPane.isFlipHorizontal());
+                startPointNonFlipped = toPCBCoordinates(ePoint, false);
+                pcbPane.setSelection(startPointNonFlipped, 0, 0);
                 ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
                 for (Toolpath toolpath : service.getValue())
                 {
@@ -59,21 +62,24 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
             }
             else if (event.getEventType().equals(MouseEvent.MOUSE_DRAGGED))
             {
-                Point2D eventPoint = toPCBCoordinates(new Point2D(event.getX(), event.getY()));
+                Point2D dragPoint = toPCBCoordinates(ePoint, pcbPane.isFlipHorizontal());
+                Point2D dragPointNonFlipped = toPCBCoordinates(ePoint, false);
                 ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
                 for (Toolpath toolpath : service.getValue())
                 {
                     Shape shape = createShapeForToolpath((CuttingToolpath) toolpath);
                     shape.setPickOnBounds(false);
-                    boolean selected = shape.intersects(Math.min(eventPoint.getX(), clickPoint.getX()), Math.min(eventPoint.getY(), clickPoint.getY()),
-                            Math.abs(eventPoint.getX() - clickPoint.getX()), Math.abs(eventPoint.getY() - clickPoint.getY()));
+                    boolean selected = shape.intersects(Math.min(dragPoint.getX(), startPoint.getX()), Math.min(dragPoint.getY(), startPoint.getY()),
+                            Math.abs(dragPoint.getX() - startPoint.getX()), Math.abs(dragPoint.getY() - startPoint.getY()));
                     if (toolpath.isSelected() != selected)
                         changedToolpaths.add(toolpath);
                     toolpath.setSelected(selected);
                 }
                 pcbPane.repaint(changedToolpaths);
-                pcbPane.setSelection(Math.min(eventPoint.getX(), clickPoint.getX()), Math.min(eventPoint.getY(), clickPoint.getY()),
-                        Math.abs(eventPoint.getX() - clickPoint.getX()), Math.abs(eventPoint.getY() - clickPoint.getY()));
+                pcbPane.setSelection(new Point2D(Math.min(dragPointNonFlipped.getX(), startPointNonFlipped.getX()),
+                                Math.min(dragPointNonFlipped.getY(), startPointNonFlipped.getY())),
+                        Math.abs(dragPointNonFlipped.getX() - startPointNonFlipped.getX()),
+                        Math.abs(dragPointNonFlipped.getY() - startPointNonFlipped.getY()));
                 event.consume();
             }
         }
@@ -119,8 +125,9 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
         this.service = service;
     }
 
-    public Point2D toPCBCoordinates(Point2D point)
+    public Point2D toPCBCoordinates(Point2D point, boolean flipX)
     {
-        return new Point2D(point.getX() / pcbPane.scaleProperty().getValue(), (point.getY() - pcbPane.getHeight()) / -pcbPane.scaleProperty().getValue());
+        return new Point2D((point.getX() - (flipX ? pcbPane.getWidth() : 0)) / pcbPane.scaleProperty().getValue() * (flipX ? -1 : 1),
+                (point.getY() - pcbPane.getHeight()) / -pcbPane.scaleProperty().getValue());
     }
 }
