@@ -11,9 +11,9 @@
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
-<AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <Label fx:id="header" layoutX="60.0" layoutY="45.0" styleClass="h1" text="Placing component" />
+    <Label fx:id="header" layoutX="60.0" layoutY="45.0" styleClass="h1" text="Placing component" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="20.0" />
     <Label layoutX="90.0" layoutY="140.0" prefHeight="90.0" prefWidth="555.0" text="Put a reel with components on a components panel and select components panel size, row on the panel and components pitch in the reel below. If you don't want to place this component, just click Continue." wrapText="true" />
     <TitledPane animated="false" collapsible="false" layoutX="57.0" layoutY="337.0" text="Components panel">
       <content>
@@ -35,7 +35,7 @@
       </content>
     </TitledPane>
     <Label layoutX="265.0" layoutY="383.0" text="Row" />
-    <ComboBox fx:id="row" layoutX="312.0" layoutY="382.0"/>
+    <ComboBox fx:id="row" layoutX="312.0" layoutY="382.0" />
     <Label layoutX="265.0" layoutY="426.0" text="Component pitch" />
     <RealNumberTextField fx:id="pitch" layoutX="411.0" layoutY="426.0" prefWidth="60.0" />
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">

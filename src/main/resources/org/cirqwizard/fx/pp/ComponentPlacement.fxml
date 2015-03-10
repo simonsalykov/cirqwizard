@@ -15,7 +15,7 @@
 <AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <Label layoutX="50.0" layoutY="40.0" styleClass="h1" text="Placing component" />
-    <Label fx:id="header" layoutX="50.0" layoutY="80.0" styleClass="h1" text="Placing component" />
+    <Label fx:id="header" layoutX="50.0" layoutY="80.0" styleClass="h1" text="Placing component" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="220.0" />
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
       <children>
         <Button id="continueButton" defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
@@ -24,7 +24,7 @@
     <HBox id="HBox" alignment="CENTER" layoutX="53.0" layoutY="150.0" spacing="5.0">
       <children>
         <Label text="Component being placed" />
-        <ComboBox fx:id="componentName" prefWidth="200.0"/>
+        <ComboBox fx:id="componentName" prefWidth="200.0" />
       </children>
     </HBox>
     <TitledPane animated="false" collapsible="false" layoutY="40.0" text="Target" AnchorPane.rightAnchor="20.0">
