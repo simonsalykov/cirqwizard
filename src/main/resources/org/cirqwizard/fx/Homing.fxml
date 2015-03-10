@@ -7,15 +7,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
+<AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
   <children>
     <Label layoutX="69.0" layoutY="122.0" styleClass="h1" text="The machine needs to be homed." />
-    <Label layoutY="173.0" prefHeight="75.0" prefWidth="598.0" text="Homing is needed to establish zero points of the machine. Press Home button below to home the machine. If you know it's already homed you can skip this and press continue right away." wrapText="true" AnchorPane.leftAnchor="93.0" AnchorPane.rightAnchor="109.0" />
+    <Label layoutY="173.0" text="Homing is needed to establish zero points of the machine. Press Home button below to home the machine. If you know it's already homed you can skip this and press continue right away." wrapText="true" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" />
     <Button fx:id="homeButton" layoutX="69.0" layoutY="269.0" mnemonicParsing="false" onAction="#home" text="Home" />
     <HBox id="HBox" alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="28.0" AnchorPane.rightAnchor="37.0">
       <children>
         <Button defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" />
       </children>
     </HBox>
+      <VBox fx:id="axisDifferenceWarningBox" layoutX="75.0" layoutY="350.0" spacing="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0">
+         <children>
+            <Label styleClass="error-message" text="&quot;Y axis difference&quot; setting is empty. Homing may fail or the machine may not function as expected." wrapText="true" VBox.vgrow="ALWAYS" />
+            <Hyperlink text="Take me to the settings" onAction="#goToSettings"/>
+         </children>
+      </VBox>
   </children>
 </AnchorPane>

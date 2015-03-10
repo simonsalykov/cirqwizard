@@ -16,12 +16,15 @@ package org.cirqwizard.fx;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import org.cirqwizard.fx.misc.SettingsEditor;
 import org.cirqwizard.settings.SettingsFactory;
 
 
 public class Homing extends ScreenController
 {
     @FXML private Button homeButton;
+    @FXML private VBox axisDifferenceWarningBox;
 
     @Override
     protected String getFxmlName()
@@ -39,11 +42,17 @@ public class Homing extends ScreenController
     public void refresh()
     {
         homeButton.setDisable(getMainApplication().getCNCController() == null);
+        axisDifferenceWarningBox.setVisible(SettingsFactory.getMachineSettings().getYAxisDifference().getValue() == null);
     }
 
     public void home()
     {
         getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
+    }
+
+    public void goToSettings()
+    {
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditor.class));
     }
 
 
