@@ -72,6 +72,8 @@ public class PCBPaneFX extends javafx.scene.layout.Region
     private Color gerberColor = TOP_TRACE_COLOR;
     private Color toolpathColor = ENABLED_TOOLPATH_COLOR;
 
+    private boolean flipHorizontal = false;
+
     public PCBPaneFX()
     {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PcbPane.fxml"));
@@ -112,6 +114,17 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         this.toolpathColor = toolpathColor;
     }
 
+    public boolean isFlipHorizontal()
+    {
+        return flipHorizontal;
+    }
+
+    public void setFlipHorizontal(boolean flipHorizontal)
+    {
+        this.flipHorizontal = flipHorizontal;
+        repaint();
+    }
+
     public void repaint()
     {
         getChildren().remove(canvas);
@@ -134,8 +147,8 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         g.setStroke(PCB_BORDER);
         g.setLineWidth(1);
         g.strokeRect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
-        g.scale(scaleProperty.getValue(), -scaleProperty.getValue());
-        g.translate(0, -boardHeight);
+        g.scale(scaleProperty.getValue() * (flipHorizontal ? -1 : 1), -scaleProperty.getValue());
+        g.translate(flipHorizontal ? -boardWidth : 0, -boardHeight);
         if (gerberPrimitives != null)
             for (GerberPrimitive primitive : gerberPrimitives)
                 renderPrimitive(g, primitive);

@@ -68,16 +68,22 @@
                                 </Button>
                             </children>
                         </HBox>
-                        <ImageView id="zoom-in" layoutX="40.0" layoutY="70.0" onMouseClicked="#zoomIn"
+                        <ImageView id="zoom-in" layoutX="40.0" layoutY="70.0" fitWidth="24" fitHeight="24" onMouseClicked="#zoomIn"
                                    pickOnBounds="true">
                             <image>
                                 <Image url="@../icons/zoom-in.png" preserveRatio="true" smooth="true"/>
                             </image>
                         </ImageView>
-                        <ImageView id="zoom-out" layoutX="40.0" layoutY="110.0" onMouseClicked="#zoomOut"
+                        <ImageView id="zoom-out" layoutX="40.0" layoutY="110.0" fitWidth="24" fitHeight="24" onMouseClicked="#zoomOut"
                                    pickOnBounds="true">
                             <image>
                                 <Image url="@../icons/zoom-out.png" preserveRatio="true" smooth="true"/>
+                            </image>
+                        </ImageView>
+                        <ImageView id="zoom-out" layoutX="40.0" layoutY="150.0" fitWidth="24" fitHeight="24" onMouseClicked="#flipHorizontal"
+                                   pickOnBounds="true">
+                            <image>
+                                <Image url="@../icons/flip-horizontal.png" preserveRatio="true" smooth="true"/>
                             </image>
                         </ImageView>
                     </children>

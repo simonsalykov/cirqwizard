@@ -124,6 +124,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
         private final KeyCombination keySelectAll = new KeyCodeCombination(KeyCode.A, KeyCombination.SHORTCUT_DOWN);
         private final KeyCodeCombination keyZoomIn = new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHORTCUT_DOWN);
         private final KeyCodeCombination keyZoomOut = new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN);
+        private final KeyCodeCombination keyFlipHorizontal = new KeyCodeCombination(KeyCode.M, KeyCombination.SHORTCUT_DOWN);
 
         @Override
         public void handle(KeyEvent event)
@@ -153,6 +154,11 @@ public abstract class Machining extends SettingsDependentScreenController implem
             else if (keyZoomOut.match(event))
             {
                 zoomOut();
+                event.consume();
+            }
+            else if (keyFlipHorizontal.match(event))
+            {
+                flipHorizontal();
                 event.consume();
             }
         }
@@ -218,6 +224,11 @@ public abstract class Machining extends SettingsDependentScreenController implem
         scale = Math.max(scale, 0.005);
         scale = Math.min(scale, 1);
         pcbPane.scaleProperty().setValue(scale);
+    }
+
+    public void flipHorizontal()
+    {
+        pcbPane.setFlipHorizontal(!pcbPane.isFlipHorizontal());
     }
 
     protected abstract Layer getCurrentLayer();
