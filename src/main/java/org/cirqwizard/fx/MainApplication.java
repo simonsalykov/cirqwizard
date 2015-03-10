@@ -68,7 +68,7 @@ public class MainApplication extends Application
             }
         }.setMainApplication(this).
         addChild(new PCBPlacement().setMainApplication(this)).
-        addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings()).setMainApplication(this)).
+        addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings(), SettingsFactory.getRubOutSettings()).setMainApplication(this)).
         addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
                 addChild(new InsertTool().setMainApplication(this)).
                 addChild(new ZOffset().setMainApplication(this)).
@@ -93,7 +93,7 @@ public class MainApplication extends Application
             }
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
-            addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings()).setMainApplication(this)).
+            addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings(), SettingsFactory.getRubOutSettings()).setMainApplication(this)).
             addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
                             addChild(new InsertTool().setMainApplication(this)).
                             addChild(new ZOffset().setMainApplication(this)).

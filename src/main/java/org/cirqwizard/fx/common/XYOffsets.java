@@ -41,7 +41,7 @@ import java.util.ResourceBundle;
 
 public class XYOffsets extends ScreenController implements Initializable
 {
-    private SettingsGroup settingsGroup;
+    private SettingsGroup[] settingsGroups;
     @FXML private RealNumberTextField x;
     @FXML private RealNumberTextField y;
 
@@ -60,9 +60,9 @@ public class XYOffsets extends ScreenController implements Initializable
 
     private Canvas offsetImageCanvas;
 
-    public XYOffsets(SettingsGroup settingsGroup)
+    public XYOffsets(SettingsGroup... settingsGroup)
     {
-        this.settingsGroup = settingsGroup;
+        this.settingsGroups = settingsGroup;
     }
 
     @Override
@@ -81,7 +81,10 @@ public class XYOffsets extends ScreenController implements Initializable
     protected boolean isMandatory()
     {
         Context context = getMainApplication().getContext();
-        return context.getG54X() == null || context.getG54Y() == null || settingsGroup.validate() != null;
+        for (SettingsGroup g : settingsGroups)
+            if (g.validate() != null)
+                return true;
+        return context.getG54X() == null || context.getG54Y() == null;
     }
 
     @Override
@@ -131,9 +134,12 @@ public class XYOffsets extends ScreenController implements Initializable
             missingSetting = "The following setting is not set: Application -> " + missingSetting;
         else
         {
-            missingSetting = settingsGroup.validate();
-            if (missingSetting != null)
-                missingSetting = "The following setting is not set: " + settingsGroup.getName() + " -> " + missingSetting;
+            for (SettingsGroup g : settingsGroups)
+            {
+                missingSetting = g.validate();
+                if (missingSetting != null)
+                    missingSetting = "The following setting is not set: " + g.getName() + " -> " + missingSetting;
+            }
         }
         settingsMissingErrorPane.setVisible(missingSetting != null);
         missingSettingLabel.setText(missingSetting);
