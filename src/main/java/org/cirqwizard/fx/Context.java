@@ -23,6 +23,8 @@ import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Context
@@ -47,6 +49,7 @@ public class Context
     private Feeder feeder;
     private int feederRow;
     private Integer componentPitch;
+    private Map<String, Integer> pitchCache;
 
     public PCBLayout getPcbLayout()
     {
@@ -73,6 +76,7 @@ public class Context
         feeder = null;
         feederRow = 0;
         componentPitch = 0;
+        pitchCache = new HashMap<>();
         pcbLayout.setValue(new PCBLayout());
         pcbLayout.getValue().setFile(file);
     }
@@ -205,5 +209,15 @@ public class Context
     public void setComponentPitch(int componentPitch)
     {
         this.componentPitch = componentPitch;
+    }
+
+    public Integer getPitchFromCache(String componentPackage)
+    {
+        return pitchCache.get(componentPackage);
+    }
+
+    public void savePitchToCache(String componentPackage, Integer pitch)
+    {
+        pitchCache.put(componentPackage, pitch);
     }
 }

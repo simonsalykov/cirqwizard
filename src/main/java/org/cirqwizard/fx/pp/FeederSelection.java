@@ -91,7 +91,7 @@ public class FeederSelection extends ScreenController implements Initializable
             largeFeeder.setSelected(true);
         updateRows();
 
-        pitch.setIntegerValue(context.getComponentPitch() == null ? null : context.getComponentPitch());
+        pitch.setIntegerValue(context.getPitchFromCache(id.getPackaging()));
     }
 
     public void updateRows()
@@ -127,6 +127,7 @@ public class FeederSelection extends ScreenController implements Initializable
         else if (largeFeeder.isSelected())
             context.setFeeder(Feeder.LARGE);
         context.setComponentPitch(pitch.getIntegerValue());
+        context.savePitchToCache(context.getCurrentComponent().getPackaging(), pitch.getIntegerValue());
         context.setFeederRow(row.getValue() - 1);
         super.next();
     }
