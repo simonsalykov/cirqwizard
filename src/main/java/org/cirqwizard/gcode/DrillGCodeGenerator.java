@@ -61,6 +61,8 @@ public class DrillGCodeGenerator
             postprocessor.linearInterpolation(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), drillingDepth, feed);
             postprocessor.rapid(str, null, null, clearance);
         }
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
         postprocessor.spindleOff(str);
 
         return str.toString();

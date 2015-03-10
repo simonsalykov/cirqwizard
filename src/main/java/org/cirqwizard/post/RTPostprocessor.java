@@ -46,9 +46,17 @@ public class RTPostprocessor implements Postprocessor
         str.append('\n');
     }
 
+    private void resetCoordinates()
+    {
+        x = null;
+        y = null;
+        z = null;
+    }
+
     @Override
     public void selectMachineWS(StringBuilder str)
     {
+        resetCoordinates();
         str.append("G53\n");
     }
 
@@ -65,6 +73,7 @@ public class RTPostprocessor implements Postprocessor
     @Override
     public void selectWCS(StringBuilder str)
     {
+        resetCoordinates();
         str.append("G54\n");
     }
 

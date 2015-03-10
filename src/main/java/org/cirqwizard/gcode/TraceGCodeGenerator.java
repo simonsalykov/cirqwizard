@@ -111,7 +111,8 @@ public class TraceGCodeGenerator
             }
             prevLocation = curve.getTo();
         }
-        postprocessor.rapid(str, null, null, clearance);
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
         postprocessor.spindleOff(str);
         postprocessor.footer(str);
 

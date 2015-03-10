@@ -35,16 +35,19 @@ public class PasteGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
         postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
-        postprocessor.rapid(str, null, null, clearance);
+        boolean firstPad = true;
         for (Toolpath toolpath : context.getPcbLayout().getSolderPasteLayer().getToolpaths())
         {
             if (!toolpath.isEnabled())
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
-            postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), clearance);
+            postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), firstPad ? null : clearance);
+            firstPad = false;
             postprocessor.rapid(str, null, null, workingHeight);
             postprocessor.syringeOn(str);
             postprocessor.pause(str, preFeedPause);
@@ -54,6 +57,8 @@ public class PasteGCodeGenerator
             postprocessor.pause(str, postFeedPause);
             postprocessor.rapid(str, null, null, clearance);
         }
+        postprocessor.selectMachineWS(str);
+        postprocessor.rapid(str, null, null, 0);
         postprocessor.footer(str);
 
         return str.toString();
