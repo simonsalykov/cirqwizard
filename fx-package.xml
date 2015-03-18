@@ -1,15 +1,17 @@
 <project name="cirqwizard" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
 
-    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
-             uri="javafx:com.sun.javafx.tools.ant"
-             classpath="${java.home}/../lib/ant-javafx.jar:${applicationResources}"/>
-    <fx:application id="cirQWizard"
-                    name="cirQWizard"
-                    version = "${applicationVersion}"
-                    mainClass="org.cirqwizard.fx.MainApplication" />
-
 
     <target name="fx_jar">
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+                 uri="javafx:com.sun.javafx.tools.ant"
+                 classpath="${java.home}/../lib/ant-javafx.jar:${applicationResources}"/>
+
+        <fx:application id="cirQWizard"
+                        name="cirQWizard"
+                        version = "${applicationVersion}"
+                        mainClass="org.cirqwizard.fx.MainApplication" />
+
+        <echo message="res: ${applicationResources} "/>
         <fx:jar destfile="${distDir}/${distName}">
             <fx:application refid="cirQWizard"/>
             <fx:resources>
@@ -26,6 +28,15 @@
     </target>
 
     <target name="fx_bundle">
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+                 uri="javafx:com.sun.javafx.tools.ant"
+                 classpath="${java.home}/../lib/ant-javafx.jar:${applicationResources}"/>
+
+        <fx:application id="cirQWizard"
+                        name="cirQWizard"
+                        version = "${applicationVersion}"
+                        mainClass="org.cirqwizard.fx.MainApplication" />
+
         <fx:deploy width="800" height="600"
                    outdir="build/package" embedJNLP="true"
                    outfile="cirqwizard"
