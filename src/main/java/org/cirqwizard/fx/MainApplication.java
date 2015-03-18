@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -45,6 +46,8 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
 
@@ -163,7 +166,14 @@ public class MainApplication extends Application
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
-        connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
+            }
+        }.start();
 
         this.primaryStage = primaryStage;
         scene = new Scene(mainView.getView(), 800, 600);
