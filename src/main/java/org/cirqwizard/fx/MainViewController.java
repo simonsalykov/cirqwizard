@@ -172,6 +172,16 @@ public class MainViewController extends ScreenController
         manualControlPopOver.getPopOver().show(manualControlLink);
     }
 
+    public void enableManualControl()
+    {
+        manualControlLink.setDisable(false);
+    }
+
+    public void disableManualControl()
+    {
+        manualControlLink.setDisable(true);
+    }
+
     public void offsets()
     {
         if (offsetsPopOver.getPopOver() == null)

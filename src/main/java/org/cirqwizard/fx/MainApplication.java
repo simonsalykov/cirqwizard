@@ -166,14 +166,7 @@ public class MainApplication extends Application
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
-            }
-        }.start();
+        connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 
         this.primaryStage = primaryStage;
         scene = new Scene(mainView.getView(), 800, 600);
@@ -225,33 +218,42 @@ public class MainApplication extends Application
 
     public void connectSerialPort(String port)
     {
-        try
+        new Thread()
         {
-            if (serialInterface != null)
-                serialInterface.close();
-            if (port != null && port.length() > 0)
-                serialInterface = new SerialInterfaceImpl(port, 38400);
-            else
-                serialInterface = SerialInterfaceFactory.autodetect();
-        }
-        catch (SerialException e)
-        {
-            LoggerFactory.logException("Can't connect to selected serial port - " + port, e);
-            try
+            @Override
+            public void run()
             {
-                serialInterface = SerialInterfaceFactory.autodetect();
-            }
-            catch (SerialException e1)
-            {
-                LoggerFactory.logException("Can't connect to any serial port", e);
-                serialInterface = null;
-            }
-        }
+                mainView.disableManualControl();
+                try
+                {
+                    if (serialInterface != null)
+                        serialInterface.close();
+                    if (port != null && port.length() > 0)
+                        serialInterface = new SerialInterfaceImpl(port, 38400);
+                    else
+                        serialInterface = SerialInterfaceFactory.autodetect();
+                }
+                catch (SerialException e)
+                {
+                    LoggerFactory.logException("Can't connect to selected serial port - " + port, e);
+                    try
+                    {
+                        serialInterface = SerialInterfaceFactory.autodetect();
+                    }
+                    catch (SerialException e1)
+                    {
+                        LoggerFactory.logException("Can't connect to any serial port", e);
+                        serialInterface = null;
+                    }
+                }
 
-        if (serialInterface == null)
-            cncController = null;
-        else
-            cncController = new CNCController(serialInterface, this);
+                if (serialInterface == null)
+                    cncController = null;
+                else
+                    cncController = new CNCController(serialInterface, MainApplication.this);
+                Platform.runLater(mainView::enableManualControl);
+            }
+        }.start();
     }
 
     @Override
