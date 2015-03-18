@@ -136,5 +136,23 @@ public class PPParserTest
         assertEquals("C1", p.getName());
     }
 
+    @Test
+    public void testDipTrace() throws IOException
+    {
+        String fileContent = "RefDes,Name,X (mm),Y (mm),Side,Rotate,Value\n" +
+                "C1,CAP_0603,47.72,18.42,Top,270,2.2uF";
+        String regex= "(?<name>\\S+),(?<package>.+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),Top,(?<angle>\\d+.?\\d*),(?<value>\\S*)";
+
+        PPParser parser = new PPParser(new StringReader(fileContent), regex);
+        List<PPPoint> points = parser.parse();
+
+        assertEquals(1, points.size());
+        PPPoint p = points.get(0);
+        assertEquals(new ComponentId("CAP_0603", "2.2uF"), p.getId());
+        assertEquals(new Point(47720, 18420), p.getPoint());
+        assertEquals(270000, p.getAngle());
+        assertEquals("C1", p.getName());
+    }
+
 
 }
