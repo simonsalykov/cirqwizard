@@ -416,6 +416,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         startMicroscopeThread();
     }
 
+    private static int webCamId = 0;
+
     private void startMicroscopeThread()
     {
         if (microscopeStreamRunning)
@@ -427,7 +429,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
             @Override
             public void run()
             {
-                Webcam webCam = Webcam.getWebcams().get(1);
+                Webcam webCam = Webcam.getWebcams().get(webCamId);
                 webCam.setCustomViewSizes(new Dimension[] {WebcamResolution.UXGA.getSize()});
                 webCam.setViewSize(WebcamResolution.UXGA.getSize());
                 webCam.open();
@@ -463,7 +465,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     private void stopMicroscopeThread()
     {
         microscopeStreamRunning = false;
-        new Thread(() -> Webcam.getWebcams().get(1).close()).start();
+        new Thread(() -> Webcam.getWebcams().get(webCamId).close()).start();
     }
 
     public void hideMicroscopePane()

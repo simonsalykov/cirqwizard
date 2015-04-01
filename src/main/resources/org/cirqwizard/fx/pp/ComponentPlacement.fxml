@@ -13,7 +13,6 @@
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
-<<<<<<< HEAD:src/org/cirqwizard/fx/pp/ComponentPlacement.fxml
 <StackPane fx:id="view" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <AnchorPane id="AnchorPane" fx:id="regularPane">

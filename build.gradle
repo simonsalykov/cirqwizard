@@ -14,6 +14,7 @@ repositories {
 dependencies {
     compile('org.controlsfx:controlsfx:8.0.6')
     compile('com.sparetimelabs:purejavacomm:0.0.22')
+    compile('com.github.sarxos:webcam-capture:0.3.10')
     testCompile ('junit:junit:4.11')
 }
 
