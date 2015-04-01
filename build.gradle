@@ -1,0 +1,70 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'org.cirqwizard.fx.MainApplication'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "http://www.sparetimelabs.com/maven2/"
+    }
+}
+
+dependencies {
+    compile('org.controlsfx:controlsfx:8.0.6')
+    compile('com.sparetimelabs:purejavacomm:0.0.22')
+    testCompile ('junit:junit:4.11')
+}
+
+jar {
+    baseName = 'cirqwizard'
+    version = releaseVersion
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
+
+task updateVersionFile() {
+    doLast() {
+        def versionFile = new File("src/main/resources/version.number")
+        versionFile.text = releaseVersion
+    }
+}
+
+compileJava.dependsOn = ['updateVersionFile']
+
+ant.mainClassName = mainClassName
+ant.fallbackClassName = 'com.javafx.main.NoJavaFXFallback'
+ant.distDir = libsDir
+ant.distName = jar.archiveName;
+ant.dependencies = configurations.runtime.asPath
+ant.applicationVersion = releaseVersion
+ant.applicationClasses = sourceSets.main.output.classesDir
+ant.applicationResources = sourceSets.main.output.resourcesDir
+ant.importBuild 'fx-package.xml'
+def depsDir = new File("build/package/libs")
+ant.dependenciesDir = depsDir
+
+jar {
+    actions = []
+
+    doLast {
+        depsDir.delete()
+        depsDir.mkdirs()
+
+        copy() {
+            from configurations.runtime
+            into 'build/package/libs'
+        }
+
+        fx_jar.execute()
+    }
+}
+
+task assembleNative(dependsOn: 'jar') {
+    doLast() {
+        fx_bundle.execute()
+    }
+}
