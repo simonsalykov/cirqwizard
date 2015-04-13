@@ -50,8 +50,8 @@ public class SerialInterfaceImpl implements SerialInterface
 
         portName = name;
         port = new SerialPort(portName);
-        port.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parity);
         port.openPort();
+        port.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parity);
     }
 
     public void setBootloaderMode(boolean bootloader) throws SerialException
@@ -128,14 +128,22 @@ public class SerialInterfaceImpl implements SerialInterface
 
         try
         {
-            port.purgePort(SerialPort.PURGE_RXCLEAR);
+            port.readBytes();
             port.writeString(command);
             port.writeString("\n");
             LoggerFactory.getSerialLogger().fine(command + "\n");
 
+            StringBuffer buffer = new StringBuffer();
             while (System.currentTimeMillis() < timeout)
             {
-                String str = port.readString();
+                String s = port.readString();
+                if (s == null)
+                {
+                    Thread.sleep(10);
+                    continue;
+                }
+                buffer.append(s);
+                String str = buffer.toString();
                 if (str.indexOf('\n') >= 0)
                 {
                     if (response != null)
@@ -151,7 +159,6 @@ public class SerialInterfaceImpl implements SerialInterface
                         throw new SerialException("Unexpected confirmation received from controller: " + str);
                     return;
                 }
-                Thread.sleep(10);
             }
         }
         catch (SerialPortException e)
