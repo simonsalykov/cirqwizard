@@ -15,40 +15,26 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.serial;
 
 
-import gnu.io.CommPortIdentifier;
+import jssc.SerialPortList;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class SerialInterfaceFactory
 {
 
-    public static ArrayList<String> getSerialInterfaces(SerialInterface currentSerialInterface)
+    public static List<String> getSerialInterfaces(SerialInterface currentSerialInterface)
     {
-        ArrayList<String> serialInterfaceList = new ArrayList<String>();
-        Enumeration e = CommPortIdentifier.getPortIdentifiers();
-        while (e.hasMoreElements())
-        {
-            CommPortIdentifier port = (CommPortIdentifier) e.nextElement();
-            if (port.getPortType() == CommPortIdentifier.PORT_SERIAL)
-                serialInterfaceList.add(port.getName());
-        }
-        // Linux bug - getPortIdentifiers() can't see ports being in use
-        if (currentSerialInterface != null && !serialInterfaceList.contains(currentSerialInterface.getPortName()))
-            serialInterfaceList.add(currentSerialInterface.getPortName());
-
-        return serialInterfaceList;
+        return Arrays.asList(SerialPortList.getPortNames());
     }
 
     public static SerialInterface autodetect() throws SerialException
     {
-        Enumeration e = CommPortIdentifier.getPortIdentifiers();
-        while (e.hasMoreElements())
+        for (String port : SerialPortList.getPortNames())
         {
-            CommPortIdentifier port = (CommPortIdentifier) e.nextElement();
-            if (port.getName().startsWith("tty.usbserial") || port.getName().startsWith("ttyUSB"))
-                return new SerialInterfaceImpl(port.getName(), 38400);
+            if (port.startsWith("tty.usbserial") || port.startsWith("ttyUSB"))
+                return new SerialInterfaceImpl(port, 38400);
         }
 
         return null;

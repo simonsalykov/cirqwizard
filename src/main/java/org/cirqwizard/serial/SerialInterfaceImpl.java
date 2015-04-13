@@ -15,11 +15,12 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.serial;
 
 
+import jssc.SerialPort;
+import jssc.SerialPortException;
+import jssc.SerialPortTimeoutException;
 import org.cirqwizard.logging.LoggerFactory;
-import gnu.io.*;
 
 import java.io.*;
-import java.util.TooManyListenersException;
 
 
 public class SerialInterfaceImpl implements SerialInterface
@@ -27,49 +28,30 @@ public class SerialInterfaceImpl implements SerialInterface
     private SerialPort port;
     private int baudrate;
     private String portName;
-    private InputStream inputStream;
-    private OutputStream outputStream;
+    private int timeout = -1;
 
     public SerialInterfaceImpl(String commPortName, int baudrate) throws SerialException
     {
+        this.baudrate = baudrate;
         try
         {
-            this.baudrate = baudrate;
             initUSART(commPortName, baudrate, SerialPort.PARITY_NONE);
         }
-        catch (NoSuchPortException e)
-        {
-            throw new SerialException(e);
-        }
-        catch (PortInUseException e)
-        {
-            throw new SerialException(e);
-        }
-        catch (IOException e)
-        {
-            throw new SerialException(e);
-        }
-        catch (UnsupportedCommOperationException e)
-        {
-            throw new SerialException(e);
-        }
-        catch (TooManyListenersException e)
+        catch (SerialPortException e)
         {
             throw new SerialException(e);
         }
     }
 
-    private void initUSART(String name, int baudrate, int parity) throws PortInUseException, IOException, UnsupportedCommOperationException, TooManyListenersException, NoSuchPortException
+    private void initUSART(String name, int baudrate, int parity) throws SerialPortException
     {
         if (port != null)
-            port.close();
+            port.closePort();
 
         portName = name;
-        CommPortIdentifier portId = CommPortIdentifier.getPortIdentifier(portName);
-        port = (SerialPort) portId.open(this.getClass().getName(), 5000);
-        inputStream = port.getInputStream();
-        outputStream = port.getOutputStream();
-        port.setSerialPortParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parity);
+        port = new SerialPort(portName);
+        port.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parity);
+        port.openPort();
     }
 
     public void setBootloaderMode(boolean bootloader) throws SerialException
@@ -78,8 +60,7 @@ public class SerialInterfaceImpl implements SerialInterface
         try
         {
             initUSART(portName, bootloader ? 57600 : baudrate, bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
-            if (bootloader)
-                port.enableReceiveTimeout(25000);
+            timeout = bootloader ? 25000 : -1;
         }
         catch (Exception e)
         {
@@ -89,29 +70,53 @@ public class SerialInterfaceImpl implements SerialInterface
 
     public void write(int b) throws IOException
     {
-        outputStream.write(b);
+        try
+        {
+            port.writeByte((byte) b);
+        }
+        catch (SerialPortException e)
+        {
+            throw new IOException(e);
+        }
     }
 
     @Override
     public void write(byte[] b) throws IOException
     {
-        outputStream.write(b);
+        try
+        {
+            port.writeBytes(b);
+        }
+        catch (SerialPortException e)
+        {
+            throw new IOException(e);
+        }
     }
 
     public int readByte() throws IOException
     {
-        return inputStream.read();
+        byte[] b;
+        try
+        {
+            if (timeout > 0)
+                b = port.readBytes(1, timeout);
+            else
+                b = port.readBytes(1);
+            return b[0];
+        }
+        catch (SerialPortException | SerialPortTimeoutException e)
+        {
+            throw new IOException(e);
+        }
     }
 
     public void close() throws SerialException
     {
         try
         {
-            inputStream.close();
-            outputStream.close();
-            port.close();
+            port.closePort();
         }
-        catch (IOException e)
+        catch (SerialPortException e)
         {
             throw new SerialException(e);
         }
@@ -119,26 +124,18 @@ public class SerialInterfaceImpl implements SerialInterface
 
     private void sendCommand(String command, long timeout, StringBuilder response, boolean suppressExceptions) throws SerialException, ExecutionException, InterruptedException
     {
-        timeout+= System.currentTimeMillis();
+        timeout += System.currentTimeMillis();
+
         try
         {
-            byte[] b = new byte[1024];
-            while (inputStream.available() > 0)
-            {
-                int i = inputStream.read(b);
-                LoggerFactory.getSerialLogger().fine(new String(b, 0, i));
-            }
-
-            outputStream.write((command).getBytes());
-            outputStream.write('\n');
+            port.purgePort(SerialPort.PURGE_RXCLEAR);
+            port.writeString(command);
+            port.writeString("\n");
             LoggerFactory.getSerialLogger().fine(command + "\n");
 
-            int offset = 0;
             while (System.currentTimeMillis() < timeout)
             {
-                if (inputStream.available() > 0)
-                    offset += inputStream.read(b, offset, b.length - offset);
-                String str = new String(b, 0, offset);
+                String str = port.readString();
                 if (str.indexOf('\n') >= 0)
                 {
                     if (response != null)
@@ -157,7 +154,7 @@ public class SerialInterfaceImpl implements SerialInterface
                 Thread.sleep(10);
             }
         }
-        catch (IOException e)
+        catch (SerialPortException e)
         {
             throw new SerialException(e);
         }
@@ -173,7 +170,6 @@ public class SerialInterfaceImpl implements SerialInterface
     {
         try
         {
-
             LineNumberReader reader = new LineNumberReader(new StringReader(str));
             String line;
             while ((line = reader.readLine()) != null)
