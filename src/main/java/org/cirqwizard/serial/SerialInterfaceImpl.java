@@ -16,7 +16,7 @@ package org.cirqwizard.serial;
 
 
 import org.cirqwizard.logging.LoggerFactory;
-import purejavacomm.*;
+import gnu.io.*;
 
 import java.io.*;
 import java.util.TooManyListenersException;

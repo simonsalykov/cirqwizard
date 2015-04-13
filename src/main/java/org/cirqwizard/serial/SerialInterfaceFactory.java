@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.serial;
 
 
-import purejavacomm.CommPortIdentifier;
+import gnu.io.CommPortIdentifier;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
