@@ -56,7 +56,6 @@ public class SerialInterfaceImpl implements SerialInterface
 
     public void setBootloaderMode(boolean bootloader) throws SerialException
     {
-        close();
         try
         {
             initUSART(portName, bootloader ? 57600 : baudrate, bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
