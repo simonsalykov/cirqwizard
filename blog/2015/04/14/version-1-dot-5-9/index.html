@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Version 1.5.2 - cirQWizard</title>
+  <title>Version 1.5.9 - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-2">
+  <link rel="canonical" href="http://cirqwizard.org//blog/2015/04/14/version-1-dot-5-9">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -108,7 +108,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">Version 1.5.2</h1>
+      <h1 class="entry-title">Version 1.5.9</h1>
     
     
       <p class="meta">
@@ -124,20 +124,17 @@
   
 
 
-<time datetime="2014-10-06T11:27:00+02:00" pubdate data-updated="true">Oct 6<span>th</span>, 2014</time>
+<time datetime="2015-04-14T17:26:00+02:00" pubdate data-updated="true">Apr 14<span>th</span>, 2015</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Version 1.5.2 fixes a couple of bugs:</p>
-Release Notes &#8211; cirQWizard &#8211; Version 1.5.2
-<h2>        Bug</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-135'>CQ-135</a>] &#8211;         Incorrect tool paths generation with clear polarity layers in gerber</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-136'>CQ-136</a>] &#8211;         Excellon files with explicitly specified positive coordinate are not parsed</li>
-</ul></div>
+<div class="entry-content"><p>This release includes several important under-the-hood refactorings.</p>
+<p>Ant, which we were using as a build system, started to show its age. So we migrated to gradle. As Oracle only supports ant for building native packages, took some fiddling around to get everything working on all OSes.</p>
+<p>Serial port library <span class="caps">RXTX</span> was replaced with <span class="caps">JSSC</span>. This allowed us to finally release 64 bit versions of cirQWizard for Windows and Linux.</p>
+<p>Other than that, there are some minor tweaks and fixes here and there &#8211; checkout out the <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12501">release notes</a></p></div>
 
 
   <footer>
@@ -170,14 +167,10 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.2
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/09/29/version-1-dot-5-1/" title="Previous Post:
-        Version 1.5.1">&laquo; Version 1.5.1</a></li>
+        href="/blog/2015/03/02/versions-1-dot-5-6-1-dot-5-8/" title="Previous Post:
+        Versions 1.5.6-1.5.8">&laquo; Versions 1.5.6-1.5.8</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/10/06/version-1-dot-5-3/"
-        title="Next Post: Version 1.5.3">Version 1.5.3
-        &raquo;</a></li>
       
     </ul>
   </footer>
@@ -236,8 +229,8 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.2
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-2/';
-        var disqus_url = 'http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-2/';
+        var disqus_identifier = 'http://cirqwizard.org//blog/2015/04/14/version-1-dot-5-9/';
+        var disqus_url = 'http://cirqwizard.org//blog/2015/04/14/version-1-dot-5-9/';
         var disqus_script = 'embed.js';
       
     (function () {

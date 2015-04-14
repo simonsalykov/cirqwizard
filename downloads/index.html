@@ -110,7 +110,7 @@
     
   </header>
   
-  <h3>Latest version &#8211; 1.5.8</h3>
+  <h3>Latest version &#8211; 1.5.9</h3>
 <table class="table table-bordered ">
 	<tr>
 		<th>OS </th>
@@ -118,24 +118,25 @@
 	</tr>
 	<tr>
 		<td> Mac OS X </td>
-		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.8/cirQWizard-1.5.8.dmg">cirqwizard-1.5.8.dmg</a> </td>
+		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.9/cirQWizard-1.5.9.dmg">cirqwizard-1.5.9.dmg</a> </td>
 	</tr>
 	<tr>
-		<td> Windows </td>
-		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.8/cirQWizard-1.5.8.exe">cirqwizard-1.5.8.exe</a> </td>
+		<td> Windows 32-bit </td>
+		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.9/cirQWizard-1.5.9-x86.exe">cirqwizard-1.5.9-x84.exe</a> </td>
 	</tr>
 	<tr>
-		<td> Linux </td>
-		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.8/cirQWizard-1.5.8.deb">cirqwizard-1.5.8.deb</a> </td>
+		<td> Windows 64-bit </td>
+		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.9/cirQWizard-1.5.9-x64.exe">cirqwizard-1.5.9-x64.exe</a> </td>
+	</tr>
+	<tr>
+		<td> Linux 32-bit </td>
+		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.9/cirQWizard-1.5.9-x86.deb">cirqwizard-1.5.9-x86.deb</a> </td>
+	</tr>
+	<tr>
+		<td> Linux 64-bit </td>
+		<td> <a href="https://github.com/simonsalykov/cirqwizard/releases/download/v1.5.9/cirQWizard-1.5.9-x64.deb">cirqwizard-1.5.9-x64.deb</a> </td>
 	</tr>
 </table>
-<h3>A note for our Mac OS X users</h3>
-<p>On OS X cirQWizard needs directory /var/lock with write permissions. It can be created using the following commands in the terminal:</p>
-<blockquote>
-<p>mkdir /var/lock<br />
-sudo chmod a+rw /var/lock</p>
-</blockquote>
-<p>This will be taken care of in the future releases of cirQWizard.</p>
 <h3>Source code</h3>
 <p>The source code is available at git repository here: <a href="https://github.com/simonsalykov/cirqwizard">https://github.com/simonsalykov/cirqwizard</a></p>
 <p>To get yourself the latest version of source code clone it with the following command:</p>
@@ -143,14 +144,15 @@ sudo chmod a+rw /var/lock</p>
 <p>git clone https://github.com/simonsalykov/cirqwizard.git</p>
 </blockquote>
 <p>The code is provided on <a href="http://www.gnu.org/copyleft/gpl.html"><span class="caps">GPL</span> v3</a> license basis.</p>
-<p>The easiest way to build sources is to use <a href="http://ant.apache.org">Apache Ant</a> To compile the project run:</p>
+<p>The easiest way to build sources is to use supplied gradle wrapper:</p>
 <blockquote>
-<p>ant compile</p>
+<p>./gradlew build</p>
 </blockquote>
 <p>and to run the application:</p>
 <blockquote>
-<p>ant run</p>
+<p>./gradlew run</p>
 </blockquote>
+<p>The recommended Java version is 1.8.0_11. Source code uses Java 8 language features, so it won&#8217;t compile on anything lower than 1.8, and because of some ongoing JavaFX work in 1.8 versions, we chose to freeze the <span class="caps">JDK</span> at build 11 &#8211; it will compile, but won&#8217;t work with newer JDKs.</p>
   
     <footer>
       
