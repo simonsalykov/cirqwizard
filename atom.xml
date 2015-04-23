@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2015-04-14T17:41:20+02:00</updated>
+  <updated>2015-04-23T13:08:39+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.10]]></title>
+    <link href="http://cirqwizard.org//blog/2015/04/23/version-1-dot-5-10/"/>
+    <updated>2015-04-23T13:05:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2015/04/23/version-1-dot-5-10</id>
+    <content type="html"><![CDATA[<p>This release fixes just one bug introduced in the previous version &#8211; there was an issue with serial ports which made the program unusable under certain circumstances.</p>
+<p>Here are the <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12600">release notes</a></p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.9]]></title>
