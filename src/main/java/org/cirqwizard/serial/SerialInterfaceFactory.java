@@ -33,7 +33,7 @@ public class SerialInterfaceFactory
     {
         for (String port : SerialPortList.getPortNames())
         {
-            if (port.startsWith("tty.usbserial") || port.startsWith("ttyUSB"))
+            if (port.startsWith("/dev/tty.usbserial") || port.startsWith("/dev/ttyUSB"))
                 return new SerialInterfaceImpl(port, 38400);
         }
 
