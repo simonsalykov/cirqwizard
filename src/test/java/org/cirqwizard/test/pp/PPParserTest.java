@@ -155,4 +155,23 @@ public class PPParserTest
     }
 
 
+    @Test
+    public void testEasyPC() throws IOException
+    {
+        String fileContent = "name,x,y,angle,value,package\n" +
+                "C1,40.147,19.883,270.00,100nF,CAP-0805-100nF-10%-X7R\n";
+        String regex= "(?<name>\\S+),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*),(?<value>\\S*),(?<package>.*)";
+
+        PPParser parser = new PPParser(new StringReader(fileContent), regex);
+        List<PPPoint> points = parser.parse();
+
+        assertEquals(1, points.size());
+        PPPoint p = points.get(0);
+        assertEquals(new ComponentId("CAP-0805-100nF-10%-X7R", "100nF"), p.getId());
+        assertEquals(new Point(40147, 19883), p.getPoint());
+        assertEquals(270000, p.getAngle());
+        assertEquals("C1", p.getName());
+    }
+
+
 }
