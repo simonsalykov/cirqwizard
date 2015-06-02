@@ -302,11 +302,27 @@
 	</tr>
 	<tr>
 		<td> Altium </td>
-		<td> (?&lt;name&gt;\S+)\s+(?&lt;package&gt;\S+)\s+(?&lt;x&gt;\d+.?\d*)mm\s+(?&lt;y&gt;\d+.?\d*)mm\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+(?&lt;angle&gt;\d+.\d*)\s+(?&lt;value&gt;\S+)\s* </td>
+		<td> (?&lt;name&gt;\S+)\s+(?&lt;package&gt;\S+)\s+(?&lt;x&gt;-?\d+.?\d*)mm\s+(?&lt;y&gt;-?\d+.?\d*)mm\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+(?&lt;angle&gt;-?\d+.\d*)\s+(?&lt;value&gt;\S+)\s* </td>
 	</tr>
 	<tr>
 		<td> UltiBoard </td>
 		<td> &#8220;(?&lt;name&gt;\S+)&#8221;,&#8220;(?&lt;value&gt;\S+)&#8221;,&#8220;(?&lt;package&gt;\S+)&#8221;,&#8220;(?&lt;x&gt;\d+.?\d*)&#8221;,&#8220;(?&lt;y&gt;\d+.?\d*)&#8221;,&#8220;(?&lt;angle&gt;\d+)&#8221;,&#8220;<span class="caps">TOP</span>&#8221;,&#8220;<span class="caps">SMD</span>&#8221; </td>
+	</tr>
+	<tr>
+		<td> DesignSpark </td>
+		<td> &#8220;(?&lt;name&gt;\S+)&#8221;,&#8220;(?&lt;package&gt;\S+)&#8221;,&#8220;Top&#8221;,&#8220;(?&lt;x&gt;\d+.?\d*)&#8221;,&#8220;(?&lt;y&gt;\d+.?\d*)&#8221;,&#8220;(?&lt;angle&gt;\d+.?\d*)&#8221;(?&lt;value&gt;.*) </td>
+	</tr>
+	<tr>
+		<td> KiCAD </td>
+		<td> (?&lt;name&gt;\S+),.<strong>,(?&lt;value&gt;.<ins>?),(?&lt;package&gt;\S</ins>?),(?&lt;x&gt;-?\d+.?\d</strong>),(?&lt;y&gt;-?\d+.?\d*),(?&lt;angle&gt;\d+.?\d*) </td>
+	</tr>
+	<tr>
+		<td> DipTrace </td>
+		<td> (?&lt;name&gt;\S+),(?&lt;package&gt;.<ins>?),(?&lt;x&gt;-?\d</ins>.?\d*),(?&lt;y&gt;-?\d+.?\d*),Top,(?&lt;angle&gt;\d+.?\d*),(?&lt;value&gt;\S*) </td>
+	</tr>
+	<tr>
+		<td> EasyPC </td>
+		<td> (?&lt;name&gt;\S+),(?&lt;x&gt;-?\d+.?\d*),(?&lt;y&gt;-?\d+.?\d*),(?&lt;angle&gt;\d+.?\d*),(?&lt;value&gt;\S*),(?&lt;package&gt;.*) </td>
 	</tr>
 </table>
 <p>Application logs can be found in temporary directory, which is OS dependent.</p>
