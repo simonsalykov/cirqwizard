@@ -25,6 +25,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.*;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
@@ -45,14 +46,14 @@ public abstract class Machining extends SettingsDependentScreenController implem
     @FXML protected Button goButton;
 
     @FXML protected Region veil;
-    @FXML protected AnchorPane gcodePane;
+    @FXML protected VBox gcodePane;
     @FXML protected TextArea gcodeListing;
 
-    @FXML protected BorderPane executionPane;
+    @FXML protected VBox executionPane;
     @FXML protected ProgressBar executionProgressBar;
     @FXML protected Label timeElapsedLabel;
 
-    @FXML protected BorderPane generationPane;
+    @FXML protected VBox generationPane;
     @FXML protected Label generationStageLabel;
     @FXML protected ProgressBar overallProgressBar;
     @FXML protected Label machiningTimeEstimationLabel;
@@ -146,7 +147,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
                 selectAll();
                 event.consume();
             }
-            else if (keyZoomIn.match(event) && ("+".equals(event.getText()) || !System.getProperty("os.name").startsWith("Mac"))) // Workaround for PCBCAM-95 and CQ-86
+            else if (keyZoomIn.match(event))
             {
                 zoomIn();
                 event.consume();
