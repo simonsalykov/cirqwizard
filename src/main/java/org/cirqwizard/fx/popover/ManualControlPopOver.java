@@ -63,7 +63,7 @@ public class ManualControlPopOver extends PopOverController
         public void handle(KeyEvent event)
         {
             if (event.getCode() == KeyCode.ESCAPE)
-                popOver.hide();
+                getPopup().hide();
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN)
                 return;
             RealNumberTextField textField = (RealNumberTextField) event.getSource();

@@ -28,7 +28,7 @@ import javafx.scene.layout.HBox;
 import org.cirqwizard.fx.popover.ManualControlPopOver;
 import org.cirqwizard.fx.popover.OffsetsPopOver;
 import org.cirqwizard.fx.popover.SettingsPopOver;
-import org.controlsfx.control.PopOver;
+import org.cirqwizard.fx.util.ToolbarPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,28 +148,19 @@ public class MainViewController extends ScreenController
         }
     }
 
-    private void hidePopOvers()
+    @Override
+    public ScreenController setMainApplication(MainApplication mainApplication)
     {
-        if (manualControlPopOver.getPopOver() != null)
-            manualControlPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
-        if (offsetsPopOver.getPopOver() != null)
-            offsetsPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
-        if (settingsPopOver.getPopOver() != null)
-            settingsPopOver.getPopOver().hide(javafx.util.Duration.millis(0));
+        manualControlPopOver.setMainApplication(mainApplication);
+        offsetsPopOver.setMainApplication(mainApplication);
+        settingsPopOver.setMainApplication(mainApplication);
+        return super.setMainApplication(mainApplication);
     }
 
     public void manualControl()
     {
-        if (manualControlPopOver.getPopOver() == null)
-        {
-            manualControlPopOver.setPopOver(new PopOver(manualControlPopOver.getView()));
-            manualControlPopOver.setMainApplication(getMainApplication());
-            manualControlPopOver.getPopOver().setDetachedTitle("Manual control");
-            manualControlPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
-        }
-        manualControlPopOver.refresh();
-        manualControlPopOver.getPopOver().show(manualControlLink);
+        ToolbarPopup popup = new ToolbarPopup(manualControlPopOver);
+        popup.show(manualControlLink);
     }
 
     public void enableManualControl()
@@ -184,31 +175,17 @@ public class MainViewController extends ScreenController
 
     public void offsets()
     {
-        if (offsetsPopOver.getPopOver() == null)
-        {
-            offsetsPopOver.setPopOver(new PopOver(offsetsPopOver.getView()));
-            offsetsPopOver.setMainApplication(getMainApplication());
-            offsetsPopOver.getPopOver().setDetachedTitle("Offsets");
-            offsetsPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
-        }
+        ToolbarPopup popup = new ToolbarPopup(offsetsPopOver);
         offsetsPopOver.refresh();
-        offsetsPopOver.getPopOver().show(offsetsLink);
+        popup.show(offsetsLink);
     }
 
     public void settings()
     {
-        if (settingsPopOver.getPopOver() == null)
-        {
-            settingsPopOver.setPopOver(new PopOver(settingsPopOver.getView()));
-            settingsPopOver.setMainApplication(getMainApplication());
-            settingsPopOver.getPopOver().setDetachedTitle("Settings");
-            settingsPopOver.getPopOver().setArrowLocation(PopOver.ArrowLocation.TOP_RIGHT);
-            getMainApplication().getPrimaryStage().setOnCloseRequest(event -> hidePopOvers());
-        }
+        ToolbarPopup popup = new ToolbarPopup(settingsPopOver);
         SettingsDependentScreenController screen = (SettingsDependentScreenController) currentScreen;
         settingsPopOver.setGroup(screen.getSettingsGroup(), screen);
-        settingsPopOver.getPopOver().show(settingsLink);
+        popup.show(settingsLink);
     }
 
 }

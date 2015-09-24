@@ -85,18 +85,26 @@ public class PPParserTest
     {
         String fileContent = "Designator Footprint               Mid X         Mid Y         Ref X         Ref Y         Pad X         Pad Y TB      Rotation Comment        \n" +
                 "\n" +
-                "C11        CAP-0805           124.0028mm     65.4342mm    124.0028mm     65.4342mm    122.9028mm     65.4342mm  B        360.00 100nF          ";
-        String regex = "(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>\\d+.?\\d*)mm\\s+(?<y>\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>\\d+.\\d*)\\s+(?<value>\\S+)\\s*";
+                "C11        CAP-0805           124.0028mm     65.4342mm    124.0028mm     65.4342mm    122.9028mm     65.4342mm  B        360.00 100nF          \n" +
+                "C11        CAP-0805           -124.0028mm     -65.4342mm    -124.0028mm     -65.4342mm    -122.9028mm     -65.4342mm  B        -360.00 100nF          ";
+        String regex = "(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>-?\\d+.?\\d*)mm\\s+(?<y>-?\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>-?\\d+.\\d*)\\s+(?<value>\\S+)\\s*";
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
 
-        assertEquals(1, points.size());
+        assertEquals(2, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("CAP-0805", "100nF"), p.getId());
         assertEquals(new Point(124002, 65434), p.getPoint());
         assertEquals(360000, p.getAngle());
         assertEquals("C11", p.getName());
+
+        p = points.get(1);
+        assertEquals(new ComponentId("CAP-0805", "100nF"), p.getId());
+        assertEquals(new Point(-124002, -65434), p.getPoint());
+        assertEquals(-360000, p.getAngle());
+        assertEquals("C11", p.getName());
+
     }
 
     @Test

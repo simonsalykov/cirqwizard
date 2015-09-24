@@ -19,12 +19,11 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import org.cirqwizard.fx.Dialog;
 import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.ExecutionException;
 import org.cirqwizard.serial.SerialException;
-import org.controlsfx.dialog.Dialogs;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -128,10 +127,10 @@ public class SerialInterfaceService extends Service
             {
                 LoggerFactory.logException("Error communicating with the controller", e);
                 mainApplication.getCNCController().interruptProgram();
-                Platform.runLater(() -> Dialogs.create().title("Oops! That's embarrassing!").owner(mainApplication.getPrimaryStage()).
-                        message("Something went wrong while communicating with the controller. " +
-                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.").
-                        masthead("Communication error").showException(e));
+                ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
+                        "Something went wrong while communicating with the controller. " +
+                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
+                alert.showAndWait();
             }
             catch (InterruptedException e)
             {

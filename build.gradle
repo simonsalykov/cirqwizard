@@ -12,7 +12,6 @@ repositories {
 }
 
 dependencies {
-    compile('org.controlsfx:controlsfx:8.0.6')
     compile('org.scream3r:jssc:2.8.0')
     testCompile ('junit:junit:4.11')
 }

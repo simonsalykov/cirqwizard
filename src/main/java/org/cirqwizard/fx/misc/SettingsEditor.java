@@ -29,8 +29,6 @@ import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.*;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -228,10 +226,13 @@ public class SettingsEditor extends ScreenController implements Initializable
 
     public void resetToDefaults()
     {
-        if (!Dialogs.create().owner(getMainApplication().getPrimaryStage()).title("Reset confirmation").
-                message("Are you sure you want to reset all settings to default?").showConfirm().equals(Dialog.Actions.YES))
-            return;
-        SettingsFactory.resetAll();
-        refresh();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Reset confirmation");
+        alert.setHeaderText("Are you sure you want to reset all settings to default?");
+        alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
+        {
+            SettingsFactory.resetAll();
+            refresh();
+        });
     }
 }
