@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+<?import javafx.scene.layout.VBox?>
+<VBox fx:id="view" spacing="0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+    <ToolBar>
+        <items>
+            <Button text="Add" onAction="#addNewTool"/>
+            <Button text="Delete"/>
+        </items>
+    </ToolBar>
+    <TableView fx:id="table" prefHeight="200" editable="true">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Name" editable="true" prefWidth="100"/>
+            <TableColumn fx:id="diameterColumn" text="Diameter" editable="true"/>
+            <TableColumn fx:id="speedColumn" text="Speed" editable="true"/>
+            <TableColumn fx:id="feedXYColumn" text="Feed XY" editable="true"/>
+            <TableColumn fx:id="feedZColumn" text="Feed Z" editable="true"/>
+            <TableColumn fx:id="arcsColumn" text="Arcs" editable="true"/>
+            <TableColumn fx:id="zOffsetColumn" text="Z offset" editable="true"/>
+            <TableColumn fx:id="additionalPassesColumn" text="Additional passes" editable="true"/>
+            <TableColumn fx:id="additionalPassesOverlapColumn" text="Overlap" editable="true"/>
+            <TableColumn fx:id="additionalPassesPadsOnly" text="Pads only" editable="true"/>
+        </columns>
+    </TableView>
+</VBox>

@@ -17,7 +17,7 @@ package org.cirqwizard.fx.popover;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
-import org.cirqwizard.fx.misc.SettingsEditor;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.settings.SettingsGroup;
 
 public class SettingsPopOver extends PopOverController

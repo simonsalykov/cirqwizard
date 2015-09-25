@@ -18,6 +18,10 @@ public class InsulationMillingSettings extends SettingsGroup
 {
     @PersistentPreference
     @PreferenceGroup(name = "Tool")
+    private UserPreference<String> toolTable = new UserPreference<>("Tool table", "", "", PreferenceType.TOOL_TABLE);
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Tool")
     private UserPreference<Integer> toolDiameter = new UserPreference<>("Diameter", 300, "mm").setTriggersInvalidation(true);
 
     @PersistentPreference
@@ -194,5 +198,15 @@ public class InsulationMillingSettings extends SettingsGroup
     public void setAdditionalPassesPadsOnly(UserPreference<Boolean> additionalPassesPadsOnly)
     {
         this.additionalPassesPadsOnly = additionalPassesPadsOnly;
+    }
+
+    public UserPreference<String> getToolTable()
+    {
+        return toolTable;
+    }
+
+    public void setToolTable(UserPreference<String> toolTable)
+    {
+        this.toolTable = toolTable;
     }
 }

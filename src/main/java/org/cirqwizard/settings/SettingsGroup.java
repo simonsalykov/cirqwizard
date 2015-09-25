@@ -41,7 +41,6 @@ public abstract class SettingsGroup
                 if (!f.isAnnotationPresent(PersistentPreference.class))
                     continue;
 
-                Class argumentClass = (Class) ((ParameterizedType)f.getGenericType()).getActualTypeArguments()[0];
                 UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), getClass()).getReadMethod().invoke(this);
                 if (p.getValue() == null)
                     prefs.remove(f.getName());
