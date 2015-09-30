@@ -8,12 +8,12 @@
     <ToolBar>
         <items>
             <Button text="Add" onAction="#addNewTool"/>
-            <Button text="Delete"/>
+            <Button text="Delete" onAction="#deleteTool" fx:id="deleteButton"/>
         </items>
     </ToolBar>
     <TableView fx:id="table" prefHeight="200" editable="true">
         <columns>
-            <TableColumn fx:id="nameColumn" text="Name" editable="true" prefWidth="100"/>
+            <TableColumn fx:id="nameColumn" text="Name" editable="true" prefWidth="130"/>
             <TableColumn fx:id="diameterColumn" text="Diameter" editable="true"/>
             <TableColumn fx:id="speedColumn" text="Speed" editable="true"/>
             <TableColumn fx:id="feedXYColumn" text="Feed XY" editable="true"/>

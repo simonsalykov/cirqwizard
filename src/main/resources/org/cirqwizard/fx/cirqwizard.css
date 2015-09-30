@@ -229,7 +229,7 @@
     -fx-border-width: 1.4;
 }
 
-.popup  {
+.popover  {
         -fx-background-color: white;
         -fx-effect: dropshadow( gaussian, black , 10 , 0.1, 2, 2);
  }

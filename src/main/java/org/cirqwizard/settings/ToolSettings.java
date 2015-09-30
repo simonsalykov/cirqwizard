@@ -13,17 +13,29 @@ This program is free software: you can redistribute it and/or modify
 */
 package org.cirqwizard.settings;
 
+import org.simpleframework.xml.Element;
+
 public class ToolSettings
 {
+    @Element
     private String name;
+    @Element
     private int diameter;
+    @Element
     private int speed;
+    @Element
     private int feedXY;
+    @Element
     private int feedZ;
+    @Element
     private int arcs;
+    @Element (required = false)
     private int zOffset;
+    @Element
     private int additionalPasses;
+    @Element
     private int additionalPassesOverlap;
+    @Element
     private boolean additionalPassesPadsOnly;
 
     public String getName()
@@ -86,12 +98,12 @@ public class ToolSettings
         this.arcs = arcs;
     }
 
-    public int getzOffset()
+    public int getZOffset()
     {
         return zOffset;
     }
 
-    public void setzOffset(int zOffset)
+    public void setZOffset(int zOffset)
     {
         this.zOffset = zOffset;
     }
@@ -124,5 +136,11 @@ public class ToolSettings
     public void setAdditionalPassesPadsOnly(boolean additionalPassesPadsOnly)
     {
         this.additionalPassesPadsOnly = additionalPassesPadsOnly;
+    }
+
+    @Override
+    public String toString()
+    {
+        return name;
     }
 }

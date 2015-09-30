@@ -51,6 +51,7 @@ public abstract class PopOverController
 
             box = new VBox();
             box.setSpacing(5);
+            box.getStyleClass().add("popover");
             closeIcon = new Label();
             closeIcon.setGraphic(createCloseIcon());
             closeIcon.getStyleClass().add("icon");

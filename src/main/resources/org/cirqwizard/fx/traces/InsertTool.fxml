@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<VBox fx:id="view" styleClass="main-pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <Label text="Insert trace milling cutter into spindle" styleClass="h1" alignment="TOP_LEFT">
+        <padding>
+            <Insets left="30" right="30" top="30" bottom="30"/>
+        </padding>
+    </Label>
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets left="50" right="10"/>
+        </padding>
+        <Label text="Select the tool you will be using:"/>
+        <ComboBox fx:id="toolComboBox"/>
+    </VBox>
+    <HBox alignment="TOP_RIGHT">
+        <padding>
+            <Insets top="10" bottom="28" right="37"/>
+        </padding>
+        <Button text="Continue" onAction="#next" fx:id="continueButton"/>
+    </HBox>
+</VBox>
