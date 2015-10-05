@@ -14,11 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import org.cirqwizard.settings.SettingsGroup;
+import javafx.scene.layout.GridPane;
 
 public abstract class SettingsDependentScreenController extends ScreenController
 {
-    public abstract SettingsGroup getSettingsGroup();
+    public abstract void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener);
     public abstract void settingsInvalidated();
-
 }

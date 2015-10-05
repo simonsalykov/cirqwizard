@@ -35,4 +35,8 @@ public class SettingsPopOver extends PopOverController
         SettingsEditor.renderSettings(settingsPane, group, getMainApplication(), listener);
     }
 
+    public GridPane getPane()
+    {
+        return settingsPane;
+    }
 }

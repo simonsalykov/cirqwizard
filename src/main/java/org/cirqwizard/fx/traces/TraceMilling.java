@@ -14,8 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces;
 
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
 import org.cirqwizard.fx.machining.TraceMillingToolpathGenerationService;
@@ -24,7 +26,6 @@ import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.SettingsGroup;
 
 public abstract class TraceMilling extends Machining
 {
@@ -43,9 +44,10 @@ public abstract class TraceMilling extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getInsulationMillingSettings();
+        pane.getChildren().clear();
+        pane.getChildren().add(new TracesSettingsPopOver(getMainApplication().getContext()).getView());
     }
 
     @Override

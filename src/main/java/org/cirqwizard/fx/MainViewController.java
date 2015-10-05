@@ -184,7 +184,7 @@ public class MainViewController extends ScreenController
     {
         ToolbarPopup popup = new ToolbarPopup(settingsPopOver);
         SettingsDependentScreenController screen = (SettingsDependentScreenController) currentScreen;
-        settingsPopOver.setGroup(screen.getSettingsGroup(), screen);
+        screen.populateSettingsGroup(settingsPopOver.getPane(), screen);
         popup.show(settingsLink);
     }
 

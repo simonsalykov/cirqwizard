@@ -14,11 +14,14 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.drilling;
 
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.DrillingToolpathGenerationService;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.DrillGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
@@ -55,9 +58,9 @@ public class Drilling extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getDrillingSettings();
+        SettingsEditor.renderSettings(pane, SettingsFactory.getDrillingSettings(), getMainApplication(), listener);
     }
 
     @Override

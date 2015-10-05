@@ -14,11 +14,14 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.contour;
 
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.ContourMillingToolpathGenerationService;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.MillingGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
@@ -48,9 +51,9 @@ public class ContourMilling extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getContourMillingSettings();
+        SettingsEditor.renderSettings(pane, SettingsFactory.getContourMillingSettings(), getMainApplication(), listener);
     }
 
     @Override

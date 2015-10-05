@@ -14,10 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.dispensing;
 
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.DispensingToolpathGenerationService;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.PasteGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.SolderPasteLayer;
@@ -47,9 +50,9 @@ public class Dispensing extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getDispensingSettings();
+        SettingsEditor.renderSettings(pane, SettingsFactory.getDispensingSettings(), getMainApplication(), listener);
     }
 
     @Override

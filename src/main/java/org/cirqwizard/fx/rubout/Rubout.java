@@ -14,11 +14,14 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.rubout;
 
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.machining.RuboutToolpathGenerationService;
 import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.TraceLayer;
@@ -77,8 +80,8 @@ public abstract class Rubout extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getRubOutSettings();
+        SettingsEditor.renderSettings(pane, SettingsFactory.getRubOutSettings(), getMainApplication(), listener);
     }
 }

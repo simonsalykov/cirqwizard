@@ -77,6 +77,7 @@ public class InsertTool extends ScreenController
     {
         getMainApplication().getContext().setInsertedTool(EXPECTED_TOOL);
         getMainApplication().getContext().setCurrentMillingTool(toolComboBox.getSelectionModel().getSelectedItem());
+        getMainApplication().getContext().setCurrentMillingToolIndex(toolComboBox.getSelectionModel().getSelectedIndex());
         super.next();
     }
 }
