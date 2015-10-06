@@ -44,8 +44,9 @@ public class ExcellonParser
     private boolean header = false;
 
     private int coordinatesCoversionRatio;
+    private int integerPlaces;
     private int decimalPlaces;
-    private boolean leadingZerosOmmited = true;
+    private boolean leadingZeros = false;
 
     private Integer x = null;
     private Integer y = null;
@@ -54,11 +55,12 @@ public class ExcellonParser
 
     public ExcellonParser(Reader reader)
     {
-        this(4, INCHES_MM_RATIO, reader);
+        this(2, 4, INCHES_MM_RATIO, reader);
     }
 
-    public ExcellonParser(int decimalPlaces, int coordinatesCoversionRatio, Reader reader)
+    public ExcellonParser(int integerPlaces, int decimalPlaces, int coordinatesCoversionRatio, Reader reader)
     {
+        this.integerPlaces = integerPlaces;
         this.decimalPlaces = decimalPlaces;
         this.coordinatesCoversionRatio = coordinatesCoversionRatio;
         this.reader = reader;
@@ -124,7 +126,7 @@ public class ExcellonParser
         {
             coordinatesCoversionRatio = matcher.group(1).equals("METRIC") ? MM_MM_RATIO : INCHES_MM_RATIO;
             if (matcher.group(2) != null)
-                leadingZerosOmmited = matcher.group(2).equals("LZ");
+                leadingZeros = matcher.group(2).equals("LZ");
             return;
         }
     }
@@ -193,10 +195,10 @@ public class ExcellonParser
             decimalPlaces = str.length() - decimalPartStart;
         }
         if (decimalPartStart < 0)
-            decimalPartStart = str.length() - decimalPlaces;
+            decimalPartStart = leadingZeros ? integerPlaces : str.length() - decimalPlaces;
         decimalPartStart = Math.max(decimalPartStart, 0);
         long number = Long.valueOf(str.substring(decimalPartStart)) * coordinatesCoversionRatio;
-        for (int i = 0; i < decimalPlaces; i++)
+        for (int i = 0; i < str.length() - decimalPartStart; i++)
             number /= 10;
         if (str.length() > decimalPlaces)
             number += Long.valueOf(str.substring(0, decimalPartStart)) * coordinatesCoversionRatio;

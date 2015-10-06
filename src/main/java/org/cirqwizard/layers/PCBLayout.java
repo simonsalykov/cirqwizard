@@ -233,7 +233,8 @@ public class PCBLayout
         try
         {
             ApplicationSettings settings = SettingsFactory.getApplicationSettings();
-            ExcellonParser parser = new ExcellonParser(settings.getExcellonDecimalPlaces().getValue(), settings.getExcellonUnits().getValue().getMultiplier(), new FileReader(file));
+            ExcellonParser parser = new ExcellonParser(settings.getExcellonIntegerPlaces().getValue(), settings.getExcellonDecimalPlaces().getValue(),
+                    settings.getExcellonUnits().getValue().getMultiplier(), new FileReader(file));
             drillingLayer.setDrillPoints(parser.parse());
         }
         catch (IOException | RuntimeException e)
