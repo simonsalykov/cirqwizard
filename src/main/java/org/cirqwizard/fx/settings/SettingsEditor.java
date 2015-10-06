@@ -145,11 +145,6 @@ public class SettingsEditor extends ScreenController implements Initializable
     private static void addInvalidationListenerToTextField(TextField textField, SettingsDependentScreenController listener)
     {
         textField.setOnAction((event) -> listener.settingsInvalidated());
-        textField.focusedProperty().addListener((v, oldV, newV) ->
-        {
-            if (!newV)
-                listener.settingsInvalidated();
-        });
     }
 
     private static Node getEditor(Class clazz, UserPreference p, SettingsGroup group, MainApplication mainApplication, SettingsDependentScreenController listener)
