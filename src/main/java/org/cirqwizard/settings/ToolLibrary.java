@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 public class ToolLibrary
 {
     @ElementArray
-    private ToolSettings[] toolSettings = new ToolSettings[0];
+    private ToolSettings[] toolSettings = new ToolSettings[] {getDefaultTool()};
 
     public ToolSettings[] getToolSettings()
     {
@@ -63,5 +63,20 @@ public class ToolLibrary
         {
             LoggerFactory.logException("Could not save tool table", e);
         }
+    }
+
+    public static ToolSettings getDefaultTool()
+    {
+        ToolSettings tool = new ToolSettings();
+        tool.setName("Default tool");
+        tool.setDiameter(300);
+        tool.setSpeed(1390);
+        tool.setFeedXY(300_000);
+        tool.setFeedZ(300_000);
+        tool.setArcs(100);
+        tool.setAdditionalPasses(0);
+        tool.setAdditionalPassesOverlap(50);
+        tool.setAdditionalPassesPadsOnly(false);
+        return tool;
     }
 }

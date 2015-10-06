@@ -162,18 +162,7 @@ public class SettingsToolTable implements Initializable
 
     public void addNewTool()
     {
-        ToolSettings tool = new ToolSettings();
-        tool.setName("Default tool");
-        tool.setDiameter(300);
-        tool.setSpeed(1390);
-        tool.setFeedXY(300_000);
-        tool.setFeedZ(300_000);
-        tool.setArcs(100);
-        tool.setAdditionalPasses(0);
-        tool.setAdditionalPassesOverlap(50);
-        tool.setAdditionalPassesPadsOnly(false);
-        table.getItems().add(tool);
-
+        table.getItems().add(ToolLibrary.getDefaultTool());
         saveLibrary();
     }
 
