@@ -88,7 +88,7 @@ public class SolderPasteLayer extends Layer
         to = to.subtract(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
 
         angle = MathUtil.bindAngle(angle - Math.PI / 2);
-        int passes = Math.max(1, width / (needleDiameter));
+        int passes = Math.max(1, Math.abs(width) / (needleDiameter + needleDiameter / 2));
         for (int i = 0; i < passes; i++)
         {
             // Offsetting
@@ -176,10 +176,10 @@ public class SolderPasteLayer extends Layer
                     if (p instanceof LinearShape)
                     {
                         double d = calculatePerpendicular(longestSide.getFrom(), longestSide.getTo(), ((LinearShape) p).getFrom());
-                        if (d > largestWidth)
+                        if (Math.abs(d) > Math.abs(largestWidth))
                             largestWidth = d;
                         d = calculatePerpendicular(longestSide.getFrom(), longestSide.getTo(), ((LinearShape) p).getTo());
-                        if (d > largestWidth)
+                        if (Math.abs(d) > Math.abs(largestWidth))
                             largestWidth = d;
                     }
                 }
@@ -216,7 +216,7 @@ public class SolderPasteLayer extends Layer
         double dx = to.getX() - from.getX();
         double dy = to.getY() - from.getY();
 
-        return Math.abs(dx * (from.getY() - p.getY()) - dy * (from.getX() - p.getX())) / Math.sqrt(dx * dx + dy * dy);
+        return (dx * (from.getY() - p.getY()) - dy * (from.getX() - p.getX())) / Math.sqrt(dx * dx + dy * dy);
     }
 
     @Override
