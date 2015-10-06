@@ -14,15 +14,15 @@
     <TableView fx:id="table" prefHeight="200" editable="true">
         <columns>
             <TableColumn fx:id="nameColumn" text="Name" editable="true" prefWidth="130"/>
-            <TableColumn fx:id="diameterColumn" text="Diameter" editable="true"/>
+            <TableColumn fx:id="diameterColumn" prefWidth="100" text="Diameter" editable="true"/>
             <TableColumn fx:id="speedColumn" text="Speed" editable="true"/>
-            <TableColumn fx:id="feedXYColumn" text="Feed XY" editable="true"/>
+            <TableColumn fx:id="feedXYColumn" prefWidth="100" text="Feed XY" editable="true"/>
             <TableColumn fx:id="feedZColumn" text="Feed Z" editable="true"/>
             <TableColumn fx:id="arcsColumn" text="Arcs" editable="true"/>
             <TableColumn fx:id="zOffsetColumn" text="Z offset" editable="true"/>
-            <TableColumn fx:id="additionalPassesColumn" text="Additional passes" editable="true"/>
+            <TableColumn fx:id="additionalPassesColumn" prefWidth="150" text="Additional passes" editable="true"/>
             <TableColumn fx:id="additionalPassesOverlapColumn" text="Overlap" editable="true"/>
-            <TableColumn fx:id="additionalPassesPadsOnly" text="Pads only" editable="true"/>
+            <TableColumn fx:id="additionalPassesPadsOnly" prefWidth="100" text="Pads only" editable="true"/>
         </columns>
     </TableView>
 </VBox>

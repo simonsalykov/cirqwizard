@@ -32,6 +32,7 @@ import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.ToolSettings;
 import org.cirqwizard.toolpath.*;
 
 import java.text.DecimalFormat;
@@ -115,8 +116,10 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
                         return null;
 
                     InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-                    final Optimizer optimizer = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
-                            convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
+                    ToolSettings currentTool = mainApplication.getContext().getCurrentMillingTool();
+
+                    final Optimizer optimizer = new Optimizer(chains, convertToDouble(currentTool.getFeedXY() / 60), convertToDouble(currentTool.getFeedZ()) / 60,
+                            convertToDouble(currentTool.getFeedXY()) / 60 * currentTool.getArcs() / 100,
                             convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), getMergeTolerance(),
                             serviceStateProperty);
                     Platform.runLater(() ->
@@ -131,8 +134,8 @@ public abstract class MillingToolpathGenerationService extends ToolpathGeneratio
                         estimatedMachiningTimeProperty.bind(Bindings.createStringBinding(() ->
                         {
                             long totalDuration = (long) TimeEstimator.calculateTotalDuration(optimizer.getCurrentBestSolution(),
-                                    convertToDouble(settings.getFeedXY().getValue()) / 60, convertToDouble(settings.getFeedZ().getValue()) / 60,
-                                    convertToDouble(settings.getFeedXY().getValue()) / 60 * settings.getFeedArcs().getValue() / 100,
+                                    convertToDouble(currentTool.getFeedXY()) / 60, convertToDouble(currentTool.getFeedZ()) / 60,
+                                    convertToDouble(currentTool.getFeedXY()) / 60 * currentTool.getArcs() / 100,
                                     convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()),
                                     true, getMergeTolerance());
                             String time = format.format(totalDuration / 3600) + ":" + format.format(totalDuration % 3600 / 60) +

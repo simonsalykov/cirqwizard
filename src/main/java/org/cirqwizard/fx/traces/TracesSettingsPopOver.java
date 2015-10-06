@@ -1,3 +1,16 @@
+/*
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.cirqwizard.fx.traces;
 
 import javafx.collections.FXCollections;
@@ -9,6 +22,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.InsulationMillingSettings;
@@ -20,9 +34,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Created by simon on 05.10.15.
- */
 public class TracesSettingsPopOver implements Initializable
 {
     @FXML private Node view;
@@ -42,13 +53,16 @@ public class TracesSettingsPopOver implements Initializable
 
     @FXML private TextField additionalPassesCountTextField;
     @FXML private TextField additonalPassesOverlapTextField;
-    @FXML private CheckBox additionalPassesPadsOnlyComboBox;
+    @FXML private CheckBox additionalPassesPadsOnlyCheckBox;
 
     private Context context;
+    private SettingsDependentScreenController listener;
+    private boolean supressInvalidation = false;
 
-    public TracesSettingsPopOver(Context context)
+    public TracesSettingsPopOver(Context context, SettingsDependentScreenController listener)
     {
         this.context = context;
+        this.listener = listener;
 
         try
         {
@@ -66,14 +80,89 @@ public class TracesSettingsPopOver implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        toolComboBox.getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) -> refreshFields());
+        toolComboBox.getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
+        {
+            refreshFields();
+            if (!supressInvalidation)
+                listener.settingsInvalidated();
+        });
         diameterTextField.realNumberIntegerProperty().addListener((v, oldV, newV) ->
         {
-            if (toolComboBox.getSelectionModel().getSelectedIndex() >= 0)
+            toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setDiameter(newV);
+            saveLibrary();
+        });
+        addInvalidationListenerToTextField(diameterTextField);
+        speedTextField.textProperty().addListener((v, oldV, newV) ->
+        {
+            try
             {
-                toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setDiameter(newV);
-                saveLibrary();
+                toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setSpeed(Integer.valueOf(newV));
             }
+            catch (NumberFormatException e) {}
+            saveLibrary();
+        });
+        xyFeedTextField.realNumberIntegerProperty().addListener((v, oldV, newV) ->
+        {
+            toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setFeedXY(newV);
+            saveLibrary();
+        });
+        zFeedTextField.realNumberIntegerProperty().addListener((v, oldV, newV) ->
+        {
+            toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setFeedZ(newV);
+            saveLibrary();
+        });
+        arcsFeedTextField.textProperty().addListener((v, oldV, newV) ->
+        {
+            try
+            {
+                toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setArcs(Integer.valueOf(newV));
+            }
+            catch (NumberFormatException e) {}
+            saveLibrary();
+        });
+        clearanceTextField.realNumberIntegerProperty().addListener((v, oldV, newV) ->
+        {
+            InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+            settings.getClearance().setValue(newV);
+            settings.save();
+        });
+        safetyHeightTextField.realNumberIntegerProperty().addListener((v, oldV, newV) ->
+        {
+            InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+            settings.getSafetyHeight().setValue(newV);
+            settings.save();
+        });
+        workingHeightTextField.realNumberIntegerProperty().addListener((v, oldV, newV) ->
+        {
+            InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+            settings.getWorkingHeight().setValue(newV);
+            settings.save();
+        });
+        additionalPassesCountTextField.textProperty().addListener((v, oldV, newV) ->
+        {
+            try
+            {
+                toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setAdditionalPasses(Integer.valueOf(newV));
+            }
+            catch (NumberFormatException e) {}
+            saveLibrary();
+        });
+        addInvalidationListenerToTextField(additionalPassesCountTextField);
+        additonalPassesOverlapTextField.textProperty().addListener((v, oldV, newV) ->
+        {
+            try
+            {
+                toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setAdditionalPassesOverlap(Integer.valueOf(newV));
+            }
+            catch (NumberFormatException e) {}
+            saveLibrary();
+        });
+        addInvalidationListenerToTextField(additonalPassesOverlapTextField);
+        additionalPassesPadsOnlyCheckBox.selectedProperty().addListener((v, oldV, newV) ->
+        {
+            toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setAdditionalPassesPadsOnly(newV);
+            saveLibrary();
+            listener.settingsInvalidated();
         });
     }
 
@@ -86,6 +175,7 @@ public class TracesSettingsPopOver implements Initializable
     {
         try
         {
+            supressInvalidation = true;
             toolComboBox.setItems(FXCollections.observableArrayList(ToolLibrary.load().getToolSettings()));
             toolComboBox.getSelectionModel().select(context.getCurrentMillingToolIndex());
         }
@@ -93,10 +183,17 @@ public class TracesSettingsPopOver implements Initializable
         {
             LoggerFactory.logException("Could not load tool library", e);
         }
+        finally
+        {
+            supressInvalidation = false;
+        }
     }
 
     private void saveLibrary()
     {
+        if (supressInvalidation)
+            return;
+
         ToolLibrary library = new ToolLibrary();
         library.setToolSettings(toolComboBox.getItems().toArray(new ToolSettings[0]));
         library.save();
@@ -107,6 +204,7 @@ public class TracesSettingsPopOver implements Initializable
         ToolSettings currentTool = toolComboBox.getValue();
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         context.setCurrentMillingTool(currentTool);
+        context.setCurrentMillingToolIndex(toolComboBox.getSelectionModel().getSelectedIndex());
 
         diameterTextField.setIntegerValue(currentTool.getDiameter());
         speedTextField.setText(String.valueOf(currentTool.getSpeed()));
@@ -118,6 +216,17 @@ public class TracesSettingsPopOver implements Initializable
         workingHeightTextField.setIntegerValue(settings.getWorkingHeight().getValue());
         additionalPassesCountTextField.setText(String.valueOf(currentTool.getAdditionalPasses()));
         additonalPassesOverlapTextField.setText(String.valueOf(currentTool.getAdditionalPassesOverlap()));
-        additionalPassesPadsOnlyComboBox.setSelected(currentTool.isAdditionalPassesPadsOnly());
+        additionalPassesPadsOnlyCheckBox.setSelected(currentTool.isAdditionalPassesPadsOnly());
     }
+
+    private void addInvalidationListenerToTextField(TextField textField)
+    {
+        textField.setOnAction((event) -> listener.settingsInvalidated());
+        textField.focusedProperty().addListener((v, oldV, newV) ->
+        {
+            if (!newV)
+                listener.settingsInvalidated();
+        });
+    }
+
 }

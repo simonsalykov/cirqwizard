@@ -119,18 +119,9 @@ public class Settings
         setInt(PROCESSING_THREADS, applicationSettings.getProcessingThreads());
 
         InsulationMillingSettings insulationMillingSettings = SettingsFactory.getInsulationMillingSettings();
-        setInt(TRACES_TOOL_DIAMETER, insulationMillingSettings.getToolDiameter());
-        setInt(TRACES_FEED_XY, insulationMillingSettings.getFeedXY());
-        setInt(TRACES_FEED_ARC, insulationMillingSettings.getFeedArcs());
-        setInt(TRACES_FEED_Z, insulationMillingSettings.getFeedZ());
-        setInt(TRACES_SPEED, insulationMillingSettings.getSpeed());
         setInt(TRACES_CLEARANCE, insulationMillingSettings.getClearance());
         setInt(TRACES_SAFETY_HEIGHT, insulationMillingSettings.getSafetyHeight());
-        setInt(TRACES_DEFAULT_Z_OFFSET, insulationMillingSettings.getZOffset());
         setInt(TRACES_WORKING_HEIGHT, insulationMillingSettings.getWorkingHeight());
-        setInt(TRACES_ADDITIONAL_PASSES, insulationMillingSettings.getAdditionalPasses());
-        setInt(TRACES_ADDITIONAL_PASSES_OVERLAP, insulationMillingSettings.getAdditionalPassesOverlap());
-        setBoolean(TRACES_ADDITONAL_PASSES_PADS_ONLY, insulationMillingSettings.getAdditionalPassesPadsOnly());
 
         DrillingSettings drillingSettings = SettingsFactory.getDrillingSettings();
         setInt(DRILLING_FEED, drillingSettings.getFeed());

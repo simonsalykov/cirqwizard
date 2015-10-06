@@ -26,6 +26,7 @@ import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.ToolSettings;
 
 public abstract class TraceMilling extends Machining
 {
@@ -47,7 +48,7 @@ public abstract class TraceMilling extends Machining
     public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
         pane.getChildren().clear();
-        pane.getChildren().add(new TracesSettingsPopOver(getMainApplication().getContext()).getView());
+        pane.getChildren().add(new TracesSettingsPopOver(getMainApplication().getContext(), this).getView());
     }
 
     @Override
@@ -74,10 +75,11 @@ public abstract class TraceMilling extends Machining
     protected String generateGCode()
     {
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
+        int arcFeed = (currentTool.getFeedXY() * currentTool.getArcs() / 100);
         TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
-        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+        return generator.generate(new RTPostprocessor(), currentTool.getFeedXY(), currentTool.getFeedZ(), arcFeed,
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
-                settings.getSpeed().getValue());
+                currentTool.getSpeed());
     }
 }

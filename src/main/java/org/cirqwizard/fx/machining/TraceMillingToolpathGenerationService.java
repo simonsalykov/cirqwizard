@@ -16,9 +16,7 @@ package org.cirqwizard.fx.machining;
 
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
-import javafx.concurrent.Worker;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.generation.AdditionalToolpathGenerator;
 import org.cirqwizard.generation.ToolpathGenerator;
@@ -30,6 +28,7 @@ import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.settings.ApplicationSettings;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.ToolSettings;
 import org.cirqwizard.toolpath.Toolpath;
 import org.cirqwizard.toolpath.ToolpathsCacheKey;
 
@@ -48,22 +47,23 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
     @Override
     protected ToolpathsCacheKey getCacheKey()
     {
-        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        return new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), settings.getToolDiameter().getValue(),
-                settings.getAdditionalPasses().getValue(), settings.getAdditionalPassesOverlap().getValue(), settings.getAdditionalPassesPadsOnly().getValue(), 0, 0);
+        ToolSettings currentTool = mainApplication.getContext().getCurrentMillingTool();
+        return new ToolpathsCacheKey(cacheLayerId, context.getPcbLayout().getAngle(), currentTool.getDiameter(),
+                currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
     }
 
     @Override
     protected int getMergeTolerance()
     {
-        return SettingsFactory.getInsulationMillingSettings().getToolDiameter().getValue() / 4;
+        return mainApplication.getContext().getCurrentMillingTool().getDiameter() / 4;
     }
 
     @Override
     protected List<Chain> generate()
     {
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        int diameter = settings.getToolDiameter().getValue();
+        ToolSettings currentTool = mainApplication.getContext().getCurrentMillingTool();
+        int diameter = currentTool.getDiameter();
 
         final ToolpathGenerator generator = new ToolpathGenerator();
         ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
@@ -85,12 +85,12 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
         final int mergeTolerance = getMergeTolerance();
         toolpaths = new ToolpathMerger(toolpaths, mergeTolerance).merge();
 
-        if (!settings.getAdditionalPassesPadsOnly().getValue())
+        if (!currentTool.isAdditionalPassesPadsOnly())
         {
             Platform.runLater(() -> generationStageProperty.setValue("Generating additional passes..."));
-            for (int i = 0 ; i < settings.getAdditionalPasses().getValue(); i++)
+            for (int i = 0 ; i < currentTool.getAdditionalPasses(); i++)
             {
-                int offset = diameter * (100 - settings.getAdditionalPassesOverlap().getValue()) / 100;
+                int offset = diameter * (100 - currentTool.getAdditionalPassesOverlap()) / 100;
                 generator.init(mainApplication.getContext().getBoardWidth() + 1, mainApplication.getContext().getBoardHeight() + 1,
                         diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(), applicationSettings.getProcessingThreads().getValue(),
                         serviceStateProperty);
@@ -102,11 +102,11 @@ public class TraceMillingToolpathGenerationService extends MillingToolpathGenera
                 toolpaths.addAll(new ToolpathMerger(additionalToolpaths, mergeTolerance).merge());
             }
         }
-        else if (settings.getAdditionalPasses().getValue() > 0)
+        else if (currentTool.getAdditionalPasses() > 0)
         {
             final AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(mainApplication.getContext().getBoardWidth() + 1,
-                    mainApplication.getContext().getBoardHeight() + 1, settings.getAdditionalPasses().getValue(),
-                    settings.getAdditionalPassesOverlap().getValue(), diameter, applicationSettings.getProcessingThreads().getValue(), traceLayer.getElements());
+                    mainApplication.getContext().getBoardHeight() + 1, currentTool.getAdditionalPasses(),
+                    currentTool.getAdditionalPassesOverlap(), diameter, applicationSettings.getProcessingThreads().getValue(), traceLayer.getElements());
             Platform.runLater(() ->
             {
                 generationStageProperty.setValue("Generating additional passes...");
