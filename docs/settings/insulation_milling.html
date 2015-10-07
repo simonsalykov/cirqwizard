@@ -247,7 +247,8 @@
     
   </header>
   
-  <h4>Tool</h4>
+  <h4>Tool library</h4>
+<p>Here you can define a list of tools that you use frequently. For every tool you specify the following parameters:</p>
 <table class="table table-bordered ">
 	<tr>
 		<th>Parameter </th>
@@ -256,7 +257,13 @@
 		<th>Units </th>
 	</tr>
 	<tr>
-		<td> Tool diameter </td>
+		<td> Name </td>
+		<td> A name of the tool </td>
+		<td> </td>
+		<td> </td>
+	</tr>
+	<tr>
+		<td> Diameter </td>
 		<td> Diameter of a milling tool </td>
 		<td> 0.3 </td>
 		<td> mm </td>
@@ -267,23 +274,14 @@
 		<td> 1390 </td>
 		<td> ms </td>
 	</tr>
-</table>
-<h4>Feed</h4>
-<table class="table table-bordered ">
 	<tr>
-		<th>Parameter </th>
-		<th>Meaning </th>
-		<th>Default value </th>
-		<th>Units </th>
-	</tr>
-	<tr>
-		<td> X and Y axes </td>
+		<td> Feed XY</td>
 		<td> Default feed on X and Y axes (speed with which tool moves during milling) </td>
 		<td> 300 </td>
 		<td> mm/min </td>
 	</tr>
 	<tr>
-		<td> Z axis </td>
+		<td> Feed Z </td>
 		<td> Default feed on Z axis (speed with which tool moves descending to working height) </td>
 		<td> 200 </td>
 		<td> mm/min </td>
@@ -291,8 +289,32 @@
 	<tr>
 		<td> Arcs </td>
 		<td> Feed for arcs specified as a percent from <strong>Feed XY</strong> </td>
+		<td> 100 </td>
+		<td> % </td>
+	</tr>
+	<tr>
+		<td> Z offset </td>
+		<td> Z offset, which is used as a starting point in Z offset establishing procedure </td>
+		<td> </td>
+		<td> mm </td>
+	</tr>
+	<tr>
+		<td> Additional passes </td>
+		<td> Number of additional passes around traces to increase the separation between trace and surrounding copper </td>
+		<td> 0 </td>
+		<td> times </td>
+	</tr>
+	<tr>
+		<td> Overlap </td>
+		<td> Overlap in percents between additional passes </td>
 		<td> 50 </td>
 		<td> % </td>
+	</tr>
+	<tr>
+		<td> Pads only </td>
+		<td> This option generates additional passes only around pads, leaving the traces themselves separated by a single pass only. This can save some time and make it for easier soldering. </td>
+		<td> Not selected </td>
+		<td> </td>
 	</tr>
 </table>
 <h4>Heights</h4>
@@ -316,12 +338,6 @@
 		<td> mm </td>
 	</tr>
 	<tr>
-		<td> Z offset </td>
-		<td> Z offset, which is used as a starting point in Z offset establishing procedure </td>
-		<td> </td>
-		<td> mm </td>
-	</tr>
-	<tr>
 		<td> Working height </td>
 		<td> The depth of tool engagement in laminate </td>
 		<td> -0.05 </td>
@@ -329,33 +345,6 @@
 	</tr>
 </table>
 <p>All heights are specified in work coordinate system (i.e. taking into account Z offset).</p>
-<h4>Additional passes</h4>
-<table class="table table-bordered ">
-	<tr>
-		<th>Parameter </th>
-		<th>Meaning </th>
-		<th>Default value </th>
-		<th>Units </th>
-	</tr>
-	<tr>
-		<td> Additional passes </td>
-		<td> Number of additional passes around traces to increase the separation between trace and surrounding copper </td>
-		<td> 0 </td>
-		<td> times </td>
-	</tr>
-	<tr>
-		<td> Additional passes overlap </td>
-		<td> Overlap in percents between additional passes </td>
-		<td> 20 </td>
-		<td> % </td>
-	</tr>
-	<tr>
-		<td> Additional passes around pads only </td>
-		<td> This option generates additional passes only around pads, leaving the traces themselves separated by a single pass only. This can save some time and make it for easier soldering. </td>
-		<td> Not selected </td>
-		<td> </td>
-	</tr>
-</table>
   
     <footer>
       

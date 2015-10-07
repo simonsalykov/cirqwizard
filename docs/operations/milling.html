@@ -255,8 +255,13 @@
 <h3>Placing <span class="caps">PCB</span> laminate on the machine bed</h3>
 <p><img src="/images/screenshots/v1.4/insulation_milling/pcb_placement.png" alt="" /></p>
 <p>As instructed, put <span class="caps">PCB</span> laminate on the machine bed and select which size of laminate you use.</p>
+<h3>Establishing X and Y offsets</h3>
+<p>X and Y offsets determine the location of lower left corner of your board on the laminate.</p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/xy_offsets.png" alt="" /></p>
+<p>The image on the right shows visualization of the board layout withing the selected laminate boundaries. <strong>Show me where it is</strong> button moves the machine head to the specified location.</p>
 <h3>Inserting cutting tool</h3>
-<p>As instructed by the application, insert the tool you will be using to mill insulation in your machine&#8217;s spindle.</p>
+<p><img src="/images/screenshots/v1.4/insulation_milling/insert_tool.png" alt="" /></p>
+<p>Here you need to select the tool that you will be using for this operation. If you have more than one milling tool in your disposal, you can list all of them in the settings. This way you&#8217;ll have fast access to your favorite milling parameters for each of the tools.</p>
 <h3>Establishing Z axis offset</h3>
 <p>Z axis offset is a position of Z axis of the machine, when cutting tool just touches the surface of <span class="caps">PCB</span>.</p>
 <p>Insulation milling operation is very sensitive to tool engagement depth: too high means the traces aren&#8217;t separated from the surrounding copper, too low can mill away a trace at all (given conic shape of commonly used tools) and puts unnecessary stress on a fragile tool. This is why it&#8217;s important to specify Z axis offset (which effectively determines the depth) as precise as possible.</p>
@@ -273,10 +278,6 @@
 <p>Initial Z offset value is populated from settings.</p>
 <p>Pressing <strong>Test</strong> button will move the machine head to the location specified in <strong>Scrap place location</strong> pane, turn the machine spindle on, lower the head according to the Z offset specified, move the head in the selected direction, return the head to the original position and turn the spindle off. <strong>Lower and test</strong> button does the same, decreasing the Z offset value by <strong>0.02mm</strong> beforehand.</p>
 <p>Thus, the usual way to find Z offset is to select <strong>I want to try</strong> option and press <strong>Lower and test</strong> button until the tool makes a satisfactory cut.</p>
-<h3>Establishing X and Y offsets</h3>
-<p>X and Y offsets determine the location of lower left corner of your board on the laminate.</p>
-<p><img src="/images/screenshots/v1.4/insulation_milling/xy_offsets.png" alt="" /></p>
-<p>The image on the right shows visualization of the board layout withing the selected laminate boundaries. <strong>Show me where it is</strong> button moves the machine head to the specified location.</p>
 <h3>Generating toolpaths</h3>
 <p><img src="/images/screenshots/v1.4/insulation_milling/generation.png" alt="" /></p>
 <p>The program now has enough information to generate the tool paths for insulation milling of your <span class="caps">PCB</span>. Depending on your <span class="caps">PCB</span> design dimensions and complexity this might take a while.</p>

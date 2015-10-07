@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2015-07-13T17:18:50+02:00</updated>
+  <updated>2015-10-07T17:53:42+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.11]]></title>
+    <link href="http://cirqwizard.org//blog/2015/10/07/version-1-dot-5-11/"/>
+    <updated>2015-10-07T17:49:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2015/10/07/version-1-dot-5-11</id>
+    <content type="html"><![CDATA[<p>After a long summer break, we are back at developing cirQWizard. This version introduces a new feature &#8211; tool library and fixes a number of bugs.</p>
+<p>Tool library lets you have a list of tool you commonly use with milling parameters specific for that particular tool. It&#8217;s a real time saver changing between different milling bits.</p>
+<p>Here are complete <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12700">release notes</a></p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.10]]></title>
