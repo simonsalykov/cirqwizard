@@ -41,6 +41,7 @@ public abstract class GerberPrimitive
     public abstract void rotate(boolean clockwise);
     public abstract void move(Point point);
     public abstract Point getMin();
+    public abstract Point getMax();
 
 
     public static enum Polarity

@@ -17,11 +17,8 @@ package org.cirqwizard.fx;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Shape;
@@ -57,42 +54,24 @@ public class PCBPane extends Region
             getChildren().add(group);
             group.getTransforms().add(translateTransform);
             group.getTransforms().add(scaleTransform);
-            layoutBoundsProperty().addListener(new ChangeListener<Bounds>()
-                {
-                    @Override
-                    public void changed(ObservableValue<? extends Bounds> observableValue, Bounds bounds, Bounds bounds2)
-                    {
-                bestFit();
-                }
-            });
+            layoutBoundsProperty().addListener((v, oldV, newV) -> bestFit());
         }
         catch (IOException exception)
         {
             throw new RuntimeException(exception);
         }
 
-        scaleProperty.addListener(new ChangeListener<Double>()
+        scaleProperty.addListener((v, oldV, newV) -> rescale());
+        items.addListener((v, oldV, newV) ->
         {
-            @Override
-            public void changed(ObservableValue<? extends Double> observableValue, Double aDouble, Double aDouble2)
-            {
-                rescale();
-            }
-        });
-        items.addListener(new ChangeListener<ObservableList<Shape>>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends ObservableList<Shape>> observableValue, ObservableList<Shape> shapes, ObservableList<Shape> shapes2)
-            {
-                group.getChildren().clear();
-                if (shapes2 != null && !shapes2.isEmpty())
-                    group.getChildren().addAll(shapes2);
-                boardWidth = group.getLayoutBounds().getWidth();
-                boardHeight = group.getLayoutBounds().getHeight();
-                setPrefSize(boardWidth * scaleProperty.getValue(), boardHeight * scaleProperty.getValue());
-                bestFit();
-                rescale();
-            }
+            group.getChildren().clear();
+            if (newV != null && !newV.isEmpty())
+                group.getChildren().addAll(newV);
+            boardWidth = group.getLayoutBounds().getWidth();
+            boardHeight = group.getLayoutBounds().getHeight();
+            setPrefSize(boardWidth * scaleProperty.getValue(), boardHeight * scaleProperty.getValue());
+            bestFit();
+            rescale();
         });
     }
 
@@ -118,16 +97,6 @@ public class PCBPane extends Region
         scaleTransform.setY(-scaleProperty.getValue());
         translateTransform.setY(boardHeight * scaleProperty.getValue());
         setPrefSize(boardWidth * scaleProperty.getValue(), boardHeight * scaleProperty.getValue());
-    }
-
-    public double getUnscaledWidth()
-    {
-        return group.getLayoutBounds().getWidth();
-    }
-
-    public double getUnscaledHeight()
-    {
-        return group.getLayoutBounds().getHeight();
     }
 
 }

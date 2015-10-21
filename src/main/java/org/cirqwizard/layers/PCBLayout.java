@@ -54,6 +54,9 @@ public class PCBLayout
     private String contourMillDiameter;
     private List<ComponentId> componentIds;
 
+    private int width;
+    private int height;
+
     public TraceLayer getTopTracesLayer()
     {
         return topTracesLayer;
@@ -148,17 +151,27 @@ public class PCBLayout
 
     private void moveToOrigin()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (Layer layer : getLayers())
-        {
-            if (layer.getMinPoint().getX() < min.getX())
-                min = new Point(layer.getMinPoint().getX(), min.getY());
-            if (layer.getMinPoint().getY() < min.getY())
-                min = new Point(min.getX(), layer.getMinPoint().getY());
-        }
-        min = new Point(-min.getX(), -min.getY());
-        for (Layer layer : getLayers())
-            layer.move(min);
+        int minX = getLayers().stream().mapToInt(layer -> layer.getMinPoint().getX()).min().getAsInt();
+        int minY = getLayers().stream().mapToInt(layer -> layer.getMinPoint().getY()).min().getAsInt();
+        Point min = new Point(-minX, -minY);
+        getLayers().stream().forEach(layer -> layer.move(min));
+        updateDimensions();
+    }
+
+    private void updateDimensions()
+    {
+        width = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getX()).max().getAsInt();
+        height = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getX()).max().getAsInt();
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
     }
 
     public void rotate(boolean clockwise)

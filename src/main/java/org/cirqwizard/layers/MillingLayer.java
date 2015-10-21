@@ -82,15 +82,17 @@ public class MillingLayer extends Layer
     @Override
     public Point getMinPoint()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (GerberPrimitive p : elements)
-        {
-            if (p.getMin().getX() < min.getX())
-                min = new Point(p.getMin().getX(), min.getY());
-            if (p.getMin().getY() < min.getY())
-                min = new Point(min.getX(), p.getMin().getY());
-        }
-        return min;
+        int minX = elements.stream().mapToInt(p -> p.getMin().getX()).min().getAsInt();
+        int minY = elements.stream().mapToInt(p -> p.getMin().getY()).min().getAsInt();
+        return new Point(minX, minY);
+    }
+
+    @Override
+    public Point getMaxPoint()
+    {
+        int maxX = elements.stream().mapToInt(p -> p.getMax().getX()).max().getAsInt();
+        int maxY = elements.stream().mapToInt(p -> p.getMax().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
     }
 
     @Override

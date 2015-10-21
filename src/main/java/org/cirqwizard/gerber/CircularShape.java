@@ -84,4 +84,24 @@ public class CircularShape extends InterpolatingShape
 
         return new Point(x, y);
     }
+
+    @Override
+    public Point getMax()
+    {
+        int x, y;
+        if (arc.containsAngle(0))
+            x = arc.getCenter().getX() + arc.getRadius();
+        else
+            x = Math.max(arc.getFrom().getX(), arc.getTo().getX());
+
+        if (arc.containsAngle(Math.PI / 2))
+            y = arc.getCenter().getY() + arc.getRadius();
+        else
+            y = Math.max(arc.getFrom().getY(), arc.getTo().getY());
+
+        x += aperture.getWidth() / 2;
+        y += aperture.getHeight() / 2;
+
+        return new Point(x, y);
+    }
 }

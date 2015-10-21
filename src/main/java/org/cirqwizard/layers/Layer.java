@@ -27,6 +27,7 @@ public abstract class Layer
     public abstract void rotate(boolean clockwise);
     public abstract void move(Point point);
     public abstract Point getMinPoint();
+    public abstract Point getMaxPoint();
 
     public abstract List<? extends Toolpath> getToolpaths();
 

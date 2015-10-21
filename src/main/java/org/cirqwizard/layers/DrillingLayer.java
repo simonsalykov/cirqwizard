@@ -63,15 +63,17 @@ public class DrillingLayer extends Layer
     @Override
     public Point getMinPoint()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (DrillPoint d : drillPoints)
-        {
-            if (d.getPoint().getX() < min.getX())
-                min = new Point(d.getPoint().getX(), min.getY());
-            if (d.getPoint().getY() < min.getY())
-                min = new Point(min.getX(), d.getPoint().getY());
-        }
-        return min;
+        int minX = drillPoints.stream().mapToInt(p -> p.getPoint().getX()).min().getAsInt();
+        int minY = drillPoints.stream().mapToInt(p -> p.getPoint().getY()).min().getAsInt();
+        return new Point(minX, minY);
+    }
+
+    @Override
+    public Point getMaxPoint()
+    {
+        int maxX = drillPoints.stream().mapToInt(p -> p.getPoint().getX()).max().getAsInt();
+        int maxY = drillPoints.stream().mapToInt(p -> p.getPoint().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
     }
 
     @Override

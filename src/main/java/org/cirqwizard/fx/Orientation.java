@@ -49,8 +49,8 @@ public class Orientation extends ScreenController
         service = new ShapesGenerationService(getMainApplication().getContext());
         service.setOnSucceeded(event ->
         {
-            getMainApplication().getContext().setBoardWidth((int)pcbPane.getUnscaledWidth());
-            getMainApplication().getContext().setBoardHeight((int)pcbPane.getUnscaledHeight());
+            getMainApplication().getContext().setBoardWidth(getMainApplication().getContext().getPcbLayout().getWidth());
+            getMainApplication().getContext().setBoardHeight(getMainApplication().getContext().getPcbLayout().getHeight());
         });
         progressIndicator.visibleProperty().bind(service.runningProperty());
         pcbPane.itemsProperty().bind(service.valueProperty());

@@ -84,15 +84,17 @@ public class ComponentsLayer extends Layer
     @Override
     public Point getMinPoint()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (PPPoint p : points)
-        {
-            if (p.getPoint().getX() < min.getX())
-                min = new Point(p.getPoint().getX(), min.getY());
-            if (p.getPoint().getY() < min.getY())
-                min = new Point(min.getX(), p.getPoint().getY());
-        }
-        return min;
+        int minX = points.stream().mapToInt(p -> p.getPoint().getX()).min().getAsInt();
+        int minY = points.stream().mapToInt(p -> p.getPoint().getY()).min().getAsInt();
+        return new Point(minX, minY);
+    }
+
+    @Override
+    public Point getMaxPoint()
+    {
+        int maxX = points.stream().mapToInt(p -> p.getPoint().getX()).max().getAsInt();
+        int maxY = points.stream().mapToInt(p -> p.getPoint().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
     }
 
     @Override
