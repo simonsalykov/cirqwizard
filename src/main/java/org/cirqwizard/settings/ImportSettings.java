@@ -1,5 +1,7 @@
 package org.cirqwizard.settings;
 
+import java.util.Arrays;
+
 public class ImportSettings extends SettingsGroup
 {
     @PersistentPreference
@@ -17,7 +19,9 @@ public class ImportSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Pick and place")
-    private UserPreference<String> centroidFileFormat = new UserPreference<>("File format", "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?", "");
+    private UserPreference<PickAndPlaceFormat> centroidFileFormat = new UserPreference<>("File format", PickAndPlaceFormat.EAGLE, "").
+            setItems(PickAndPlaceFormat.values()).
+            setInstantiator(PickAndPlaceFormat::forName);
 
     @PersistentPreference
     @PreferenceGroup(name = "Pick and place")
@@ -65,12 +69,12 @@ public class ImportSettings extends SettingsGroup
         this.excellonUnits = excellonUnits;
     }
 
-    public UserPreference<String> getCentroidFileFormat()
+    public UserPreference<PickAndPlaceFormat> getCentroidFileFormat()
     {
         return centroidFileFormat;
     }
 
-    public void setCentroidFileFormat(UserPreference<String> centroidFileFormat)
+    public void setCentroidFileFormat(UserPreference<PickAndPlaceFormat> centroidFileFormat)
     {
         this.centroidFileFormat = centroidFileFormat;
     }

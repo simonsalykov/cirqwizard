@@ -82,7 +82,14 @@ public abstract class SettingsGroup
                 else
                 {
                     String v = prefs.get(f.getName(), null);
-                    p.setValue(v == null ? p.getDefaultValue() : p.getInstantiator().fromString(v));
+                    try
+                    {
+                        p.setValue(v == null ? p.getDefaultValue() : p.getInstantiator().fromString(v));
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        p.setValue(p.getDefaultValue());
+                    }
                 }
             }
         }

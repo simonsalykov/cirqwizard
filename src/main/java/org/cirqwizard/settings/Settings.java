@@ -161,7 +161,6 @@ public class Settings
         setInt(IMPORT_EXCELLON_DECIMAL_PLACES, importSettings.getExcellonDecimalPlaces());
         if (preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null) != null)
             importSettings.getExcellonUnits().setValue("1000".equals(preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null)) ? DistanceUnit.MM : DistanceUnit.INCHES);
-        setString(IMPORT_PP_REGEX, importSettings.getCentroidFileFormat());
 
         ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
         setInt(INTERFACE_G54_X, applicationValues.getG54X());

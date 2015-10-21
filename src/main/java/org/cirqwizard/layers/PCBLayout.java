@@ -256,7 +256,7 @@ public class PCBLayout
         componentsLayer = new ComponentsLayer();
         try
         {
-            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getImportSettings().getCentroidFileFormat().getValue());
+            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getImportSettings().getCentroidFileFormat().getValue().getRegex());
             componentsLayer.setPoints(parser.parse());
             componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }
