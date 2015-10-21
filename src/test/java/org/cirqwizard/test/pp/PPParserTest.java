@@ -15,9 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.test.pp;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.PPParser;
+import org.cirqwizard.settings.DistanceUnit;
 import org.cirqwizard.toolpath.PPPoint;
 import org.junit.Test;
 
@@ -190,13 +190,13 @@ public class PPParserTest
                 "\"R1\",\"15\",\"1206\",TOP,180,1548,90\n" +
                 "\"R3\",\"15.4\",\"1206\",TOP,180,2190,90\n";
         String regex = "\"(?<name>\\S+)\",\"(?<value>\\S*)\",\"(?<package>.*)\",TOP,(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*)";
-        PPParser parser = new PPParser(new StringReader(fileContent), regex);
+        PPParser parser = new PPParser(new StringReader(fileContent), regex, DistanceUnit.THOU.getMultiplier());
         List<PPPoint> points = parser.parse();
 
         assertEquals(2, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("1206", "15"), p.getId());
-        assertEquals(new Point(180000, 1548000), p.getPoint());
+        assertEquals(new Point(4572, 39319), p.getPoint());
         assertEquals(90000, p.getAngle());
         assertEquals("R1", p.getName());
     }

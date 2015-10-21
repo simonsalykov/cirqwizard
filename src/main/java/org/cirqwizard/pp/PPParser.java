@@ -17,12 +17,14 @@ package org.cirqwizard.pp;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.DistanceUnit;
 import org.cirqwizard.toolpath.PPPoint;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,11 +36,18 @@ public class PPParser
 {
     private Reader reader;
     private Pattern pattern;
+    private BigDecimal coordinatesConversionRatio;
 
     public PPParser(Reader reader, String pattern)
     {
+        this(reader, pattern, DistanceUnit.MM.getMultiplier());
+    }
+
+    public PPParser(Reader reader, String pattern, BigDecimal coordinatesConversionRatio)
+    {
         this.reader = reader;
         this.pattern = Pattern.compile(pattern);
+        this.coordinatesConversionRatio = coordinatesConversionRatio;
     }
 
     public List<PPPoint> parse() throws IOException
@@ -67,8 +76,9 @@ public class PPParser
                 }
 
                 components.add(new PPPoint(new ComponentId(packaging, value),
-                        new Point((int)(Double.valueOf(x) * ApplicationConstants.RESOLUTION),
-                                (int)(Double.valueOf(y) * ApplicationConstants.RESOLUTION)), (int)(Double.valueOf(angle) * ApplicationConstants.RESOLUTION), name));
+                        new Point(coordinatesConversionRatio.multiply(new BigDecimal(x)).intValue(),
+                                coordinatesConversionRatio.multiply(new BigDecimal(y)).intValue()),
+                                (int)(Double.valueOf(angle) * ApplicationConstants.RESOLUTION), name));
             }
         }
         catch (FileNotFoundException e)

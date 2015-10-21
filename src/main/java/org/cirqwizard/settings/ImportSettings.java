@@ -1,6 +1,17 @@
-package org.cirqwizard.settings;
+/*
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
 
-import java.util.Arrays;
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.cirqwizard.settings;
 
 public class ImportSettings extends SettingsGroup
 {
@@ -26,6 +37,11 @@ public class ImportSettings extends SettingsGroup
     @PersistentPreference
     @PreferenceGroup(name = "Pick and place")
     private UserPreference<Integer> centroidAngularOffset = new UserPreference<>("Angle offset", 0, "degrees", PreferenceType.INTEGER);
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Pick and place")
+    private UserPreference<DistanceUnit> centroidUnits = new UserPreference<>("Units", DistanceUnit.MM, "").
+            setItems(DistanceUnit.values()).setInstantiator(DistanceUnit::forName);
 
     @Override
     public String getName()
@@ -87,5 +103,15 @@ public class ImportSettings extends SettingsGroup
     public void setCentroidAngularOffset(UserPreference<Integer> centroidAngularOffset)
     {
         this.centroidAngularOffset = centroidAngularOffset;
+    }
+
+    public UserPreference<DistanceUnit> getCentroidUnits()
+    {
+        return centroidUnits;
+    }
+
+    public void setCentroidUnits(UserPreference<DistanceUnit> centroidUnits)
+    {
+        this.centroidUnits = centroidUnits;
     }
 }

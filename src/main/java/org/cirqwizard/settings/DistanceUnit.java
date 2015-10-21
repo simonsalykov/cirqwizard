@@ -14,20 +14,22 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.settings;
 
+import java.math.BigDecimal;
+
 public enum DistanceUnit
 {
-    INCHES(25_400, "Inches"), MM(1000, "Millimeters");
+    INCHES(new BigDecimal(25_400), "Inches"), MM(new BigDecimal(1000), "Millimeters"), THOU(new BigDecimal("25.4"), "Thou");
 
-    private int multiplier;
+    private BigDecimal multiplier;
     private String name;
 
-    DistanceUnit(int multiplier, String name)
+    DistanceUnit(BigDecimal multiplier, String name)
     {
         this.multiplier = multiplier;
         this.name = name;
     }
 
-    public int getMultiplier()
+    public BigDecimal getMultiplier()
     {
         return multiplier;
     }
