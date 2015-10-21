@@ -14,7 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.settings;
 
-public enum  DistanceUnit
+public enum DistanceUnit
 {
     INCHES(25_400, "Inches"), MM(1000, "Millimeters");
 
@@ -37,4 +37,17 @@ public enum  DistanceUnit
         return name;
     }
 
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+
+    public static DistanceUnit forName(String name)
+    {
+        for (DistanceUnit u : values())
+            if (u.getName().equals(name))
+                return u;
+        throw new IllegalArgumentException("Could not find DistanceUnit for " + name);
+    }
 }

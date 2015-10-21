@@ -14,15 +14,15 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.layers;
 
-import org.cirqwizard.gerber.GerberParser;
 import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.GerberParser;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.settings.ApplicationSettings;
+import org.cirqwizard.settings.ImportSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
@@ -232,7 +232,7 @@ public class PCBLayout
         drillingLayer = new DrillingLayer();
         try
         {
-            ApplicationSettings settings = SettingsFactory.getApplicationSettings();
+            ImportSettings settings = SettingsFactory.getImportSettings();
             ExcellonParser parser = new ExcellonParser(settings.getExcellonIntegerPlaces().getValue(), settings.getExcellonDecimalPlaces().getValue(),
                     settings.getExcellonUnits().getValue().getMultiplier(), new FileReader(file));
             drillingLayer.setDrillPoints(parser.parse());
@@ -256,7 +256,7 @@ public class PCBLayout
         componentsLayer = new ComponentsLayer();
         try
         {
-            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getApplicationSettings().getCentroidFileFormat().getValue());
+            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getImportSettings().getCentroidFileFormat().getValue());
             componentsLayer.setPoints(parser.parse());
             componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }

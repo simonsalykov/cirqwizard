@@ -156,11 +156,12 @@ public class Settings
         setInt(PP_MOVE_HEIGHT, ppSettings.getMoveHeight());
         setInt(PP_ROTATION_FEED, ppSettings.getRotationFeed());
 
-        setInt(IMPORT_EXCELLON_INTEGER_PLACES, applicationSettings.getExcellonIntegerPlaces());
-        setInt(IMPORT_EXCELLON_DECIMAL_PLACES, applicationSettings.getExcellonDecimalPlaces());
+        ImportSettings importSettings = SettingsFactory.getImportSettings();
+        setInt(IMPORT_EXCELLON_INTEGER_PLACES, importSettings.getExcellonIntegerPlaces());
+        setInt(IMPORT_EXCELLON_DECIMAL_PLACES, importSettings.getExcellonDecimalPlaces());
         if (preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null) != null)
-            applicationSettings.getExcellonUnits().setValue("1000".equals(preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null)) ? DistanceUnit.MM : DistanceUnit.INCHES);
-        setString(IMPORT_PP_REGEX, applicationSettings.getCentroidFileFormat());
+            importSettings.getExcellonUnits().setValue("1000".equals(preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null)) ? DistanceUnit.MM : DistanceUnit.INCHES);
+        setString(IMPORT_PP_REGEX, importSettings.getCentroidFileFormat());
 
         ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
         setInt(INTERFACE_G54_X, applicationValues.getG54X());
@@ -179,6 +180,7 @@ public class Settings
         contourMillingSettings.save();
         dispensingSettings.save();
         ppSettings.save();
+        importSettings.save();
         applicationValues.save();
     }
 

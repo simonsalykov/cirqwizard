@@ -250,6 +250,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         if (placementAngle.getIntegerValue() != null)
             angle += placementAngle.getIntegerValue();
         angle -= 90 * ApplicationConstants.RESOLUTION;
+        angle += SettingsFactory.getImportSettings().getCentroidAngularOffset().getValue() * ApplicationConstants.RESOLUTION;
         return angle;
     }
 
