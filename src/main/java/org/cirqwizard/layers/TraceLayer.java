@@ -24,8 +24,8 @@ import java.util.List;
 
 public class TraceLayer extends Layer
 {
-    private List<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private List<Toolpath> toolpaths = new ArrayList<Toolpath>();
+    private List<GerberPrimitive> elements = new ArrayList<>();
+    private List<Toolpath> toolpaths = new ArrayList<>();
 
     public void setElements(ArrayList<GerberPrimitive> elements)
     {
@@ -75,15 +75,6 @@ public class TraceLayer extends Layer
     public void setToolpaths(List<Toolpath> toolpaths)
     {
         this.toolpaths = toolpaths;
-    }
-
-    @Override
-    public void clearSelection()
-    {
-        if (toolpaths == null)
-            return;
-        for (Toolpath t : toolpaths)
-            t.setSelected(false);
     }
 
 }

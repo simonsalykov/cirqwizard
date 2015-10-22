@@ -20,6 +20,7 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -42,16 +42,14 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
     private int passes;
     private int overlap;
     private int toolDiameter;
-    private int threadCount;
 
-    public AdditionalToolpathGenerator(int width, int height, int passes, int overlap, int toolDiameter, int threadCount, List<GerberPrimitive> primitives)
+    public AdditionalToolpathGenerator(int width, int height, int passes, int overlap, int toolDiameter, List<GerberPrimitive> primitives)
     {
         this.width = width;
         this.height = height;
         this.passes = passes;
         this.overlap = overlap;
         this.toolDiameter = toolDiameter;
-        this.threadCount = threadCount;
         this.primitives = primitives;
     }
 
@@ -60,7 +58,7 @@ public class AdditionalToolpathGenerator extends AbstractToolpathGenerator
         long tt = System.currentTimeMillis();
         final Vector<Toolpath> segments = new Vector<>();
 
-        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+        ExecutorService pool = Executors.newFixedThreadPool(SettingsFactory.getApplicationSettings().getProcessingThreads().getValue());
         progressProperty.setValue(0);
         final double progressIncrement = 1.0 / primitives.size();
 

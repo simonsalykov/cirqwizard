@@ -125,7 +125,7 @@
                 <Button onAction="#stopExecution" text="Stop"/>
             </children>
         </VBox>
-        <VBox fx:id="generationPane" maxHeight="200.0" maxWidth="600.0" styleClass="pcb-popup-pane" alignment="CENTER" spacing="20">
+        <VBox fx:id="generationPane" visible="false" maxHeight="200.0" maxWidth="600.0" styleClass="pcb-popup-pane" alignment="CENTER" spacing="20">
             <children>
                 <Label fx:id="generationStageLabel" />
                 <ProgressBar fx:id="overallProgressBar" prefHeight="25.0" prefWidth="400.0" progress="0.0"/>

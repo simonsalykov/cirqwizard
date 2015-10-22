@@ -76,9 +76,4 @@ public class DrillingLayer extends Layer
         return new Point(maxX, maxY);
     }
 
-    @Override
-    public void clearSelection()
-    {
-    }
-
 }

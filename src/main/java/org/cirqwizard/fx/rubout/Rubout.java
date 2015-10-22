@@ -18,19 +18,17 @@ import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
-import org.cirqwizard.fx.machining.Machining;
-import org.cirqwizard.fx.machining.RuboutToolpathGenerationService;
-import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.generation.GenerationService;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.SettingsGroup;
+import org.cirqwizard.toolpath.ToolpathsCacheKey;
 
-public abstract class Rubout extends Machining
+public abstract class Rubout extends LongProcessingMachining
 {
     @Override
     protected String getName()
@@ -61,10 +59,23 @@ public abstract class Rubout extends Machining
     protected abstract boolean mirror();
 
     @Override
-    protected ToolpathGenerationService getToolpathGenerationService()
+    protected GenerationService getGenerationService()
     {
-        return new RuboutToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId(), getLayerModificationDate());
+        return new org.cirqwizard.generation.RuboutToolpathGenerationService(getMainApplication().getContext(), getCurrentLayer());
+    }
+
+    @Override
+    protected ToolpathsCacheKey getCacheKey()
+    {
+        RubOutSettings settings = SettingsFactory.getRubOutSettings();
+        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), settings.getToolDiameter().getValue(), 0,
+                0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
+    }
+
+    @Override
+    protected int getMergeTolerance()
+    {
+        return SettingsFactory.getRubOutSettings().getToolDiameter().getValue() / 10;
     }
 
     @Override

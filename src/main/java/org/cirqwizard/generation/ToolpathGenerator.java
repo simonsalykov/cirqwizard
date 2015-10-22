@@ -15,13 +15,12 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyProperty;
-import javafx.concurrent.Worker;
+import javafx.beans.property.BooleanProperty;
 import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.List;
@@ -40,21 +39,19 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
     private int width;
     private int height;
     private int toolDiameter;
-    private int threadCount;
     private List<Circle> knownCircles;
-    private ReadOnlyObjectProperty<Worker.State> serviceStateProperty;
+    private BooleanProperty cancelledProperty;
     private double scale = 1;   // It has to go
 
-    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives, int threadCount,
-                     ReadOnlyObjectProperty<Worker.State> serviceStateProperty)
+    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives,
+                     BooleanProperty cancelledProperty)
     {
         this.width = width;
         this.height = height;
         this.inflation = inflation;
         this.toolDiameter = toolDiameter;
         this.primitives = primitives;
-        this.threadCount = threadCount;
-        this.serviceStateProperty = serviceStateProperty;
+        this.cancelledProperty = cancelledProperty;
         knownCircles = getKnownCircles(inflation);
     }
 
@@ -62,12 +59,10 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
     {
         final Vector<Toolpath> segments = new Vector<>();
 
-        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+        ExecutorService pool = Executors.newFixedThreadPool(SettingsFactory.getApplicationSettings().getProcessingThreads().getValue());
         for (int x = 0; x < width; x += WINDOW_SIZE)
             for (int y = 0; y < height; y += WINDOW_SIZE)
-            {
                 pool.submit(new WindowGeneratorThread(x > WINDOWS_OVERLAP ? x - WINDOWS_OVERLAP : x, y > WINDOWS_OVERLAP ? y - WINDOWS_OVERLAP : y, segments));
-            }
 
         try
         {
@@ -97,7 +92,7 @@ public class ToolpathGenerator extends AbstractToolpathGenerator
         @Override
         public void run()
         {
-            if (serviceStateProperty.getValue() == Worker.State.CANCELLED)
+            if (cancelledProperty.get())
                 return;
 
             try

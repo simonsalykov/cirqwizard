@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.toolpath.PPPoint;
 import org.cirqwizard.toolpath.Toolpath;
@@ -40,7 +39,7 @@ public class ComponentsLayer extends Layer
 
     public List<ComponentId> getComponentIds()
     {
-        List<ComponentId> ids = new ArrayList<ComponentId>();
+        List<ComponentId> ids = new ArrayList<>();
         for (PPPoint p : points)
             if (!ids.contains(p.getId()))
                 ids.add(p.getId());
@@ -103,8 +102,4 @@ public class ComponentsLayer extends Layer
         return points;
     }
 
-    @Override
-    public void clearSelection()
-    {
-    }
 }

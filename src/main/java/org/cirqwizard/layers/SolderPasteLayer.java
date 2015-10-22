@@ -220,14 +220,4 @@ public class SolderPasteLayer extends Layer
         return (dx * (from.getY() - p.getY()) - dy * (from.getX() - p.getX())) / Math.sqrt(dx * dx + dy * dy);
     }
 
-    @Override
-    public void clearSelection()
-    {
-        if (toolpaths == null)
-            return;
-        for (Toolpath t : toolpaths)
-            t.setSelected(false);
-
-    }
-
 }

@@ -14,19 +14,17 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.machining;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.cirqwizard.fx.*;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.toolpath.Toolpath;
@@ -53,16 +51,6 @@ public abstract class Machining extends SettingsDependentScreenController implem
     @FXML protected ProgressBar executionProgressBar;
     @FXML protected Label timeElapsedLabel;
 
-    @FXML protected VBox generationPane;
-    @FXML protected Label generationStageLabel;
-    @FXML protected ProgressBar overallProgressBar;
-    @FXML protected Label machiningTimeEstimationLabel;
-    protected StringProperty estimatedMachiningTimeProperty;
-    @FXML protected Button stopGenerationButton;
-
-    protected ToolpathGenerationService toolpathGenerationService;
-
-    private PCBPaneMouseHandler mouseHandler;
 
     private SerialInterfaceService serialService;
 
@@ -86,18 +74,13 @@ public abstract class Machining extends SettingsDependentScreenController implem
                 event.consume();
             }
         });
-        view.addEventFilter(KeyEvent.ANY, (event) ->
-        {
-            if (!event.isShortcutDown())
-                pcbPane.setCursor(Cursor.CROSSHAIR);
-            else
-                pcbPane.setCursor(Cursor.DEFAULT);
-        });
+        view.addEventFilter(KeyEvent.ANY, event -> pcbPane.setCursor(!event.isShortcutDown() ? Cursor.CROSSHAIR : Cursor.DEFAULT));
 
-        mouseHandler = new PCBPaneMouseHandler(pcbPane);
+        PCBPaneMouseHandler mouseHandler = new PCBPaneMouseHandler(pcbPane);
+        mouseHandler.toolpathsProperty().bind(pcbPane.toolpathsProperty());
         pcbPane.addEventFilter(MouseEvent.ANY, mouseHandler);
 
-        gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, (event) ->
+        gcodePane.addEventFilter(KeyEvent.KEY_PRESSED, event ->
         {
             if (event.getCode() == KeyCode.ESCAPE)
             {
@@ -106,17 +89,15 @@ public abstract class Machining extends SettingsDependentScreenController implem
             }
         });
 
-        estimatedMachiningTimeProperty = new SimpleStringProperty();
-        machiningTimeEstimationLabel.textProperty().bind(estimatedMachiningTimeProperty);
     }
+
+    protected abstract void generateToolpaths();
 
     @Override
     public void settingsInvalidated()
     {
-        restartService();
+        generateToolpaths();
     }
-
-    protected abstract ToolpathGenerationService getToolpathGenerationService();
 
     private class ShortcutHandler implements EventHandler<KeyEvent>
     {
@@ -177,38 +158,17 @@ public abstract class Machining extends SettingsDependentScreenController implem
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        toolpathGenerationService = getToolpathGenerationService();
-        generationStageLabel.textProperty().bind(toolpathGenerationService.generationStageProperty());
         serialService = new SerialInterfaceService(getMainApplication());
-        mouseHandler.setService(toolpathGenerationService);
-        generationPane.visibleProperty().bind(toolpathGenerationService.runningProperty());
-        if (getMainApplication().getCNCController() == null)
-            goButton.setDisable(true);
-        else
-            goButton.disableProperty().bind(toolpathGenerationService.runningProperty());
-        pcbPane.toolpathsProperty().bind(toolpathGenerationService.valueProperty());
-
+        goButton.setDisable(getMainApplication().getCNCController() == null);
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
 
-        stopGenerationButton.setDisable(false);
-
         pcbPane.setBoardWidth(context.getBoardWidth());
         pcbPane.setBoardHeight(context.getBoardHeight());
 
-        veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
         pcbPane.repaint();
-        toolpathGenerationService.start();
-    }
-
-    public void restartService()
-    {
-        if (!toolpathGenerationService.needsRestart())
-            return;
-        veil.visibleProperty().bind(toolpathGenerationService.runningProperty());
-        stopGenerationButton.setDisable(false);
-        toolpathGenerationService.restart();
+        generateToolpaths();
     }
 
     public void zoomIn()
@@ -236,9 +196,9 @@ public abstract class Machining extends SettingsDependentScreenController implem
 
     public void selectAll()
     {
-        for (Toolpath toolpath : toolpathGenerationService.getValue())
+        for (Toolpath toolpath : pcbPane.toolpathsProperty().getValue())
             toolpath.setSelected(true);
-        pcbPane.repaint(toolpathGenerationService.getValue());
+        pcbPane.repaint(pcbPane.toolpathsProperty().getValue());
     }
 
     public void enableSelected()
@@ -260,7 +220,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     public void disableSelected()
     {
         List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().
-                filter(Toolpath::isSelected).map(t -> (Toolpath)t).collect(Collectors.toList());
+                filter(Toolpath::isSelected).collect(Collectors.toList());
         changedToolpaths.forEach(toolpath ->
         {
             toolpath.setEnabled(false);
@@ -302,7 +262,5 @@ public abstract class Machining extends SettingsDependentScreenController implem
 
     public void stopGeneration()
     {
-        stopGenerationButton.setDisable(true);
-        toolpathGenerationService.cancel();
     }
 }

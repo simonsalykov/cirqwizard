@@ -18,17 +18,17 @@ import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
-import org.cirqwizard.fx.machining.Machining;
-import org.cirqwizard.fx.machining.ToolpathGenerationService;
-import org.cirqwizard.fx.machining.TraceMillingToolpathGenerationService;
+import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
+import org.cirqwizard.generation.GenerationService;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.settings.ToolSettings;
+import org.cirqwizard.toolpath.ToolpathsCacheKey;
 
-public abstract class TraceMilling extends Machining
+public abstract class TraceMilling extends LongProcessingMachining
 {
     @Override
     protected String getName()
@@ -61,15 +61,27 @@ public abstract class TraceMilling extends Machining
     }
 
     @Override
-    protected ToolpathGenerationService getToolpathGenerationService()
+    protected GenerationService getGenerationService()
     {
-        return new TraceMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId(), getLayerModificationDate());
+        return new org.cirqwizard.generation.ToolpathGenerationService(getMainApplication().getContext(), getCurrentLayer());
+    }
+
+    @Override
+    protected ToolpathsCacheKey getCacheKey()
+    {
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
+        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), currentTool.getDiameter(),
+                currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
+    }
+
+    @Override
+    protected int getMergeTolerance()
+    {
+        return getMainApplication().getContext().getCurrentMillingTool().getDiameter() / 4;
     }
 
     protected abstract boolean mirror();
     protected abstract int getCacheId();
-    protected abstract long getLayerModificationDate();
 
     @Override
     protected String generateGCode()

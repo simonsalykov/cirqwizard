@@ -14,20 +14,19 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.contour;
 
+import javafx.collections.FXCollections;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
-import org.cirqwizard.fx.machining.ContourMillingToolpathGenerationService;
 import org.cirqwizard.fx.machining.Machining;
-import org.cirqwizard.fx.machining.ToolpathGenerationService;
 import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.MillingGCodeGenerator;
 import org.cirqwizard.layers.Layer;
+import org.cirqwizard.layers.MillingLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.ContourMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.SettingsGroup;
 
 public class ContourMilling extends Machining
 {
@@ -63,10 +62,12 @@ public class ContourMilling extends Machining
     }
 
     @Override
-    protected ToolpathGenerationService getToolpathGenerationService()
+    protected void generateToolpaths()
     {
-        return new ContourMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty);
+        MillingLayer layer = (MillingLayer) getCurrentLayer();
+        layer.generateToolpaths();
+        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(layer.getToolpaths()));
+
     }
 
     @Override
