@@ -81,7 +81,7 @@ public class Optimizer
                 final List<Toolpath> l = new ArrayList<>();
                 for (int j : mostFit.getGenes())
                     l.addAll(environment.getChains().get(j).getSegments());
-                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, arcFeed, clearance, safetyHeight, false, mergeTolerance);
+                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, arcFeed, clearance, safetyHeight, true, mergeTolerance);
                 Platform.runLater(() -> bestSolutionDuration.setValue(bestResult));
                 if (Math.abs(lastEvaluation - bestResult) < MIN_IMPROVEMENT)
                     break;

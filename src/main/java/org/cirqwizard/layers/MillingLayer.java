@@ -18,18 +18,18 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.CircularShape;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MillingLayer extends Layer
 {
-    private ArrayList<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private ArrayList<Toolpath> toolpaths = new ArrayList<Toolpath>();
+    private ArrayList<GerberPrimitive> elements = new ArrayList<>();
+    private List<Toolpath> toolpaths = new ArrayList<>();
 
     public void setElements(ArrayList<GerberPrimitive> elements)
     {
@@ -41,7 +41,7 @@ public class MillingLayer extends Layer
         return elements;
     }
 
-    public ArrayList<Toolpath> getToolpaths()
+    public List<Toolpath> getToolpaths()
     {
         return toolpaths;
     }
@@ -63,6 +63,11 @@ public class MillingLayer extends Layer
                         shape.getArc().isClockwise()));
             }
         }
+    }
+
+    public void setToolpaths(List<Toolpath> toolpaths)
+    {
+        this.toolpaths = toolpaths;
     }
 
     @Override
