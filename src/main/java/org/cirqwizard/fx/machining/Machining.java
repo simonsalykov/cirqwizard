@@ -159,7 +159,8 @@ public abstract class Machining extends SettingsDependentScreenController implem
     {
         Context context = getMainApplication().getContext();
         serialService = new SerialInterfaceService(getMainApplication());
-        goButton.setDisable(getMainApplication().getCNCController() == null);
+        if (!goButton.disableProperty().isBound())
+            goButton.setDisable(getMainApplication().getCNCController() == null);
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
