@@ -17,7 +17,6 @@ package org.cirqwizard.toolpath;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 
 
 public class LinearToolpath extends CuttingToolpath

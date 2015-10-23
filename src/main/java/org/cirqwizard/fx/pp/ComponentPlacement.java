@@ -29,7 +29,6 @@ import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
@@ -119,19 +118,13 @@ public class ComponentPlacement extends ScreenController implements Initializabl
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN)
                 return;
             RealNumberTextField textField = (RealNumberTextField) event.getSource();
-            try
-            {
-                RealNumber delta = textField == placementAngle ? new RealNumber(1) : new RealNumber("0.1");
-                if (event.getCode() == KeyCode.DOWN)
-                    delta = delta.negate();
-                RealNumber currentValue = textField.getRealNumberText() == null ? new RealNumber(0) : new RealNumber(textField.getRealNumberText());
-                textField.setText(coordinatesFormat.format(currentValue.add(delta).getValue()));
-                textField.fireEvent(new ActionEvent());
-            }
-            catch (NumberFormatException e)
-            {
-                // Not a big deal
-            }
+            if (textField.getIntegerValue() == null)
+                return;
+            int delta = textField == placementAngle ? 1000 : 100;
+            if (event.getCode() == KeyCode.DOWN)
+                delta = -delta;
+            textField.setIntegerValue(textField.getIntegerValue() + delta);
+            textField.fireEvent(new ActionEvent());
         }
     }
 

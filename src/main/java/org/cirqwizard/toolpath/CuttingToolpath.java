@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.toolpath;
 
 import org.cirqwizard.geom.Curve;
-import org.cirqwizard.math.RealNumber;
 
 
 public abstract class CuttingToolpath extends Toolpath

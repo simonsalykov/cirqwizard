@@ -24,7 +24,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.misc.ManualDataInput;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.net.URL;
@@ -75,21 +74,13 @@ public class ManualMovementController extends ScreenController implements Initia
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN)
                 return;
             RealNumberTextField textField = (RealNumberTextField) event.getSource();
-            if (textField.getRealNumberText() == null)
+            if (textField.getIntegerValue() == null)
                 return;
-            try
-            {
-                RealNumber delta = new RealNumber("0.1");
-                if (event.getCode() == KeyCode.DOWN)
-                    delta = delta.negate();
-                RealNumber currentValue = textField.getRealNumberText() == null ? new RealNumber(0) : new RealNumber(textField.getRealNumberText());
-                textField.setText(coordinatesFormat.format(currentValue.add(delta).getValue()));
-                textField.fireEvent(new ActionEvent());
-            }
-            catch (NumberFormatException e)
-            {
-                // Not a big deal
-            }
+            int delta = 100;
+            if (event.getCode() == KeyCode.DOWN)
+                delta = -delta;
+            textField.setIntegerValue(textField.getIntegerValue() + delta);
+            textField.fireEvent(new ActionEvent());
         }
     }
 

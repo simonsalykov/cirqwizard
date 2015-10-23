@@ -17,7 +17,6 @@ package org.cirqwizard.gerber;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CuttingToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
@@ -48,17 +47,6 @@ public class GroupRenderer
                     append(arc.getStart()).append(",").
                     append(arc.getEnd(false)).append("}]");
         }
-        return str.toString();
-    }
-
-    public static String renderPrimitives(List<GerberPrimitive> elements, RealNumber offset)
-    {
-        StringBuilder str = new StringBuilder();
-//        str.append("Graphics[{");
-//        for (GerberPrimitive p : elements)
-//            str.append(renderNakedCycle(p.getSubdivision(offset).getOuterFace().getInnerComponents().get(0))).append(",");
-//        str.setLength(str.length() - 1);
-//        str.append("},Axes->True]");
         return str.toString();
     }
 

@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.appertures.macro;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 
 public class MacroVectorLine extends MacroPrimitive
 {

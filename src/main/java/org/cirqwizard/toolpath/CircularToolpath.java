@@ -17,7 +17,6 @@ package org.cirqwizard.toolpath;
 
 import org.cirqwizard.geom.*;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 
 
 public class CircularToolpath extends CuttingToolpath
