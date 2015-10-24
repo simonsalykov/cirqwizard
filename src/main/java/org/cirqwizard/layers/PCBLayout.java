@@ -161,7 +161,7 @@ public class PCBLayout
     private void updateDimensions()
     {
         width = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getX()).max().getAsInt();
-        height = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getX()).max().getAsInt();
+        height = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getY()).max().getAsInt();
     }
 
     public int getWidth()
