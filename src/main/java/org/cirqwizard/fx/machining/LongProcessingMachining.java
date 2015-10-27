@@ -72,7 +72,7 @@ public abstract class LongProcessingMachining extends Machining
                             return null;
                         }
 
-                        OptimizationService optimizationService = new OptimizationService(getMainApplication().getContext(), chains, getMergeTolerance());
+                        OptimizationService optimizationService = getOptimizationService(chains);
                         bindToService(optimizationService);
                         chains = optimizationService.optimize();
 
@@ -97,6 +97,7 @@ public abstract class LongProcessingMachining extends Machining
 
     protected abstract ToolpathsCacheKey getCacheKey();
     protected abstract GenerationService getGenerationService();
+    protected abstract OptimizationService getOptimizationService(List<Chain> chains);
     protected abstract int getMergeTolerance();
     protected abstract long getLayerModificationDate();
 

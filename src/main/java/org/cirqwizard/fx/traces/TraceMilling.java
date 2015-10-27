@@ -21,12 +21,16 @@ import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.GenerationService;
+import org.cirqwizard.generation.optimizer.Chain;
+import org.cirqwizard.generation.optimizer.OptimizationService;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.settings.ToolSettings;
 import org.cirqwizard.toolpath.ToolpathsCacheKey;
+
+import java.util.List;
 
 public abstract class TraceMilling extends LongProcessingMachining
 {
@@ -64,6 +68,15 @@ public abstract class TraceMilling extends LongProcessingMachining
     protected GenerationService getGenerationService()
     {
         return new org.cirqwizard.generation.ToolpathGenerationService(getMainApplication().getContext(), getCurrentLayer());
+    }
+
+    @Override
+    protected OptimizationService getOptimizationService(List<Chain> chains)
+    {
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
+        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+        return new OptimizationService(getMainApplication().getContext(), chains, getMergeTolerance(), currentTool.getFeedXY(),
+                currentTool.getFeedZ(), currentTool.getArcs(), settings.getClearance().getValue(), settings.getSafetyHeight().getValue());
     }
 
     @Override

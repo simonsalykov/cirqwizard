@@ -22,11 +22,15 @@ import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.GenerationService;
+import org.cirqwizard.generation.optimizer.Chain;
+import org.cirqwizard.generation.optimizer.OptimizationService;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.ToolpathsCacheKey;
+
+import java.util.List;
 
 public abstract class Rubout extends LongProcessingMachining
 {
@@ -62,6 +66,15 @@ public abstract class Rubout extends LongProcessingMachining
     protected GenerationService getGenerationService()
     {
         return new org.cirqwizard.generation.RuboutToolpathGenerationService(getMainApplication().getContext(), getCurrentLayer());
+    }
+
+    @Override
+    protected OptimizationService getOptimizationService(List<Chain> chains)
+    {
+        RubOutSettings settings = SettingsFactory.getRubOutSettings();
+        return new OptimizationService(getMainApplication().getContext(), chains, getMergeTolerance(), settings.getFeedXY().getValue(),
+                settings.getFeedZ().getValue(), settings.getFeedArcs().getValue(), settings.getClearance().getValue(),
+                settings.getSafetyHeight().getValue());
     }
 
     @Override

@@ -18,9 +18,6 @@ import javafx.beans.binding.Bindings;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.generation.ProcessingService;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.settings.InsulationMillingSettings;
-import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.ToolSettings;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -29,23 +26,29 @@ public class OptimizationService extends ProcessingService
 {
     private List<Chain> chains;
     private int mergeTolerance;
+    private int feedXY;
+    private int feedZ;
+    private int arcs;
+    private int clearance;
+    private int safetyHeight;
 
-    public OptimizationService(Context context, List<Chain> chains, int mergeTolerance)
+    public OptimizationService(Context context, List<Chain> chains, int mergeTolerance, int feedXY, int feedZ, int arcs, int clearance, int safetyHeight)
     {
         super(context);
         this.chains = chains;
         this.mergeTolerance = mergeTolerance;
+        this.feedXY = feedXY;
+        this.feedZ = feedZ;
+        this.arcs = arcs;
+        this.clearance = clearance;
+        this.safetyHeight = safetyHeight;
     }
 
     public List<Chain> optimize()
     {
-        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        ToolSettings currentTool = getContext().getCurrentMillingTool();
-
-        final Optimizer optimizer = new Optimizer(chains, convertToDouble(currentTool.getFeedXY() / 60), convertToDouble(currentTool.getFeedZ()) / 60,
-                convertToDouble(currentTool.getFeedXY()) / 60 * currentTool.getArcs() / 100,
-                convertToDouble(settings.getClearance().getValue()), convertToDouble(settings.getSafetyHeight().getValue()), mergeTolerance,
-                cancelledProperty());
+        final Optimizer optimizer = new Optimizer(chains, convertToDouble(feedXY) / 60, convertToDouble(feedZ) / 60,
+                convertToDouble(feedXY) / 60 * arcs / 100, convertToDouble(clearance), convertToDouble(safetyHeight),
+                mergeTolerance, cancelledProperty());
         setCurrentStage("Optimizing milling time...");
         progressProperty().bind(optimizer.progressProperty());
 
