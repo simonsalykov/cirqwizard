@@ -87,6 +87,7 @@ public class ContourMilling extends Machining
         List<Toolpath> toolpaths = new ArrayList<>();
         chains.stream().forEach(c -> toolpaths.addAll(c.getSegments()));
         layer.setToolpaths(toolpaths);
+        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
     }
 
     private double convertToDouble(Integer i)
