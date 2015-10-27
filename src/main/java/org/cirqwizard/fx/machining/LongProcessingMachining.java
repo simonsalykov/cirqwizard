@@ -107,6 +107,7 @@ public abstract class LongProcessingMachining extends Machining
             goButton.disableProperty().bind(longProcessingService.runningProperty());
         generationPane.visibleProperty().bind(longProcessingService.runningProperty());
         veil.visibleProperty().bind(longProcessingService.runningProperty());
+        cacheKey = null;
         super.refresh();
     }
 
