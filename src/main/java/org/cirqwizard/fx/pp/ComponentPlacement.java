@@ -118,12 +118,11 @@ public class ComponentPlacement extends ScreenController implements Initializabl
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN)
                 return;
             RealNumberTextField textField = (RealNumberTextField) event.getSource();
-            if (textField.getIntegerValue() == null)
-                return;
+            int currentValue = textField.getIntegerValue() == null ? 0 : textField.getIntegerValue();
             int delta = textField == placementAngle ? 1000 : 100;
             if (event.getCode() == KeyCode.DOWN)
                 delta = -delta;
-            textField.setIntegerValue(textField.getIntegerValue() + delta);
+            textField.setIntegerValue(currentValue + delta);
             textField.fireEvent(new ActionEvent());
         }
     }
