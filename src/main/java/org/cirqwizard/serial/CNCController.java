@@ -24,7 +24,7 @@ import org.cirqwizard.post.Postprocessor;
 public class CNCController
 {
     private final static long PROGRAM_INTERRUPTION_TIMEOUT = 100000;
-    private final static long COMMAND_TIMEOUT = 2000;
+    private final static long COMMAND_TIMEOUT = 4000;
 
     private SerialInterface serial;
     private MainApplication mainApplication;
