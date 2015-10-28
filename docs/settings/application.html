@@ -112,9 +112,9 @@
     <ul>
         
         
-        
-        
         <li><a href="/docs/intro.html">Introduction</a></li>
+        
+        
         
         
         
@@ -206,6 +206,10 @@
         
         
         
+        <li><a href="/docs/settings/import.html">Settings - Import</a></li>
+        
+        
+        
         <li><a href="/docs/settings/application.html">Settings - Application</a></li>
         
         
@@ -214,25 +218,25 @@
         
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         <li><a href="/docs/firmware.html">Firmware reflashing</a></li>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
     </ul>
@@ -265,64 +269,9 @@
 		<td> <span class="caps">INFO</span> </td>
 	</tr>
 	<tr>
-		<td> Excellon integer places </td>
-		<td> Number of integer places in coordinates of Excellon (drilling) files </td>
-		<td> 2 </td>
-	</tr>
-	<tr>
-		<td> Excellon decimal places </td>
-		<td> Number of decimal places in coordinates of Excellon (drilling) files </td>
-		<td> 4 </td>
-	</tr>
-	<tr>
-		<td> Excellon units </td>
-		<td> Whether coordinates in Excellon (drilling) files are specified in metric or imperial units </td>
-		<td> inches </td>
-	</tr>
-	<tr>
-		<td> Centroid file format </td>
-		<td> A regular expression which is used to import centroid files (files with components locations for placement operation) (see below for known expressions)</td>
-		<td> Eagle </td>
-	</tr>
-	<tr>
 		<td> Processing threads </td>
 		<td> Number of threads used for tool paths generation. The optimal number is the number of <span class="caps">CPU</span> cores in the system (times two for hyper-threading CPUs). If available <span class="caps">RAM</span> is not sufficient this number may need to be reduced</td>
 		<td> Number of <span class="caps">CPU</span> cores on the computer </td>
-	</tr>
-</table>
-<h3>Regular expressions for Centroid files import</h3>
-<table class="table table-bordered ">
-	<tr>
-		<th><span class="caps">EDA</span> </th>
-		<th>Expression </th>
-	</tr>
-	<tr>
-		<td> Eagle </td>
-		<td>  (?&lt;name&gt;\S+)\s+(?&lt;x&gt;\d+.?\d*)\s+(?&lt;y&gt;\d+.?\d*)\s+(?&lt;angle&gt;\d+)\s+(?&lt;value&gt;\S+)\s*(?&lt;package&gt;\S+)?  </td>
-	</tr>
-	<tr>
-		<td> Altium </td>
-		<td>  (?&lt;name&gt;\S+)\s+(?&lt;package&gt;\S+)\s+(?&lt;x&gt;-?\d+.?\d*)mm\s+(?&lt;y&gt;-?\d+.?\d*)mm\s+\S+\s+\S+\s+\S+\s+\S+\s+\S+\s+(?&lt;angle&gt;-?\d+.\d*)\s+(?&lt;value&gt;\S+)\s*  </td>
-	</tr>
-	<tr>
-		<td> UltiBoard </td>
-		<td>  &#8220;(?&lt;name&gt;\S+)&#8221;,&#8221;(?&lt;value&gt;\S+)&#8221;,&#8221;(?&lt;package&gt;\S+)&#8221;,&#8221;(?&lt;x&gt;\d+.?\d*)&#8221;,&#8221;(?&lt;y&gt;\d+.?\d*)&#8221;,&#8221;(?&lt;angle&gt;\d+)&#8221;,&#8221;TOP&#8221;,&#8221;SMD&#8221;  </td>
-	</tr>
-	<tr>
-		<td> DesignSpark </td>
-		<td>  &#8220;(?&lt;name&gt;\S+)&#8221;,&#8221;(?&lt;package&gt;\S+)&#8221;,&#8221;Top&#8221;,&#8221;(?&lt;x&gt;\d+.?\d*)&#8221;,&#8221;(?&lt;y&gt;\d+.?\d*)&#8221;,&#8221;(?&lt;angle&gt;\d+.?\d*)&#8221;(?&lt;value&gt;.*)  </td>
-	</tr>
-	<tr>
-		<td> KiCAD </td>
-		<td>  (?&lt;name&gt;\S+),.*,(?&lt;value&gt;.+?),(?&lt;package&gt;\S+?),(?&lt;x&gt;-?\d+.?\d*),(?&lt;y&gt;-?\d+.?\d*),(?&lt;angle&gt;\d+.?\d*)  </td>
-	</tr>
-	<tr>
-		<td> DipTrace </td>
-		<td>  (?&lt;name&gt;\S+),(?&lt;package&gt;.+?),(?&lt;x&gt;-?\d+.?\d*),(?&lt;y&gt;-?\d+.?\d*),Top,(?&lt;angle&gt;\d+.?\d*),(?&lt;value&gt;\S*)  </td>
-	</tr>
-	<tr>
-		<td> EasyPC </td>
-		<td>  (?&lt;name&gt;\S+),(?&lt;x&gt;-?\d+.?\d*),(?&lt;y&gt;-?\d+.?\d*),(?&lt;angle&gt;\d+.?\d*),(?&lt;value&gt;\S*),(?&lt;package&gt;.*)  </td>
 	</tr>
 </table>
 <p>Application logs can be found in temporary directory, which is OS dependent.</p>

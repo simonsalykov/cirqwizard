@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2015-10-07T17:55:32+02:00</updated>
+  <updated>2015-10-28T23:23:15+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.12]]></title>
+    <link href="http://cirqwizard.org//blog/2015/10/28/version-1-dot-5-12/"/>
+    <updated>2015-10-28T22:48:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2015/10/28/version-1-dot-5-12</id>
+    <content type="html"><![CDATA[<p>Here&#8217;s another new version of cirQWizard. It&#8217;s aimed at streamlining both UI and source code.</p>
+<p>The most important visible change is a new settings screen &#8211; settings related to import files are moved to the <strong>Import</strong> tab of the settings. Those, who had non-standard import file settings, will need to set them once again.</p>
+<p>It&#8217;s now possible to specify angular offset applied to all components for placement (in case you use another orientation convention) and units for the coordinates in pick and place file. Also, mind-blowing regular expressions for pick and place import format were replaced with a predefined set of EDAs.</p>
+<p>As usually, there&#8217;re bug fixes and improvements under the hood. More on that <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12800">here</a></p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.11]]></title>
