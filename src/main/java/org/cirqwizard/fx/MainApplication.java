@@ -29,7 +29,7 @@ import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
-import org.cirqwizard.fx.misc.SettingsEditor;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.fx.pp.InsertPPHead;
 import org.cirqwizard.fx.pp.PPGroup;
 import org.cirqwizard.fx.pp.PlacingOverview;
@@ -46,8 +46,6 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.prefs.Preferences;
 
 
@@ -250,8 +248,10 @@ public class MainApplication extends Application
                 if (serialInterface == null)
                     cncController = null;
                 else
+                {
+                    Platform.runLater(mainView::enableManualControl);
                     cncController = new CNCController(serialInterface, MainApplication.this);
-                Platform.runLater(mainView::enableManualControl);
+                }
             }
         }.start();
     }

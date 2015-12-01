@@ -14,7 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.popover;
 
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -28,9 +27,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.stage.Popup;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.logging.LoggerFactory;
-import org.controlsfx.control.PopOver;
 
 import java.io.IOException;
 
@@ -39,7 +38,7 @@ public abstract class PopOverController
     private VBox box;
     @FXML protected Parent view;
     protected MainApplication mainApplication;
-    protected PopOver popOver;
+    protected Popup popup;
     private Label closeIcon;
 
     public PopOverController()
@@ -52,12 +51,13 @@ public abstract class PopOverController
 
             box = new VBox();
             box.setSpacing(5);
+            box.getStyleClass().add("popover");
             closeIcon = new Label();
             closeIcon.setGraphic(createCloseIcon());
             closeIcon.getStyleClass().add("icon");
             closeIcon.setPadding(new Insets(10, 0, 0, 10));
             closeIcon.managedProperty().bind(closeIcon.visibleProperty());
-            closeIcon.setOnMouseClicked(event -> popOver.hide());
+            closeIcon.setOnMouseClicked(event -> popup.hide());
             box.getChildren().add(closeIcon);
             box.getChildren().add(view);
         }
@@ -84,15 +84,14 @@ public abstract class PopOverController
         this.mainApplication = mainApplication;
     }
 
-    public PopOver getPopOver()
+    public Popup getPopup()
     {
-        return popOver;
+        return popup;
     }
 
-    public void setPopOver(PopOver popOver)
+    public void setPopup(Popup popup)
     {
-        this.popOver = popOver;
-        closeIcon.visibleProperty().bind(Bindings.not(popOver.detachedProperty()));
+        this.popup = popup;
     }
 
     protected Node createCloseIcon()

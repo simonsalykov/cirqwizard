@@ -21,6 +21,7 @@ import org.cirqwizard.toolpath.DrillPoint;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -29,8 +30,8 @@ import java.util.regex.Pattern;
 
 public class ExcellonParser
 {
-    public final static int INCHES_MM_RATIO = (int)(25.4 * ApplicationConstants.RESOLUTION);
-    public final static int MM_MM_RATIO = ApplicationConstants.RESOLUTION;
+    public final static BigDecimal INCHES_MM_RATIO = new BigDecimal((int)(25.4 * ApplicationConstants.RESOLUTION));
+    public final static BigDecimal MM_MM_RATIO = new BigDecimal(ApplicationConstants.RESOLUTION);
 
     private final static Pattern TC_COMMAND_PATTERN = Pattern.compile("T(\\d+).*C(\\d*.\\d+).*");
     private final static Pattern T_COMMAND_PATTERN = Pattern.compile("T(\\d+)");
@@ -43,9 +44,10 @@ public class ExcellonParser
     private ArrayList<DrillPoint> drillPoints = new ArrayList<>();
     private boolean header = false;
 
-    private int coordinatesCoversionRatio;
+    private BigDecimal coordinatesConversionRatio;
+    private int integerPlaces;
     private int decimalPlaces;
-    private boolean leadingZerosOmmited = true;
+    private boolean leadingZeros = false;
 
     private Integer x = null;
     private Integer y = null;
@@ -54,13 +56,14 @@ public class ExcellonParser
 
     public ExcellonParser(Reader reader)
     {
-        this(4, INCHES_MM_RATIO, reader);
+        this(2, 4, INCHES_MM_RATIO, reader);
     }
 
-    public ExcellonParser(int decimalPlaces, int coordinatesCoversionRatio, Reader reader)
+    public ExcellonParser(int integerPlaces, int decimalPlaces, BigDecimal coordinatesConversionRatio, Reader reader)
     {
+        this.integerPlaces = integerPlaces;
         this.decimalPlaces = decimalPlaces;
-        this.coordinatesCoversionRatio = coordinatesCoversionRatio;
+        this.coordinatesConversionRatio = coordinatesConversionRatio;
         this.reader = reader;
     }
 
@@ -102,7 +105,7 @@ public class ExcellonParser
         if (matcher.matches())
         {
             int toolNumber = Integer.parseInt(matcher.group(1));
-            int diameter = (int) (Double.valueOf(matcher.group(2)) * coordinatesCoversionRatio);
+            int diameter = coordinatesConversionRatio.multiply(new BigDecimal(matcher.group(2))).intValue();
             tools.put(toolNumber, diameter);
             if (updateCurrentTool)
                 currentDiameter = diameter;
@@ -122,9 +125,9 @@ public class ExcellonParser
         Matcher matcher = MEASUREMENT_SYSTEM_PATTERN.matcher(line);
         if (matcher.matches())
         {
-            coordinatesCoversionRatio = matcher.group(1).equals("METRIC") ? MM_MM_RATIO : INCHES_MM_RATIO;
+            coordinatesConversionRatio = matcher.group(1).equals("METRIC") ? MM_MM_RATIO : INCHES_MM_RATIO;
             if (matcher.group(2) != null)
-                leadingZerosOmmited = matcher.group(2).equals("LZ");
+                leadingZeros = matcher.group(2).equals("LZ");
             return;
         }
     }
@@ -193,13 +196,13 @@ public class ExcellonParser
             decimalPlaces = str.length() - decimalPartStart;
         }
         if (decimalPartStart < 0)
-            decimalPartStart = str.length() - decimalPlaces;
+            decimalPartStart = leadingZeros ? integerPlaces : str.length() - decimalPlaces;
         decimalPartStart = Math.max(decimalPartStart, 0);
-        long number = Long.valueOf(str.substring(decimalPartStart)) * coordinatesCoversionRatio;
-        for (int i = 0; i < decimalPlaces; i++)
+        long number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(decimalPartStart)))).longValue();
+        for (int i = 0; i < str.length() - decimalPartStart; i++)
             number /= 10;
         if (str.length() > decimalPlaces)
-            number += Long.valueOf(str.substring(0, decimalPartStart)) * coordinatesCoversionRatio;
+            number += coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(0, decimalPartStart)))).longValue();
         return (int)(number * (negative ? -1 : 1));
     }
 

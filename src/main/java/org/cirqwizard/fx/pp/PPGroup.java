@@ -42,7 +42,7 @@ public class PPGroup extends OperationsScreenGroup
     @Override
     protected boolean isEnabled()
     {
-        return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getComponentIds() != null;
+        return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getComponentsLayer() != null;
     }
 
     @Override

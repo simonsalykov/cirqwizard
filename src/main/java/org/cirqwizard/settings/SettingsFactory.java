@@ -27,6 +27,7 @@ public class SettingsFactory
     private static ContourMillingSettings contourMillingSettings = new ContourMillingSettings();
     private static DispensingSettings dispensingSettings = new DispensingSettings();
     private static PPSettings ppSettings = new PPSettings();
+    private static ImportSettings importSettings = new ImportSettings();
     private static ApplicationSettings applicationSettings = new ApplicationSettings();
     private static ApplicationValues applicationValues = new ApplicationValues();
 
@@ -78,6 +79,12 @@ public class SettingsFactory
         return ppSettings;
     }
 
+    public static ImportSettings getImportSettings()
+    {
+        importSettings.load();
+        return importSettings;
+    }
+
     public static ApplicationSettings getApplicationSettings()
     {
         applicationSettings.load();
@@ -101,6 +108,7 @@ public class SettingsFactory
         groups.add(getContourMillingSettings());
         groups.add(getDispensingSettings());
         groups.add(getPpSettings());
+        groups.add(getImportSettings());
         groups.add(getApplicationSettings());
         return groups;
     }

@@ -14,15 +14,15 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.layers;
 
-import org.cirqwizard.gerber.GerberParser;
 import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.GerberParser;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.settings.ApplicationSettings;
+import org.cirqwizard.settings.ImportSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.toolpath.CuttingToolpath;
 
@@ -53,6 +53,9 @@ public class PCBLayout
     private List<String> drillDiameters;
     private String contourMillDiameter;
     private List<ComponentId> componentIds;
+
+    private int width;
+    private int height;
 
     public TraceLayer getTopTracesLayer()
     {
@@ -148,17 +151,27 @@ public class PCBLayout
 
     private void moveToOrigin()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (Layer layer : getLayers())
-        {
-            if (layer.getMinPoint().getX() < min.getX())
-                min = new Point(layer.getMinPoint().getX(), min.getY());
-            if (layer.getMinPoint().getY() < min.getY())
-                min = new Point(min.getX(), layer.getMinPoint().getY());
-        }
-        min = new Point(-min.getX(), -min.getY());
-        for (Layer layer : getLayers())
-            layer.move(min);
+        int minX = getLayers().stream().mapToInt(layer -> layer.getMinPoint().getX()).min().getAsInt();
+        int minY = getLayers().stream().mapToInt(layer -> layer.getMinPoint().getY()).min().getAsInt();
+        Point min = new Point(-minX, -minY);
+        getLayers().stream().forEach(layer -> layer.move(min));
+        updateDimensions();
+    }
+
+    private void updateDimensions()
+    {
+        width = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getX()).max().getAsInt();
+        height = getLayers().stream().mapToInt(layer -> layer.getMaxPoint().getY()).max().getAsInt();
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
     }
 
     public void rotate(boolean clockwise)
@@ -232,8 +245,9 @@ public class PCBLayout
         drillingLayer = new DrillingLayer();
         try
         {
-            ApplicationSettings settings = SettingsFactory.getApplicationSettings();
-            ExcellonParser parser = new ExcellonParser(settings.getExcellonDecimalPlaces().getValue(), settings.getExcellonUnits().getValue().getMultiplier(), new FileReader(file));
+            ImportSettings settings = SettingsFactory.getImportSettings();
+            ExcellonParser parser = new ExcellonParser(settings.getExcellonIntegerPlaces().getValue(), settings.getExcellonDecimalPlaces().getValue(),
+                    settings.getExcellonUnits().getValue().getMultiplier(), new FileReader(file));
             drillingLayer.setDrillPoints(parser.parse());
         }
         catch (IOException | RuntimeException e)
@@ -255,7 +269,9 @@ public class PCBLayout
         componentsLayer = new ComponentsLayer();
         try
         {
-            PPParser parser = new PPParser(new FileReader(file), SettingsFactory.getApplicationSettings().getCentroidFileFormat().getValue());
+            ImportSettings importSettings = SettingsFactory.getImportSettings();
+            PPParser parser = new PPParser(new FileReader(file), importSettings.getCentroidFileFormat().getValue().getRegex(),
+                    importSettings.getCentroidUnits().getValue().getMultiplier());
             componentsLayer.setPoints(parser.parse());
             componentIds = new ArrayList<>(componentsLayer.getComponentIds());
         }

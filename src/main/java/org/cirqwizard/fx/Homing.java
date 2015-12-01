@@ -17,7 +17,7 @@ package org.cirqwizard.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import org.cirqwizard.fx.misc.SettingsEditor;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.settings.SettingsFactory;
 
 

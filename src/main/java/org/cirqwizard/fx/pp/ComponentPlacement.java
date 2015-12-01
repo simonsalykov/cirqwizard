@@ -152,19 +152,12 @@ public class ComponentPlacement extends ScreenController implements Initializabl
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN)
                 return;
             RealNumberTextField textField = (RealNumberTextField) event.getSource();
-            try
-            {
-                int delta = textField == placementAngle ? 1000 : 100;
-                if (event.getCode() == KeyCode.DOWN)
-                    delta *= -1;
-                int currentValue = textField.getIntegerValue() == null ? 0 : textField.getIntegerValue();
-                textField.setIntegerValue(currentValue + delta);
-                textField.fireEvent(new ActionEvent());
-            }
-            catch (NumberFormatException e)
-            {
-                // Not a big deal
-            }
+            int currentValue = textField.getIntegerValue() == null ? 0 : textField.getIntegerValue();
+            int delta = textField == placementAngle ? 1000 : 100;
+            if (event.getCode() == KeyCode.DOWN)
+                delta = -delta;
+            textField.setIntegerValue(currentValue + delta);
+            textField.fireEvent(new ActionEvent());
         }
     }
 
@@ -299,6 +292,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         if (placementAngle.getIntegerValue() != null)
             angle += placementAngle.getIntegerValue();
         angle -= 90 * ApplicationConstants.RESOLUTION;
+        angle += SettingsFactory.getImportSettings().getCentroidAngularOffset().getValue() * ApplicationConstants.RESOLUTION;
         return angle;
     }
 

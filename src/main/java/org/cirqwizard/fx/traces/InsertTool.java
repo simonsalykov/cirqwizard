@@ -14,12 +14,29 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces;
 
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.Tool;
-import org.cirqwizard.fx.common.Message;
+import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.ToolLibrary;
+import org.cirqwizard.settings.ToolSettings;
 
-public class InsertTool extends Message
+public class InsertTool extends ScreenController
 {
     public static final Tool EXPECTED_TOOL = new Tool(Tool.ToolType.V_TOOL, 0);
+
+    @FXML private ComboBox<ToolSettings> toolComboBox;
+    @FXML private Button continueButton;
+
+    @Override
+    protected String getFxmlName()
+    {
+        return "/org/cirqwizard/fx/traces/InsertTool.fxml";
+    }
 
     @Override
     protected String getName()
@@ -27,13 +44,26 @@ public class InsertTool extends Message
         return "Tool";
     }
 
+    @FXML
+    public void initialize()
+    {
+        continueButton.disableProperty().bind(Bindings.isNull(toolComboBox.getSelectionModel().selectedItemProperty()));
+    }
+
     @Override
     public void refresh()
     {
         super.refresh();
         getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert trace milling cutter into spindle");
-        text.setText("Make sure the milling cutter is fully inserted.");
+
+        try
+        {
+            toolComboBox.setItems(FXCollections.observableArrayList(ToolLibrary.load().getToolSettings()));
+        }
+        catch (Exception e)
+        {
+            LoggerFactory.logException("Could not load tool library", e);
+        }
     }
 
     @Override
@@ -46,6 +76,8 @@ public class InsertTool extends Message
     public void next()
     {
         getMainApplication().getContext().setInsertedTool(EXPECTED_TOOL);
+        getMainApplication().getContext().setCurrentMillingTool(toolComboBox.getSelectionModel().getSelectedItem());
+        getMainApplication().getContext().setCurrentMillingToolIndex(toolComboBox.getSelectionModel().getSelectedIndex());
         super.next();
     }
 }

@@ -12,7 +12,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.fx.misc;
+package org.cirqwizard.fx.settings;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.MainApplication;
@@ -29,8 +30,6 @@ import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.*;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -122,9 +121,17 @@ public class SettingsEditor extends ScreenController implements Initializable
                 UserPreference p = (UserPreference) new PropertyDescriptor(f.getName(), group.getClass()).getReadMethod().invoke(group);
                 if (listener == null || p.showInPopOver())
                 {
-                    container.add(new Label(p.getUserName()), 0, row.get());
-                    container.add(getEditor(argumentClass, p, group, mainApplication, listener), 1, row.get());
-                    container.add(new Label(p.getUnits()), 2, row.get());
+                    if (p.getType() == PreferenceType.TOOL_TABLE)
+                    {
+                        Node editor = getEditor(argumentClass, p, group, mainApplication, listener);
+                        container.add(editor, 0, row.get(), 3, 1);
+                    }
+                    else
+                    {
+                        container.add(new Label(p.getUserName()), 0, row.get());
+                        container.add(getEditor(argumentClass, p, group, mainApplication, listener), 1, row.get());
+                        container.add(new Label(p.getUnits()), 2, row.get());
+                    }
                     row.setValue(row.get() + 1);
                 }
             }
@@ -138,17 +145,16 @@ public class SettingsEditor extends ScreenController implements Initializable
     private static void addInvalidationListenerToTextField(TextField textField, SettingsDependentScreenController listener)
     {
         textField.setOnAction((event) -> listener.settingsInvalidated());
-        textField.focusedProperty().addListener((v, oldV, newV) ->
-        {
-            if (!newV)
-                listener.settingsInvalidated();
-        });
     }
 
-    private static Control getEditor(Class clazz, UserPreference p, SettingsGroup group, MainApplication mainApplication, SettingsDependentScreenController listener)
+    private static Node getEditor(Class clazz, UserPreference p, SettingsGroup group, MainApplication mainApplication, SettingsDependentScreenController listener)
     {
-        Control editor;
-        if (Integer.class.equals(clazz))
+        Node editor;
+        if (p.getType() == PreferenceType.TOOL_TABLE)
+        {
+            editor = new SettingsToolTable().getView();
+        }
+        else if (Integer.class.equals(clazz))
         {
             if (p.getType() == PreferenceType.INTEGER || p.getType() == PreferenceType.PERCENT)
             {
@@ -219,19 +225,22 @@ public class SettingsEditor extends ScreenController implements Initializable
                     group.save();
                 });
             }
-            editor.setPrefWidth(150);
+            ((Control)editor).setPrefWidth(150);
         }
         if (editor instanceof TextField)
-            editor.setPrefWidth(75);
+            ((Control)editor).setPrefWidth(75);
         return editor;
     }
 
     public void resetToDefaults()
     {
-        if (!Dialogs.create().owner(getMainApplication().getPrimaryStage()).title("Reset confirmation").
-                message("Are you sure you want to reset all settings to default?").showConfirm().equals(Dialog.Actions.YES))
-            return;
-        SettingsFactory.resetAll();
-        refresh();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Reset confirmation");
+        alert.setHeaderText("Are you sure you want to reset all settings to default?");
+        alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
+        {
+            SettingsFactory.resetAll();
+            refresh();
+        });
     }
 }

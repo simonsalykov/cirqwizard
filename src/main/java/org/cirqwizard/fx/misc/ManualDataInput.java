@@ -22,6 +22,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 
@@ -33,7 +34,7 @@ public class ManualDataInput extends ScreenController
     @FXML private TextArea gCodeInputTextArea;
     @FXML private TextArea responseTextArea;
 
-    @FXML private BorderPane executionPane;
+    @FXML private VBox executionPane;
     @FXML private ProgressBar executionProgressBar;
     @FXML private Label timeElapsedLabel;
 

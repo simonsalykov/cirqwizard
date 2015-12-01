@@ -18,18 +18,18 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.CircularShape;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.toolpath.CircularToolpath;
 import org.cirqwizard.toolpath.LinearToolpath;
 import org.cirqwizard.toolpath.Toolpath;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MillingLayer extends Layer
 {
-    private ArrayList<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private ArrayList<Toolpath> toolpaths = new ArrayList<Toolpath>();
+    private ArrayList<GerberPrimitive> elements = new ArrayList<>();
+    private List<Toolpath> toolpaths = new ArrayList<>();
 
     public void setElements(ArrayList<GerberPrimitive> elements)
     {
@@ -41,7 +41,7 @@ public class MillingLayer extends Layer
         return elements;
     }
 
-    public ArrayList<Toolpath> getToolpaths()
+    public List<Toolpath> getToolpaths()
     {
         return toolpaths;
     }
@@ -65,6 +65,11 @@ public class MillingLayer extends Layer
         }
     }
 
+    public void setToolpaths(List<Toolpath> toolpaths)
+    {
+        this.toolpaths = toolpaths;
+    }
+
     @Override
     public void rotate(boolean clockwise)
     {
@@ -82,19 +87,17 @@ public class MillingLayer extends Layer
     @Override
     public Point getMinPoint()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (GerberPrimitive p : elements)
-        {
-            if (p.getMin().getX() < min.getX())
-                min = new Point(p.getMin().getX(), min.getY());
-            if (p.getMin().getY() < min.getY())
-                min = new Point(min.getX(), p.getMin().getY());
-        }
-        return min;
+        int minX = elements.stream().mapToInt(p -> p.getMin().getX()).min().getAsInt();
+        int minY = elements.stream().mapToInt(p -> p.getMin().getY()).min().getAsInt();
+        return new Point(minX, minY);
     }
 
     @Override
-    public void clearSelection()
+    public Point getMaxPoint()
     {
+        int maxX = elements.stream().mapToInt(p -> p.getMax().getX()).max().getAsInt();
+        int maxY = elements.stream().mapToInt(p -> p.getMax().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
     }
+
 }

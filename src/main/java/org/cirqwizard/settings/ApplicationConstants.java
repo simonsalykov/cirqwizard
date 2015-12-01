@@ -20,6 +20,7 @@ import java.text.NumberFormat;
 public class ApplicationConstants
 {
     private static NumberFormat toolDiameterFormat = new DecimalFormat("0.0#");
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.0#");
 
     public static final int RESOLUTION = 1000;
     public static final int ROUNDING = 30;
@@ -80,5 +81,10 @@ public class ApplicationConstants
     public static String formatToolDiameter(int diameter)
     {
         return toolDiameterFormat.format((double)diameter / RESOLUTION);
+    }
+
+    public static String formatInteger(int value)
+    {
+        return decimalFormat.format((double)value / RESOLUTION);
     }
 }

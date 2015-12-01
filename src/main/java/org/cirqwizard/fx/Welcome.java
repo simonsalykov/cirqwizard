@@ -23,7 +23,7 @@ import javafx.stage.FileChooser;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
-import org.cirqwizard.fx.misc.SettingsEditor;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.File;

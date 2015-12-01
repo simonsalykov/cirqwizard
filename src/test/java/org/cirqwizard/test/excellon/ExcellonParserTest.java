@@ -346,7 +346,7 @@ public class ExcellonParserTest
                 "X500000\n" +
                 "R04Y-10000";
 
-        ExcellonParser parser = new ExcellonParser(5, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
+        ExcellonParser parser = new ExcellonParser(2, 5, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
         ArrayList<DrillPoint> points = parser.parse();
         assertEquals(10, points.size());
 
@@ -405,6 +405,30 @@ public class ExcellonParserTest
 
         assertEquals(new Point(23037, 78000), points.get(0).getPoint());
         assertEquals(500, points.get(0).getToolDiameter());
+    }
+
+    @Test
+    public void testLeadingZeroes() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "INCH,LZ\n" +
+                "VER,1\n" +
+                "FMAT,2\n" +
+                "T01C0.0354F5S14\n" +
+                "T02C0.0370F5S14\n" +
+                "DETECT,ON\n" +
+                "ATC,ON\n" +
+                "%\n" +
+                "G90\n" +
+                "T01\n" +
+                "X014491Y02111";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ArrayList<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(36807, 53619), points.get(0).getPoint());
+        assertEquals(900, points.get(0).getToolDiameter());
     }
 
 }

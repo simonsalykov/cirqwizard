@@ -14,19 +14,25 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.traces;
 
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.machining.Machining;
-import org.cirqwizard.fx.machining.ToolpathGenerationService;
-import org.cirqwizard.fx.machining.TraceMillingToolpathGenerationService;
+import org.cirqwizard.fx.SettingsDependentScreenController;
+import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.gcode.TraceGCodeGenerator;
+import org.cirqwizard.generation.GenerationService;
+import org.cirqwizard.generation.optimizer.Chain;
+import org.cirqwizard.generation.optimizer.OptimizationService;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.SettingsGroup;
+import org.cirqwizard.settings.ToolSettings;
+import org.cirqwizard.toolpath.ToolpathsCacheKey;
 
-public abstract class TraceMilling extends Machining
+import java.util.List;
+
+public abstract class TraceMilling extends LongProcessingMachining
 {
     @Override
     protected String getName()
@@ -43,9 +49,10 @@ public abstract class TraceMilling extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getInsulationMillingSettings();
+        pane.getChildren().clear();
+        pane.getChildren().add(new TracesSettingsPopOver(getMainApplication().getContext(), this).getView());
     }
 
     @Override
@@ -58,24 +65,46 @@ public abstract class TraceMilling extends Machining
     }
 
     @Override
-    protected ToolpathGenerationService getToolpathGenerationService()
+    protected GenerationService getGenerationService()
     {
-        return new TraceMillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty, getCurrentLayer(), getCacheId(), getLayerModificationDate());
+        return new org.cirqwizard.generation.ToolpathGenerationService(getMainApplication().getContext(), getCurrentLayer());
+    }
+
+    @Override
+    protected OptimizationService getOptimizationService(List<Chain> chains)
+    {
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
+        InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+        return new OptimizationService(getMainApplication().getContext(), chains, getMergeTolerance(), currentTool.getFeedXY(),
+                currentTool.getFeedZ(), currentTool.getArcs(), settings.getClearance().getValue(), settings.getSafetyHeight().getValue());
+    }
+
+    @Override
+    protected ToolpathsCacheKey getCacheKey()
+    {
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
+        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), currentTool.getDiameter(),
+                currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
+    }
+
+    @Override
+    protected int getMergeTolerance()
+    {
+        return getMainApplication().getContext().getCurrentMillingTool().getDiameter() / 4;
     }
 
     protected abstract boolean mirror();
     protected abstract int getCacheId();
-    protected abstract long getLayerModificationDate();
 
     @Override
     protected String generateGCode()
     {
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
-        int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
+        int arcFeed = (currentTool.getFeedXY() * currentTool.getArcs() / 100);
         TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
-        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+        return generator.generate(new RTPostprocessor(), currentTool.getFeedXY(), currentTool.getFeedZ(), arcFeed,
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
-                settings.getSpeed().getValue());
+                currentTool.getSpeed());
     }
 }

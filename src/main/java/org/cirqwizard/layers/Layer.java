@@ -22,24 +22,10 @@ import java.util.List;
 
 public abstract class Layer
 {
-    private boolean visible = true;
-
     public abstract void rotate(boolean clockwise);
     public abstract void move(Point point);
     public abstract Point getMinPoint();
+    public abstract Point getMaxPoint();
 
     public abstract List<? extends Toolpath> getToolpaths();
-
-    public abstract void clearSelection();
-
-    public boolean isVisible()
-    {
-        return visible;
-    }
-
-    public void setVisible(boolean visible)
-    {
-        this.visible = visible;
-    }
-
 }

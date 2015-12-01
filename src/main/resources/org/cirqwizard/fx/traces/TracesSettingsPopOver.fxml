@@ -1,0 +1,62 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import org.cirqwizard.fx.controls.RealNumberTextField?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.TextField?>
+<VBox fx:id="view" spacing="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets left="10" right="10" top="10" bottom="10"/>
+    </padding>
+    <ComboBox fx:id="toolComboBox"/>
+    <GridPane hgap="10" vgap="10" styleClass="settings-group">
+        <Label text="Tool" styleClass="settings-group-header" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               GridPane.columnSpan="2" GridPane.rowSpan="1"/>
+        <Label text="Diameter" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <RealNumberTextField fx:id="diameterTextField" prefWidth="75" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="mm" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <Label text="Speed" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="speedTextField" prefWidth="75" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="µs" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+    </GridPane>
+    <GridPane hgap="10" vgap="10" styleClass="settings-group">
+        <Label text="Feed" styleClass="settings-group-header" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               GridPane.columnSpan="2" GridPane.rowSpan="1"/>
+        <Label text="X and Y axes" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <RealNumberTextField fx:id="xyFeedTextField" prefWidth="75" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="mm/min" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <Label text="Z axis" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <RealNumberTextField fx:id="zFeedTextField" prefWidth="75" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="mm/min" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <Label text="Arcs" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="arcsFeedTextField" prefWidth="75" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+        <Label text="\%" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+    </GridPane>
+    <GridPane hgap="10" vgap="10" styleClass="settings-group">
+        <Label text="Heights" styleClass="settings-group-header" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               GridPane.columnSpan="2" GridPane.rowSpan="1"/>
+        <Label text="Clearance" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <RealNumberTextField fx:id="clearanceTextField" prefWidth="75" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="mm" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <Label text="Safety height" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <RealNumberTextField fx:id="safetyHeightTextField" prefWidth="75" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="mm" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <Label text="Working height" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <RealNumberTextField fx:id="workingHeightTextField" prefWidth="75" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+        <Label text="mm" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+    </GridPane>
+    <GridPane hgap="10" vgap="10" styleClass="settings-group">
+        <Label text="Additional passes" styleClass="settings-group-header" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               GridPane.columnSpan="2" GridPane.rowSpan="1"/>
+        <Label text="Count" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="additionalPassesCountTextField" prefWidth="75" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="Overlap" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="additonalPassesOverlapTextField" prefWidth="75" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="\%" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <Label text="Only around pads" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="additionalPassesPadsOnlyCheckBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+</VBox>

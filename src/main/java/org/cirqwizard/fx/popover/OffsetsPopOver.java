@@ -42,7 +42,7 @@ public class OffsetsPopOver extends PopOverController
         EventHandler<KeyEvent> keyEventEventHandler = event ->
         {
             if (event.getCode() == KeyCode.ESCAPE)
-                popOver.hide();
+                popup.hide();
         };
         xTextField.setOnKeyPressed(keyEventEventHandler);
         yTextField.setOnKeyPressed(keyEventEventHandler);

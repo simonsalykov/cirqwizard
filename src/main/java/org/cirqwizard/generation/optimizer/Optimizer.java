@@ -15,8 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.optimizer;
 
 import javafx.application.Platform;
-import javafx.beans.property.*;
-import javafx.concurrent.Worker;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
@@ -46,11 +47,11 @@ public class Optimizer
     private int mergeTolerance;
 
     private DoubleProperty progressProperty = new SimpleDoubleProperty();
-    private ObjectProperty<List<Toolpath>> currentBestSolutionProperty = new SimpleObjectProperty<>();
-    private ReadOnlyObjectProperty<Worker.State> serviceStateProperty;
+    private DoubleProperty bestSolutionDuration = new SimpleDoubleProperty();
+    private BooleanProperty cancelledProperty;
 
     public Optimizer(List<Chain> chains, double feed, double zFeed, double arcFeed, double clearance, double safetyHeight, int mergeTolerance,
-                     ReadOnlyObjectProperty<Worker.State> serviceStateProperty)
+                     BooleanProperty cancelledProperty)
     {
         this.environment = new Environment(chains);
         this.feed = feed;
@@ -59,7 +60,7 @@ public class Optimizer
         this.clearance = clearance;
         this.safetyHeight = safetyHeight;
         this.mergeTolerance = mergeTolerance;
-        this.serviceStateProperty = serviceStateProperty;
+        this.cancelledProperty = cancelledProperty;
     }
 
     public List<Chain> optimize()
@@ -69,8 +70,8 @@ public class Optimizer
         double lastEvaluation = Double.MAX_VALUE;
         for (int i = 0; i < MAX_GENERATIONS_COUNT; i++)
         {
-            if (serviceStateProperty.getValue() == Worker.State.CANCELLED)
-                return null;
+            if (cancelledProperty.get())
+                break;
 
             progressProperty.setValue((double) i / MAX_GENERATIONS_COUNT);
             breed();
@@ -80,8 +81,8 @@ public class Optimizer
                 final List<Toolpath> l = new ArrayList<>();
                 for (int j : mostFit.getGenes())
                     l.addAll(environment.getChains().get(j).getSegments());
-                Platform.runLater(() -> currentBestSolutionProperty.setValue(l));
-                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, arcFeed, clearance, safetyHeight, false, mergeTolerance);
+                final double bestResult = TimeEstimator.calculateTotalDuration(l, feed, zFeed, arcFeed, clearance, safetyHeight, true, mergeTolerance);
+                Platform.runLater(() -> bestSolutionDuration.setValue(bestResult));
                 if (Math.abs(lastEvaluation - bestResult) < MIN_IMPROVEMENT)
                     break;
                 lastEvaluation = bestResult;
@@ -100,14 +101,14 @@ public class Optimizer
         return progressProperty;
     }
 
-    public List<Toolpath> getCurrentBestSolution()
+    public double getBestSolutionDuration()
     {
-        return currentBestSolutionProperty.get();
+        return bestSolutionDuration.get();
     }
 
-    public ObjectProperty<List<Toolpath>> currentBestSolutionProperty()
+    public DoubleProperty bestSolutionDurationProperty()
     {
-        return currentBestSolutionProperty;
+        return bestSolutionDuration;
     }
 
     private void init()
@@ -126,19 +127,15 @@ public class Optimizer
         ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (int i = 0; i < POPULATION_SIZE; i++)
         {
-            pool.submit(new Runnable()
+            pool.submit(() ->
             {
-                @Override
-                public void run()
-                {
-                    Phenotype parent1 = currentGeneration.tournamentWinner(environment, TOURNAMENT_SIZE);
-                    Phenotype parent2 = currentGeneration.tournamentWinner(environment, TOURNAMENT_SIZE);
-                    Phenotype child = parent1.crossOver(parent2);
-                    if (Math.random() < MUTATION_PROBABILITY)
-                        child.mutate();
-                    child.calculateFitness(environment);
-                    newGeneration.add(child);
-                }
+                Phenotype parent1 = currentGeneration.tournamentWinner(environment, TOURNAMENT_SIZE);
+                Phenotype parent2 = currentGeneration.tournamentWinner(environment, TOURNAMENT_SIZE);
+                Phenotype child = parent1.crossOver(parent2);
+                if (Math.random() < MUTATION_PROBABILITY)
+                    child.mutate();
+                child.calculateFitness(environment);
+                newGeneration.add(child);
             });
         }
         try
@@ -146,9 +143,7 @@ public class Optimizer
             pool.shutdown();
             pool.awaitTermination(10, TimeUnit.DAYS);
         }
-        catch (InterruptedException e)
-        {
-        }
+        catch (InterruptedException e) {}
         currentGeneration = new Generation(new ArrayList<>(newGeneration));
     }
 }

@@ -14,17 +14,18 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.dispensing;
 
+import javafx.collections.FXCollections;
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.machining.DispensingToolpathGenerationService;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
-import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.PasteGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.DispensingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.SettingsGroup;
 
 public class Dispensing extends Machining
 {
@@ -47,9 +48,9 @@ public class Dispensing extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getDispensingSettings();
+        SettingsEditor.renderSettings(pane, SettingsFactory.getDispensingSettings(), getMainApplication(), listener);
     }
 
     @Override
@@ -59,10 +60,12 @@ public class Dispensing extends Machining
     }
 
     @Override
-    protected ToolpathGenerationService getToolpathGenerationService()
+    protected void generateToolpaths()
     {
-        return new DispensingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty);
+        SolderPasteLayer solderPasteLayer = (SolderPasteLayer) getCurrentLayer();
+        solderPasteLayer.generateToolpaths(SettingsFactory.getDispensingSettings().getNeedleDiameter().getValue());
+        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(solderPasteLayer.getToolpaths()));
+
     }
 
     @Override

@@ -228,3 +228,8 @@
     -fx-border-color: transparent -fx-focus-color transparent transparent;
     -fx-border-width: 1.4;
 }
+
+.popover  {
+        -fx-background-color: white;
+        -fx-effect: dropshadow( gaussian, black , 10 , 0.1, 2, 2);
+ }

@@ -27,6 +27,7 @@ import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.ToolSettings;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -98,7 +99,7 @@ public class ZOffset extends ScreenController implements Initializable
             manualEntryRadioButton.setSelected(false);
             automaticEntryRadioButton.setSelected(false);
             manualZOffset.setText("");
-            automaticZOffset.setIntegerValue(SettingsFactory.getInsulationMillingSettings().getZOffset().getValue());
+            automaticZOffset.setIntegerValue(getMainApplication().getContext().getCurrentMillingTool().getZOffset());
         }
         else
             automaticZOffset.setIntegerValue(getMainApplication().getContext().getG54Z());
@@ -145,9 +146,10 @@ public class ZOffset extends ScreenController implements Initializable
         if (testButton.isDisabled())
             return;
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
+        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
         getMainApplication().getCNCController().testCut(scrapPlaceX.getIntegerValue(), scrapPlaceY.getIntegerValue(), automaticZOffset.getIntegerValue(),
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
-                settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), settings.getSpeed().getValue(), horizontalTestCut.isSelected());
+                currentTool.getFeedXY(), currentTool.getFeedZ(), currentTool.getSpeed(), horizontalTestCut.isSelected());
     }
 
     public void lowerAndTest()

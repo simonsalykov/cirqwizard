@@ -14,20 +14,22 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.settings;
 
-public enum  DistanceUnit
-{
-    INCHES(25_400, "Inches"), MM(1000, "Millimeters");
+import java.math.BigDecimal;
 
-    private int multiplier;
+public enum DistanceUnit
+{
+    INCHES(new BigDecimal(25_400), "Inches"), MM(new BigDecimal(1000), "Millimeters"), THOU(new BigDecimal("25.4"), "Thou");
+
+    private BigDecimal multiplier;
     private String name;
 
-    DistanceUnit(int multiplier, String name)
+    DistanceUnit(BigDecimal multiplier, String name)
     {
         this.multiplier = multiplier;
         this.name = name;
     }
 
-    public int getMultiplier()
+    public BigDecimal getMultiplier()
     {
         return multiplier;
     }
@@ -37,4 +39,17 @@ public enum  DistanceUnit
         return name;
     }
 
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+
+    public static DistanceUnit forName(String name)
+    {
+        for (DistanceUnit u : values())
+            if (u.getName().equals(name))
+                return u;
+        throw new IllegalArgumentException("Could not find DistanceUnit for " + name);
+    }
 }

@@ -14,19 +14,17 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.serial;
 
-import javafx.application.Platform;
 import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.post.PostProcessorFactory;
 import org.cirqwizard.post.Postprocessor;
-import org.controlsfx.dialog.Dialogs;
 
 
 public class CNCController
 {
     private final static long PROGRAM_INTERRUPTION_TIMEOUT = 100000;
-    private final static long COMMAND_TIMEOUT = 2000;
+    private final static long COMMAND_TIMEOUT = 4000;
 
     private SerialInterface serial;
     private MainApplication mainApplication;
@@ -51,10 +49,10 @@ public class CNCController
         catch (SerialException | ExecutionException e)
         {
             LoggerFactory.logException("Communication with controller failed: ", e);
-            Platform.runLater(() -> Dialogs.create().title("Oops! That's embarrassing!").owner(mainApplication.getPrimaryStage()).
-                    message("Something went wrong while communicating with the controller. " +
-                            "The most sensible thing to do now would be to close the program and start over again. Sorry about that.").
-                    masthead("Communication error").showException(e));
+            ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
+                    "Something went wrong while communicating with the controller. " +
+                    "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
+            alert.showAndWait();
         }
         catch (InterruptedException e)
         {

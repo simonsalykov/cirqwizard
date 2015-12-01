@@ -14,17 +14,23 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.drilling;
 
+import javafx.collections.FXCollections;
+import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.fx.machining.DrillingToolpathGenerationService;
+import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
-import org.cirqwizard.fx.machining.ToolpathGenerationService;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.gcode.DrillGCodeGenerator;
+import org.cirqwizard.layers.DrillingLayer;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.DrillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.settings.SettingsGroup;
+import org.cirqwizard.toolpath.Toolpath;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Drilling extends Machining
 {
@@ -55,16 +61,19 @@ public class Drilling extends Machining
     }
 
     @Override
-    public SettingsGroup getSettingsGroup()
+    public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
     {
-        return SettingsFactory.getDrillingSettings();
+        SettingsEditor.renderSettings(pane, SettingsFactory.getDrillingSettings(), getMainApplication(), listener);
     }
 
     @Override
-    protected ToolpathGenerationService getToolpathGenerationService()
+    protected void generateToolpaths()
     {
-        return new DrillingToolpathGenerationService(getMainApplication(), overallProgressBar.progressProperty(),
-                estimatedMachiningTimeProperty);
+        DrillingLayer layer = (DrillingLayer) getCurrentLayer();
+        List<Toolpath> drillPoints = layer.getToolpaths().stream().
+                filter((p) -> Math.abs(getMainApplication().getContext().getCurrentDrill() - p.getToolDiameter()) < 50).
+                collect(Collectors.toList());
+        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(drillPoints));
     }
 
     @Override

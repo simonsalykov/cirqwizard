@@ -29,7 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import org.cirqwizard.fx.misc.SettingsEditor;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.ApplicationValues;
 import org.cirqwizard.settings.SettingsFactory;

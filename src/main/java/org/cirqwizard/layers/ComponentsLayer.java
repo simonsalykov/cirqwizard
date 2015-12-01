@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.toolpath.PPPoint;
 import org.cirqwizard.toolpath.Toolpath;
@@ -40,7 +39,7 @@ public class ComponentsLayer extends Layer
 
     public List<ComponentId> getComponentIds()
     {
-        List<ComponentId> ids = new ArrayList<ComponentId>();
+        List<ComponentId> ids = new ArrayList<>();
         for (PPPoint p : points)
             if (!ids.contains(p.getId()))
                 ids.add(p.getId());
@@ -84,15 +83,17 @@ public class ComponentsLayer extends Layer
     @Override
     public Point getMinPoint()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (PPPoint p : points)
-        {
-            if (p.getPoint().getX() < min.getX())
-                min = new Point(p.getPoint().getX(), min.getY());
-            if (p.getPoint().getY() < min.getY())
-                min = new Point(min.getX(), p.getPoint().getY());
-        }
-        return min;
+        int minX = points.stream().mapToInt(p -> p.getPoint().getX()).min().getAsInt();
+        int minY = points.stream().mapToInt(p -> p.getPoint().getY()).min().getAsInt();
+        return new Point(minX, minY);
+    }
+
+    @Override
+    public Point getMaxPoint()
+    {
+        int maxX = points.stream().mapToInt(p -> p.getPoint().getX()).max().getAsInt();
+        int maxY = points.stream().mapToInt(p -> p.getPoint().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
     }
 
     @Override
@@ -101,8 +102,4 @@ public class ComponentsLayer extends Layer
         return points;
     }
 
-    @Override
-    public void clearSelection()
-    {
-    }
 }

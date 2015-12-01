@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.geom;
 
 import org.cirqwizard.math.MathUtil;
-import org.cirqwizard.math.RealNumber;
 
 
 public class Arc extends Curve

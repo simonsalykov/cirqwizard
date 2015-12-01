@@ -24,8 +24,8 @@ import java.util.List;
 
 public class TraceLayer extends Layer
 {
-    private List<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private List<Toolpath> toolpaths = new ArrayList<Toolpath>();
+    private List<GerberPrimitive> elements = new ArrayList<>();
+    private List<Toolpath> toolpaths = new ArrayList<>();
 
     public void setElements(ArrayList<GerberPrimitive> elements)
     {
@@ -59,29 +59,22 @@ public class TraceLayer extends Layer
     @Override
     public Point getMinPoint()
     {
-        Point min = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (GerberPrimitive p : elements)
-        {
-            if (p.getMin().getX() < min.getX())
-                min = new Point(p.getMin().getX(), min.getY());
-            if (p.getMin().getY() < min.getY())
-                min = new Point(min.getX(), p.getMin().getY());
-        }
-        return min;
+        int minX = elements.stream().mapToInt(p -> p.getMin().getX()).min().getAsInt();
+        int minY = elements.stream().mapToInt(p -> p.getMin().getY()).min().getAsInt();
+        return new Point(minX, minY);
+    }
+
+    @Override
+    public Point getMaxPoint()
+    {
+        int maxX = elements.stream().mapToInt(p -> p.getMax().getX()).max().getAsInt();
+        int maxY = elements.stream().mapToInt(p -> p.getMax().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
     }
 
     public void setToolpaths(List<Toolpath> toolpaths)
     {
         this.toolpaths = toolpaths;
-    }
-
-    @Override
-    public void clearSelection()
-    {
-        if (toolpaths == null)
-            return;
-        for (Toolpath t : toolpaths)
-            t.setSelected(false);
     }
 
 }

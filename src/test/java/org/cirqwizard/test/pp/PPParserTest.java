@@ -15,9 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.test.pp;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.PPParser;
+import org.cirqwizard.settings.DistanceUnit;
 import org.cirqwizard.toolpath.PPPoint;
 import org.junit.Test;
 
@@ -85,18 +85,26 @@ public class PPParserTest
     {
         String fileContent = "Designator Footprint               Mid X         Mid Y         Ref X         Ref Y         Pad X         Pad Y TB      Rotation Comment        \n" +
                 "\n" +
-                "C11        CAP-0805           124.0028mm     65.4342mm    124.0028mm     65.4342mm    122.9028mm     65.4342mm  B        360.00 100nF          ";
-        String regex = "(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>\\d+.?\\d*)mm\\s+(?<y>\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>\\d+.\\d*)\\s+(?<value>\\S+)\\s*";
+                "C11        CAP-0805           124.0028mm     65.4342mm    124.0028mm     65.4342mm    122.9028mm     65.4342mm  B        360.00 100nF          \n" +
+                "C11        CAP-0805           -124.0028mm     -65.4342mm    -124.0028mm     -65.4342mm    -122.9028mm     -65.4342mm  B        -360.00 100nF          ";
+        String regex = "(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>-?\\d+.?\\d*)mm\\s+(?<y>-?\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>-?\\d+.\\d*)\\s+(?<value>\\S+)\\s*";
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
 
-        assertEquals(1, points.size());
+        assertEquals(2, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("CAP-0805", "100nF"), p.getId());
         assertEquals(new Point(124002, 65434), p.getPoint());
         assertEquals(360000, p.getAngle());
         assertEquals("C11", p.getName());
+
+        p = points.get(1);
+        assertEquals(new ComponentId("CAP-0805", "100nF"), p.getId());
+        assertEquals(new Point(-124002, -65434), p.getPoint());
+        assertEquals(-360000, p.getAngle());
+        assertEquals("C11", p.getName());
+
     }
 
     @Test
@@ -152,6 +160,45 @@ public class PPParserTest
         assertEquals(new Point(47720, 18420), p.getPoint());
         assertEquals(270000, p.getAngle());
         assertEquals("C1", p.getName());
+    }
+
+
+    @Test
+    public void testEasyPC() throws IOException
+    {
+        String fileContent = "name,x,y,angle,value,package\n" +
+                "C1,40.147,19.883,270.00,100nF,CAP-0805-100nF-10%-X7R\n";
+        String regex= "(?<name>\\S+),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*),(?<value>\\S*),(?<package>.*)";
+
+        PPParser parser = new PPParser(new StringReader(fileContent), regex);
+        List<PPPoint> points = parser.parse();
+
+        assertEquals(1, points.size());
+        PPPoint p = points.get(0);
+        assertEquals(new ComponentId("CAP-0805-100nF-10%-X7R", "100nF"), p.getId());
+        assertEquals(new Point(40147, 19883), p.getPoint());
+        assertEquals(270000, p.getAngle());
+        assertEquals("C1", p.getName());
+    }
+
+    @Test
+    public void testProteus() throws IOException
+    {
+        String fileContent = "LABCENTER PROTEUS PICK AND PLACE FILE\n" +
+                "=====================================\n" +
+                "\n" +
+                "\"R1\",\"15\",\"1206\",TOP,180,1548,90\n" +
+                "\"R3\",\"15.4\",\"1206\",TOP,180,2190,90\n";
+        String regex = "\"(?<name>\\S+)\",\"(?<value>\\S*)\",\"(?<package>.*)\",TOP,(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*)";
+        PPParser parser = new PPParser(new StringReader(fileContent), regex, DistanceUnit.THOU.getMultiplier());
+        List<PPPoint> points = parser.parse();
+
+        assertEquals(2, points.size());
+        PPPoint p = points.get(0);
+        assertEquals(new ComponentId("1206", "15"), p.getId());
+        assertEquals(new Point(4572, 39319), p.getPoint());
+        assertEquals(90000, p.getAngle());
+        assertEquals("R1", p.getName());
     }
 
 

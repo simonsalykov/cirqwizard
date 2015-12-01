@@ -20,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
-import org.cirqwizard.math.RealNumber;
 import org.cirqwizard.settings.PredefinedLocationSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
@@ -63,25 +62,17 @@ public class ManualControlPopOver extends PopOverController
         public void handle(KeyEvent event)
         {
             if (event.getCode() == KeyCode.ESCAPE)
-                popOver.hide();
+                getPopup().hide();
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN)
                 return;
             RealNumberTextField textField = (RealNumberTextField) event.getSource();
-            if (textField.getRealNumberText() == null)
+            if (textField.getIntegerValue() == null)
                 return;
-            try
-            {
-                RealNumber delta = new RealNumber("0.1");
-                if (event.getCode() == KeyCode.DOWN)
-                    delta = delta.negate();
-                RealNumber currentValue = textField.getRealNumberText() == null ? new RealNumber(0) : new RealNumber(textField.getRealNumberText());
-                textField.setText(coordinatesFormat.format(currentValue.add(delta).getValue()));
-                textField.fireEvent(new ActionEvent());
-            }
-            catch (NumberFormatException e)
-            {
-                // Not a big deal
-            }
+            int delta = 100;
+            if (event.getCode() == KeyCode.DOWN)
+                delta = -delta;
+            textField.setIntegerValue(textField.getIntegerValue() + delta);
+            textField.fireEvent(new ActionEvent());
         }
     }
 

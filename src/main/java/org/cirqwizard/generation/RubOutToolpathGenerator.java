@@ -15,8 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.concurrent.Worker;
+import javafx.beans.property.BooleanProperty;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
@@ -42,10 +41,10 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
     private int overlap;
     private int threadCount;
     private double scale = 1; // It has to go
-    private ReadOnlyObjectProperty<Worker.State> serviceStateProperty;
+    private BooleanProperty cancelledProperty;
 
     public void init(int width, int height, int inflation, int toolDiameter, int overlap, List<GerberPrimitive> primitives, int threadCount,
-                     ReadOnlyObjectProperty<Worker.State> serviceStateProperty)
+                     BooleanProperty cancelledProperty)
     {
         this.width = width;
         this.height = height;
@@ -54,7 +53,7 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
         this.overlap = overlap;
         this.primitives = primitives;
         this.threadCount = threadCount;
-        this.serviceStateProperty = serviceStateProperty;
+        this.cancelledProperty = cancelledProperty;
     }
 
     public List<Toolpath> generate()
@@ -94,7 +93,7 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
         @Override
         public void run()
         {
-            if (serviceStateProperty.getValue() == Worker.State.CANCELLED)
+            if (cancelledProperty.get())
                 return;
 
             try

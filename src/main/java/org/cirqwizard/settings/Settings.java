@@ -119,18 +119,9 @@ public class Settings
         setInt(PROCESSING_THREADS, applicationSettings.getProcessingThreads());
 
         InsulationMillingSettings insulationMillingSettings = SettingsFactory.getInsulationMillingSettings();
-        setInt(TRACES_TOOL_DIAMETER, insulationMillingSettings.getToolDiameter());
-        setInt(TRACES_FEED_XY, insulationMillingSettings.getFeedXY());
-        setInt(TRACES_FEED_ARC, insulationMillingSettings.getFeedArcs());
-        setInt(TRACES_FEED_Z, insulationMillingSettings.getFeedZ());
-        setInt(TRACES_SPEED, insulationMillingSettings.getSpeed());
         setInt(TRACES_CLEARANCE, insulationMillingSettings.getClearance());
         setInt(TRACES_SAFETY_HEIGHT, insulationMillingSettings.getSafetyHeight());
-        setInt(TRACES_DEFAULT_Z_OFFSET, insulationMillingSettings.getZOffset());
         setInt(TRACES_WORKING_HEIGHT, insulationMillingSettings.getWorkingHeight());
-        setInt(TRACES_ADDITIONAL_PASSES, insulationMillingSettings.getAdditionalPasses());
-        setInt(TRACES_ADDITIONAL_PASSES_OVERLAP, insulationMillingSettings.getAdditionalPassesOverlap());
-        setBoolean(TRACES_ADDITONAL_PASSES_PADS_ONLY, insulationMillingSettings.getAdditionalPassesPadsOnly());
 
         DrillingSettings drillingSettings = SettingsFactory.getDrillingSettings();
         setInt(DRILLING_FEED, drillingSettings.getFeed());
@@ -165,11 +156,11 @@ public class Settings
         setInt(PP_MOVE_HEIGHT, ppSettings.getMoveHeight());
         setInt(PP_ROTATION_FEED, ppSettings.getRotationFeed());
 
-        setInt(IMPORT_EXCELLON_INTEGER_PLACES, applicationSettings.getExcellonIntegerPlaces());
-        setInt(IMPORT_EXCELLON_DECIMAL_PLACES, applicationSettings.getExcellonDecimalPlaces());
+        ImportSettings importSettings = SettingsFactory.getImportSettings();
+        setInt(IMPORT_EXCELLON_INTEGER_PLACES, importSettings.getExcellonIntegerPlaces());
+        setInt(IMPORT_EXCELLON_DECIMAL_PLACES, importSettings.getExcellonDecimalPlaces());
         if (preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null) != null)
-            applicationSettings.getExcellonUnits().setValue("1000".equals(preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null)) ? DistanceUnit.MM : DistanceUnit.INCHES);
-        setString(IMPORT_PP_REGEX, applicationSettings.getCentroidFileFormat());
+            importSettings.getExcellonUnits().setValue("1000".equals(preferences.get(IMPORT_EXCELLON_UNIT_CONVERSION_RATIO, null)) ? DistanceUnit.MM : DistanceUnit.INCHES);
 
         ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
         setInt(INTERFACE_G54_X, applicationValues.getG54X());
@@ -188,6 +179,7 @@ public class Settings
         contourMillingSettings.save();
         dispensingSettings.save();
         ppSettings.save();
+        importSettings.save();
         applicationValues.save();
     }
 

@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.machining;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -25,6 +26,7 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.toolpath.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
@@ -32,7 +34,7 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
     private PCBPaneFX pcbPane;
     private Point2D startPoint;
     private Point2D startPointNonFlipped;
-    private ToolpathGenerationService service;
+    private SimpleObjectProperty<List<Toolpath>> toolpaths = new SimpleObjectProperty<>();
 
     public PCBPaneMouseHandler(PCBPaneFX pcbPane)
     {
@@ -51,7 +53,7 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
                 startPointNonFlipped = toPCBCoordinates(ePoint, false);
                 pcbPane.setSelection(startPointNonFlipped, 0, 0);
                 ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
-                for (Toolpath toolpath : service.getValue())
+                for (Toolpath toolpath :toolpaths.get())
                 {
                     if (toolpath.isSelected())
                         changedToolpaths.add(toolpath);
@@ -65,7 +67,7 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
                 Point2D dragPoint = toPCBCoordinates(ePoint, pcbPane.isFlipHorizontal());
                 Point2D dragPointNonFlipped = toPCBCoordinates(ePoint, false);
                 ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
-                for (Toolpath toolpath : service.getValue())
+                for (Toolpath toolpath : toolpaths.get())
                 {
                     Shape shape = createShapeForToolpath((CuttingToolpath) toolpath);
                     shape.setPickOnBounds(false);
@@ -120,9 +122,14 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
         return shape;
     }
 
-    public void setService(ToolpathGenerationService service)
+    public List<Toolpath> getToolpaths()
     {
-        this.service = service;
+        return toolpaths.get();
+    }
+
+    public SimpleObjectProperty<List<Toolpath>> toolpathsProperty()
+    {
+        return toolpaths;
     }
 
     public Point2D toPCBCoordinates(Point2D point, boolean flipX)

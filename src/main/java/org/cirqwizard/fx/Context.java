@@ -19,8 +19,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.cirqwizard.layers.PCBLayout;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
-import org.cirqwizard.settings.ApplicationValues;
-import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.ToolSettings;
 
 import java.io.File;
 import java.util.HashMap;
@@ -35,6 +34,8 @@ public class Context
 
     private PcbPlacement pcbPlacement;
     private Tool insertedTool;
+    private ToolSettings currentMillingTool;
+    private int currentMillingToolIndex;
     private PCBSize pcbSize;
     private Integer g54X;
     private Integer g54Y;
@@ -65,6 +66,8 @@ public class Context
     {
         pcbPlacement = null;
         insertedTool = null;
+        currentMillingTool = null;
+        currentMillingToolIndex = -1;
         pcbSize = null;
         g54X = null;
         g54Y = null;
@@ -99,6 +102,26 @@ public class Context
     public void setInsertedTool(Tool insertedTool)
     {
         this.insertedTool = insertedTool;
+    }
+
+    public ToolSettings getCurrentMillingTool()
+    {
+        return currentMillingTool;
+    }
+
+    public void setCurrentMillingTool(ToolSettings currentMillingTool)
+    {
+        this.currentMillingTool = currentMillingTool;
+    }
+
+    public int getCurrentMillingToolIndex()
+    {
+        return currentMillingToolIndex;
+    }
+
+    public void setCurrentMillingToolIndex(int currentMillingToolIndex)
+    {
+        this.currentMillingToolIndex = currentMillingToolIndex;
     }
 
     public PCBSize getPcbSize()

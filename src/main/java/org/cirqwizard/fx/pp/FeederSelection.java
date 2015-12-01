@@ -27,7 +27,7 @@ import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
-import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.pp.PackageAttributesCache;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -83,15 +83,22 @@ public class FeederSelection extends ScreenController implements Initializable
         smallFeeder.setSelected(false);
         mediumFeeder.setSelected(false);
         largeFeeder.setSelected(false);
-        if (context.getFeeder() == Feeder.SMALL)
-            smallFeeder.setSelected(true);
-        else if (context.getFeeder() == Feeder.MEDIUM)
-            mediumFeeder.setSelected(true);
-        else if (context.getFeeder() == Feeder.LARGE)
-            largeFeeder.setSelected(true);
+        PackageAttributesCache.PackageAttributes attributes = PackageAttributesCache.getInstance().getAttributes(id.getPackaging());
+        if (attributes != null)
+        {
+            switch (attributes.getFeeder())
+            {
+                case SMALL: smallFeeder.setSelected(true); break;
+                case MEDIUM: mediumFeeder.setSelected(true); break;
+                case LARGE: largeFeeder.setSelected(true); break;
+            }
+        }
         updateRows();
-
-        pitch.setIntegerValue(context.getPitchFromCache(id.getPackaging()));
+        if (attributes != null)
+        {
+            row.getSelectionModel().select(attributes.getRow());
+            pitch.setIntegerValue(attributes.getPitch());
+        }
     }
 
     public void updateRows()
@@ -107,7 +114,6 @@ public class FeederSelection extends ScreenController implements Initializable
         if (context.getFeeder() != null)
             for (int i = 1; i < context.getFeeder().getRowCount() + 1; i++)
                 rows.add(i);
-        row.getSelectionModel().select(context.getFeederRow());
         updateControls();
     }
 
@@ -120,15 +126,19 @@ public class FeederSelection extends ScreenController implements Initializable
     public void next()
     {
         Context context = getMainApplication().getContext();
+        Feeder selectedFeeder = null;
         if (smallFeeder.isSelected())
-            context.setFeeder(Feeder.SMALL);
+            selectedFeeder = Feeder.SMALL;
         else if (mediumFeeder.isSelected())
-            context.setFeeder(Feeder.MEDIUM);
+            selectedFeeder = Feeder.MEDIUM;
         else if (largeFeeder.isSelected())
-            context.setFeeder(Feeder.LARGE);
+            selectedFeeder = Feeder.LARGE;
+        context.setFeeder(selectedFeeder);
         context.setComponentPitch(pitch.getIntegerValue());
         context.savePitchToCache(context.getCurrentComponent().getPackaging(), pitch.getIntegerValue());
         context.setFeederRow(row.getValue() - 1);
+        PackageAttributesCache.getInstance().saveAttributes(context.getCurrentComponent().getPackaging(),
+                selectedFeeder, row.getValue() - 1, pitch.getIntegerValue());
         super.next();
     }
 }

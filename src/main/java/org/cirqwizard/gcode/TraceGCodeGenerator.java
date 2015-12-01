@@ -73,6 +73,8 @@ public class TraceGCodeGenerator
                 break;
             }
         }
+        if (firstToolpath == null)
+            return "";
         Curve firstCurve = ((CuttingToolpath)firstToolpath).getCurve();
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
