@@ -1,7 +1,33 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1"
+    }
+}
+
+plugins {
+    id "edu.sc.seis.launch4j" version "1.6.1"
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: "edu.sc.seis.launch4j"
 
 mainClassName = 'org.cirqwizard.fx.MainApplication'
+
+launch4j {
+    mainClassName = 'org.cirqwizard.fx.MainApplication'
+    icon = '../resources/main/package/windows/cirQWizard.ico'
+    bundledJrePath = 'jre'
+    version = releaseVersion
+    textVersion = releaseVersion
+    description = 'cirQWizard'
+    productName = 'cirQWizard'
+}
 
 repositories {
     mavenLocal()
@@ -67,4 +93,16 @@ task assembleNative(dependsOn: 'jar') {
     doLast() {
         fx_bundle.execute()
     }
+}
+
+task printNsisVersion() {
+    ext.versionFile = new File('build/tmp/version.nsh')
+    doLast {
+        versionFile.text = '!define VERSION ' + releaseVersion
+    }
+}
+
+task assembleNsis(type: Exec, dependsOn: ['launch4j', 'printNsisVersion']) {
+    mkdir('build/package/bundles')
+    commandLine 'C:\\Program files (x86)\\NSIS\\makensis.exe', 'Windows.nsi'
 }
