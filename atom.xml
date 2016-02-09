@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2015-10-28T23:23:15+01:00</updated>
+  <updated>2016-02-09T15:05:52+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.5.13]]></title>
+    <link href="http://cirqwizard.org//blog/2016/02/09/version-1-dot-5-13/"/>
+    <updated>2016-02-09T14:59:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2016/02/09/version-1-dot-5-13</id>
+    <content type="html"><![CDATA[<p>This version addresses an issue, which was causing cirQWizard to crash on Windows 10 under certain circumstances. Releases for other operating systems are not changed, comparing to the version 1.5.12.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.12]]></title>
