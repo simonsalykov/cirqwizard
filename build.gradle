@@ -22,6 +22,7 @@ mainClassName = 'org.cirqwizard.fx.MainApplication'
 launch4j {
     mainClassName = 'org.cirqwizard.fx.MainApplication'
     icon = '../resources/main/package/windows/cirQWizard.ico'
+    outfile = "cirqwizard.exe"
     bundledJrePath = 'jre'
     version = releaseVersion
     textVersion = releaseVersion
