@@ -10,7 +10,7 @@ RequestExecutionLevel highest
 
 !include "build\tmp\version.nsh"
 
-OutFile "build\package\bundles\cirqwizard-${VERSION}_x64.exe" ; Installer file name
+OutFile "build\cirqwizard-${VERSION}_x64.exe" ; Installer file name
 
 !define MUI_ICON "src\main\resources\package\windows\cirQWizard.ico"
 InstallDir $PROGRAMFILES64\cirQWizard

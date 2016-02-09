@@ -103,6 +103,5 @@ task printNsisVersion() {
 }
 
 task assembleNsis(type: Exec, dependsOn: ['launch4j', 'printNsisVersion']) {
-    mkdir('build/package/bundles')
     commandLine 'C:\\Program files (x86)\\NSIS\\makensis.exe', 'Windows.nsi'
 }
