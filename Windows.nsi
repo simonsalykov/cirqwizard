@@ -8,7 +8,6 @@ Name "cirQWizard"
 
 RequestExecutionLevel highest
 
-!system
 !include "build\tmp\version.nsh"
 
 OutFile "build\package\bundles\cirqwizard-${VERSION}_x64.exe" ; Installer file name
