@@ -15,8 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.optimizer;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.List;
 

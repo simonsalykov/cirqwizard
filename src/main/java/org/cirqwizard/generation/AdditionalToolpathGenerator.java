@@ -21,9 +21,9 @@ import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.LinearToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.Arrays;

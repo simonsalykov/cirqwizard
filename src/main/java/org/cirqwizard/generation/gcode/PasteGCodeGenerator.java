@@ -12,13 +12,13 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.gcode;
+package org.cirqwizard.generation.gcode;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.post.Postprocessor;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 
 public class PasteGCodeGenerator

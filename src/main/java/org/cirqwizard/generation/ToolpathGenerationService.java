@@ -19,7 +19,7 @@ import org.cirqwizard.generation.optimizer.ChainDetector;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.settings.ToolSettings;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.List;
 

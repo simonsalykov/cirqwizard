@@ -12,25 +12,38 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.toolpath;
+package org.cirqwizard.generation.toolpath;
 
 import org.cirqwizard.geom.Curve;
+import org.cirqwizard.geom.Point;
 
 
-public abstract class CuttingToolpath extends Toolpath
+public class DrillPoint extends CuttingToolpath
 {
-    private int toolDiameter;
+    private Point point;
 
-    public abstract Curve getCurve();
-
-    public CuttingToolpath(int toolDiameter)
+    public DrillPoint(Point point, int diameter)
     {
-        this.toolDiameter = toolDiameter;
+        super((diameter + 50) / 100 * 100);    // Rounding to tenth of millimeter
+        this.point = point;
     }
 
-    public int getToolDiameter()
+    @Override
+    public Curve getCurve()
     {
-        return toolDiameter;
+        return null;
     }
+
+    public Point getPoint()
+    {
+        return point;
+    }
+
+    public void setPoint(Point point)
+    {
+        this.point = point;
+    }
+
+
 
 }

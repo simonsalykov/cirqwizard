@@ -24,7 +24,7 @@ import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.ImportSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
 
 import java.io.File;
 import java.io.FileReader;

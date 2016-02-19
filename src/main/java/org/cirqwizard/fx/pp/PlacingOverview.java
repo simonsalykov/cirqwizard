@@ -16,8 +16,8 @@ package org.cirqwizard.fx.pp;
 
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.pp.ComponentId;
-import org.cirqwizard.toolpath.PPPoint;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.PPPoint;
+import org.cirqwizard.generation.toolpath.Toolpath;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,7 +26,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -34,7 +33,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 
 public class PlacingOverview extends ScreenController implements Initializable

@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.generation.toolpath.DrillPoint;
 
 import java.util.ArrayList;
 import java.util.List;

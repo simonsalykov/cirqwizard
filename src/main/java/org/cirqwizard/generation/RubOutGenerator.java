@@ -15,8 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.LinearToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

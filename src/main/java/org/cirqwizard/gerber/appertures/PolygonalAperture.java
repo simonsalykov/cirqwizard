@@ -1,4 +1,4 @@
-package org.cirqwizard.appertures;
+package org.cirqwizard.gerber.appertures;
 
 import org.cirqwizard.geom.Point;
 

@@ -12,38 +12,27 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.toolpath;
-
-import org.cirqwizard.geom.Curve;
-import org.cirqwizard.geom.Point;
+package org.cirqwizard.generation.toolpath;
 
 
-public class DrillPoint extends CuttingToolpath
+public class ToolpathPersistingException extends Exception
 {
-    private Point point;
-
-    public DrillPoint(Point point, int diameter)
+    public ToolpathPersistingException()
     {
-        super((diameter + 50) / 100 * 100);    // Rounding to tenth of millimeter
-        this.point = point;
     }
 
-    @Override
-    public Curve getCurve()
+    public ToolpathPersistingException(String message)
     {
-        return null;
+        super(message);
     }
 
-    public Point getPoint()
+    public ToolpathPersistingException(String message, Throwable cause)
     {
-        return point;
+        super(message, cause);
     }
 
-    public void setPoint(Point point)
+    public ToolpathPersistingException(Throwable cause)
     {
-        this.point = point;
+        super(cause);
     }
-
-
-
 }

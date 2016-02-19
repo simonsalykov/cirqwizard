@@ -16,8 +16,8 @@ package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.pp.ComponentId;
-import org.cirqwizard.toolpath.PPPoint;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.PPPoint;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;

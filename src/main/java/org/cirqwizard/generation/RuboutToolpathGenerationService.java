@@ -20,7 +20,7 @@ import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;

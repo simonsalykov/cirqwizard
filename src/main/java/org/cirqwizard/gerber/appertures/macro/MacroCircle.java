@@ -12,49 +12,40 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.appertures.macro;
+package org.cirqwizard.gerber.appertures.macro;
 
 import org.cirqwizard.geom.Point;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MacroOutline extends MacroPrimitive
+public class MacroCircle extends MacroPrimitive
 {
-    private ArrayList<Point> points = new ArrayList<>();
+    private int diameter;
+    private Point center;
 
-    public MacroOutline()
+    public MacroCircle(int diameter, Point center)
     {
+        this(diameter, center, 0);
     }
 
-    public MacroOutline(ArrayList<Point> points, int rotationAngle)
+    public MacroCircle(int diameter, Point center, int rotationAngle)
     {
         super(rotationAngle);
-        this.points = points;
+        this.diameter = diameter;
+        this.center = center;
     }
 
-    public void addPoint(Point point)
+    public int getDiameter()
     {
-        points.add(point);
+        return diameter;
     }
 
-    public List<Point> getPoints()
+    public Point getCenter()
     {
-        return points;
-    }
-
-    public List<Point> getTranslatedPoints()
-    {
-        ArrayList<Point> result = new ArrayList<>();
-        for (Point p : points)
-            result.add(translate(p));
-
-        return result;
+        return translate(center);
     }
 
     @Override
     public MacroPrimitive clone()
     {
-        return new MacroOutline(points, getRotationAngle());
+        return new MacroCircle(diameter, center, getRotationAngle());
     }
 }

@@ -16,7 +16,7 @@ package org.cirqwizard.test.excellon;
 
 import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.generation.toolpath.DrillPoint;
 import org.junit.Test;
 
 import java.io.IOException;

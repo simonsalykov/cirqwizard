@@ -12,7 +12,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.appertures;
+package org.cirqwizard.gerber.appertures;
 
 public class OvalAperture extends Aperture
 {

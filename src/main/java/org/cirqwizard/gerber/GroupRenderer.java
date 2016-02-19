@@ -17,8 +17,8 @@ package org.cirqwizard.gerber;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.List;
 

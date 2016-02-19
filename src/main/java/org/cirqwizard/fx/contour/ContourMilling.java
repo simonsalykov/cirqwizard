@@ -22,7 +22,7 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
-import org.cirqwizard.gcode.MillingGCodeGenerator;
+import org.cirqwizard.generation.gcode.MillingGCodeGenerator;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.ChainDetector;
 import org.cirqwizard.generation.optimizer.Optimizer;
@@ -32,7 +32,7 @@ import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.ContourMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;

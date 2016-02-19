@@ -12,11 +12,11 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.gcode;
+package org.cirqwizard.generation.gcode;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.post.Postprocessor;
-import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.generation.toolpath.DrillPoint;
 
 
 public class DrillGCodeGenerator

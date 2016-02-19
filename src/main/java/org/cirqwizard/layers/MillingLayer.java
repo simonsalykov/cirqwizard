@@ -18,9 +18,9 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.CircularShape;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
-import org.cirqwizard.toolpath.CircularToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CircularToolpath;
+import org.cirqwizard.generation.toolpath.LinearToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;

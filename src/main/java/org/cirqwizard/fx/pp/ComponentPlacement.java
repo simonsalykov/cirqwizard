@@ -34,7 +34,7 @@ import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
 import org.cirqwizard.settings.PredefinedLocationSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.PPPoint;
+import org.cirqwizard.generation.toolpath.PPPoint;
 
 import java.net.URL;
 import java.text.DecimalFormat;

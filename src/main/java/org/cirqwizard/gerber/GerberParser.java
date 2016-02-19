@@ -14,8 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import org.cirqwizard.appertures.*;
-import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.gerber.appertures.*;
+import org.cirqwizard.gerber.appertures.macro.*;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;

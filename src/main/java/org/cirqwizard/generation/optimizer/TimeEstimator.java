@@ -19,8 +19,8 @@ import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.List;
 

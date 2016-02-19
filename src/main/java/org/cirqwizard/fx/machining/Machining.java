@@ -27,7 +27,7 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.layers.Layer;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.net.URL;
 import java.util.ArrayList;

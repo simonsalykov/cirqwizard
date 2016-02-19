@@ -14,8 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.layers;
 
-import org.cirqwizard.appertures.OvalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.gerber.appertures.OvalAperture;
+import org.cirqwizard.gerber.appertures.RectangularAperture;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.Flash;
@@ -24,8 +24,8 @@ import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.gerber.Region;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.MathUtil;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.LinearToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.logging.Level;

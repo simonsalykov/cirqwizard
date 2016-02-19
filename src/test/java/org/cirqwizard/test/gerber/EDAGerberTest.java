@@ -16,8 +16,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.test.gerber;
 
 import org.cirqwizard.gerber.GerberParser;
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.RectangularAperture;
+import org.cirqwizard.gerber.appertures.CircularAperture;
+import org.cirqwizard.gerber.appertures.RectangularAperture;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.*;

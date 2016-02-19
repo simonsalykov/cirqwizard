@@ -14,11 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation;
 
-import org.cirqwizard.appertures.CircularAperture;
-import org.cirqwizard.appertures.OctagonalAperture;
-import org.cirqwizard.appertures.OvalAperture;
-import org.cirqwizard.appertures.RectangularAperture;
-import org.cirqwizard.appertures.macro.*;
+import org.cirqwizard.gerber.appertures.CircularAperture;
+import org.cirqwizard.gerber.appertures.OctagonalAperture;
+import org.cirqwizard.gerber.appertures.OvalAperture;
+import org.cirqwizard.gerber.appertures.RectangularAperture;
+import org.cirqwizard.gerber.appertures.macro.*;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.*;

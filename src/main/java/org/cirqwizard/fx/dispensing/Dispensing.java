@@ -20,7 +20,7 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
-import org.cirqwizard.gcode.PasteGCodeGenerator;
+import org.cirqwizard.generation.gcode.PasteGCodeGenerator;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.SolderPasteLayer;
 import org.cirqwizard.post.RTPostprocessor;

@@ -18,7 +18,7 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.DistanceUnit;
-import org.cirqwizard.toolpath.PPPoint;
+import org.cirqwizard.generation.toolpath.PPPoint;
 import org.junit.Test;
 
 import java.io.IOException;

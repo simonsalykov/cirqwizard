@@ -16,7 +16,7 @@ package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;

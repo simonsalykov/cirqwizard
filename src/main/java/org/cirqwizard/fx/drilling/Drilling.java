@@ -21,13 +21,13 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
-import org.cirqwizard.gcode.DrillGCodeGenerator;
+import org.cirqwizard.generation.gcode.DrillGCodeGenerator;
 import org.cirqwizard.layers.DrillingLayer;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.DrillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.List;
 import java.util.stream.Collectors;

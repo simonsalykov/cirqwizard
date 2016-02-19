@@ -16,7 +16,7 @@ package org.cirqwizard.excellon;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.generation.toolpath.DrillPoint;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

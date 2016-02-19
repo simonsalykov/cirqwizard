@@ -12,7 +12,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.cirqwizard.gcode;
+package org.cirqwizard.generation.gcode;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBSize;
@@ -23,10 +23,10 @@ import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.MachineSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.CircularToolpath;
-import org.cirqwizard.toolpath.CuttingToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CircularToolpath;
+import org.cirqwizard.generation.toolpath.CuttingToolpath;
+import org.cirqwizard.generation.toolpath.LinearToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.List;
 

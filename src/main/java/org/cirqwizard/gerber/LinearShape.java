@@ -14,7 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import org.cirqwizard.appertures.Aperture;
+import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 

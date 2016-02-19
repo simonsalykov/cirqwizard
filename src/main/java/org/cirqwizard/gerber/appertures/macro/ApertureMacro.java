@@ -11,63 +11,62 @@ This program is free software: you can redistribute it and/or modify
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+package org.cirqwizard.gerber.appertures.macro;
 
-package org.cirqwizard.appertures;
+import org.cirqwizard.gerber.appertures.Aperture;
 
-public class OctagonalAperture extends Aperture
+import java.util.ArrayList;
+import java.util.List;
+
+public class ApertureMacro extends Aperture
 {
-    private int diameter;
+    private ArrayList<MacroPrimitive> primitives = new ArrayList<>();
 
-    public OctagonalAperture(int diameter)
+    public void addPrimitive(MacroPrimitive primitive)
     {
-        super();
-        this.diameter = diameter;
+        primitives.add(primitive);
     }
 
-    public OctagonalAperture(int diameter, int holeDiameter)
+    public List<MacroPrimitive> getPrimitives()
     {
-        super(holeDiameter);
-        this.diameter = diameter;
+        return primitives;
     }
 
-    public OctagonalAperture(int diameter, int holeWidth, int holeHeight)
-    {
-        super(holeWidth, holeHeight);
-        this.diameter = diameter;
-    }
 
     @Override
     public Aperture rotate(boolean clockwise)
     {
-        return this;
-    }
-
-    public int getDiameter()
-    {
-        return diameter;
+        ApertureMacro clone = new ApertureMacro();
+        for (MacroPrimitive p : primitives)
+        {
+            p = p.clone();
+            p.setRotationAngle(p.getRotationAngle() + 90 * (clockwise ? 1 : -1));
+            clone.addPrimitive(p);
+        }
+        return clone;
     }
 
     @Override
     public boolean isVisible()
     {
-        return diameter > 0;
+        return true;
     }
 
     @Override
     public int getWidth()
     {
-        return diameter;
+        return 0;
     }
 
     @Override
     public int getHeight()
     {
-        return diameter;
+        return 0;
     }
 
     @Override
     public int getCircumRadius()
     {
-        return diameter / 2;
+        return 2000;
     }
 }

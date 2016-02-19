@@ -19,7 +19,7 @@ import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.LongProcessingMachining;
-import org.cirqwizard.gcode.TraceGCodeGenerator;
+import org.cirqwizard.generation.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.GenerationService;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.OptimizationService;
@@ -28,7 +28,7 @@ import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.settings.ToolSettings;
-import org.cirqwizard.toolpath.ToolpathsCacheKey;
+import org.cirqwizard.generation.toolpath.ToolpathsCacheKey;
 
 import java.util.List;
 

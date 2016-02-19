@@ -28,7 +28,7 @@ import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.OptimizationService;
 import org.cirqwizard.layers.TraceLayer;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.toolpath.*;
+import org.cirqwizard.generation.toolpath.*;
 
 import java.util.ArrayList;
 import java.util.List;

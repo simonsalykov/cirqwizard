@@ -18,9 +18,9 @@ import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Circle;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Line;
-import org.cirqwizard.toolpath.CircularToolpath;
-import org.cirqwizard.toolpath.LinearToolpath;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.CircularToolpath;
+import org.cirqwizard.generation.toolpath.LinearToolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
 import java.util.List;
