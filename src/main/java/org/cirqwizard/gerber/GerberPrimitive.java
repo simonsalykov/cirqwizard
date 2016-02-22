@@ -16,9 +16,10 @@ package org.cirqwizard.gerber;
 
 import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.layers.LayerElement;
 
 
-public abstract class GerberPrimitive
+public abstract class GerberPrimitive extends LayerElement
 {
     protected Aperture aperture;
     private Polarity polarity;
@@ -44,7 +45,7 @@ public abstract class GerberPrimitive
     public abstract Point getMax();
 
 
-    public static enum Polarity
+    public enum Polarity
     {
         CLEAR, DARK
     }

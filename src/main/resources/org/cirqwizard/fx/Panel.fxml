@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.cirqwizard.fx.PanelPane?>
+<VBox fx:id="view" spacing="20.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml">
+    <HBox>
+        <Label text="Laminate size"/>
+        <ComboBox fx:id="sizeComboBox"/>
+    </HBox>
+    <HBox VBox.vgrow="ALWAYS">
+        <VBox HBox.hgrow="ALWAYS">
+            <ToolBar>
+                <Button text="CW"/>
+                <Button text="CCW"/>
+                <Button text="+"/>
+                <Button text="-"/>
+            </ToolBar>
+            <PanelPane fx:id="panelPane" VBox.vgrow="ALWAYS"/>
+        </VBox>
+        <VBox minWidth="400.0">
+            <ToolBar>
+                <Button text="+"/>
+                <Button text="-"/>
+            </ToolBar>
+            <TableView VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn text="PCB"/>
+                    <TableColumn text="X"/>
+                    <TableColumn text="Y"/>
+                    <TableColumn text="Outline"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </HBox>
+</VBox>

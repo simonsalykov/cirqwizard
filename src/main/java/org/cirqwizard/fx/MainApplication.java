@@ -139,6 +139,7 @@ public class MainApplication extends Application
             addChild(new Dispensing().setMainApplication(this));
 
     private ScreenController root = new Welcome().setMainApplication(this).
+            addChild(new PanelController().setMainApplication(this)).
             addChild(new Orientation().setMainApplication(this)).
             addChild(new Homing().setMainApplication(this)).
             addChild(topTracesGroup).

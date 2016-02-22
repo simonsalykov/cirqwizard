@@ -37,7 +37,8 @@ public class Welcome extends ScreenController
 {
     private static final String PREFERENCE_NAME = "interface.recent.files";
 
-    @FXML private GridPane recentFilesPane;
+    @FXML
+    private GridPane recentFilesPane;
 
     @Override
     protected String getFxmlName()
@@ -81,6 +82,11 @@ public class Welcome extends ScreenController
         setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
         getMainApplication().getContext().setFile(file);
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
+    }
+
+    public void createPanel()
+    {
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(PanelController.class));
     }
 
     private List<String> getRecentFiles()
