@@ -283,7 +283,7 @@ public class PCBLayout
             componentsLayer = null;
     }
 
-    private static ArrayList<GerberPrimitive> parseGerber(String file)
+    private static List<GerberPrimitive> parseGerber(String file)
     {
         try
         {

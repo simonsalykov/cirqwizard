@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +32,6 @@ import java.util.regex.Pattern;
 
 public class GerberParser
 {
-    private String filename;
     private ArrayList<GerberPrimitive> elements = new ArrayList<>();
 
     private boolean parameterMode = false;
@@ -85,7 +85,7 @@ public class GerberParser
         this.reader = reader;
     }
 
-    public ArrayList<GerberPrimitive> parse() throws IOException
+    public List<GerberPrimitive> parse() throws IOException
     {
         String str;
         while ((str = readDataBlock()) != null)
@@ -108,7 +108,7 @@ public class GerberParser
 
     private String readDataBlock() throws IOException
     {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int i;
         while ((i = reader.read()) != -1)
         {
@@ -236,7 +236,6 @@ public class GerberParser
                 LoggerFactory.getApplicationLogger().log(Level.WARNING, "Aperture macro does not define enclosed area: " + str);
             outline.getPoints().remove(outline.getPoints().size() - 1);
             apertureMacro.addPrimitive(outline);
-            return;
         }
     }
 

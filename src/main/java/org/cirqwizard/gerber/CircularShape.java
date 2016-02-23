@@ -14,9 +14,16 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.StrokeLineCap;
 import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.appertures.CircularAperture;
+
+import java.awt.*;
+import java.awt.geom.Arc2D;
 
 public class CircularShape extends InterpolatingShape
 {
@@ -103,5 +110,31 @@ public class CircularShape extends InterpolatingShape
         y += aperture.getHeight() / 2;
 
         return new Point(x, y);
+    }
+
+    @Override
+    public void render(Graphics2D g, double inflation)
+    {
+        int cap = getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
+        double width = Math.max(getAperture().getWidth() + inflation * 2, 0);
+        g.setStroke(new BasicStroke((float) width, cap, BasicStroke.JOIN_ROUND));
+        g.draw(new Arc2D.Double(getArc().getCenter().getX() - getArc().getRadius(),
+                getArc().getCenter().getY() - getArc().getRadius(),
+                getArc().getRadius() * 2, getArc().getRadius() * 2,
+                -Math.toDegrees(getArc().getStart()),
+                Math.toDegrees(getArc().getAngle()) * (getArc().isClockwise() ? 1 : -1), Arc2D.OPEN));
+    }
+
+    @Override
+    public void render(GraphicsContext g)
+    {
+        g.setLineCap(getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
+        g.setLineWidth(getAperture().getWidth());
+        g.strokeArc(getArc().getCenter().getX() - getArc().getRadius(),
+                getArc().getCenter().getY() - getArc().getRadius(),
+                getArc().getRadius() * 2, getArc().getRadius() * 2,
+                -Math.toDegrees(getArc().getStart()),
+                Math.toDegrees(getArc().getAngle()) * (getArc().isClockwise() ? 1 : -1),
+                ArcType.OPEN);
     }
 }

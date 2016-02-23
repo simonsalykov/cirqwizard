@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.cirqwizard.fx.PanelPane?>
-<VBox fx:id="view" spacing="20.0" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml">
+<VBox fx:id="view" spacing="20.0" styleClass="main-pane" xmlns="http://javafx.com/javafx/2.2" xmlns:fx="http://javafx.com/fxml">
     <HBox>
         <Label text="Laminate size"/>
         <ComboBox fx:id="sizeComboBox"/>
@@ -19,7 +20,7 @@
         </VBox>
         <VBox minWidth="400.0">
             <ToolBar>
-                <Button text="+"/>
+                <Button onAction="#addBoard" text="+"/>
                 <Button text="-"/>
             </ToolBar>
             <TableView VBox.vgrow="ALWAYS">

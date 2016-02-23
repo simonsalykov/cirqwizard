@@ -28,25 +28,26 @@ import org.cirqwizard.generation.toolpath.LinearToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 
 public class SolderPasteLayer extends Layer
 {
-    private ArrayList<GerberPrimitive> elements = new ArrayList<GerberPrimitive>();
-    private ArrayList<Toolpath> toolpaths = new ArrayList<Toolpath>();
+    private List<GerberPrimitive> elements = new ArrayList<>();
+    private List<Toolpath> toolpaths = new ArrayList<>();
 
-    public void setElements(ArrayList<GerberPrimitive> elements)
+    public void setElements(List<GerberPrimitive> elements)
     {
         this.elements = elements;
     }
 
-    public ArrayList<GerberPrimitive> getElements()
+    public List<GerberPrimitive> getElements()
     {
         return elements;
     }
 
-    public ArrayList<Toolpath> getToolpaths()
+    public List<Toolpath> getToolpaths()
     {
         return toolpaths;
     }
@@ -81,7 +82,7 @@ public class SolderPasteLayer extends Layer
         return new Point(maxX, maxY);
     }
 
-    private void fillRectangle(ArrayList<Toolpath> toolpaths, Point from, Point to, int width, int needleDiameter)
+    private void fillRectangle(List<Toolpath> toolpaths, Point from, Point to, int width, int needleDiameter)
     {
         // Shortening tool path for needle radius
         double angle = new Line(from, to).angleToX();

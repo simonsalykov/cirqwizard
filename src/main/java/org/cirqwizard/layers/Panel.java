@@ -8,5 +8,15 @@ import java.util.List;
 public class Panel
 {
     private PCBSize size;
-    private List<Board> boards = new ArrayList<>();
+    private List<PanelBoard> boards = new ArrayList<>();
+
+    public List<PanelBoard> getBoards()
+    {
+        return boards;
+    }
+
+    public void addBoard(PanelBoard board)
+    {
+        boards.add(board);
+    }
 }

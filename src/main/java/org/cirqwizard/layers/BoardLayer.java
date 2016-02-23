@@ -6,15 +6,15 @@ import java.util.List;
 
 public class BoardLayer
 {
-    private List<LayerElement> elements;
+    private List<? extends LayerElement> elements;
     private List<Toolpath> toolpaths;
 
-    public List<LayerElement> getElements()
+    public List<? extends LayerElement> getElements()
     {
         return elements;
     }
 
-    public void setElements(List<LayerElement> elements)
+    public void setElements(List<? extends LayerElement> elements)
     {
         this.elements = elements;
     }

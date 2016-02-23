@@ -66,7 +66,7 @@ public class EDAGerberTest
                 "M02*";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(8, elements.size());
 
@@ -171,7 +171,7 @@ public class EDAGerberTest
                 "M02*\n";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(6, elements.size());
 
@@ -250,7 +250,7 @@ public class EDAGerberTest
                 "M02*";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(4, elements.size());
 
@@ -318,7 +318,7 @@ public class EDAGerberTest
                 "M02*\n";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(4, elements.size());
 
@@ -390,7 +390,7 @@ public class EDAGerberTest
                 "M02*";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(4, elements.size());
 
@@ -441,7 +441,7 @@ public class EDAGerberTest
                 "M00*\n";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(2, elements.size());
 
@@ -501,7 +501,7 @@ public class EDAGerberTest
                 "M02*\n";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(5, elements.size());
 

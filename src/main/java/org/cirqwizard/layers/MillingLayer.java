@@ -28,15 +28,15 @@ import java.util.List;
 
 public class MillingLayer extends Layer
 {
-    private ArrayList<GerberPrimitive> elements = new ArrayList<>();
+    private List<GerberPrimitive> elements = new ArrayList<>();
     private List<Toolpath> toolpaths = new ArrayList<>();
 
-    public void setElements(ArrayList<GerberPrimitive> elements)
+    public void setElements(List<GerberPrimitive> elements)
     {
         this.elements = elements;
     }
 
-    public ArrayList<GerberPrimitive> getElements()
+    public List<GerberPrimitive> getElements()
     {
         return elements;
     }

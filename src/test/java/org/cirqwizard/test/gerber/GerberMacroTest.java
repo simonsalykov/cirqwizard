@@ -24,6 +24,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +44,7 @@ public class GerberMacroTest
 
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(1, elements.size());
 
@@ -76,7 +77,7 @@ public class GerberMacroTest
                 "M02*";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(1, elements.size());
 
@@ -118,7 +119,7 @@ public class GerberMacroTest
                 "M02*";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(1, elements.size());
 
@@ -151,7 +152,7 @@ public class GerberMacroTest
                 "M02*";
 
         GerberParser parser = new GerberParser(new StringReader(fileContent));
-        ArrayList<GerberPrimitive> elements = parser.parse();
+        List<GerberPrimitive> elements = parser.parse();
 
         assertEquals(1, elements.size());
 

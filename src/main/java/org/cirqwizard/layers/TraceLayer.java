@@ -27,7 +27,7 @@ public class TraceLayer extends Layer
     private List<GerberPrimitive> elements = new ArrayList<>();
     private List<Toolpath> toolpaths = new ArrayList<>();
 
-    public void setElements(ArrayList<GerberPrimitive> elements)
+    public void setElements(List<GerberPrimitive> elements)
     {
         this.elements = elements;
     }

@@ -1,31 +1,36 @@
 package org.cirqwizard.fx;
 
-import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import org.cirqwizard.settings.ApplicationConstants;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.Board;
+import org.cirqwizard.layers.Panel;
 
 public class PanelPane extends ScrollPane
 {
-    private static final Color BACKGROUND_COLOR = Color.decode("#ddfbdd");
-    private static final Color PANEL_CONTOUR = Color.black;
-    private static final Color PIN_COLOR = Color.black;
+    public static final Color BACKGROUND_COLOR = Color.web("#ddfbdd");
+    public static final Color PANEL_CONTOUR = Color.BLACK;
+    public static final Color PIN_COLOR = Color.BLACK;
 
-    private static final int RESOLUTION = 10;
-    private static final int PADDING = 5;
-    private static final int CONTOUR_WIDTH = 1;
-    private static final int PIN_DIAMETER = 3;
+    private static final int DEFAULT_ZOOM = 100;
+    private static final int PADDING = 5000;
+    private static final int CONTOUR_WIDTH = 100;
+    private static final int PIN_DIAMETER = 3000;
+    private static final int PIN_INSET = 5000;
 
     private PCBSize size;
+    private org.cirqwizard.layers.Panel panel;
     private ImageView image = new ImageView();
+    private Group group = new Group();
 
     public PanelPane()
     {
-        setContent(image);
+        setContent(group);
         setPannable(true);
     }
 
@@ -40,48 +45,63 @@ public class PanelPane extends ScrollPane
         render();
     }
 
+    public Panel getPanel()
+    {
+        return panel;
+    }
+
+    public void setPanel(Panel panel)
+    {
+        this.panel = panel;
+    }
+
     public void render()
     {
         if (size == null)
             return;
 
-        BufferedImage bufferedImage = new BufferedImage(convertResolution(size.getWidth()) + PADDING * 2 * RESOLUTION,
-                convertResolution(size.getHeight()) + PADDING * 2 * RESOLUTION, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = bufferedImage.createGraphics();
-        g.setBackground(BACKGROUND_COLOR);
-        g.clearRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        Canvas canvas = new Canvas((size.getWidth() + PADDING * 2) / DEFAULT_ZOOM, (size.getHeight() + PADDING * 2) / DEFAULT_ZOOM);
+        GraphicsContext g = canvas.getGraphicsContext2D();
+        g.setFill(BACKGROUND_COLOR);
+        g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        double scale = 1.0 / DEFAULT_ZOOM;
+        g.scale(scale, -scale);
+        g.translate(0, -canvas.getHeight() * DEFAULT_ZOOM);
         renderContour(g);
 
-        renderPin(g, 5, 5);
-        renderPin(g, size.getWidth() / ApplicationConstants.RESOLUTION - 5, 5);
-        renderPin(g, 5, size.getHeight() / ApplicationConstants.RESOLUTION - 5);
-        renderPin(g, size.getWidth() / ApplicationConstants.RESOLUTION - 5, size.getHeight() / ApplicationConstants.RESOLUTION - 5);
+        renderPin(g, PIN_INSET, PIN_INSET);
+        renderPin(g, size.getWidth() - PIN_INSET, PIN_INSET);
+        renderPin(g, PIN_INSET, size.getHeight() - PIN_INSET);
+        renderPin(g, size.getWidth() - PIN_INSET, size.getHeight() - PIN_INSET);
 
-        WritableImage img = new WritableImage(bufferedImage.getWidth(), bufferedImage.getHeight());
-        SwingFXUtils.toFXImage(bufferedImage, img);
-        image.setImage(img);
-        setPrefSize(bufferedImage.getWidth(), bufferedImage.getHeight());
+        g.setStroke(Color.RED);
+        g.setFill(Color.RED);
+        if (panel != null)
+            panel.getBoards().stream().
+                    forEach(board ->
+                    {
+                        g.translate(board.getX(), board.getY());
+                        board.getBoard().getLayer(Board.LayerType.TOP).getElements().stream().
+                                forEach(e -> ((GerberPrimitive)e).render(g));
+                        g.translate(-board.getX(), -board.getY());
+                    });
+        group.getChildren().clear();
+        group.getChildren().add(canvas);
+        setPrefSize(canvas.getWidth(), canvas.getHeight());
     }
 
-    private int convertResolution(int dimension)
+    private void renderContour(GraphicsContext g)
     {
-        return dimension / ApplicationConstants.RESOLUTION * RESOLUTION;
+        g.setStroke(PANEL_CONTOUR);
+        g.setLineWidth(CONTOUR_WIDTH);
+        g.strokeRect(PADDING, PADDING, size.getWidth(), size.getHeight());
     }
 
-    private void renderContour(Graphics2D g)
+    private void renderPin(GraphicsContext g, int x, int y)
     {
-        g.setColor(PANEL_CONTOUR);
-        g.setStroke(new BasicStroke(convertResolution(CONTOUR_WIDTH)));
-        g.drawRect(PADDING * RESOLUTION, PADDING * RESOLUTION, convertResolution(size.getWidth()),
-                convertResolution(size.getHeight()));
-    }
-
-    private void renderPin(Graphics2D g, int x, int y)
-    {
-        g.setColor(PIN_COLOR);
-        g.fillArc(PADDING * RESOLUTION + x * RESOLUTION - PIN_DIAMETER * RESOLUTION / 2,
-                PADDING * RESOLUTION + y * RESOLUTION - PIN_DIAMETER * RESOLUTION / 2,
-            PIN_DIAMETER * RESOLUTION / 2, PIN_DIAMETER * RESOLUTION / 2, 0, 360);
+        g.setFill(PIN_COLOR);
+        g.fillArc(PADDING + x - PIN_DIAMETER / 2, PADDING + y - PIN_DIAMETER / 2,
+            PIN_DIAMETER / 2, PIN_DIAMETER / 2, 0, 360, ArcType.ROUND);
     }
 
 }
