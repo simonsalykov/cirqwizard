@@ -24,24 +24,13 @@ public class PanelPane extends Region
     private static final int PIN_DIAMETER = 3000;
     private static final int PIN_INSET = 5000;
 
-    private PCBSize size;
     private org.cirqwizard.layers.Panel panel;
     private int zoom = DEFAULT_ZOOM;
     private int width;
     private int height;
+    private boolean rendered = false;
 
     private Rectangle selectionRectangle;
-
-    public PCBSize getSize()
-    {
-        return size;
-    }
-
-    public void setSize(PCBSize size)
-    {
-        this.size = size;
-        render();
-    }
 
     public Panel getPanel()
     {
@@ -55,11 +44,11 @@ public class PanelPane extends Region
 
     public void render()
     {
-        if (size == null)
+        if (panel == null || panel.getSize() == null)
             return;
 
-        width = size.getWidth() + PADDING * 2;
-        height = size.getHeight() + PADDING * 2;
+        width = panel.getSize().getWidth() + PADDING * 2;
+        height = panel.getSize().getHeight() + PADDING * 2;
         Canvas canvas = new Canvas(width / zoom, height / zoom);
         GraphicsContext g = canvas.getGraphicsContext2D();
         g.setFill(BACKGROUND_COLOR);
@@ -70,9 +59,9 @@ public class PanelPane extends Region
         renderContour(g);
 
         renderPin(g, PIN_INSET, PIN_INSET);
-        renderPin(g, size.getWidth() - PIN_INSET, PIN_INSET);
-        renderPin(g, PIN_INSET, size.getHeight() - PIN_INSET);
-        renderPin(g, size.getWidth() - PIN_INSET, size.getHeight() - PIN_INSET);
+        renderPin(g, panel.getSize().getWidth() - PIN_INSET, PIN_INSET);
+        renderPin(g, PIN_INSET, panel.getSize().getHeight() - PIN_INSET);
+        renderPin(g, panel.getSize().getWidth() - PIN_INSET, panel.getSize().getHeight() - PIN_INSET);
 
         g.setStroke(Color.RED);
         g.setFill(Color.RED);
@@ -88,13 +77,14 @@ public class PanelPane extends Region
                     });
         getChildren().clear();
         getChildren().add(canvas);
+        rendered = true;
     }
 
     private void renderContour(GraphicsContext g)
     {
         g.setStroke(PANEL_CONTOUR);
         g.setLineWidth(CONTOUR_WIDTH);
-        g.strokeRect(PADDING, PADDING, size.getWidth(), size.getHeight());
+        g.strokeRect(PADDING, PADDING, panel.getSize().getWidth(), panel.getSize().getHeight());
     }
 
     private void renderPin(GraphicsContext g, int x, int y)
@@ -116,10 +106,14 @@ public class PanelPane extends Region
         render();
     }
 
-    public void zoomToFit(double width, double height)
+    public void zoomToFit(double width, double height, boolean force)
     {
-        double xScale = this.width / width;
-        double yScale = this.height / height;
+        if (rendered && !force)
+            return;
+        if (panel == null || panel.getSize() == null || width == 0 || height == 0)
+            return;
+        double xScale = (panel.getSize().getWidth() + PADDING * 2) / width;
+        double yScale = (panel.getSize().getHeight() + PADDING * 2) / height;
         zoom = (int) Math.max(xScale, yScale);
         render();
     }

@@ -17,6 +17,7 @@ package org.cirqwizard.fx;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import org.cirqwizard.layers.PCBLayout;
+import org.cirqwizard.layers.Panel;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.settings.ToolSettings;
@@ -28,7 +29,7 @@ import java.util.Map;
 
 public class Context
 {
-    public static enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
+    public enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
 
     private ObjectProperty<PCBLayout> pcbLayout = new SimpleObjectProperty<>();
 
@@ -51,6 +52,9 @@ public class Context
     private int feederRow;
     private Integer componentPitch;
     private Map<String, Integer> pitchCache;
+
+    private Panel panel;
+    private File panelFile;
 
     public PCBLayout getPcbLayout()
     {
@@ -242,5 +246,25 @@ public class Context
     public void savePitchToCache(String componentPackage, Integer pitch)
     {
         pitchCache.put(componentPackage, pitch);
+    }
+
+    public Panel getPanel()
+    {
+        return panel;
+    }
+
+    public void setPanel(Panel panel)
+    {
+        this.panel = panel;
+    }
+
+    public File getPanelFile()
+    {
+        return panelFile;
+    }
+
+    public void setPanelFile(File panelFile)
+    {
+        this.panelFile = panelFile;
     }
 }

@@ -1,21 +1,30 @@
 package org.cirqwizard.layers;
 
-/**
- * Created by simon on 22.02.16.
- */
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Transient;
+
+import java.io.IOException;
+
 public class PanelBoard
 {
+    @Element
     private String filename;
+    @Element
     private int x;
+    @Element
     private int y;
+    @Transient
     private Board board;
 
-    public PanelBoard(String filename, int x, int y, Board board)
+    public PanelBoard()
+    {
+    }
+
+    public PanelBoard(String filename, int x, int y)
     {
         this.filename = filename;
         this.x = x;
         this.y = y;
-        this.board = board;
     }
 
     public String getFilename()
@@ -53,8 +62,9 @@ public class PanelBoard
         return board;
     }
 
-    public void setBoard(Board board)
+    public void loadBoard() throws IOException
     {
-        this.board = board;
+        board = new Board();
+        board.loadLayers(filename);
     }
 }

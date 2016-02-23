@@ -24,6 +24,7 @@ import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.fx.settings.SettingsEditor;
+import org.cirqwizard.layers.Panel;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.File;
@@ -55,7 +56,14 @@ public class Welcome extends ScreenController
     @Override
     public void refresh()
     {
-        EventHandler<ActionEvent> handler = (event) -> loadFile(new File(((Hyperlink) event.getSource()).getText() + ".cmp"));
+        EventHandler<ActionEvent> handler = (event) ->
+        {
+            File file = new File(((Hyperlink) event.getSource()).getText() + ".cxml");
+            if (file.exists())
+                loadPanel(file);
+            else
+                loadFile(file);
+        };
         recentFilesPane.getChildren().clear();
         List<String> recentFiles = getRecentFiles();
         for (int i = 0; i < recentFiles.size(); i++)
@@ -69,24 +77,48 @@ public class Welcome extends ScreenController
     public void openFile()
     {
         FileChooser chooser = new FileChooser();
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Gerber files", "*.sol", "*.cmp");
-        chooser.getExtensionFilters().add(filter);
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Panel files", "*.cxml"));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Gerber files", "*.sol", "*.cmp"));
         File file = chooser.showOpenDialog(null);
         if (file != null)
-            loadFile(file);
+        {
+            String filename = file.getAbsolutePath();
+            setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
+            if (file.getAbsolutePath().toLowerCase().endsWith("cxml"))
+                loadPanel(file);
+            else
+                loadFile(file);
+        }
+    }
+
+    private void loadPanel(File file)
+    {
+        Panel panel = Panel.loadFromFile(file);
+        getMainApplication().getContext().setPanel(panel);
+        getMainApplication().getContext().setPanelFile(file);
+        getMainApplication().setCurrentScreen(getMainApplication().getScreen(PanelController.class));
     }
 
     private void loadFile(File file)
     {
-        String filename = file.getAbsolutePath();
-        setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
         getMainApplication().getContext().setFile(file);
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
     }
 
     public void createPanel()
     {
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(PanelController.class));
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Panel files", "*.cxml");
+        chooser.getExtensionFilters().add(filter);
+        File file = chooser.showSaveDialog(null);
+        if (file != null)
+        {
+            Panel panel = new Panel();
+            panel.save(file);
+            getMainApplication().getContext().setPanel(panel);
+            getMainApplication().getContext().setPanelFile(file);
+            getMainApplication().setCurrentScreen(getMainApplication().getScreen(PanelController.class));
+        }
     }
 
     private List<String> getRecentFiles()

@@ -10,15 +10,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
-import org.cirqwizard.gerber.GerberParser;
-import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.layers.Board;
-import org.cirqwizard.layers.BoardLayer;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -51,11 +46,13 @@ public class PanelController extends ScreenController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+        scrollPane.viewportBoundsProperty().addListener((v, oldV, newV) -> zoomToFit(false));
         sizeComboBox.getItems().addAll(PCBSize.values());
         sizeComboBox.getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
         {
-            panelPane.setSize(newV);
-            panelPane.zoomToFit(scrollPane.getViewportBounds().getWidth(), scrollPane.getViewportBounds().getHeight());
+            panelPane.getPanel().setSize(newV);
+            savePanel();
+            zoomToFit(true);
         });
 
         boardsTable.getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) -> panelPane.selectBoard(newV));
@@ -75,6 +72,7 @@ public class PanelController extends ScreenController implements Initializable
         boardXColumn.setOnEditCommit(event ->
         {
             event.getRowValue().setX(event.getNewValue());
+            savePanel();
             panelPane.render();
         });
         boardYColumn.setCellValueFactory(new PropertyValueFactory<>("y"));
@@ -82,8 +80,18 @@ public class PanelController extends ScreenController implements Initializable
         boardYColumn.setOnEditCommit(event ->
         {
             event.getRowValue().setY(event.getNewValue());
+            savePanel();
             panelPane.render();
         });
+    }
+
+    @Override
+    public void refresh()
+    {
+        panelPane.setPanel(getMainApplication().getContext().getPanel());
+        sizeComboBox.getSelectionModel().select(panelPane.getPanel().getSize());
+        bindTableItems();
+        zoomToFit(true);
     }
 
     public void zoomIn()
@@ -96,6 +104,11 @@ public class PanelController extends ScreenController implements Initializable
         panelPane.zoomOut();
     }
 
+    public void zoomToFit(boolean force)
+    {
+        panelPane.zoomToFit(scrollPane.getViewportBounds().getWidth(), scrollPane.getViewportBounds().getHeight(), force);
+    }
+
     public void addBoard()
     {
         try
@@ -106,29 +119,37 @@ public class PanelController extends ScreenController implements Initializable
             File file = chooser.showOpenDialog(null);
             String filename = file.getAbsolutePath();
             String commonName = filename.substring(0, filename.lastIndexOf('.'));
-            List<GerberPrimitive> primitives =  new GerberParser(new FileReader(commonName + ".cmp")).parse();
-            BoardLayer topLayer = new BoardLayer();
-            topLayer.setElements(primitives);
-            Board board = new Board();
-            board.setLayer(Board.LayerType.TOP, topLayer);
-            board.moveToOrigin();
-            Panel panel = panelPane.getPanel();
-            if (panel == null)
-                panel = new Panel();
+
+            PanelBoard board = new PanelBoard(commonName, 0, 0);
+            board.loadBoard();
             PCBSize panelSize = sizeComboBox.getSelectionModel().getSelectedItem();
-            panel.addBoard(new PanelBoard(commonName, (panelSize.getWidth() - board.getWidth()) / 2,
-                    (panelSize.getHeight() - board.getHeight()) / 2, board));
-            panelPane.setPanel(panel);
+            board.setX((panelSize.getWidth() - board.getBoard().getWidth()) / 2);
+            board.setY((panelSize.getHeight() - board.getBoard().getHeight()) / 2);
+            panelPane.getPanel().addBoard(board);
+            savePanel();
             panelPane.render();
 
-            List<PanelBoard> b = panel.getBoards();
-            ObservableList<PanelBoard> ob = FXCollections.observableArrayList(b);
-            boardsTable.itemsProperty().bind(new SimpleListProperty<>(ob));
+            bindTableItems();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+    }
+
+    private void bindTableItems()
+    {
+        List<PanelBoard> b = panelPane.getPanel().getBoards();
+        ObservableList<PanelBoard> ob = FXCollections.observableArrayList(b);
+        if (boardsTable.itemsProperty().isBound())
+            boardsTable.itemsProperty().unbind();
+        boardsTable.itemsProperty().bind(new SimpleListProperty<>(ob));
+    }
+
+    private void savePanel()
+    {
+        Panel panel = getMainApplication().getContext().getPanel();
+        panel.save(getMainApplication().getContext().getPanelFile());
     }
 
 }

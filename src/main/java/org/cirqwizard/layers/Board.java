@@ -1,7 +1,10 @@
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.GerberParser;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class Board
@@ -33,6 +36,14 @@ public class Board
     public int getHeight()
     {
         return height;
+    }
+
+    public void loadLayers(String filename) throws IOException
+    {
+        BoardLayer layer = new BoardLayer();
+        layer.setElements(new GerberParser(new FileReader(filename + ".cmp")).parse());
+        setLayer(Board.LayerType.TOP, layer);
+        moveToOrigin();
     }
 
     public void moveToOrigin()
