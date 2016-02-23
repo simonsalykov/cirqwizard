@@ -1,11 +1,15 @@
 package org.cirqwizard.fx;
 
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.Panel;
@@ -16,6 +20,10 @@ public class PanelPane extends Region
     public static final Color BACKGROUND_COLOR = Color.web("#ddfbdd");
     public static final Color PANEL_CONTOUR = Color.BLACK;
     public static final Color PIN_COLOR = Color.BLACK;
+    public static final Color TOP_TRACE_COLOR = Color.color(1, 0, 0, 0.8);
+    public static final Color BOTTOM_TRACE_COLOR = Color.color(0, 0, 1, 0.8);
+    public static final Color DRILL_POINT_COLOR = Color.BLACK;
+    public static final Color CONTOUR_COLOR = Color.MAGENTA;
 
     private static final int DEFAULT_ZOOM = 100;
     private static final int ZOOM_INCREMENT = 10;
@@ -31,6 +39,9 @@ public class PanelPane extends Region
     private boolean rendered = false;
 
     private Rectangle selectionRectangle;
+    private PanelBoard selectedBoard;
+    private Point2D mouseClickPoint;
+    private Point initialBoardLocation;
 
     public Panel getPanel()
     {
@@ -40,6 +51,31 @@ public class PanelPane extends Region
     public void setPanel(Panel panel)
     {
         this.panel = panel;
+    }
+
+    public PanelPane()
+    {
+        addEventFilter(MouseEvent.ANY, event ->
+        {
+            if (event.getEventType().equals(MouseEvent.MOUSE_PRESSED))
+            {
+                mouseClickPoint = new Point2D(event.getX(), event.getY());
+                selectBoard(getBoardForCoordinates(event.getX(), event.getY()));
+                if (selectedBoard != null)
+                    initialBoardLocation = new Point(selectedBoard.getX(), selectedBoard.getY());
+                event.consume();
+            }
+            else if (event.getEventType().equals(MouseEvent.MOUSE_DRAGGED))
+            {
+                Point2D delta = new Point2D(event.getX() - mouseClickPoint.getX(), -(event.getY() - mouseClickPoint.getY()));
+                if (selectedBoard != null)
+                {
+                    selectedBoard.setX((int)(initialBoardLocation.getX() + delta.getX() * zoom));
+                    selectedBoard.setY((int)(initialBoardLocation.getY() + delta.getY() * zoom));
+                    render();
+                }
+            }
+        });
     }
 
     public void render()
@@ -63,21 +99,29 @@ public class PanelPane extends Region
         renderPin(g, PIN_INSET, panel.getSize().getHeight() - PIN_INSET);
         renderPin(g, panel.getSize().getWidth() - PIN_INSET, panel.getSize().getHeight() - PIN_INSET);
 
-        g.setStroke(Color.RED);
-        g.setFill(Color.RED);
         g.translate(PADDING, PADDING);
-        if (panel != null)
-            panel.getBoards().stream().
-                    forEach(board ->
-                    {
-                        g.translate(board.getX(), board.getY());
-                        board.getBoard().getLayer(Board.LayerType.TOP).getElements().stream().
-                                forEach(e -> ((GerberPrimitive)e).render(g));
-                        g.translate(-board.getX(), -board.getY());
-                    });
+
+        renderLayer(g, Board.LayerType.BOTTOM, BOTTOM_TRACE_COLOR);
+        renderLayer(g, Board.LayerType.TOP, TOP_TRACE_COLOR);
+        renderLayer(g, Board.LayerType.MILLING, CONTOUR_COLOR);
+
         getChildren().clear();
         getChildren().add(canvas);
         rendered = true;
+    }
+
+    private void renderLayer(GraphicsContext g, Board.LayerType layerType, Color color)
+    {
+        g.setStroke(color);
+        g.setFill(color);
+        panel.getBoards().stream().
+                forEach(board ->
+                {
+                    g.translate(board.getX(), board.getY());
+                    board.getBoard().getLayer(layerType).getElements().stream().
+                            forEach(e -> ((GerberPrimitive)e).render(g));
+                    g.translate(-board.getX(), -board.getY());
+                });
     }
 
     private void renderContour(GraphicsContext g)
@@ -118,15 +162,27 @@ public class PanelPane extends Region
         render();
     }
 
+    private PanelBoard getBoardForCoordinates(double x, double y)
+    {
+        return panel.getBoards().stream().filter(b -> getBoardRectangle(b).contains(x, y)).findFirst().orElse(null);
+    }
+
+    private Rectangle2D getBoardRectangle(PanelBoard board)
+    {
+        return new Rectangle2D((board.getX() + PADDING) / zoom,
+            (-board.getY() + - board.getBoard().getHeight() + height - PADDING) / zoom,
+            board.getBoard().getWidth() / zoom, board.getBoard().getHeight() / zoom);
+    }
+
     public void selectBoard(PanelBoard board)
     {
+        this.selectedBoard = board;
         if (selectionRectangle != null)
             getChildren().remove(selectionRectangle);
         if (board != null)
         {
-            selectionRectangle = new Rectangle((board.getX() + PADDING) / zoom,
-                    (-board.getY() + - board.getBoard().getHeight() + height - PADDING) / zoom,
-                    board.getBoard().getWidth() / zoom, board.getBoard().getHeight() / zoom);
+            Rectangle2D r = getBoardRectangle(board);
+            selectionRectangle = new Rectangle(r.getMinX(), r.getMinY(), r.getWidth(), r.getHeight());
             selectionRectangle.setStrokeWidth(10);
             selectionRectangle.getStyleClass().add("board-selection-rect");
             getChildren().add(selectionRectangle);

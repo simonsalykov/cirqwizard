@@ -40,9 +40,9 @@ public class Board
 
     public void loadLayers(String filename) throws IOException
     {
-        BoardLayer layer = new BoardLayer();
-        layer.setElements(new GerberParser(new FileReader(filename + ".cmp")).parse());
-        setLayer(Board.LayerType.TOP, layer);
+        setLayer(LayerType.TOP, new BoardLayer(new GerberParser(new FileReader(filename + ".cmp")).parse()));
+        setLayer(LayerType.BOTTOM, new BoardLayer(new GerberParser(new FileReader(filename + ".sol")).parse()));
+        setLayer(LayerType.MILLING, new BoardLayer(new GerberParser(new FileReader(filename + ".ncl")).parse()));
         moveToOrigin();
     }
 

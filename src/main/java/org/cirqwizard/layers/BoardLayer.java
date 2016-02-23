@@ -10,6 +10,15 @@ public class BoardLayer
     private List<? extends LayerElement> elements;
     private List<Toolpath> toolpaths;
 
+    public BoardLayer()
+    {
+    }
+
+    public BoardLayer(List<? extends LayerElement> elements)
+    {
+        this.elements = elements;
+    }
+
     public List<? extends LayerElement> getElements()
     {
         return elements;
