@@ -22,7 +22,7 @@ import org.cirqwizard.layers.LayerElement;
 import java.awt.*;
 
 
-public abstract class GerberPrimitive extends LayerElement
+public abstract class GerberPrimitive implements LayerElement
 {
     protected Aperture aperture;
     private Polarity polarity;

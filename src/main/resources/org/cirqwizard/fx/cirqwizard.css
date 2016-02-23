@@ -94,6 +94,11 @@
     -fx-fill: transparent;
 }
 
+.board-selection-rect {
+    -fx-stroke: darkgreen;
+    -fx-fill: transparent;
+}
+
 .pcb-disabled {
      -fx-stroke: #dcdcdc;
 }

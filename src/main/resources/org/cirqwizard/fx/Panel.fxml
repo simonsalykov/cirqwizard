@@ -13,22 +13,24 @@
             <ToolBar>
                 <Button text="CW"/>
                 <Button text="CCW"/>
-                <Button text="+"/>
-                <Button text="-"/>
+                <Button onAction="#zoomIn" text="+"/>
+                <Button onAction="#zoomOut" text="-"/>
             </ToolBar>
-            <PanelPane fx:id="panelPane" VBox.vgrow="ALWAYS"/>
+            <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS">
+                <PanelPane fx:id="panelPane"/>
+            </ScrollPane>
         </VBox>
-        <VBox minWidth="400.0">
+        <VBox minWidth="320.0">
             <ToolBar>
                 <Button onAction="#addBoard" text="+"/>
                 <Button text="-"/>
             </ToolBar>
-            <TableView VBox.vgrow="ALWAYS">
+            <TableView fx:id="boardsTable" editable="true" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn text="PCB"/>
-                    <TableColumn text="X"/>
-                    <TableColumn text="Y"/>
-                    <TableColumn text="Outline"/>
+                    <TableColumn fx:id="boardFileColumn" prefWidth="120.0" text="PCB"/>
+                    <TableColumn fx:id="boardXColumn" prefWidth="60.0" text="X"/>
+                    <TableColumn fx:id="boardYColumn" prefWidth="60.0" text="Y"/>
+                    <TableColumn fx:id="boardOutlineController" prefWidth="70.0" text="Outline"/>
                 </columns>
             </TableView>
         </VBox>

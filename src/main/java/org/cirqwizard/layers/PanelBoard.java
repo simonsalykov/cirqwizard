@@ -5,15 +5,27 @@ package org.cirqwizard.layers;
  */
 public class PanelBoard
 {
+    private String filename;
     private int x;
     private int y;
     private Board board;
 
-    public PanelBoard(int x, int y, Board board)
+    public PanelBoard(String filename, int x, int y, Board board)
     {
+        this.filename = filename;
         this.x = x;
         this.y = y;
         this.board = board;
+    }
+
+    public String getFilename()
+    {
+        return filename;
+    }
+
+    public void setFilename(String filename)
+    {
+        this.filename = filename;
     }
 
     public int getX()

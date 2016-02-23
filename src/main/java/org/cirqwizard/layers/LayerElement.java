@@ -1,5 +1,10 @@
 package org.cirqwizard.layers;
 
-public class LayerElement
+import org.cirqwizard.geom.Point;
+
+public interface LayerElement
 {
+    Point getMin();
+    Point getMax();
+    void move(Point point);
 }
