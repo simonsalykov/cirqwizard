@@ -42,6 +42,7 @@ public class PanelPane extends Region
     private PanelBoard selectedBoard;
     private Point2D mouseClickPoint;
     private Point initialBoardLocation;
+    private BoardDragListener boardDragListener;
 
     public Panel getPanel()
     {
@@ -73,9 +74,15 @@ public class PanelPane extends Region
                     selectedBoard.setX((int)(initialBoardLocation.getX() + delta.getX() * zoom));
                     selectedBoard.setY((int)(initialBoardLocation.getY() + delta.getY() * zoom));
                     render();
+                    boardDragListener.boardDragged();
                 }
             }
         });
+    }
+
+    public void setBoardDragListener(BoardDragListener boardDragListener)
+    {
+        this.boardDragListener = boardDragListener;
     }
 
     public void render()

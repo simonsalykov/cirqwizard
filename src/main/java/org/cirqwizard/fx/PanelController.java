@@ -1,8 +1,5 @@
 package org.cirqwizard.fx;
 
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -12,11 +9,11 @@ import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
+import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class PanelController extends ScreenController implements Initializable
@@ -83,6 +80,12 @@ public class PanelController extends ScreenController implements Initializable
             savePanel();
             panelPane.render();
         });
+
+        panelPane.setBoardDragListener(() ->
+        {
+            panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
+            refreshTable();
+        });
     }
 
     @Override
@@ -90,8 +93,14 @@ public class PanelController extends ScreenController implements Initializable
     {
         panelPane.setPanel(getMainApplication().getContext().getPanel());
         sizeComboBox.getSelectionModel().select(panelPane.getPanel().getSize());
-        bindTableItems();
+        refreshTable();
         zoomToFit(true);
+    }
+
+    private void refreshTable()
+    {
+        boardsTable.getItems().clear();
+        boardsTable.getItems().addAll(panelPane.getPanel().getBoards());
     }
 
     public void zoomIn()
@@ -128,22 +137,12 @@ public class PanelController extends ScreenController implements Initializable
             panelPane.getPanel().addBoard(board);
             savePanel();
             panelPane.render();
-
-            bindTableItems();
+            refreshTable();
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            LoggerFactory.logException("Error adding board", e);
         }
-    }
-
-    private void bindTableItems()
-    {
-        List<PanelBoard> b = panelPane.getPanel().getBoards();
-        ObservableList<PanelBoard> ob = FXCollections.observableArrayList(b);
-        if (boardsTable.itemsProperty().isBound())
-            boardsTable.itemsProperty().unbind();
-        boardsTable.itemsProperty().bind(new SimpleListProperty<>(ob));
     }
 
     private void savePanel()
