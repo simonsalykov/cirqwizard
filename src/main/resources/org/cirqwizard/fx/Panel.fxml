@@ -11,8 +11,8 @@
     <HBox VBox.vgrow="ALWAYS">
         <VBox HBox.hgrow="ALWAYS">
             <ToolBar>
-                <Button text="CW"/>
-                <Button text="CCW"/>
+                <Button onAction="#rotateCw" text="CW"/>
+                <Button onAction="#rotateCcw" text="CCW"/>
                 <Button onAction="#zoomIn" text="+"/>
                 <Button onAction="#zoomOut" text="-"/>
             </ToolBar>

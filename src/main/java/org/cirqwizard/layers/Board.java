@@ -61,4 +61,10 @@ public class Board
         height = layers.values().stream().mapToInt(layer -> layer.getMaxPoint().getY()).max().getAsInt();
     }
 
+    public void rotate(boolean clockwise)
+    {
+        layers.values().stream().forEach(l -> l.rotate(clockwise));
+        moveToOrigin();
+    }
+
 }

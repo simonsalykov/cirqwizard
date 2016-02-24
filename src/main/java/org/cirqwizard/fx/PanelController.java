@@ -103,6 +103,20 @@ public class PanelController extends ScreenController implements Initializable
         boardsTable.getItems().addAll(panelPane.getPanel().getBoards());
     }
 
+    public void rotateCw()
+    {
+        panelPane.getSelectedBoard().rotate(true);
+        panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
+        panelPane.render();
+    }
+
+    public void rotateCcw()
+    {
+        panelPane.getSelectedBoard().rotate(false);
+        panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
+        panelPane.render();
+    }
+
     public void zoomIn()
     {
         panelPane.zoomIn();

@@ -58,4 +58,9 @@ public class BoardLayer
         elements.stream().forEach(e -> e.move(p));
     }
 
+    public void rotate(boolean clockwise)
+    {
+        elements.stream().forEach(e -> e.rotate(clockwise));
+    }
+
 }

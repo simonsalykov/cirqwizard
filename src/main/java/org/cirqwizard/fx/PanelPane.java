@@ -196,4 +196,8 @@ public class PanelPane extends Region
         }
     }
 
+    public PanelBoard getSelectedBoard()
+    {
+        return selectedBoard;
+    }
 }

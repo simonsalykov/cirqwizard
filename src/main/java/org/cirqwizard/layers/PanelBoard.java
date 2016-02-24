@@ -13,6 +13,8 @@ public class PanelBoard
     private int x;
     @Element
     private int y;
+    @Element
+    private int angle;
     @Transient
     private Board board;
 
@@ -57,6 +59,23 @@ public class PanelBoard
         this.y = y;
     }
 
+    public int getAngle()
+    {
+        return angle;
+    }
+
+    public void setAngle(int angle)
+    {
+        this.angle = angle;
+    }
+
+    public void rotate(boolean clockwise)
+    {
+        angle += clockwise ? 90 : -90;
+        angle %= 360;
+        board.rotate(clockwise);
+    }
+
     public Board getBoard()
     {
         return board;
@@ -66,5 +85,11 @@ public class PanelBoard
     {
         board = new Board();
         board.loadLayers(filename);
+        int rotations = angle / 90;
+        while (rotations != 0)
+        {
+            board.rotate(angle > 0);
+            rotations += rotations > 0 ? -1 : 1;
+        }
     }
 }
