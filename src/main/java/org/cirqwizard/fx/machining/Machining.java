@@ -23,7 +23,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceService;
 import org.cirqwizard.generation.toolpath.Toolpath;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 
 public abstract class Machining extends SettingsDependentScreenController implements Initializable
 {
-    @FXML protected PCBPaneFX pcbPane;
+    @FXML protected PCBPane pcbPane;
     @FXML protected ScrollPane scrollPane;
 
     @FXML protected Button goButton;

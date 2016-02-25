@@ -89,7 +89,7 @@ public class ToolpathGenerationService extends GenerationService
         List<? extends LayerElement> elements = getContext().getPanel().getBoards().stream().
                 map(b -> b.getBoard().getLayer(Board.LayerType.TOP)).
                 filter(l -> l != null).
-                map(BoardLayer::getElements).
+                map(Layer::getElements).
                 flatMap(Collection::stream).collect(Collectors.toList());
         AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(getContext().getPanel().getSize().getWidth() + 1,
                 getContext().getPanel().getSize().getHeight() + 1, currentTool.getAdditionalPasses(),

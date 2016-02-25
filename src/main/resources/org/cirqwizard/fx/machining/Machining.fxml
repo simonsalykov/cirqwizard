@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import org.cirqwizard.fx.PCBPaneFX?>
+<?import org.cirqwizard.fx.PCBPane?>
 <?import javafx.geometry.Insets?>
 <StackPane fx:id="view" styleClass="main-pane"  xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
     <children>
@@ -19,7 +19,7 @@
                     <ScrollPane fx:id="scrollPane" pannable="true" styleClass="pcb" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"
                             AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
                         <content>
-                            <PCBPaneFX fx:id="pcbPane"/>
+                            <PCBPane fx:id="pcbPane"/>
                         </content>
                     </ScrollPane>
                     <VBox AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" spacing="10">

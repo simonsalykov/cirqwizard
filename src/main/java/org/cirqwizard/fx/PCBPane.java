@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class PCBPaneFX extends javafx.scene.layout.Region
+public class PCBPane extends javafx.scene.layout.Region
 {
     private static final double DEFAULT_SCALE = 0.005;
 
@@ -64,7 +64,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
 
     private boolean flipHorizontal = false;
 
-    public PCBPaneFX()
+    public PCBPane()
     {
         scaleProperty.addListener((v, oldV, newV) ->  repaint());
         toolpaths.addListener((v, oldV, newV) -> repaint());

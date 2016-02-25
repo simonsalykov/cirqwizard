@@ -4,15 +4,15 @@ import org.cirqwizard.geom.Point;
 
 import java.util.List;
 
-public class BoardLayer
+public class Layer
 {
     private List<? extends LayerElement> elements;
 
-    public BoardLayer()
+    public Layer()
     {
     }
 
-    public BoardLayer(List<? extends LayerElement> elements)
+    public Layer(List<? extends LayerElement> elements)
     {
         this.elements = elements;
     }

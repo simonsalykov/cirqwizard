@@ -18,7 +18,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
@@ -50,8 +50,8 @@ public class ContourMilling extends Machining
     @Override
     public void refresh()
     {
-        pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
-        pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
+        pcbPane.setGerberColor(PCBPane.CONTOUR_COLOR);
+        pcbPane.setToolpathColor(PCBPane.CONTOUR_COLOR);
 
         Context context = getMainApplication().getContext();
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();

@@ -17,7 +17,7 @@ package org.cirqwizard.fx.drilling;
 import javafx.collections.FXCollections;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
@@ -50,8 +50,8 @@ public class Drilling extends Machining
 
         context.setG54Z(settings.getZOffset().getValue());
 
-        pcbPane.setGerberColor(PCBPaneFX.DRILL_POINT_COLOR);
-        pcbPane.setToolpathColor(PCBPaneFX.DRILL_POINT_COLOR);
+        pcbPane.setGerberColor(PCBPane.DRILL_POINT_COLOR);
+        pcbPane.setToolpathColor(PCBPane.DRILL_POINT_COLOR);
         super.refresh();
     }
 

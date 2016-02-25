@@ -17,7 +17,7 @@ package org.cirqwizard.fx.dispensing;
 import javafx.collections.FXCollections;
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
@@ -47,8 +47,8 @@ public class Dispensing extends Machining
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
         getMainApplication().getContext().setG54Z(settings.getZOffset().getValue());
 
-        pcbPane.setGerberColor(PCBPaneFX.SOLDER_PAD_COLOR);
-        pcbPane.setToolpathColor(PCBPaneFX.PASTE_TOOLPATH_COLOR);
+        pcbPane.setGerberColor(PCBPane.SOLDER_PAD_COLOR);
+        pcbPane.setToolpathColor(PCBPane.PASTE_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.SOLDER_PASTE));
     }
 

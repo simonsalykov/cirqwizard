@@ -22,7 +22,7 @@ import javafx.scene.shape.Arc;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.generation.toolpath.*;
 
 import java.util.ArrayList;
@@ -31,12 +31,12 @@ import java.util.List;
 
 public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
 {
-    private PCBPaneFX pcbPane;
+    private PCBPane pcbPane;
     private Point2D startPoint;
     private Point2D startPointNonFlipped;
     private SimpleObjectProperty<List<Toolpath>> toolpaths = new SimpleObjectProperty<>();
 
-    public PCBPaneMouseHandler(PCBPaneFX pcbPane)
+    public PCBPaneMouseHandler(PCBPane pcbPane)
     {
         this.pcbPane = pcbPane;
     }

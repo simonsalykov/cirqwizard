@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.traces.bottom;
 
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.traces.TraceMilling;
 import org.cirqwizard.layers.Board;
 
@@ -24,7 +24,7 @@ public class BottomTraceMilling extends TraceMilling
     @Override
     public void refresh()
     {
-        pcbPane.setGerberColor(PCBPaneFX.BOTTOM_TRACE_COLOR);
+        pcbPane.setGerberColor(PCBPane.BOTTOM_TRACE_COLOR);
         super.refresh();
     }
 

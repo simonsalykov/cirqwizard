@@ -16,7 +16,7 @@ package org.cirqwizard.fx.traces;
 
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.generation.GenerationService;
@@ -56,7 +56,7 @@ public abstract class TraceMilling extends LongProcessingMachining
     @Override
     public void refresh()
     {
-        pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
+        pcbPane.setToolpathColor(PCBPane.ENABLED_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(getCurrentLayer()));
 
         super.refresh();

@@ -104,7 +104,7 @@ public class Panel
     {
         return boards.stream().map(b ->
         {
-            BoardLayer layer = b.getBoard().getLayer(layerType);
+            Layer layer = b.getBoard().getLayer(layerType);
             if (layer == null)
                 return null;
             Point offset = new Point(b.getX(), b.getY());
