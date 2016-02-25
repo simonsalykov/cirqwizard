@@ -23,21 +23,10 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
-import org.cirqwizard.gerber.appertures.CircularAperture;
-import org.cirqwizard.gerber.appertures.OctagonalAperture;
-import org.cirqwizard.gerber.appertures.OvalAperture;
-import org.cirqwizard.gerber.appertures.RectangularAperture;
-import org.cirqwizard.gerber.appertures.macro.*;
-import org.cirqwizard.geom.Arc;
-import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.*;
-import org.cirqwizard.generation.toolpath.CircularToolpath;
-import org.cirqwizard.generation.toolpath.DrillPoint;
-import org.cirqwizard.generation.toolpath.LinearToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.LayerElement;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,7 +53,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
     private double boardWidth;
     private double boardHeight;
 
-    private java.util.List<GerberPrimitive> gerberPrimitives;
+    private java.util.List<? extends LayerElement> gerberPrimitives;
     private Property<ObservableList<Toolpath>> toolpaths = new SimpleListProperty<>();
 
     private Canvas canvas;
@@ -99,7 +88,7 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         return toolpaths;
     }
 
-    public void setGerberPrimitives(List<GerberPrimitive> gerberPrimitives)
+    public void setGerberPrimitives(List<? extends LayerElement> gerberPrimitives)
     {
         this.gerberPrimitives = gerberPrimitives;
         repaint();
@@ -151,22 +140,22 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         g.scale(scaleProperty.getValue() * (flipHorizontal ? -1 : 1), -scaleProperty.getValue());
         g.translate(flipHorizontal ? -boardWidth : 0, -boardHeight);
         if (gerberPrimitives != null)
-            for (GerberPrimitive primitive : gerberPrimitives)
-                renderPrimitive(g, primitive);
+            gerberPrimitives.forEach(p -> renderPrimitive(g, p));
         if (toolpaths.getValue() != null)
-            for (Toolpath toolpath : toolpaths.getValue())
-                renderToolpath(g, toolpath);
+            toolpaths.getValue().forEach(t -> renderToolpath(g, t));
     }
 
-    private void renderPrimitive(GraphicsContext g, GerberPrimitive primitive)
+    private void renderPrimitive(GraphicsContext g, LayerElement element)
     {
-        if (!(primitive instanceof Region) && !primitive.getAperture().isVisible())
+        if (!element.isVisible())
             return;
 
-        Color color = primitive.getPolarity() == GerberPrimitive.Polarity.DARK ? gerberColor : BACKGROUND_COLOR;
+        Color color = gerberColor;
+        if ((element instanceof GerberPrimitive) && ((GerberPrimitive)element).getPolarity() == GerberPrimitive.Polarity.CLEAR)
+            color = BACKGROUND_COLOR;
         g.setStroke(color);
         g.setFill(color);
-        primitive.render(g);
+        element.render(g);
     }
 
     private void renderToolpath(GraphicsContext g, Toolpath toolpath)
@@ -175,33 +164,8 @@ public class PCBPaneFX extends javafx.scene.layout.Region
         if (toolpath.isSelected())
             color = SELECTED_TOOLPATH_COLOR;
         g.setStroke(color);
-        if (toolpath instanceof LinearToolpath)
-        {
-            LinearToolpath linearToolpath = (LinearToolpath) toolpath;
-            g.setLineCap(StrokeLineCap.ROUND);
-            g.setLineWidth(linearToolpath.getToolDiameter());
-            g.strokeLine(linearToolpath.getCurve().getFrom().getX(), linearToolpath.getCurve().getFrom().getY(),
-                    linearToolpath.getCurve().getTo().getX(), linearToolpath.getCurve().getTo().getY());
-        }
-        else if (toolpath instanceof CircularToolpath)
-        {
-            CircularToolpath circularToolpath = (CircularToolpath) toolpath;
-            g.setLineCap(StrokeLineCap.ROUND);
-            g.setLineWidth(circularToolpath.getToolDiameter());
-            Arc arc = (Arc) circularToolpath.getCurve();
-            g.strokeArc(arc.getCenter().getX() - arc.getRadius(),
-                    arc.getCenter().getY() - arc.getRadius(),
-                    arc.getRadius() * 2, arc.getRadius() * 2,
-                    -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), ArcType.OPEN);
-        }
-        else if (toolpath instanceof DrillPoint)
-        {
-            DrillPoint drillPoint = (DrillPoint) toolpath;
-            g.setFill(color);
-            g.fillOval(drillPoint.getPoint().getX() - drillPoint.getToolDiameter() / 2,
-                    drillPoint.getPoint().getY() - drillPoint.getToolDiameter() / 2,
-                    drillPoint.getToolDiameter(), drillPoint.getToolDiameter());
-        }
+        g.setFill(color);
+        toolpath.render(g);
     }
 
     public void setSelection(Point2D point, double width, double height)

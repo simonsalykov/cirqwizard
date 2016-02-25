@@ -29,6 +29,7 @@ import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
@@ -39,6 +40,7 @@ import org.cirqwizard.generation.toolpath.PPPoint;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -135,7 +137,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         ComponentId id =  context.getCurrentComponent();
         header.setText(id.getPackaging() + " " + id.getValue());
 
-        componentNames.setAll(context.getPcbLayout().getComponentsLayer().getPoints().stream().
+        componentNames.setAll(context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+                map(c -> (PPPoint)c).
                 filter(p -> p.getId().equals(id)).map(PPPoint::getName).collect(Collectors.toList()));
         componentName.getSelectionModel().select(0);
         pickupNGoButton.setDisable(true);
@@ -159,7 +162,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     private void updateComponent()
     {
         Context context = getMainApplication().getContext();
-        for (PPPoint p : context.getPcbLayout().getComponentsLayer().getPoints())
+        for (PPPoint p : (List<PPPoint>)context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT))
         {
             if (p.getName().equals(componentName.getValue()))
             {

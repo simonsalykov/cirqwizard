@@ -16,10 +16,17 @@ package org.cirqwizard.fx.contour;
 
 import org.cirqwizard.fx.Tool;
 import org.cirqwizard.fx.common.Message;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.Board;
+import org.cirqwizard.settings.ApplicationConstants;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class InsertContourMill extends Message
 {
     private static final Tool EXPECTED_TOOL = new Tool(Tool.ToolType.CONTOUR_END_MILL, 0);
+    private static NumberFormat diameterFormat = new DecimalFormat("0.0#");
 
     @Override
     protected String getName()
@@ -32,8 +39,10 @@ public class InsertContourMill extends Message
     {
         super.refresh();
         getMainApplication().getContext().setInsertedTool(null);
-        header.setText("Insert contour end mill: " +
-                getMainApplication().getContext().getPcbLayout().getContourMillDiameter() + "mm");
+        GerberPrimitive primitive = (GerberPrimitive) getMainApplication().getContext().getPanel().getBoards().get(0).getBoard().
+                getLayer(Board.LayerType.MILLING).getElements().get(0);
+        String diameter = diameterFormat.format((double)primitive.getAperture().getWidth() / ApplicationConstants.RESOLUTION);
+        header.setText("Insert contour end mill: " + diameter + "mm");
         text.setText("Insert contour end mill");
     }
 

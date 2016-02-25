@@ -18,11 +18,14 @@ import org.cirqwizard.fx.Context;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Curve;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.generation.toolpath.CircularToolpath;
 import org.cirqwizard.generation.toolpath.CuttingToolpath;
 import org.cirqwizard.generation.toolpath.LinearToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
+
+import java.util.List;
 
 
 public class MillingGCodeGenerator
@@ -40,15 +43,8 @@ public class MillingGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        Toolpath firstToolpath = null;
-        for (Toolpath t : context.getPcbLayout().getMillingLayer().getToolpaths())
-        {
-            if (t.isEnabled())
-            {
-                firstToolpath = t;
-                break;
-            }
-        }
+        List<Toolpath> toolpaths = context.getPanel().getToolspaths(Board.LayerType.MILLING);
+        Toolpath firstToolpath = toolpaths.stream().filter(Toolpath::isEnabled).findFirst().get();
         Curve firstCurve = ((CuttingToolpath)firstToolpath).getCurve();
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
@@ -60,7 +56,7 @@ public class MillingGCodeGenerator
         postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOn(str, spindleSpeed);
         Point prevLocation = null;
-        for (Toolpath toolpath : context.getPcbLayout().getMillingLayer().getToolpaths())
+        for (Toolpath toolpath : toolpaths)
         {
             if (!toolpath.isEnabled())
                 continue;

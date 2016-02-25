@@ -20,15 +20,14 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.LongProcessingMachining;
 import org.cirqwizard.fx.settings.SettingsEditor;
-import org.cirqwizard.generation.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.GenerationService;
+import org.cirqwizard.generation.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.OptimizationService;
-import org.cirqwizard.layers.TraceLayer;
+import org.cirqwizard.generation.toolpath.ToolpathsCacheKey;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.generation.toolpath.ToolpathsCacheKey;
 
 import java.util.List;
 
@@ -44,15 +43,14 @@ public abstract class Rubout extends LongProcessingMachining
     protected boolean isEnabled()
     {
         Context context = getMainApplication().getContext();
-        return InsertTool.EXPECTED_TOOL.equals(context.getInsertedTool()) &&
-                context.getG54X() != null && context.getG54Y() != null;
+        return InsertTool.EXPECTED_TOOL.equals(context.getInsertedTool());
     }
 
     @Override
     public void refresh()
     {
         pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
-        pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
+        pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(getCurrentLayer()));
 
         super.refresh();
         getMainApplication().getContext().setG54Z(SettingsFactory.getRubOutSettings().getZOffset().getValue());
@@ -65,7 +63,8 @@ public abstract class Rubout extends LongProcessingMachining
     @Override
     protected GenerationService getGenerationService()
     {
-        return new org.cirqwizard.generation.RuboutToolpathGenerationService(getMainApplication().getContext(), getCurrentLayer());
+        return new org.cirqwizard.generation.RuboutToolpathGenerationService(
+                getMainApplication().getContext(), getCurrentLayer());
     }
 
     @Override
@@ -81,8 +80,10 @@ public abstract class Rubout extends LongProcessingMachining
     protected ToolpathsCacheKey getCacheKey()
     {
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
-        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), settings.getToolDiameter().getValue(), 0,
+        return new ToolpathsCacheKey(getCacheId(), 0, settings.getToolDiameter().getValue(), 0,
                 0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
+//        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), settings.getToolDiameter().getValue(), 0,
+//                0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
     }
 
     @Override
@@ -94,10 +95,10 @@ public abstract class Rubout extends LongProcessingMachining
     @Override
     protected String generateGCode()
     {
-
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
         int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
-        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
+        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(),
+                getMainApplication().getContext().getPanel().getToolspaths(getCurrentLayer()), mirror());
         return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());

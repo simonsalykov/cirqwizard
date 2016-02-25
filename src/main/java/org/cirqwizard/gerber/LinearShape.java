@@ -104,4 +104,13 @@ public class LinearShape extends InterpolatingShape
         g.strokeLine(getFrom().getX(), getFrom().getY(), getTo().getX(), getTo().getY());
 
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        LinearShape clone = (LinearShape) super.clone();
+        clone.line = new Line(new Point(line.getFrom().getX(), line.getFrom().getY()),
+                new Point(line.getTo().getX(), line.getTo().getY()));
+        return clone;
+    }
 }

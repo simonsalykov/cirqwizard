@@ -64,6 +64,8 @@ public class PCBPaneMouseHandler implements EventHandler<MouseEvent>
             }
             else if (event.getEventType().equals(MouseEvent.MOUSE_DRAGGED))
             {
+                if (toolpaths == null)
+                    return;
                 Point2D dragPoint = toPCBCoordinates(ePoint, pcbPane.isFlipHorizontal());
                 Point2D dragPointNonFlipped = toPCBCoordinates(ePoint, false);
                 ArrayList<Toolpath> changedToolpaths = new ArrayList<>();

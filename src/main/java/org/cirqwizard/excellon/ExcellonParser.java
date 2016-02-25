@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,7 +68,7 @@ public class ExcellonParser
         this.reader = reader;
     }
 
-    public ArrayList<DrillPoint> parse() throws IOException
+    public List<DrillPoint> parse() throws IOException
     {
         LineNumberReader r = new LineNumberReader(reader);
         String str;

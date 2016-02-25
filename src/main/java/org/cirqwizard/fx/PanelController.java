@@ -10,6 +10,8 @@ import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,6 +97,10 @@ public class PanelController extends ScreenController implements Initializable
         sizeComboBox.getSelectionModel().select(panelPane.getPanel().getSize());
         refreshTable();
         zoomToFit(true);
+        getMainApplication().getContext().setG54X(SettingsFactory.getMachineSettings().getReferencePinX().getValue() -
+                ApplicationConstants.getRegistrationPinsInset());
+        getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
+                ApplicationConstants.getRegistrationPinsInset());
     }
 
     private void refreshTable()

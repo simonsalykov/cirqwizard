@@ -16,7 +16,7 @@ package org.cirqwizard.fx.rubout;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.layers.Board;
 
 public class BottomRubout extends Rubout
 {
@@ -34,9 +34,9 @@ public class BottomRubout extends Rubout
     }
 
     @Override
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getBottomTracesLayer();
+        return Board.LayerType.BOTTOM;
     }
 
     @Override
@@ -48,7 +48,8 @@ public class BottomRubout extends Rubout
     @Override
     protected long getLayerModificationDate()
     {
-        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
+        return 0;
+//        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
     }
 
     @Override

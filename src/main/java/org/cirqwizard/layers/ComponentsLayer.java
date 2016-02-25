@@ -99,7 +99,7 @@ public class ComponentsLayer extends Layer
     @Override
     public List<? extends Toolpath> getToolpaths()
     {
-        return points;
+        return null;
     }
 
 }

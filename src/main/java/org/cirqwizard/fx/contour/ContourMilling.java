@@ -22,20 +22,22 @@ import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
+import org.cirqwizard.generation.MillingToolpathGenerator;
 import org.cirqwizard.generation.gcode.MillingGCodeGenerator;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.ChainDetector;
 import org.cirqwizard.generation.optimizer.Optimizer;
-import org.cirqwizard.layers.Layer;
-import org.cirqwizard.layers.MillingLayer;
+import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.ContourMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.generation.toolpath.Toolpath;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ContourMilling extends Machining
 {
@@ -48,7 +50,6 @@ public class ContourMilling extends Machining
     @Override
     public void refresh()
     {
-        pcbPane.setGerberPrimitives(null);
         pcbPane.setGerberColor(PCBPaneFX.CONTOUR_COLOR);
         pcbPane.setToolpathColor(PCBPaneFX.CONTOUR_COLOR);
 
@@ -65,28 +66,26 @@ public class ContourMilling extends Machining
     }
 
     @Override
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getMillingLayer();
+        return Board.LayerType.MILLING;
     }
 
     @Override
     protected void generateToolpaths()
     {
-        MillingLayer layer = (MillingLayer) getCurrentLayer();
-        layer.generateToolpaths();
-        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(layer.getToolpaths()));
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
-
-        List<Chain> chains = new ChainDetector(layer.getToolpaths()).detect();
+        List<Toolpath> toolpaths = new MillingToolpathGenerator(
+                (List<GerberPrimitive>) getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.MILLING)).
+                generate();
+        List<Chain> chains = new ChainDetector(toolpaths).detect();
         chains = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60,
                 convertToDouble(settings.getFeedZ().getValue()) / 60,
                 convertToDouble(settings.getFeedXY().getDefaultValue()) / 60 * settings.getFeedArcs().getValue() / 100,
                 convertToDouble(settings.getClearance().getValue()),
                 convertToDouble(settings.getSafetyHeight().getValue()), 100, new SimpleBooleanProperty()).optimize();
-        List<Toolpath> toolpaths = new ArrayList<>();
-        chains.stream().forEach(c -> toolpaths.addAll(c.getSegments()));
-        layer.setToolpaths(toolpaths);
+        toolpaths = chains.stream().map(Chain::getSegments).flatMap(Collection::stream).collect(Collectors.toList());
+        getMainApplication().getContext().getPanel().setToolpaths(Board.LayerType.MILLING, toolpaths);
         pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
     }
 

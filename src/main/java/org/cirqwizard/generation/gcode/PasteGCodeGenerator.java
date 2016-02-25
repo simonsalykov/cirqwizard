@@ -14,20 +14,27 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation.gcode;
 
-import org.cirqwizard.fx.Context;
-import org.cirqwizard.geom.Curve;
-import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.generation.toolpath.CuttingToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.geom.Curve;
+import org.cirqwizard.post.Postprocessor;
+
+import java.util.List;
 
 
 public class PasteGCodeGenerator
 {
-    private Context context;
+    private int g54X;
+    private int g54Y;
+    private int g54Z;
+    private List<Toolpath> toolpaths;
 
-    public PasteGCodeGenerator(Context context)
+    public PasteGCodeGenerator(int g54X, int g54Y, int g54Z, List<Toolpath> toolpaths)
     {
-        this.context = context;
+        this.g54X = g54X;
+        this.g54Y = g54Y;
+        this.g54Z = g54Z;
+        this.toolpaths = toolpaths;
     }
 
     public String generate(Postprocessor postprocessor, int preFeedPause, int postFeedPause, int feed, int clearance, int workingHeight)
@@ -37,11 +44,11 @@ public class PasteGCodeGenerator
 
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
-        postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
+        postprocessor.setupG54(str, g54X, g54Y, g54Z);
         postprocessor.selectWCS(str);
 
         boolean firstPad = true;
-        for (Toolpath toolpath : context.getPcbLayout().getSolderPasteLayer().getToolpaths())
+        for (Toolpath toolpath : toolpaths)
         {
             if (!toolpath.isEnabled())
                 continue;

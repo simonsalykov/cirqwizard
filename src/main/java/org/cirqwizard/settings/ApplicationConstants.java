@@ -32,6 +32,7 @@ public class ApplicationConstants
     private final static int Z_RAPID_ACCELERATION = 50_000;
     private final static int FEED_ACCELERATION = 50_000;
     private final static int ARC_FEED = 400_000;
+    private final static int REGISTRATION_PINS_INSET = 5_000;
 
     public static int getXRapids()
     {
@@ -71,6 +72,11 @@ public class ApplicationConstants
     public static int getArcFeed()
     {
         return ARC_FEED;
+    }
+
+    public static int getRegistrationPinsInset()
+    {
+        return REGISTRATION_PINS_INSET;
     }
 
     public static NumberFormat getToolDiameterFormat()

@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,7 +49,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(10454, 11854), points.get(0).getPoint());
@@ -82,7 +83,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(70200, -149900), points.get(0).getPoint());
@@ -108,7 +109,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(22860, 13335), points.get(0).getPoint());
@@ -143,7 +144,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(4, points.size());
 
         assertEquals(new Point(77464, 13103), points.get(0).getPoint());
@@ -181,7 +182,7 @@ public class ExcellonParserTest
                 "X5.05000Y2.69000\n";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(128270, 68326), points.get(0).getPoint());
@@ -204,7 +205,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(2, points.size());
 
         assertEquals(new Point(12320, 37393), points.get(0).getPoint());
@@ -230,7 +231,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(2, points.size());
 
         assertEquals(new Point(12320, 37393), points.get(0).getPoint());
@@ -256,7 +257,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(59436, 36703), points.get(0).getPoint());
@@ -281,7 +282,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(59436, 36703), points.get(0).getPoint());
@@ -303,7 +304,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(635, 12763), points.get(0).getPoint());
@@ -319,7 +320,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(635, 12763), points.get(0).getPoint());
@@ -347,7 +348,7 @@ public class ExcellonParserTest
                 "R04Y-10000";
 
         ExcellonParser parser = new ExcellonParser(2, 5, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(10, points.size());
 
         assertEquals(new Point(134620, 129540), points.get(0).getPoint());
@@ -380,7 +381,7 @@ public class ExcellonParserTest
                 "X0Y0\n";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(0, 0), points.get(0).getPoint());
@@ -400,7 +401,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(23037, 78000), points.get(0).getPoint());
@@ -424,7 +425,7 @@ public class ExcellonParserTest
                 "X014491Y02111";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(36807, 53619), points.get(0).getPoint());

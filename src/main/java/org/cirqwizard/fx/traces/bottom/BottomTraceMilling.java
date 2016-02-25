@@ -17,7 +17,7 @@ package org.cirqwizard.fx.traces.bottom;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.traces.TraceMilling;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.layers.Board;
 
 public class BottomTraceMilling extends TraceMilling
 {
@@ -34,9 +34,9 @@ public class BottomTraceMilling extends TraceMilling
         return super.isEnabled() && Context.PcbPlacement.FACE_DOWN.equals(getMainApplication().getContext().getPcbPlacement());
     }
 
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getBottomTracesLayer();
+        return Board.LayerType.BOTTOM;
     }
 
     @Override
@@ -54,6 +54,6 @@ public class BottomTraceMilling extends TraceMilling
     @Override
     protected long getLayerModificationDate()
     {
-        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
+        return 0; //getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
     }
 }

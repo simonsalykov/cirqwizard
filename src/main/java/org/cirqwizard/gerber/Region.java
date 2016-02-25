@@ -26,6 +26,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Region extends GerberPrimitive
 {
@@ -130,6 +131,12 @@ public class Region extends GerberPrimitive
     }
 
     @Override
+    public boolean isVisible()
+    {
+        return true;
+    }
+
+    @Override
     public void render(GraphicsContext g)
     {
         g.beginPath();
@@ -151,5 +158,20 @@ public class Region extends GerberPrimitive
 
         g.closePath();
         g.fill();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        Region clone = (Region)super.clone();
+        clone.segments = segments.stream().map(s -> {
+            try
+            {
+                return (GerberPrimitive) s.clone();
+            }
+            catch (CloneNotSupportedException e) {}
+            return null;
+        }).collect(Collectors.toList());
+        return clone;
     }
 }

@@ -93,6 +93,7 @@ public class Welcome extends ScreenController
 
     private void loadPanel(File file)
     {
+        getMainApplication().resetContext();
         Panel panel = Panel.loadFromFile(file);
         getMainApplication().getContext().setPanel(panel);
         getMainApplication().getContext().setPanelFile(file);
@@ -102,7 +103,7 @@ public class Welcome extends ScreenController
     private void loadFile(File file)
     {
         getMainApplication().getContext().setFile(file);
-        getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
+//        getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
     }
 
     public void createPanel()

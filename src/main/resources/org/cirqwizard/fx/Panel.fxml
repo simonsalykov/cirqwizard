@@ -35,4 +35,7 @@
             </TableView>
         </VBox>
     </HBox>
+    <HBox prefHeight="40.0" alignment="CENTER_RIGHT">
+        <Button onAction="#next" text="Continue"/>
+    </HBox>
 </VBox>

@@ -26,11 +26,10 @@ import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPaneFX;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceService;
-import org.cirqwizard.layers.Layer;
 import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.layers.Board;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -165,11 +164,11 @@ public abstract class Machining extends SettingsDependentScreenController implem
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
 
-        pcbPane.setBoardWidth(context.getBoardWidth());
-        pcbPane.setBoardHeight(context.getBoardHeight());
+        pcbPane.setBoardWidth(context.getPanel().getSize().getWidth());
+        pcbPane.setBoardHeight(context.getPanel().getSize().getHeight());
 
-        pcbPane.repaint();
         generateToolpaths();
+        pcbPane.repaint();
     }
 
     public void zoomIn()
@@ -193,34 +192,31 @@ public abstract class Machining extends SettingsDependentScreenController implem
         pcbPane.setFlipHorizontal(!pcbPane.isFlipHorizontal());
     }
 
-    protected abstract Layer getCurrentLayer();
+    protected abstract Board.LayerType getCurrentLayer();
 
     public void selectAll()
     {
-        for (Toolpath toolpath : pcbPane.toolpathsProperty().getValue())
-            toolpath.setSelected(true);
+        pcbPane.toolpathsProperty().getValue().stream().forEach(t -> t.setSelected(true));
         pcbPane.repaint(pcbPane.toolpathsProperty().getValue());
     }
 
     public void enableSelected()
     {
-        ArrayList<Toolpath> changedToolpaths = new ArrayList<>();
-        for (Toolpath toolpath : getCurrentLayer().getToolpaths())
+        List<Toolpath> changedToolpaths = pcbPane.toolpathsProperty().getValue().stream().
+                filter(Toolpath::isSelected).collect(Collectors.toList());
+        changedToolpaths.forEach(t ->
         {
-            if (toolpath.isSelected())
-            {
-                toolpath.setEnabled(true);
-                toolpath.setSelected(false);
-                changedToolpaths.add(toolpath);
-            }
-        }
+            t.setEnabled(true);
+            t.setSelected(false);
+
+        });
         pcbPane.repaint(changedToolpaths);
     }
 
 
     public void disableSelected()
     {
-        List<Toolpath> changedToolpaths = getCurrentLayer().getToolpaths().stream().
+        List<Toolpath> changedToolpaths = pcbPane.toolpathsProperty().getValue().stream().
                 filter(Toolpath::isSelected).collect(Collectors.toList());
         changedToolpaths.forEach(toolpath ->
         {

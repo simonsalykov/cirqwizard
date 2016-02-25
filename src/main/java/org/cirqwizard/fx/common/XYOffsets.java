@@ -154,11 +154,11 @@ public class XYOffsets extends ScreenController implements Initializable
         int laminateY = SettingsFactory.getMachineSettings().getReferencePinY().getValue() - REFERENCE_PIN_POSITION_ON_LAMINATE;
         double xOffsetToPcb = x - laminateX;
         double yOffsetToPcb  = y - laminateY;
-        boolean pcbFitsLaminate = ((xOffsetToPcb >= 0) && (xOffsetToPcb + context.getBoardWidth() <= context.getPcbSize().getWidth())) &&
-            ((yOffsetToPcb >= 0) && (yOffsetToPcb + context.getBoardHeight() <= context.getPcbSize().getHeight()));
-        offsetErrorPane.setVisible(!pcbFitsLaminate);
-        continueButton.setDisable(!pcbFitsLaminate && !(ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()));
-        updateOffsetImage(context.getPcbSize(), xOffsetToPcb, yOffsetToPcb, context.getBoardWidth(), context.getBoardHeight());
+//        boolean pcbFitsLaminate = ((xOffsetToPcb >= 0) && (xOffsetToPcb + context.getBoardWidth() <= context.getPcbSize().getWidth())) &&
+//            ((yOffsetToPcb >= 0) && (yOffsetToPcb + context.getBoardHeight() <= context.getPcbSize().getHeight()));
+//        offsetErrorPane.setVisible(!pcbFitsLaminate);
+//        continueButton.setDisable(!pcbFitsLaminate && !(ignoreCheckBox.isSelected() && ignoreCheckBox.isVisible()));
+//        updateOffsetImage(context.getPcbSize(), xOffsetToPcb, yOffsetToPcb, context.getBoardWidth(), context.getBoardHeight());
     }
 
     public void updateComponents()

@@ -15,21 +15,21 @@ package org.cirqwizard.generation;
 
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.generation.optimizer.Chain;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.layers.Board;
 
 import java.util.List;
 
 public abstract class GenerationService extends ProcessingService
 {
-    private Layer layer;
+    private Board.LayerType layer;
 
-    public GenerationService(Context context, Layer layer)
+    public GenerationService(Context context, Board.LayerType layer)
     {
         super(context);
         this.layer = layer;
     }
 
-    public Layer getLayer()
+    public Board.LayerType getLayer()
     {
         return layer;
     }

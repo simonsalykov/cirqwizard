@@ -15,6 +15,8 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.toolpath;
 
 
+import javafx.scene.canvas.GraphicsContext;
+
 import java.io.Serializable;
 
 
@@ -43,4 +45,6 @@ public abstract class Toolpath implements Serializable
     {
         this.selected = selected;
     }
+
+    public abstract void render(GraphicsContext g);
 }

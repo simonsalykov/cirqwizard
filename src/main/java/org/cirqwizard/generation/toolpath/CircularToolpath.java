@@ -15,6 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.toolpath;
 
 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.StrokeLineCap;
 import org.cirqwizard.geom.*;
 import org.cirqwizard.geom.Point;
 
@@ -33,5 +36,17 @@ public class CircularToolpath extends CuttingToolpath
     public Curve getCurve()
     {
         return arc;
+    }
+
+    @Override
+    public void render(GraphicsContext g)
+    {
+        g.setLineCap(StrokeLineCap.ROUND);
+        g.setLineWidth(getToolDiameter());
+        g.strokeArc(arc.getCenter().getX() - arc.getRadius(),
+                arc.getCenter().getY() - arc.getRadius(),
+                arc.getRadius() * 2, arc.getRadius() * 2,
+                -Math.toDegrees(arc.getStart()), Math.toDegrees(arc.getAngle()) * (arc.isClockwise() ? 1 : -1), ArcType.OPEN);
+
     }
 }

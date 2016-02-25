@@ -14,6 +14,7 @@ import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
+import org.cirqwizard.settings.ApplicationConstants;
 
 public class PanelPane extends Region
 {
@@ -30,7 +31,6 @@ public class PanelPane extends Region
     private static final int PADDING = 5000;
     private static final int CONTOUR_WIDTH = 100;
     private static final int PIN_DIAMETER = 3000;
-    private static final int PIN_INSET = 5000;
 
     private org.cirqwizard.layers.Panel panel;
     private int zoom = DEFAULT_ZOOM;
@@ -101,10 +101,13 @@ public class PanelPane extends Region
         g.translate(0, -canvas.getHeight() * zoom);
         renderContour(g);
 
-        renderPin(g, PIN_INSET, PIN_INSET);
-        renderPin(g, panel.getSize().getWidth() - PIN_INSET, PIN_INSET);
-        renderPin(g, PIN_INSET, panel.getSize().getHeight() - PIN_INSET);
-        renderPin(g, panel.getSize().getWidth() - PIN_INSET, panel.getSize().getHeight() - PIN_INSET);
+        renderPin(g, ApplicationConstants.getRegistrationPinsInset(), ApplicationConstants.getRegistrationPinsInset());
+        renderPin(g, panel.getSize().getWidth() - ApplicationConstants.getRegistrationPinsInset(),
+                ApplicationConstants.getRegistrationPinsInset());
+        renderPin(g, ApplicationConstants.getRegistrationPinsInset(),
+                panel.getSize().getHeight() - ApplicationConstants.getRegistrationPinsInset());
+        renderPin(g, panel.getSize().getWidth() - ApplicationConstants.getRegistrationPinsInset(),
+                panel.getSize().getHeight() - ApplicationConstants.getRegistrationPinsInset());
 
         g.translate(PADDING, PADDING);
 

@@ -26,4 +26,9 @@ public abstract class InterpolatingShape extends GerberPrimitive
     public abstract Point getFrom();
     public abstract Point getTo();
 
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
+    }
 }

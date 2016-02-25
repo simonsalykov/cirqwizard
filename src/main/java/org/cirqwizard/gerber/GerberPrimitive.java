@@ -14,9 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import javafx.scene.canvas.GraphicsContext;
-import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.layers.LayerElement;
 
 import java.awt.*;
@@ -47,12 +46,21 @@ public abstract class GerberPrimitive implements LayerElement
     public abstract Point getMin();
     public abstract Point getMax();
     public abstract void render(Graphics2D g, double inflation);
-    public abstract void render(GraphicsContext g);
 
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
+    }
 
     public enum Polarity
     {
         CLEAR, DARK
     }
 
+    @Override
+    public boolean isVisible()
+    {
+        return aperture != null && aperture.isVisible();
+    }
 }

@@ -59,8 +59,6 @@ public abstract class LongProcessingMachining extends Machining
                     try
                     {
                         List<Toolpath> toolpaths = new ArrayList<>();
-                        ((TraceLayer) getCurrentLayer()).setToolpaths(toolpaths);
-                        Platform.runLater(() -> pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths)));
 
                         cacheKey = getCacheKey();
                         GenerationService generationService = getGenerationService();
@@ -78,9 +76,10 @@ public abstract class LongProcessingMachining extends Machining
 
                         for (Chain p : chains)
                             toolpaths.addAll(p.getSegments());
-                        updateCache(toolpaths);
-                        Platform.runLater(() -> pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths)));
-                        ((TraceLayer) getCurrentLayer()).setToolpaths(toolpaths);
+//                        updateCache(toolpaths);
+                        getMainApplication().getContext().getPanel().setToolpaths(getCurrentLayer(), toolpaths);
+                        Platform.runLater(() -> pcbPane.toolpathsProperty().setValue(
+                                FXCollections.observableArrayList(toolpaths)));
                     }
                     catch (Throwable th)
                     {
@@ -121,7 +120,8 @@ public abstract class LongProcessingMachining extends Machining
 
     private boolean loadFromCache()
     {
-        try
+        return false;
+/*        try
         {
             ToolpathsCache cache = ToolpathsPersistor.loadFromFile(getMainApplication().getContext().getPcbLayout().getFileName() + ".tmp");
             if (cache == null || !cache.hasValidData(getMainApplication().getContext().getPcbLayout().getFile().lastModified()))
@@ -139,19 +139,21 @@ public abstract class LongProcessingMachining extends Machining
         {
             LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
         }
-        return false;
+        return false;*/
     }
 
     private void updateCache(List<Toolpath> toolpaths)
     {
         try
         {
-            ToolpathsCache cache = ToolpathsPersistor.loadFromFile(getMainApplication().getContext().getPcbLayout().getFileName() + ".tmp");
+            String filename = getMainApplication().getContext().getPanelFile().getAbsolutePath();
+            filename = filename.substring(0, filename.lastIndexOf('.'));
+            ToolpathsCache cache = ToolpathsPersistor.loadFromFile(filename + ".tmp");
             if (cache == null)
                 cache = new ToolpathsCache();
             cache.setToolpaths(getCacheKey(), toolpaths);
             cache.setLastModified(getLayerModificationDate());
-            ToolpathsPersistor.saveToFile(cache, getMainApplication().getContext().getPcbLayout().getFileName()  + ".tmp");
+            ToolpathsPersistor.saveToFile(cache, filename  + ".tmp");
         }
         catch (ToolpathPersistingException e)
         {

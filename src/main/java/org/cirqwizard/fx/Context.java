@@ -14,9 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import org.cirqwizard.layers.PCBLayout;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
@@ -31,8 +28,6 @@ public class Context
 {
     public enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
 
-    private ObjectProperty<PCBLayout> pcbLayout = new SimpleObjectProperty<>();
-
     private PcbPlacement pcbPlacement;
     private Tool insertedTool;
     private ToolSettings currentMillingTool;
@@ -44,27 +39,14 @@ public class Context
 
     private int currentDrill;
 
-    private int boardWidth;
-    private int boardHeight;
-
     private ComponentId currentComponent;
     private Feeder feeder;
     private int feederRow;
     private Integer componentPitch;
-    private Map<String, Integer> pitchCache;
+    private Map<String, Integer> pitchCache = new HashMap<>();
 
     private Panel panel;
     private File panelFile;
-
-    public PCBLayout getPcbLayout()
-    {
-        return pcbLayout.get();
-    }
-
-    public ObjectProperty<PCBLayout> pcbLayoutProperty()
-    {
-        return pcbLayout;
-    }
 
     public void setFile(File file)
     {
@@ -77,15 +59,11 @@ public class Context
         g54Y = null;
         g54Z = null;
         currentDrill = 0;
-        boardWidth = 0;
-        boardHeight = 0;
         currentComponent = null;
         feeder = null;
         feederRow = 0;
         componentPitch = 0;
         pitchCache = new HashMap<>();
-        pcbLayout.setValue(new PCBLayout());
-        pcbLayout.getValue().setFile(file);
     }
 
     public PcbPlacement getPcbPlacement()
@@ -176,26 +154,6 @@ public class Context
     public void setCurrentDrill(int currentDrill)
     {
         this.currentDrill = currentDrill;
-    }
-
-    public int getBoardHeight()
-    {
-        return boardHeight;
-    }
-
-    public void setBoardHeight(int boardHeight)
-    {
-        this.boardHeight = boardHeight;
-    }
-
-    public int getBoardWidth()
-    {
-        return boardWidth;
-    }
-
-    public void setBoardWidth(int boardWidth)
-    {
-        this.boardWidth = boardWidth;
     }
 
     public ComponentId getCurrentComponent()

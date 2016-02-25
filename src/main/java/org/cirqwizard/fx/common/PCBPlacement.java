@@ -86,8 +86,7 @@ public abstract class PCBPlacement extends ScreenController
 
     private boolean checkSelectedPcbSize()
     {
-        Context context = getMainApplication().getContext();
-        return context.getPcbSize().checkFit(context.getBoardWidth(), context.getBoardHeight());
+        return true;
     }
 
     public void updateComponents()

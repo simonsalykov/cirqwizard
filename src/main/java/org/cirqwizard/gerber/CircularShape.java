@@ -137,4 +137,12 @@ public class CircularShape extends InterpolatingShape
                 Math.toDegrees(getArc().getAngle()) * (getArc().isClockwise() ? 1 : -1),
                 ArcType.OPEN);
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        CircularShape clone = (CircularShape)super.clone();
+        clone.arc = new Arc(arc.getFrom(), arc.getTo(), arc.getCenter(), arc.getRadius(), arc.isClockwise());
+        return clone;
+    }
 }

@@ -14,10 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.fx.OperationsScreenGroup;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.ScreenGroup;
+import org.cirqwizard.generation.toolpath.PPPoint;
+import org.cirqwizard.layers.Board;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +34,9 @@ public class PPGroup extends OperationsScreenGroup
     }
 
     @Override
-    public ScreenController setMainApplication(MainApplication mainApplication)
-    {
-        mainApplication.getContext().pcbLayoutProperty().addListener((v, oldV, newV) -> dynamicChildren = null);
-        return super.setMainApplication(mainApplication);
-    }
-
-    @Override
     protected boolean isEnabled()
     {
-        return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getComponentsLayer() != null;
+        return super.isEnabled() && !getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.PLACEMENT).isEmpty();
     }
 
     @Override
@@ -56,12 +50,20 @@ public class PPGroup extends OperationsScreenGroup
         return children;
     }
 
+    public void resetDynamicChildren()
+    {
+        dynamicChildren = null;
+    }
+
     private List<ScreenController> getDynamicChildren()
     {
         if (dynamicChildren != null)
             return dynamicChildren;
 
-        dynamicChildren = getMainApplication().getContext().getPcbLayout().getComponentIds().parallelStream().map(c ->
+        dynamicChildren = getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+                map(c -> ((PPPoint)c).getId()).
+                distinct().
+                map(c ->
                 new ScreenGroup(c.getPackaging() + " " + c.getValue())
                 {
                     @Override

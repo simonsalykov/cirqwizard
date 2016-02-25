@@ -1,11 +1,16 @@
 package org.cirqwizard.layers;
 
+import org.cirqwizard.excellon.ExcellonParser;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.GerberParser;
+import org.cirqwizard.pp.PPParser;
+import org.cirqwizard.settings.ImportSettings;
+import org.cirqwizard.settings.SettingsFactory;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Board
 {
@@ -40,10 +45,37 @@ public class Board
 
     public void loadLayers(String filename) throws IOException
     {
-        setLayer(LayerType.TOP, new BoardLayer(new GerberParser(new FileReader(filename + ".cmp")).parse()));
-        setLayer(LayerType.BOTTOM, new BoardLayer(new GerberParser(new FileReader(filename + ".sol")).parse()));
-        setLayer(LayerType.MILLING, new BoardLayer(new GerberParser(new FileReader(filename + ".ncl")).parse()));
+        if (new File(filename + ".cmp").exists())
+            setLayer(LayerType.TOP, new BoardLayer(new GerberParser(new FileReader(filename + ".cmp")).parse()));
+        if (new File(filename + ".sol").exists())
+            setLayer(LayerType.BOTTOM, new BoardLayer(new GerberParser(new FileReader(filename + ".sol")).parse()));
+        if (new File(filename + ".drd").exists())
+                setLayer(LayerType.DRILLING, new BoardLayer(new ExcellonParser(new FileReader(filename + ".drd")).parse()));
+        if (new File(filename + ".ncl").exists())
+            setLayer(LayerType.MILLING, new BoardLayer(new GerberParser(new FileReader(filename + ".ncl")).parse()));
+        if (new File(filename + ".crc").exists())
+            setLayer(LayerType.SOLDER_PASTE, new BoardLayer(new GerberParser(new FileReader(filename + ".crc")).parse()));
+        if (new File(filename + ".mnt").exists())
+        {
+            ImportSettings importSettings = SettingsFactory.getImportSettings();
+            setLayer(LayerType.PLACEMENT, new BoardLayer(new PPParser(new FileReader(filename + ".mnt"),
+                    importSettings.getCentroidFileFormat().getValue().getRegex(),
+                    importSettings.getCentroidUnits().getValue().getMultiplier()).parse()));
+        }
+        List<LayerType> toRemove = layers.keySet().stream().filter(k -> layers.get(k).getElements().isEmpty()).collect(Collectors.toList());
+        toRemove.stream().forEach(k -> layers.remove(k));
         moveToOrigin();
+    }
+
+    private Reader getReaderForFile(String filename)
+    {
+        try
+        {
+            if (new File(filename).exists())
+                return new FileReader(filename);
+        }
+        catch (FileNotFoundException e) {}
+        return new StringReader("");
     }
 
     public void moveToOrigin()

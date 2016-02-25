@@ -14,18 +14,25 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation.gcode;
 
-import org.cirqwizard.fx.Context;
-import org.cirqwizard.post.Postprocessor;
 import org.cirqwizard.generation.toolpath.DrillPoint;
+import org.cirqwizard.post.Postprocessor;
+
+import java.util.List;
 
 
 public class DrillGCodeGenerator
 {
-    private Context context;
+    private int g54X;
+    private int g54Y;
+    private int g54Z;
+    private List<DrillPoint> drillPoints;
 
-    public DrillGCodeGenerator(Context context)
+    public DrillGCodeGenerator(int g54X, int g54Y, int g54Z, List<DrillPoint> drillPoints)
     {
-        this.context = context;
+        this.g54X = g54X;
+        this.g54Y = g54Y;
+        this.g54Z = g54Z;
+        this.drillPoints = drillPoints;
     }
 
     public String generate(Postprocessor postprocessor, int feed, int clearance, int safetyHeight,
@@ -34,33 +41,25 @@ public class DrillGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        DrillPoint firstPoint = null;
-        for (DrillPoint p : context.getPcbLayout().getDrillingLayer().getToolpaths())
-        {
-            if (p.getToolDiameter() == context.getCurrentDrill() && p.isEnabled())
-            {
-                firstPoint = p;
-               break;
-            }
-        }
+        DrillPoint firstPoint = drillPoints.stream().filter(DrillPoint::isEnabled).findFirst().get();
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
-        postprocessor.rapid(str, context.getG54X() + firstPoint.getPoint().getX(), context.getG54Y() + firstPoint.getPoint().getY(), null);
+        postprocessor.rapid(str, g54X + firstPoint.getPoint().getX(), g54Y + firstPoint.getPoint().getY(), null);
 
-        postprocessor.setupG54(str, context.getG54X(), context.getG54Y(), context.getG54Z());
+        postprocessor.setupG54(str, g54X, g54Y, g54Z);
         postprocessor.selectWCS(str);
 
         postprocessor.rapid(str, null, null, clearance);
         postprocessor.spindleOn(str, spindleSpeed);
-        for (DrillPoint drillPoint : context.getPcbLayout().getDrillingLayer().getToolpaths())
-        {
-            if (drillPoint.getToolDiameter() != context.getCurrentDrill() || !drillPoint.isEnabled())
-                continue;
-            postprocessor.rapid(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), clearance);
-            postprocessor.rapid(str, null, null, safetyHeight);
-            postprocessor.linearInterpolation(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), drillingDepth, feed);
-            postprocessor.rapid(str, null, null, clearance);
-        }
+        drillPoints.stream().
+                filter(DrillPoint::isEnabled).
+                forEach(drillPoint ->
+                {
+                    postprocessor.rapid(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), clearance);
+                    postprocessor.rapid(str, null, null, safetyHeight);
+                    postprocessor.linearInterpolation(str, drillPoint.getPoint().getX(), drillPoint.getPoint().getY(), drillingDepth, feed);
+                    postprocessor.rapid(str, null, null, clearance);
+                });
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
         postprocessor.spindleOff(str);

@@ -24,6 +24,6 @@ public class OperationsScreenGroup extends ScreenGroup
     @Override
     protected boolean isEnabled()
     {
-        return getMainApplication().getContext().getPcbLayout() != null;
+        return getMainApplication().getContext().getPanel() != null;
     }
 }

@@ -25,6 +25,8 @@ import javafx.scene.control.RadioButton;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.generation.toolpath.PPPoint;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.pp.PackageAttributesCache;
@@ -75,7 +77,8 @@ public class FeederSelection extends ScreenController implements Initializable
         Context context = getMainApplication().getContext();
         ComponentId id = context.getCurrentComponent();
 
-        long count = context.getPcbLayout().getComponentsLayer().getPoints().stream().
+        long count = context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+                map(c -> (PPPoint)c).
                 filter(c -> c.getId().equals(id)).count();
         countOfComponents.setText("You will need " + count + " such component(s)");
 
