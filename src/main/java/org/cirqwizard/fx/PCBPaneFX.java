@@ -66,19 +66,6 @@ public class PCBPaneFX extends javafx.scene.layout.Region
 
     public PCBPaneFX()
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PcbPane.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try
-        {
-            fxmlLoader.load();
-        }
-        catch (IOException exception)
-        {
-            throw new RuntimeException(exception);
-        }
-
         scaleProperty.addListener((v, oldV, newV) ->  repaint());
         toolpaths.addListener((v, oldV, newV) -> repaint());
     }

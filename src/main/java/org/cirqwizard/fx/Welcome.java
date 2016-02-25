@@ -102,7 +102,7 @@ public class Welcome extends ScreenController
 
     private void loadFile(File file)
     {
-        getMainApplication().getContext().setFile(file);
+//        getMainApplication().getContext().setFile(file);
 //        getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
     }
 

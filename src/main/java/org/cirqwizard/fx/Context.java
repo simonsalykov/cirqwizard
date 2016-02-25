@@ -48,24 +48,6 @@ public class Context
     private Panel panel;
     private File panelFile;
 
-    public void setFile(File file)
-    {
-        pcbPlacement = null;
-        insertedTool = null;
-        currentMillingTool = null;
-        currentMillingToolIndex = -1;
-        pcbSize = null;
-        g54X = null;
-        g54Y = null;
-        g54Z = null;
-        currentDrill = 0;
-        currentComponent = null;
-        feeder = null;
-        feederRow = 0;
-        componentPitch = 0;
-        pitchCache = new HashMap<>();
-    }
-
     public PcbPlacement getPcbPlacement()
     {
         return pcbPlacement;
