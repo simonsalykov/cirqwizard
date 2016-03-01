@@ -30,6 +30,8 @@ public class PanelController extends ScreenController implements Initializable
     @FXML TableColumn<PanelBoard, Integer> boardYColumn;
     @FXML TableColumn<PanelBoard, Boolean> boardOutlineColumn;
 
+    private boolean resetCacheOnChange = true;
+
     @Override
     protected String getFxmlName()
     {
@@ -50,6 +52,8 @@ public class PanelController extends ScreenController implements Initializable
         sizeComboBox.getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
         {
             panelPane.getPanel().setSize(newV);
+            if (resetCacheOnChange)
+                panelPane.getPanel().resetCacheTimestamps();
             savePanel();
             zoomToFit(true);
         });
@@ -71,6 +75,7 @@ public class PanelController extends ScreenController implements Initializable
         boardXColumn.setOnEditCommit(event ->
         {
             event.getRowValue().setX(event.getNewValue());
+            panelPane.getPanel().resetCacheTimestamps();
             savePanel();
             panelPane.render();
         });
@@ -79,12 +84,14 @@ public class PanelController extends ScreenController implements Initializable
         boardYColumn.setOnEditCommit(event ->
         {
             event.getRowValue().setY(event.getNewValue());
+            panelPane.getPanel().resetCacheTimestamps();
             savePanel();
             panelPane.render();
         });
 
         panelPane.setBoardDragListener(() ->
         {
+            panelPane.getPanel().resetCacheTimestamps();
             panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
             refreshTable();
         });
@@ -93,8 +100,10 @@ public class PanelController extends ScreenController implements Initializable
     @Override
     public void refresh()
     {
+        resetCacheOnChange = false;
         panelPane.setPanel(getMainApplication().getContext().getPanel());
         sizeComboBox.getSelectionModel().select(panelPane.getPanel().getSize());
+        resetCacheOnChange = true;
         refreshTable();
         zoomToFit(true);
         getMainApplication().getContext().setG54X(SettingsFactory.getMachineSettings().getReferencePinX().getValue() -
@@ -155,6 +164,7 @@ public class PanelController extends ScreenController implements Initializable
             board.setX((panelSize.getWidth() - board.getBoard().getWidth()) / 2);
             board.setY((panelSize.getHeight() - board.getBoard().getHeight()) / 2);
             panelPane.getPanel().addBoard(board);
+            panelPane.getPanel().resetCacheTimestamps();
             savePanel();
             panelPane.render();
             refreshTable();

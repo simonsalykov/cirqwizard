@@ -3,7 +3,9 @@ package org.cirqwizard.layers;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Transient;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class PanelBoard
 {
@@ -15,6 +17,10 @@ public class PanelBoard
     private int y;
     @Element
     private int angle;
+    @Element(required = false)
+    private Date topLayerTimestamp;
+    @Element(required = false)
+    private Date bottomLayerTimestamp;
     @Transient
     private Board board;
 
@@ -67,6 +73,38 @@ public class PanelBoard
     public void setAngle(int angle)
     {
         this.angle = angle;
+    }
+
+    public void resetCacheTimestamps()
+    {
+        topLayerTimestamp = null;
+        bottomLayerTimestamp = null;
+    }
+
+    public void updateCacheTimestamps()
+    {
+        File topLayer = new File(filename + ".cmp");
+        topLayerTimestamp = topLayer.exists() ? new Date(topLayer.lastModified()) : null;
+        File bottomLayer = new File(filename + ".sol");
+        bottomLayerTimestamp = bottomLayer.exists() ? new Date(bottomLayer.lastModified()) : null;
+    }
+
+    private boolean validateTimestamp(Date timestamp, File file)
+    {
+        if (timestamp == null && !file.exists())
+            return true;
+        if (timestamp == null && file.exists())
+            return false;
+        if (!file.exists())
+            return false;
+        return timestamp.compareTo(new Date(file.lastModified())) >= 0;
+    }
+
+    public boolean validateCacheTimestamps()
+    {
+        if (!validateTimestamp(topLayerTimestamp, new File(filename + ".cmp")))
+            return false;
+        return validateTimestamp(bottomLayerTimestamp, new File(filename + ".sol"));
     }
 
     public void rotate(boolean clockwise)

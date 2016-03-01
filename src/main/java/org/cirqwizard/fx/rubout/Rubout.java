@@ -80,10 +80,8 @@ public abstract class Rubout extends LongProcessingMachining
     protected ToolpathsCacheKey getCacheKey()
     {
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
-        return new ToolpathsCacheKey(getCacheId(), 0, settings.getToolDiameter().getValue(), 0,
+        return new ToolpathsCacheKey(getCacheId(), settings.getToolDiameter().getValue(), 0,
                 0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
-//        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), settings.getToolDiameter().getValue(), 0,
-//                0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
     }
 
     @Override

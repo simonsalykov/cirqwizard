@@ -21,7 +21,6 @@ import java.io.Serializable;
 public class ToolpathsCacheKey implements Serializable
 {
     private int layerId;
-    private int angle;
     private int toolDiameter;
 
     // Insulation milling parameters
@@ -33,11 +32,10 @@ public class ToolpathsCacheKey implements Serializable
     private int rubOutInitialOffset;
     private int rubOutOverlap;
 
-    public ToolpathsCacheKey(int layerId, int angle, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly,
+    public ToolpathsCacheKey(int layerId, int toolDiameter, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesAroundPadsOnly,
                              int rubOutInitialOffset, int rubOutOverlap)
     {
         this.layerId = layerId;
-        this.angle = angle;
         this.toolDiameter = toolDiameter;
         this.additionalPasses = additionalPasses;
         this.additionalPassesOverlap = additionalPassesOverlap;
@@ -57,7 +55,6 @@ public class ToolpathsCacheKey implements Serializable
         if (additionalPasses != that.additionalPasses) return false;
         if (additionalPassesAroundPadsOnly != that.additionalPassesAroundPadsOnly) return false;
         if (additionalPassesOverlap != that.additionalPassesOverlap) return false;
-        if (angle != that.angle) return false;
         if (layerId != that.layerId) return false;
         if (rubOutInitialOffset != that.rubOutInitialOffset) return false;
         if (rubOutOverlap != that.rubOutOverlap) return false;
@@ -70,7 +67,6 @@ public class ToolpathsCacheKey implements Serializable
     public int hashCode()
     {
         int result = layerId;
-        result = 31 * result + angle;
         result = 31 * result + toolDiameter;
         result = 31 * result + additionalPasses;
         result = 31 * result + additionalPassesOverlap;

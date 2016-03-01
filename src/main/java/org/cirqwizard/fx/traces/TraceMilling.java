@@ -81,10 +81,8 @@ public abstract class TraceMilling extends LongProcessingMachining
     protected ToolpathsCacheKey getCacheKey()
     {
         ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
-        return new ToolpathsCacheKey(getCacheId(), 0, currentTool.getDiameter(),
+        return new ToolpathsCacheKey(getCacheId(), currentTool.getDiameter(),
                 currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
-//        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), currentTool.getDiameter(),
-//                currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
     }
 
     @Override

@@ -125,4 +125,19 @@ public class Panel
                 filter(l -> l != null).
                 flatMap(Collection::stream).collect(Collectors.toList());
     }
+
+    public void updateCacheTimestamps()
+    {
+        boards.stream().forEach(PanelBoard::updateCacheTimestamps);
+    }
+
+    public boolean isCacheValid()
+    {
+        return boards.stream().map(PanelBoard::validateCacheTimestamps).noneMatch(b -> !b);
+    }
+
+    public void resetCacheTimestamps()
+    {
+        boards.stream().forEach(PanelBoard::resetCacheTimestamps);
+    }
 }

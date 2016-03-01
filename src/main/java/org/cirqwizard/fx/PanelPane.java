@@ -129,7 +129,7 @@ public class PanelPane extends Region
                 {
                     g.translate(board.getX(), board.getY());
                     board.getBoard().getLayer(layerType).getElements().stream().
-                            forEach(e -> ((GerberPrimitive)e).render(g));
+                            forEach(e -> e.render(g));
                     g.translate(-board.getX(), -board.getY());
                 });
     }
