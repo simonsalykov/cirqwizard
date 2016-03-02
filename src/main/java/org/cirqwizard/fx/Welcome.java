@@ -17,6 +17,8 @@ package org.cirqwizard.fx;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
@@ -60,11 +62,28 @@ public class Welcome extends ScreenController
     {
         EventHandler<ActionEvent> handler = (event) ->
         {
-            File file = new File(((Hyperlink) event.getSource()).getText() + ".cxml");
+            String basename = ((Hyperlink) event.getSource()).getText();
+            File file = new File(basename + ".cxml");
             if (file.exists())
+            {
                 loadPanel(file);
-            else
+                return;
+            }
+            file = new File(basename + ".cmp");
+            if (file.exists())
+            {
                 createPanel(file);
+                return;
+            }
+            file = new File(basename + ".sol");
+            if (file.exists())
+            {
+                createPanel(file);
+                return;
+            }
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load file " + basename, ButtonType.OK);
+            alert.setHeaderText("File not found");
+            alert.show();
         };
         recentFilesPane.getChildren().clear();
         List<String> recentFiles = getRecentFiles();
