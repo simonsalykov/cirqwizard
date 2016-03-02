@@ -7,7 +7,9 @@ import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.ImportSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,18 +66,8 @@ public class Board
         }
         List<LayerType> toRemove = layers.keySet().stream().filter(k -> layers.get(k).getElements().isEmpty()).collect(Collectors.toList());
         toRemove.stream().forEach(k -> layers.remove(k));
-        moveToOrigin();
-    }
-
-    private Reader getReaderForFile(String filename)
-    {
-        try
-        {
-            if (new File(filename).exists())
-                return new FileReader(filename);
-        }
-        catch (FileNotFoundException e) {}
-        return new StringReader("");
+        if (hasLayers())
+            moveToOrigin();
     }
 
     public void moveToOrigin()
@@ -97,6 +89,11 @@ public class Board
     {
         layers.values().stream().forEach(l -> l.rotate(clockwise));
         moveToOrigin();
+    }
+
+    public boolean hasLayers()
+    {
+        return !layers.isEmpty();
     }
 
 }

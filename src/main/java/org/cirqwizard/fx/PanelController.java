@@ -12,6 +12,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.geom.Point;
@@ -248,6 +250,33 @@ public class PanelController extends ScreenController implements Initializable
         return fullName.substring(fullName.lastIndexOf(File.separatorChar) + 1, fullName.length());
     }
 
+    private void locateMissingFiles(PanelBoard board)
+    {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All supported files", "*.sol", "*.cmp"));
+        File file = chooser.showOpenDialog(null);
+        if (file != null)
+        {
+            try
+            {
+                board.setFilename(file.getAbsolutePath().substring(0,
+                        file.getAbsolutePath().lastIndexOf('.')));
+                board.loadBoard();
+                if (board.getBoard().hasLayers())
+                {
+                    savePanel();
+                    validateBoards();
+                    panelPane.render();
+                    refreshTable();
+                }
+            }
+            catch (IOException e)
+            {
+                LoggerFactory.logException("Could not load board data", e);
+            }
+        }
+    }
+
     private void validateBoards()
     {
         errorBox.getChildren().clear();
@@ -260,6 +289,17 @@ public class PanelController extends ScreenController implements Initializable
             if (!validatePinClearance(panel, b))
                 errorBox.getChildren().add(createErrorLabel("Board " + trimBoardName(b.getFilename()) +
                         " overlaps with registration pins"));
+            if (!b.getBoard().hasLayers())
+            {
+                Text text = new Text("Board " + trimBoardName(b.getFilename()) +
+                        " could not be found. Perhaps the files were moved?");
+                text.getStyleClass().add("text");
+                Hyperlink hyperlink = new Hyperlink("Locate files");
+                hyperlink.setOnAction(event -> locateMissingFiles(b));
+                TextFlow flow = new TextFlow(text, hyperlink);
+                flow.getStyleClass().add("error-box");
+                errorBox.getChildren().add(flow);
+            }
         });
         for (int i = 0; i < panel.getBoards().size(); i++)
         {
@@ -272,7 +312,7 @@ public class PanelController extends ScreenController implements Initializable
                             trimBoardName(b2.getFilename()) + " overlap"));
             }
         }
-        if (!errorBox.getChildren().isEmpty())
+        if (!errorBox.getChildren().isEmpty() && errorBox.getChildren().stream().noneMatch(n -> n instanceof TextFlow))
             errorBox.getChildren().add(ignoreErrorCheckBox);
         errorBox.setVisible(!errorBox.getChildren().isEmpty());
         errorBox.setManaged(errorBox.isVisible());

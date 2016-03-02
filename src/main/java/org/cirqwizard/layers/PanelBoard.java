@@ -123,6 +123,8 @@ public class PanelBoard
     {
         board = new Board();
         board.loadLayers(filename);
+        if (!board.hasLayers())
+            return;
         int rotations = angle / 90;
         while (rotations != 0)
         {

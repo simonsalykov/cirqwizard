@@ -60,31 +60,7 @@ public class Welcome extends ScreenController
     @Override
     public void refresh()
     {
-        EventHandler<ActionEvent> handler = (event) ->
-        {
-            String basename = ((Hyperlink) event.getSource()).getText();
-            File file = new File(basename + ".cxml");
-            if (file.exists())
-            {
-                loadPanel(file);
-                return;
-            }
-            file = new File(basename + ".cmp");
-            if (file.exists())
-            {
-                createPanel(file);
-                return;
-            }
-            file = new File(basename + ".sol");
-            if (file.exists())
-            {
-                createPanel(file);
-                return;
-            }
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load file " + basename, ButtonType.OK);
-            alert.setHeaderText("File not found");
-            alert.show();
-        };
+        EventHandler<ActionEvent> handler = (event) -> openFile(((Hyperlink) event.getSource()).getText());
         recentFilesPane.getChildren().clear();
         List<String> recentFiles = getRecentFiles();
         for (int i = 0; i < recentFiles.size(); i++)
@@ -95,20 +71,42 @@ public class Welcome extends ScreenController
         }
     }
 
+    private void openFile(String filename)
+    {
+        File file = new File(filename + ".cxml");
+        if (file.exists())
+        {
+            loadPanel(file);
+            return;
+        }
+        file = new File(filename + ".cmp");
+        if (file.exists())
+        {
+            createPanel(file);
+            return;
+        }
+        file = new File(filename + ".sol");
+        if (file.exists())
+        {
+            createPanel(file);
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load file " + filename, ButtonType.OK);
+        alert.setHeaderText("File not found");
+        alert.show();
+    }
+
     public void openFile()
     {
         FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Panel files", "*.cxml"));
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Gerber files", "*.sol", "*.cmp"));
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All supported files", "*.cxml", "*.sol", "*.cmp"));
         File file = chooser.showOpenDialog(null);
         if (file != null)
         {
             String filename = file.getAbsolutePath();
-            setRecentFile(filename.substring(0, filename.lastIndexOf('.')));
-            if (file.getAbsolutePath().toLowerCase().endsWith("cxml"))
-                loadPanel(file);
-            else
-                createPanel(file);
+            filename = filename.substring(0, filename.lastIndexOf('.'));
+            setRecentFile(filename);
+            openFile(filename);
         }
     }
 
@@ -142,12 +140,6 @@ public class Welcome extends ScreenController
         getMainApplication().getContext().setPanel(panel);
         getMainApplication().getContext().setPanelFile(file);
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(PanelController.class));
-    }
-
-    private void loadFile(File file)
-    {
-//        getMainApplication().getContext().setFile(file);
-//        getMainApplication().setCurrentScreen(getMainApplication().getScreen(Orientation.class));
     }
 
     public void createPanel()

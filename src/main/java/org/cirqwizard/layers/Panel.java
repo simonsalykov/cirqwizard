@@ -59,13 +59,24 @@ public class Panel
         this.toolpaths.put(layerType, toolpaths);
     }
 
-    private void loadBoards()
+    private void loadBoards(File panelFile)
     {
+        String basename = panelFile.getAbsolutePath().substring(0,
+                panelFile.getAbsolutePath().lastIndexOf(File.separatorChar));
         boards.stream().forEach(b ->
         {
             try
             {
                 b.loadBoard();
+                if (!b.getBoard().hasLayers())
+                {
+                    String filename = b.getFilename().substring(b.getFilename().lastIndexOf(File.separatorChar) + 1,
+                            b.getFilename().length());
+                    b.setFilename(basename + File.separatorChar + filename);
+                    b.loadBoard();
+                    if (b.getBoard().hasLayers())
+                        save(panelFile);
+                }
             }
             catch (IOException e)
             {
@@ -91,7 +102,7 @@ public class Panel
         try
         {
             Panel panel = new Persister().read(Panel.class, file);
-            panel.loadBoards();
+            panel.loadBoards(file);
             return panel;
         }
         catch (Exception e)
