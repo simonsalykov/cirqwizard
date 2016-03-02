@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.layers.Panel;
@@ -37,6 +38,8 @@ public class PanelController extends ScreenController implements Initializable
     @FXML TableColumn<PanelBoard, Integer> boardXColumn;
     @FXML TableColumn<PanelBoard, Integer> boardYColumn;
     @FXML TableColumn<PanelBoard, Boolean> boardOutlineColumn;
+
+    @FXML private VBox errorBox;
 
     private boolean resetCacheOnChange = true;
 
@@ -84,6 +87,7 @@ public class PanelController extends ScreenController implements Initializable
         {
             event.getRowValue().setX(event.getNewValue());
             panelPane.getPanel().resetCacheTimestamps();
+            validateBoards();
             savePanel();
             panelPane.render();
         });
@@ -93,6 +97,7 @@ public class PanelController extends ScreenController implements Initializable
         {
             event.getRowValue().setY(event.getNewValue());
             panelPane.getPanel().resetCacheTimestamps();
+            validateBoards();
             savePanel();
             panelPane.render();
         });
@@ -101,6 +106,7 @@ public class PanelController extends ScreenController implements Initializable
         {
             panelPane.getPanel().resetCacheTimestamps();
             panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
+            validateBoards();
             refreshTable();
         });
     }
@@ -118,6 +124,7 @@ public class PanelController extends ScreenController implements Initializable
                 ApplicationConstants.getRegistrationPinsInset());
         getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
                 ApplicationConstants.getRegistrationPinsInset());
+        validateBoards();
     }
 
     @Override
@@ -202,6 +209,7 @@ public class PanelController extends ScreenController implements Initializable
             savePanel();
             panelPane.render();
             refreshTable();
+            validateBoards();
         }
         catch (IOException e)
         {
@@ -213,6 +221,28 @@ public class PanelController extends ScreenController implements Initializable
     {
         Panel panel = getMainApplication().getContext().getPanel();
         panel.save(getMainApplication().getContext().getPanelFile());
+    }
+
+    private void validateBoards()
+    {
+        errorBox.getChildren().clear();
+        Panel panel = panelPane.getPanel();
+        panel.getBoards().stream().forEach(b ->
+        {
+            if (b.getX() < 0 || b.getY() < 0 || b.getX() + b.getBoard().getWidth() > panel.getSize().getWidth() ||
+                    b.getY() + b.getBoard().getHeight() > panel.getSize().getHeight())
+            {
+                String filename = b.getFilename();
+                filename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1, filename.length());
+                Label label = new Label("Board " + filename + " does not fit in the panel");
+                label.setWrapText(true);
+                label.getStyleClass().add("error-box");
+                label.setPrefWidth(1000);
+                errorBox.getChildren().add(label);
+            }
+        });
+        errorBox.setVisible(!errorBox.getChildren().isEmpty());
+        errorBox.setManaged(errorBox.isVisible());
     }
 
 }

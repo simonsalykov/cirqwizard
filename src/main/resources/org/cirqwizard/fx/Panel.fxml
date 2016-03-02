@@ -36,6 +36,11 @@
                     </ImageView>
                 </HBox>
             </AnchorPane>
+            <VBox fx:id="errorBox" visible="false" managed="false">
+                <padding>
+                    <Insets top="10" bottom="10" left="10" right="10"/>
+                </padding>
+            </VBox>
         </VBox>
         <VBox minWidth="350.0">
             <ToolBar>
