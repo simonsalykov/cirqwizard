@@ -1,137 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
-<?scenebuilder-classpath-element ../../../../../../out/production/cirqwizard?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import org.cirqwizard.fx.PCBPane?>
 <?import javafx.geometry.Insets?>
-<StackPane fx:id="view" styleClass="main-pane"  xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-    <children>
-        <VBox>
-            <AnchorPane VBox.vgrow="ALWAYS">
-                <padding>
-                    <Insets bottom="10" left="5"/>
-                </padding>
-                <children>
-                    <ScrollPane fx:id="scrollPane" pannable="true" styleClass="pcb" AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0"
-                            AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
-                        <content>
-                            <PCBPane fx:id="pcbPane"/>
-                        </content>
-                    </ScrollPane>
-                    <VBox AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" spacing="10">
-                        <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomIn" pickOnBounds="true">
-                            <image>
-                                <Image url="@../icons/zoom-in.png" preserveRatio="true" smooth="true"/>
-                            </image>
-                        </ImageView>
-                        <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomOut" pickOnBounds="true">
-                            <image>
-                                <Image url="@../icons/zoom-out.png" preserveRatio="true" smooth="true"/>
-                            </image>
-                        </ImageView>
-                        <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#flipHorizontal" pickOnBounds="true">
-                            <image>
-                                <Image url="@../icons/flip-horizontal.png" preserveRatio="true" smooth="true"/>
-                            </image>
-                        </ImageView>
-                    </VBox>
-                </children>
-            </AnchorPane>
-            <AnchorPane>
-                <padding>
-                    <Insets bottom="10" left="15" right="15"/>
-                </padding>
-                <children>
-                    <HBox alignment="TOP_LEFT" spacing="10.0" AnchorPane.leftAnchor="0">
-                        <children>
-                            <Button fx:id="goButton" onAction="#executeProgram"
-                                    styleClass="red-background" text="Run"/>
-                            <Separator orientation="VERTICAL" />
-                            <Button onAction="#enableSelected">
-                                <graphic>
-                                    <ImageView id="selection-include" pickOnBounds="true">
-                                        <image>
-                                            <Image url="@../icons/selection-include.png" preserveRatio="true"
-                                                   smooth="true"/>
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Button onAction="#disableSelected">
-                                <graphic>
-                                    <ImageView id="selection-exclude" pickOnBounds="true">
-                                        <image>
-                                            <Image url="@../icons/selection-exclude.png" preserveRatio="true"
-                                                   smooth="true"/>
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                            <Separator orientation="VERTICAL"/>
-                            <Button mnemonicParsing="false" onAction="#showGCodeListing">
-                                <graphic>
-                                    <ImageView id="gcode" pickOnBounds="true">
-                                        <image>
-                                            <Image url="@../icons/gcode.png" preserveRatio="true" smooth="true"/>
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                            </Button>
-                        </children>
-                    </HBox>
-                    <Button defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue" AnchorPane.rightAnchor="0"/>
-                </children>
-            </AnchorPane>
-        </VBox>
-        <Region fx:id="veil" styleClass="pcb-veil" visible="false"/>
-        <VBox fx:id="gcodePane" visible="false">
+<StackPane fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+    <VBox>
+        <AnchorPane VBox.vgrow="ALWAYS">
             <padding>
-                <Insets top="30" bottom="30" left="30" right="30"/>
+                <Insets bottom="10" left="5"/>
             </padding>
-            <StackPane styleClass="pcb-popup-pane-header" >
-                <padding>
-                    <Insets bottom="15"/>
-                </padding>
-                <HBox alignment="TOP_CENTER">
-                    <Label styleClass="h1" text="GCode preview"/>
-                </HBox>
-                <HBox alignment="TOP_RIGHT">
-                    <padding>
-                        <Insets top="15" right="15"/>
-                    </padding>
-                    <ImageView id="cross" onMouseClicked="#hideGCodeListing" pickOnBounds="true" >
-                        <image>
-                            <Image url="@../icons/cross.png" preserveRatio="true" smooth="true"/>
-                        </image>
-                    </ImageView>
-                </HBox>
-            </StackPane>
-            <TextArea fx:id="gcodeListing" wrapText="true" VBox.vgrow="ALWAYS"/>
-        </VBox>
-        <VBox fx:id="executionPane" maxHeight="200.0" maxWidth="600.0" styleClass="pcb-popup-pane" alignment="CENTER" spacing="20">
+            <ScrollPane fx:id="scrollPane" pannable="true" styleClass="pcb" AnchorPane.rightAnchor="0"
+                        AnchorPane.leftAnchor="0"
+                        AnchorPane.bottomAnchor="0" AnchorPane.topAnchor="0">
+                <content>
+                    <PCBPane fx:id="pcbPane"/>
+                </content>
+            </ScrollPane>
+            <VBox AnchorPane.topAnchor="10" AnchorPane.leftAnchor="10" spacing="10">
+                <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomIn" pickOnBounds="true">
+                    <image>
+                        <Image url="@../icons/zoom-in.png" preserveRatio="true" smooth="true"/>
+                    </image>
+                </ImageView>
+                <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomOut" pickOnBounds="true">
+                    <image>
+                        <Image url="@../icons/zoom-out.png" preserveRatio="true" smooth="true"/>
+                    </image>
+                </ImageView>
+                <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#flipHorizontal" pickOnBounds="true">
+                    <image>
+                        <Image url="@../icons/flip-horizontal.png" preserveRatio="true" smooth="true"/>
+                    </image>
+                </ImageView>
+            </VBox>
+        </AnchorPane>
+        <AnchorPane>
+            <padding>
+                <Insets bottom="10" left="15" right="15"/>
+            </padding>
             <children>
-                <Label text="Executing program"/>
-                <ProgressBar fx:id="executionProgressBar" prefHeight="25.0" prefWidth="400.0" progress="0.0"/>
-                <HBox alignment="CENTER" spacing="5.0">
+                <HBox alignment="TOP_LEFT" spacing="10.0" AnchorPane.leftAnchor="0">
                     <children>
-                        <Label text="Time elapsed:"/>
-                        <Label fx:id="timeElapsedLabel"/>
+                        <Button fx:id="goButton" onAction="#executeProgram"
+                                styleClass="red-background" text="Run"/>
+                        <Separator orientation="VERTICAL"/>
+                        <Button onAction="#enableSelected">
+                            <graphic>
+                                <ImageView id="selection-include" pickOnBounds="true">
+                                    <image>
+                                        <Image url="@../icons/selection-include.png" preserveRatio="true"
+                                               smooth="true"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Button onAction="#disableSelected">
+                            <graphic>
+                                <ImageView id="selection-exclude" pickOnBounds="true">
+                                    <image>
+                                        <Image url="@../icons/selection-exclude.png" preserveRatio="true"
+                                               smooth="true"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Separator orientation="VERTICAL"/>
+                        <Button mnemonicParsing="false" onAction="#showGCodeListing">
+                            <graphic>
+                                <ImageView id="gcode" pickOnBounds="true">
+                                    <image>
+                                        <Image url="@../icons/gcode.png" preserveRatio="true" smooth="true"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
                     </children>
                 </HBox>
-                <Button onAction="#stopExecution" text="Stop"/>
+                <Button defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue"
+                        AnchorPane.rightAnchor="0"/>
             </children>
-        </VBox>
-        <VBox fx:id="generationPane" visible="false" maxHeight="200.0" maxWidth="600.0" styleClass="pcb-popup-pane" alignment="CENTER" spacing="20">
-            <children>
-                <Label fx:id="generationStageLabel" />
-                <ProgressBar fx:id="overallProgressBar" prefHeight="25.0" prefWidth="400.0" progress="0.0"/>
-                <Label fx:id="machiningTimeEstimationLabel" textAlignment="CENTER"/>
-                <Button fx:id="stopGenerationButton" onAction="#stopGeneration" text="Stop"/>
-            </children>
-        </VBox>
-    </children>
+        </AnchorPane>
+    </VBox>
+    <Region fx:id="veil" styleClass="pcb-veil" visible="false"/>
+    <VBox fx:id="gcodePane" visible="false">
+        <padding>
+            <Insets top="30" bottom="30" left="30" right="30"/>
+        </padding>
+        <StackPane styleClass="pcb-popup-pane-header">
+            <padding>
+                <Insets bottom="15"/>
+            </padding>
+            <HBox alignment="TOP_CENTER">
+                <Label styleClass="h1" text="GCode preview"/>
+            </HBox>
+            <HBox alignment="TOP_RIGHT">
+                <padding>
+                    <Insets top="15" right="15"/>
+                </padding>
+                <ImageView id="cross" onMouseClicked="#hideGCodeListing" pickOnBounds="true">
+                    <image>
+                        <Image url="@../icons/cross.png" preserveRatio="true" smooth="true"/>
+                    </image>
+                </ImageView>
+            </HBox>
+        </StackPane>
+        <TextArea fx:id="gcodeListing" wrapText="true" VBox.vgrow="ALWAYS"/>
+    </VBox>
+    <VBox fx:id="executionPane" maxHeight="200.0" maxWidth="600.0" styleClass="pcb-popup-pane" alignment="CENTER"
+          spacing="20">
+        <Label text="Executing program"/>
+        <ProgressBar fx:id="executionProgressBar" prefHeight="25.0" prefWidth="400.0" progress="0.0"/>
+        <HBox alignment="CENTER" spacing="5.0">
+            <Label text="Time elapsed:"/>
+            <Label fx:id="timeElapsedLabel"/>
+        </HBox>
+        <Button onAction="#stopExecution" text="Stop"/>
+    </VBox>
+    <VBox fx:id="generationPane" visible="false" maxHeight="200.0" maxWidth="600.0" styleClass="pcb-popup-pane"
+          alignment="CENTER" spacing="20">
+        <Label fx:id="generationStageLabel"/>
+        <ProgressBar fx:id="overallProgressBar" prefHeight="25.0" prefWidth="400.0" progress="0.0"/>
+        <Label fx:id="machiningTimeEstimationLabel" textAlignment="CENTER"/>
+        <Button fx:id="stopGenerationButton" onAction="#stopGeneration" text="Stop"/>
+    </VBox>
 </StackPane>

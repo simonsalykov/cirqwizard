@@ -19,18 +19,18 @@ import org.cirqwizard.settings.ApplicationConstants;
 
 public enum PCBSize
 {
-    Small(75 * ApplicationConstants.RESOLUTION, 100 * ApplicationConstants.RESOLUTION),
-    Large(100 * ApplicationConstants.RESOLUTION, 160 * ApplicationConstants.RESOLUTION);
+    Small(75 * ApplicationConstants.RESOLUTION, 100 * ApplicationConstants.RESOLUTION, "75x100"),
+    Large(100 * ApplicationConstants.RESOLUTION, 160 * ApplicationConstants.RESOLUTION, "100x160");
 
     private int width;
     private int height;
+    private String name;
 
-    public static final int PCB_SIZE_CHECK_TOLERANCE = 100;
-
-    private PCBSize(int width, int height)
+    PCBSize(int width, int height, String name)
     {
         this.width = width;
         this.height = height;
+        this.name = name;
     }
 
     public int getWidth()
@@ -43,8 +43,9 @@ public enum PCBSize
         return height;
     }
 
-    public boolean checkFit(int width, int height)
+    @Override
+    public String toString()
     {
-        return ((width - getWidth()) <= PCB_SIZE_CHECK_TOLERANCE) && ((height - getHeight()) <= PCB_SIZE_CHECK_TOLERANCE);
+        return name;
     }
 }

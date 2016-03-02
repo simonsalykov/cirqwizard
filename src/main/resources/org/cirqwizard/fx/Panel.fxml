@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import org.cirqwizard.fx.PanelPane?>
+<?import javafx.geometry.Insets?>
 <VBox fx:id="view" spacing="20.0" styleClass="main-pane" xmlns="http://javafx.com/javafx/2.2" xmlns:fx="http://javafx.com/fxml">
-    <HBox>
-        <Label text="Laminate size"/>
-        <ComboBox fx:id="sizeComboBox"/>
-    </HBox>
     <HBox VBox.vgrow="ALWAYS">
         <VBox HBox.hgrow="ALWAYS">
-            <ToolBar>
-                <Button onAction="#rotateCw" text="CW"/>
-                <Button onAction="#rotateCcw" text="CCW"/>
-                <Button onAction="#zoomIn" text="+"/>
-                <Button onAction="#zoomOut" text="-"/>
-            </ToolBar>
-            <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS">
-                <PanelPane fx:id="panelPane"/>
-            </ScrollPane>
+            <AnchorPane VBox.vgrow="ALWAYS">
+                <ScrollPane fx:id="scrollPane" VBox.vgrow="ALWAYS" AnchorPane.bottomAnchor="0"
+                            AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                    <PanelPane fx:id="panelPane"/>
+                </ScrollPane>
+                <HBox spacing="10" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10">
+                    <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomIn" pickOnBounds="true">
+                        <image>
+                            <Image url="@icons/zoom-in.png" preserveRatio="true" smooth="true"/>
+                        </image>
+                    </ImageView>
+                    <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomOut" pickOnBounds="true">
+                        <image>
+                            <Image url="@icons/zoom-out.png" preserveRatio="true" smooth="true"/>
+                        </image>
+                    </ImageView>
+                    <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#rotateCw" pickOnBounds="true">
+                        <image>
+                            <Image url="@icons/rotate-cw.png" preserveRatio="true" smooth="true"/>
+                        </image>
+                    </ImageView>
+                    <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#rotateCcw" pickOnBounds="true">
+                        <image>
+                            <Image url="@icons/rotate-ccw.png" preserveRatio="true" smooth="true"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+            </AnchorPane>
         </VBox>
         <VBox minWidth="320.0">
             <ToolBar>
-                <Button onAction="#addBoard" text="+"/>
-                <Button text="-"/>
+                <Button onAction="#addBoard" text="Add"/>
+                <Button text="Remove"/>
             </ToolBar>
             <TableView fx:id="boardsTable" editable="true" VBox.vgrow="ALWAYS">
                 <columns>
@@ -33,9 +50,19 @@
                     <TableColumn fx:id="boardOutlineController" prefWidth="70.0" text="Outline"/>
                 </columns>
             </TableView>
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <padding>
+                    <Insets top="28.0" left="10" right="37.0"/>
+                </padding>
+                <Label text="Panel dimensions"/>
+                <ComboBox fx:id="sizeComboBox"/>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT">
+                <padding>
+                    <Insets right="37.0" bottom="28.0" top="28.0"/>
+                </padding>
+                <Button onAction="#next" text="Continue"/>
+            </HBox>
         </VBox>
-    </HBox>
-    <HBox prefHeight="40.0" alignment="CENTER_RIGHT">
-        <Button onAction="#next" text="Continue"/>
     </HBox>
 </VBox>

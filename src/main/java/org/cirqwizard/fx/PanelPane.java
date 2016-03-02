@@ -1,5 +1,6 @@
 package org.cirqwizard.fx;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
@@ -8,9 +9,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Affine;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
@@ -24,10 +24,11 @@ public class PanelPane extends Region
     public static final Color TOP_TRACE_COLOR = Color.color(1, 0, 0, 0.8);
     public static final Color BOTTOM_TRACE_COLOR = Color.color(0, 0, 1, 0.8);
     public static final Color DRILL_POINT_COLOR = Color.BLACK;
+    public static final Color SELECTED_BOARD_BACKGROUND_COLOR = Color.web("#eeffee");
     public static final Color CONTOUR_COLOR = Color.MAGENTA;
 
     private static final int DEFAULT_ZOOM = 100;
-    private static final int ZOOM_INCREMENT = 10;
+    private static final int ZOOM_INCREMENT = 15;
     private static final int PADDING = 5000;
     private static final int CONTOUR_WIDTH = 100;
     private static final int PIN_DIAMETER = 3000;
@@ -38,11 +39,12 @@ public class PanelPane extends Region
     private int height;
     private boolean rendered = false;
 
-    private Rectangle selectionRectangle;
-    private PanelBoard selectedBoard;
+    private SimpleObjectProperty<PanelBoard> selectedBoard = new SimpleObjectProperty<>();
     private Point2D mouseClickPoint;
     private Point initialBoardLocation;
     private BoardDragListener boardDragListener;
+
+    private Canvas canvas;
 
     public Panel getPanel()
     {
@@ -56,26 +58,31 @@ public class PanelPane extends Region
 
     public PanelPane()
     {
+        canvas = new Canvas();
+        getChildren().add(canvas);
         addEventFilter(MouseEvent.ANY, event ->
         {
             if (event.getEventType().equals(MouseEvent.MOUSE_PRESSED))
             {
                 mouseClickPoint = new Point2D(event.getX(), event.getY());
                 selectBoard(getBoardForCoordinates(event.getX(), event.getY()));
-                if (selectedBoard != null)
-                    initialBoardLocation = new Point(selectedBoard.getX(), selectedBoard.getY());
-                event.consume();
+                if (selectedBoard.getValue() != null)
+                    initialBoardLocation = new Point(selectedBoard.getValue().getX(), selectedBoard.getValue().getY());
             }
             else if (event.getEventType().equals(MouseEvent.MOUSE_DRAGGED))
             {
                 Point2D delta = new Point2D(event.getX() - mouseClickPoint.getX(), -(event.getY() - mouseClickPoint.getY()));
-                if (selectedBoard != null)
+                if (selectedBoard.getValue() != null)
                 {
-                    selectedBoard.setX((int)(initialBoardLocation.getX() + delta.getX() * zoom));
-                    selectedBoard.setY((int)(initialBoardLocation.getY() + delta.getY() * zoom));
+                    selectedBoard.getValue().setX((int)(initialBoardLocation.getX() + delta.getX() * zoom));
+                    selectedBoard.getValue().setY((int)(initialBoardLocation.getY() + delta.getY() * zoom));
                     render();
-                    boardDragListener.boardDragged();
                 }
+            }
+            else if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED))
+            {
+                if (selectedBoard.getValue() != null)
+                    boardDragListener.boardDragged();
             }
         });
     }
@@ -92,8 +99,10 @@ public class PanelPane extends Region
 
         width = panel.getSize().getWidth() + PADDING * 2;
         height = panel.getSize().getHeight() + PADDING * 2;
-        Canvas canvas = new Canvas(width / zoom, height / zoom);
+        canvas.setWidth(width / zoom);
+        canvas.setHeight(height / zoom);
         GraphicsContext g = canvas.getGraphicsContext2D();
+        g.setTransform(new Affine());
         g.setFill(BACKGROUND_COLOR);
         g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         double scale = 1.0 / zoom;
@@ -111,23 +120,28 @@ public class PanelPane extends Region
 
         g.translate(PADDING, PADDING);
 
+        PanelBoard selectedBoardValue = selectedBoard.getValue();
+        if (selectedBoardValue != null)
+        {
+            g.setFill(SELECTED_BOARD_BACKGROUND_COLOR);
+            g.fillRect(selectedBoardValue.getX(), selectedBoardValue.getY(), selectedBoardValue.getBoard().getWidth(),
+                    selectedBoardValue.getBoard().getHeight());
+        }
+
         renderLayer(g, Board.LayerType.BOTTOM, BOTTOM_TRACE_COLOR);
         renderLayer(g, Board.LayerType.TOP, TOP_TRACE_COLOR);
         renderLayer(g, Board.LayerType.MILLING, CONTOUR_COLOR);
-
-        getChildren().clear();
-        getChildren().add(canvas);
         rendered = true;
     }
 
     private void renderLayer(GraphicsContext g, Board.LayerType layerType, Color color)
     {
-        g.setStroke(color);
-        g.setFill(color);
         panel.getBoards().stream().
                 forEach(board ->
                 {
                     g.translate(board.getX(), board.getY());
+                    g.setStroke(color);
+                    g.setFill(color);
                     board.getBoard().getLayer(layerType).getElements().stream().
                             forEach(e -> e.render(g));
                     g.translate(-board.getX(), -board.getY());
@@ -186,20 +200,16 @@ public class PanelPane extends Region
 
     public void selectBoard(PanelBoard board)
     {
-        this.selectedBoard = board;
-        if (selectionRectangle != null)
-            getChildren().remove(selectionRectangle);
-        if (board != null)
-        {
-            Rectangle2D r = getBoardRectangle(board);
-            selectionRectangle = new Rectangle(r.getMinX(), r.getMinY(), r.getWidth(), r.getHeight());
-            selectionRectangle.setStrokeWidth(10);
-            selectionRectangle.getStyleClass().add("board-selection-rect");
-            getChildren().add(selectionRectangle);
-        }
+        this.selectedBoard.setValue(board);
+        render();
     }
 
     public PanelBoard getSelectedBoard()
+    {
+        return selectedBoard.get();
+    }
+
+    public SimpleObjectProperty<PanelBoard> selectedBoardProperty()
     {
         return selectedBoard;
     }
