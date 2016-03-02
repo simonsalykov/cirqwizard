@@ -1,5 +1,6 @@
 package org.cirqwizard.fx;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,6 +41,8 @@ public class PanelController extends ScreenController implements Initializable
     @FXML TableColumn<PanelBoard, Boolean> boardOutlineColumn;
 
     @FXML private VBox errorBox;
+    private CheckBox ignoreErrorCheckBox;
+    @FXML private Button continueButton;
 
     private boolean resetCacheOnChange = true;
 
@@ -109,6 +112,10 @@ public class PanelController extends ScreenController implements Initializable
             validateBoards();
             refreshTable();
         });
+
+        ignoreErrorCheckBox = new CheckBox("Ignore the errors. I know what I am doing");
+        continueButton.disableProperty().bind(Bindings.and(Bindings.isNotEmpty(errorBox.getChildren()),
+                Bindings.not(ignoreErrorCheckBox.selectedProperty())));
     }
 
     @Override
@@ -241,8 +248,13 @@ public class PanelController extends ScreenController implements Initializable
                 errorBox.getChildren().add(label);
             }
         });
+        if (!errorBox.getChildren().isEmpty())
+        {
+            errorBox.getChildren().add(ignoreErrorCheckBox);
+        }
         errorBox.setVisible(!errorBox.getChildren().isEmpty());
         errorBox.setManaged(errorBox.isVisible());
+        ignoreErrorCheckBox.setSelected(false);
     }
 
 }

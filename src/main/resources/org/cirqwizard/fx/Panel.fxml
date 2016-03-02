@@ -36,7 +36,7 @@
                     </ImageView>
                 </HBox>
             </AnchorPane>
-            <VBox fx:id="errorBox" visible="false" managed="false">
+            <VBox fx:id="errorBox" visible="false" managed="false" spacing="10">
                 <padding>
                     <Insets top="10" bottom="10" left="10" right="10"/>
                 </padding>
@@ -66,7 +66,7 @@
                 <padding>
                     <Insets right="37.0" bottom="28.0" top="28.0"/>
                 </padding>
-                <Button onAction="#next" text="Continue"/>
+                <Button fx:id="continueButton" onAction="#next" text="Continue"/>
             </HBox>
         </VBox>
     </HBox>
