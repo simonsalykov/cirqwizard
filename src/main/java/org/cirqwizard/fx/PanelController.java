@@ -42,6 +42,8 @@ public class PanelController extends ScreenController implements Initializable
     @FXML TableColumn<PanelBoard, Integer> boardYColumn;
     @FXML TableColumn<PanelBoard, Boolean> boardOutlineColumn;
 
+    @FXML private Button removeButton;
+
     @FXML private VBox errorBox;
     private CheckBox ignoreErrorCheckBox;
     @FXML private Button continueButton;
@@ -118,6 +120,8 @@ public class PanelController extends ScreenController implements Initializable
         ignoreErrorCheckBox = new CheckBox("Ignore the errors. I know what I am doing");
         continueButton.disableProperty().bind(Bindings.and(Bindings.isNotEmpty(errorBox.getChildren()),
                 Bindings.not(ignoreErrorCheckBox.selectedProperty())));
+
+        removeButton.disableProperty().bind(Bindings.isNull(boardsTable.getSelectionModel().selectedItemProperty()));
     }
 
     @Override
@@ -224,6 +228,15 @@ public class PanelController extends ScreenController implements Initializable
         {
             LoggerFactory.logException("Error adding board", e);
         }
+    }
+
+    public void removeBoard()
+    {
+        panelPane.getPanel().getBoards().remove(boardsTable.getSelectionModel().getSelectedItem());
+        savePanel();
+        panelPane.render();
+        refreshTable();
+        validateBoards();
     }
 
     private void savePanel()

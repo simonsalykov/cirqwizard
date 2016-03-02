@@ -45,7 +45,7 @@
         <VBox minWidth="350.0">
             <ToolBar>
                 <Button onAction="#addBoard" text="Add"/>
-                <Button text="Remove"/>
+                <Button fx:id="removeButton" onAction="#removeBoard" text="Remove"/>
             </ToolBar>
             <TableView fx:id="boardsTable" editable="true" VBox.vgrow="ALWAYS">
                 <columns>
