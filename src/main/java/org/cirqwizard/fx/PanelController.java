@@ -1,10 +1,15 @@
 package org.cirqwizard.fx;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.layers.Panel;
@@ -20,6 +25,9 @@ import java.util.ResourceBundle;
 
 public class PanelController extends ScreenController implements Initializable
 {
+    private static final KeyCodeCombination KEY_CODE_ZOOM_IN = new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCodeCombination KEY_CODE_ZOOM_OUT = new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN);
+
     @FXML private ComboBox<PCBSize> sizeComboBox;
     @FXML private ScrollPane scrollPane;
     @FXML private PanelPane panelPane;
@@ -110,6 +118,26 @@ public class PanelController extends ScreenController implements Initializable
                 ApplicationConstants.getRegistrationPinsInset());
         getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
                 ApplicationConstants.getRegistrationPinsInset());
+    }
+
+    @Override
+    public EventHandler<? super KeyEvent> getShortcutHandler()
+    {
+        return event -> {
+
+            if (event.isConsumed())
+                return;
+            if (KEY_CODE_ZOOM_IN.match(event))
+            {
+                zoomIn();
+                event.consume();
+            }
+            else if (KEY_CODE_ZOOM_OUT.match(event))
+            {
+                zoomOut();
+                event.consume();
+            }
+        };
     }
 
     private void refreshTable()

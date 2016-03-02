@@ -37,14 +37,14 @@
                 </HBox>
             </AnchorPane>
         </VBox>
-        <VBox minWidth="320.0">
+        <VBox minWidth="350.0">
             <ToolBar>
                 <Button onAction="#addBoard" text="Add"/>
                 <Button text="Remove"/>
             </ToolBar>
             <TableView fx:id="boardsTable" editable="true" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="boardFileColumn" prefWidth="120.0" text="PCB"/>
+                    <TableColumn fx:id="boardFileColumn" prefWidth="150.0" text="Layout"/>
                     <TableColumn fx:id="boardXColumn" prefWidth="60.0" text="X"/>
                     <TableColumn fx:id="boardYColumn" prefWidth="60.0" text="Y"/>
                     <TableColumn fx:id="boardOutlineController" prefWidth="70.0" text="Outline"/>
