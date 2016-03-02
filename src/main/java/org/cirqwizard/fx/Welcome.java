@@ -25,9 +25,11 @@ import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.layers.Panel;
+import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
@@ -62,7 +64,7 @@ public class Welcome extends ScreenController
             if (file.exists())
                 loadPanel(file);
             else
-                loadFile(file);
+                createPanel(file);
         };
         recentFilesPane.getChildren().clear();
         List<String> recentFiles = getRecentFiles();
@@ -87,13 +89,36 @@ public class Welcome extends ScreenController
             if (file.getAbsolutePath().toLowerCase().endsWith("cxml"))
                 loadPanel(file);
             else
-                loadFile(file);
+                createPanel(file);
+        }
+    }
+
+    private void createPanel(File file)
+    {
+        try
+        {
+            String basename = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.'));
+            Panel panel = new Panel();
+            panel.setSize(PCBSize.Small);
+            PanelBoard panelBoard = new PanelBoard();
+            panelBoard.setFilename(basename);
+            panelBoard.loadBoard();
+            panelBoard.centerInPanel(panel);
+            panel.addBoard(panelBoard);
+            File panelFile = new File(basename + ".cxml");
+            panel.save(panelFile);
+            loadPanel(panelFile);
+        }
+        catch (IOException e)
+        {
+            LoggerFactory.logException("Could not create panel", e);
         }
     }
 
     private void loadPanel(File file)
     {
         getMainApplication().resetContext();
+        setRecentFile(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')));
         Panel panel = Panel.loadFromFile(file);
         getMainApplication().getContext().setPanel(panel);
         getMainApplication().getContext().setPanelFile(file);

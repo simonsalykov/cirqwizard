@@ -130,4 +130,11 @@ public class PanelBoard
             rotations += rotations > 0 ? -1 : 1;
         }
     }
+
+    public void centerInPanel(Panel panel)
+    {
+        x = (panel.getSize().getWidth() - board.getWidth()) / 2;
+        y = (panel.getSize().getHeight() - board.getHeight()) / 2;
+    }
+
 }

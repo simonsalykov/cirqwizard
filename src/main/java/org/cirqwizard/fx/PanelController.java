@@ -214,9 +214,7 @@ public class PanelController extends ScreenController implements Initializable
 
             PanelBoard board = new PanelBoard(commonName, 0, 0);
             board.loadBoard();
-            PCBSize panelSize = sizeComboBox.getSelectionModel().getSelectedItem();
-            board.setX((panelSize.getWidth() - board.getBoard().getWidth()) / 2);
-            board.setY((panelSize.getHeight() - board.getBoard().getHeight()) / 2);
+            board.centerInPanel(panelPane.getPanel());
             panelPane.getPanel().addBoard(board);
             panelPane.getPanel().resetCacheTimestamps();
             savePanel();
