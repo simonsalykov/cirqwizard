@@ -232,19 +232,35 @@ public class PanelController extends ScreenController implements Initializable
         panel.save(getMainApplication().getContext().getPanelFile());
     }
 
+    private String trimBoardName(String fullName)
+    {
+        return fullName.substring(fullName.lastIndexOf(File.separatorChar) + 1, fullName.length());
+    }
+
     private void validateBoards()
     {
         errorBox.getChildren().clear();
         Panel panel = panelPane.getPanel();
         panel.getBoards().stream().forEach(b ->
         {
-            String filename = b.getFilename();
-            filename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1, filename.length());
             if (!validateFit(panel, b))
-                errorBox.getChildren().add(createErrorLabel("Board " + filename + " does not fit in the panel"));
+                errorBox.getChildren().add(createErrorLabel("Board " + trimBoardName(b.getFilename()) +
+                        " does not fit in the panel"));
             if (!validatePinClearance(panel, b))
-                errorBox.getChildren().add(createErrorLabel("Board " + filename + " overlaps with registration pins"));
+                errorBox.getChildren().add(createErrorLabel("Board " + trimBoardName(b.getFilename()) +
+                        " overlaps with registration pins"));
         });
+        for (int i = 0; i < panel.getBoards().size(); i++)
+        {
+            for (int j = i + 1; j < panel.getBoards().size(); j++)
+            {
+                PanelBoard b1 = panel.getBoards().get(i);
+                PanelBoard b2 = panel.getBoards().get(j);
+                if (!validateBoardsOverlap(b1, b2))
+                    errorBox.getChildren().add(createErrorLabel("Boards " + trimBoardName(b1.getFilename()) + " and " +
+                            trimBoardName(b2.getFilename()) + " overlap"));
+            }
+        }
         if (!errorBox.getChildren().isEmpty())
             errorBox.getChildren().add(ignoreErrorCheckBox);
         errorBox.setVisible(!errorBox.getChildren().isEmpty());
@@ -310,6 +326,21 @@ public class PanelController extends ScreenController implements Initializable
         double t = dx * tt.getX() + dy * tt.getY();
         Point circleCenterProjection = new Point((int)(t * dx * lineFrom.getX()), (int)(t * dy * lineFrom.getY()));
         return circleCenterProjection.distanceTo(circleCenter) <= radius;
+    }
+
+    private boolean validateBoardsOverlap(PanelBoard board1, PanelBoard board2)
+    {
+        Point[] points = new Point[]
+        {
+            new Point(board2.getX(), board2.getY()),
+            new Point(board2.getX(), board2.getY() + board2.getBoard().getHeight()),
+            new Point(board2.getX() + board2.getBoard().getWidth(), board2.getY() + board2.getBoard().getHeight()),
+            new Point(board2.getX() + board2.getBoard().getWidth(), board2.getY())
+        };
+        for (Point p : points)
+            if (boardContainsPoint(board1, p, 0))
+                return false;
+        return true;
     }
 
 }
