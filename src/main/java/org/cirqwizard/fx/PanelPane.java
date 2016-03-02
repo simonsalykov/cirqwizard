@@ -15,7 +15,6 @@ import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
-import org.cirqwizard.settings.ApplicationConstants;
 
 public class PanelPane extends Region
 {
@@ -111,14 +110,8 @@ public class PanelPane extends Region
         g.translate(0, -canvas.getHeight() * zoom);
         renderContour(g);
 
-        renderPin(g, ApplicationConstants.getRegistrationPinsInset(), ApplicationConstants.getRegistrationPinsInset());
-        renderPin(g, panel.getSize().getWidth() - ApplicationConstants.getRegistrationPinsInset(),
-                ApplicationConstants.getRegistrationPinsInset());
-        renderPin(g, ApplicationConstants.getRegistrationPinsInset(),
-                panel.getSize().getHeight() - ApplicationConstants.getRegistrationPinsInset());
-        renderPin(g, panel.getSize().getWidth() - ApplicationConstants.getRegistrationPinsInset(),
-                panel.getSize().getHeight() - ApplicationConstants.getRegistrationPinsInset());
-
+        for (Point p : panel.getPinLocations())
+            renderPin(g, p.getX(), p.getY());
         g.translate(PADDING, PADDING);
 
         PanelBoard selectedBoardValue = selectedBoard.getValue();

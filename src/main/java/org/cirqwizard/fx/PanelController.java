@@ -14,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
+import org.cirqwizard.geom.Point;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
@@ -29,6 +30,7 @@ public class PanelController extends ScreenController implements Initializable
 {
     private static final KeyCodeCombination KEY_CODE_ZOOM_IN = new KeyCodeCombination(KeyCode.EQUALS, KeyCombination.SHORTCUT_DOWN);
     private static final KeyCodeCombination KEY_CODE_ZOOM_OUT = new KeyCodeCombination(KeyCode.MINUS, KeyCombination.SHORTCUT_DOWN);
+
 
     @FXML private ComboBox<PCBSize> sizeComboBox;
     @FXML private ScrollPane scrollPane;
@@ -236,25 +238,78 @@ public class PanelController extends ScreenController implements Initializable
         Panel panel = panelPane.getPanel();
         panel.getBoards().stream().forEach(b ->
         {
-            if (b.getX() < 0 || b.getY() < 0 || b.getX() + b.getBoard().getWidth() > panel.getSize().getWidth() ||
-                    b.getY() + b.getBoard().getHeight() > panel.getSize().getHeight())
-            {
-                String filename = b.getFilename();
-                filename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1, filename.length());
-                Label label = new Label("Board " + filename + " does not fit in the panel");
-                label.setWrapText(true);
-                label.getStyleClass().add("error-box");
-                label.setPrefWidth(1000);
-                errorBox.getChildren().add(label);
-            }
+            String filename = b.getFilename();
+            filename = filename.substring(filename.lastIndexOf(File.separatorChar) + 1, filename.length());
+            if (!validateFit(panel, b))
+                errorBox.getChildren().add(createErrorLabel("Board " + filename + " does not fit in the panel"));
+            if (!validatePinClearance(panel, b))
+                errorBox.getChildren().add(createErrorLabel("Board " + filename + " overlaps with registration pins"));
         });
         if (!errorBox.getChildren().isEmpty())
-        {
             errorBox.getChildren().add(ignoreErrorCheckBox);
-        }
         errorBox.setVisible(!errorBox.getChildren().isEmpty());
         errorBox.setManaged(errorBox.isVisible());
         ignoreErrorCheckBox.setSelected(false);
+        errorBox.getParent().layout();
+        errorBox.getParent().layout();
+        errorBox.getParent().layout();
+    }
+
+    private Label createErrorLabel(String message)
+    {
+        Label label = new Label(message);
+        label.setWrapText(true);
+        label.getStyleClass().add("error-box");
+        label.setPrefWidth(1000);
+        label.setMinSize(200, Label.USE_PREF_SIZE);
+        return label;
+    }
+
+    private boolean validateFit(Panel panel, PanelBoard board)
+    {
+        return !(board.getX() < 0 || board.getY() < 0 ||
+                board.getX() + board.getBoard().getWidth() > panel.getSize().getWidth() ||
+                board.getY() + board.getBoard().getHeight() > panel.getSize().getHeight());
+    }
+
+    private boolean validatePinClearance(Panel panel, PanelBoard board)
+    {
+        for (Point p : panel.getPinLocations())
+            if (boardContainsPoint(board, p, ApplicationConstants.REGISTRATION_PIN_RADIUS))
+                return false;
+        return true;
+    }
+
+    private boolean boardContainsPoint(PanelBoard board, Point point, int radius)
+    {
+        if (point.getX() >= board.getX() && point.getX() <= board.getX() + board.getBoard().getWidth() &&
+                point.getY() >= board.getY() && point.getY() <= board.getY() + board.getBoard().getHeight())
+            return true;
+        Point p1 = new Point(board.getX(), board.getY());
+        Point p2 = p1.add(new Point(0, board.getBoard().getHeight()));
+        Point p3 = p1.add(new Point(board.getBoard().getWidth(), board.getBoard().getHeight()));
+        Point p4 = p1.add(new Point(board.getBoard().getWidth(), 0));
+        if (lineIntersectsCircle(p1, p2, point, radius))
+            return true;
+        if (lineIntersectsCircle(p2, p3, point, radius))
+            return true;
+        if (lineIntersectsCircle(p3, p4, point, radius))
+            return true;
+        if (lineIntersectsCircle(p4, p1, point, radius))
+            return true;
+        return false;
+    }
+
+    private boolean lineIntersectsCircle(Point lineFrom, Point lineTo, Point circleCenter, int radius)
+    {
+        double lineLength = lineFrom.distanceTo(lineTo);
+        Point directionVector = lineTo.subtract(lineFrom);
+        double dx = directionVector.getX() / lineLength;
+        double dy = directionVector.getY() / lineLength;
+        Point tt = circleCenter.subtract(lineFrom);
+        double t = dx * tt.getX() + dy * tt.getY();
+        Point circleCenterProjection = new Point((int)(t * dx * lineFrom.getX()), (int)(t * dy * lineFrom.getY()));
+        return circleCenterProjection.distanceTo(circleCenter) <= radius;
     }
 
 }

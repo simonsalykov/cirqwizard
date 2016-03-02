@@ -4,6 +4,7 @@ import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.ApplicationConstants;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -139,5 +140,18 @@ public class Panel
     public void resetCacheTimestamps()
     {
         boards.stream().forEach(PanelBoard::resetCacheTimestamps);
+    }
+
+    public Point[] getPinLocations()
+    {
+        return new Point[] {
+                new Point(ApplicationConstants.REGISTRATION_PINS_INSET, ApplicationConstants.REGISTRATION_PINS_INSET),
+                new Point(size.getWidth() - ApplicationConstants.REGISTRATION_PINS_INSET,
+                        ApplicationConstants.REGISTRATION_PINS_INSET),
+                new Point(ApplicationConstants.REGISTRATION_PINS_INSET,
+                        size.getHeight() - ApplicationConstants.REGISTRATION_PINS_INSET),
+                new Point(size.getWidth() - ApplicationConstants.REGISTRATION_PINS_INSET,
+                        size.getHeight() - ApplicationConstants.getRegistrationPinsInset())
+        };
     }
 }
