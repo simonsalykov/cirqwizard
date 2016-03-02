@@ -1,10 +1,12 @@
 package org.cirqwizard.fx;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
@@ -16,7 +18,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
+import org.cirqwizard.generation.outline.OutlineGenerator;
+import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.layers.Board;
+import org.cirqwizard.layers.LayerElement;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
@@ -26,6 +32,7 @@ import org.cirqwizard.settings.SettingsFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class PanelController extends ScreenController implements Initializable
@@ -110,6 +117,35 @@ public class PanelController extends ScreenController implements Initializable
             savePanel();
             panelPane.render();
         });
+        boardOutlineColumn.setCellValueFactory(new PropertyValueFactory<>("generateOutline"));
+        boardOutlineColumn.setCellFactory(p ->
+            new CheckBoxTableCell<>(index ->
+            {
+                PanelBoard board = boardsTable.getItems().get(index);
+                SimpleBooleanProperty generate = new SimpleBooleanProperty(board.isGenerateOutline());
+                generate.addListener((v, oldV, newV) ->
+                {
+                    board.setGenerateOutline(newV);
+                    if (newV)
+                    {
+                        List<LayerElement> elements = new OutlineGenerator(board).generateOutline();
+                        board.getBoard().getLayer(Board.LayerType.MILLING).setElements(elements);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            board.loadBoard();
+                        }
+                        catch (IOException e)
+                        {
+                            LoggerFactory.logException("Could not load board files", e);
+                        }
+                    }
+                    panelPane.render();
+                });
+                return generate;
+            }));
 
         panelPane.setBoardDragListener(() ->
         {

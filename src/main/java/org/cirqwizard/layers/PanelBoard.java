@@ -17,6 +17,8 @@ public class PanelBoard
     private int y;
     @Element
     private int angle;
+    @Element
+    private boolean generateOutline;
     @Element(required = false)
     private Date topLayerTimestamp;
     @Element(required = false)
@@ -73,6 +75,16 @@ public class PanelBoard
     public void setAngle(int angle)
     {
         this.angle = angle;
+    }
+
+    public boolean isGenerateOutline()
+    {
+        return generateOutline;
+    }
+
+    public void setGenerateOutline(boolean generateOutline)
+    {
+        this.generateOutline = generateOutline;
     }
 
     public void resetCacheTimestamps()
@@ -138,5 +150,6 @@ public class PanelBoard
         x = (panel.getSize().getWidth() - board.getWidth()) / 2;
         y = (panel.getSize().getHeight() - board.getHeight()) / 2;
     }
+
 
 }

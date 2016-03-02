@@ -52,7 +52,7 @@
                     <TableColumn fx:id="boardFileColumn" prefWidth="150.0" text="Layout"/>
                     <TableColumn fx:id="boardXColumn" prefWidth="60.0" text="X"/>
                     <TableColumn fx:id="boardYColumn" prefWidth="60.0" text="Y"/>
-                    <TableColumn fx:id="boardOutlineController" prefWidth="70.0" text="Outline"/>
+                    <TableColumn fx:id="boardOutlineColumn" prefWidth="70.0" text="Outline"/>
                 </columns>
             </TableView>
             <HBox spacing="10" alignment="CENTER_RIGHT">
