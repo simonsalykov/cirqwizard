@@ -12,6 +12,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.transform.Affine;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.layers.Board;
+import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.settings.ApplicationConstants;
@@ -27,14 +28,13 @@ public class PanelPane extends Region
     public static final Color SELECTED_BOARD_BACKGROUND_COLOR = Color.web("#eeffee");
     public static final Color CONTOUR_COLOR = Color.MAGENTA;
 
-    private static final int DEFAULT_ZOOM = 100;
     private static final int ZOOM_INCREMENT = 15;
     private static final int PADDING = 5000;
     private static final int CONTOUR_WIDTH = 100;
     private static final int PIN_DIAMETER = 3000;
 
     private org.cirqwizard.layers.Panel panel;
-    private int zoom = DEFAULT_ZOOM;
+    private int zoom;
     private int width;
     private int height;
     private boolean rendered = false;
@@ -54,6 +54,7 @@ public class PanelPane extends Region
     public void setPanel(Panel panel)
     {
         this.panel = panel;
+        selectedBoard.setValue(null);
     }
 
     public PanelPane()
@@ -142,8 +143,9 @@ public class PanelPane extends Region
                     g.translate(board.getX(), board.getY());
                     g.setStroke(color);
                     g.setFill(color);
-                    board.getBoard().getLayer(layerType).getElements().stream().
-                            forEach(e -> e.render(g));
+                    Layer layer = board.getBoard().getLayer(layerType);
+                    if (layer != null)
+                        layer.getElements().stream().forEach(e -> e.render(g));
                     g.translate(-board.getX(), -board.getY());
                 });
     }

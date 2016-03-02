@@ -166,7 +166,8 @@ public abstract class Machining extends SettingsDependentScreenController implem
 
         pcbPane.setBoardWidth(context.getPanel().getSize().getWidth());
         pcbPane.setBoardHeight(context.getPanel().getSize().getHeight());
-
+        pcbPane.toolpathsProperty().setValue(null);
+        pcbPane.repaint();
         generateToolpaths();
         pcbPane.repaint();
     }
