@@ -9,6 +9,8 @@ import org.cirqwizard.gerber.appertures.CircularAperture;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.LayerElement;
 import org.cirqwizard.layers.PanelBoard;
+import org.cirqwizard.settings.ContourMillingSettings;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +20,6 @@ import java.util.List;
  */
 public class OutlineGenerator
 {
-    public static final int TOOL_DIAMETER = 1000;
-    private static final int DRILL_DIAMETER = 600;
-    private static final int HOLES_COUNT = 4;
-    private static final int HOLES_SPACING = 250;
-
     private PanelBoard board;
 
     public OutlineGenerator(PanelBoard board)
@@ -32,7 +29,8 @@ public class OutlineGenerator
 
     public void generate()
     {
-        Point[] points = getExtremePoints(TOOL_DIAMETER  / 2);
+        ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+        Point[] points = getExtremePoints(settings.getGenerationToolDiameter().getValue()  / 2);
         ArrayList<LayerElement> contourShapes = new ArrayList<>();
         contourShapes.addAll(generateLines(points[0], points[1]));
         contourShapes.addAll(generateLines(points[1], points[2]));
@@ -40,7 +38,7 @@ public class OutlineGenerator
         contourShapes.addAll(generateLines(points[3], points[0]));
         board.getBoard().getLayer(Board.LayerType.MILLING).setElements(contourShapes);
 
-        points = getExtremePoints(DRILL_DIAMETER  / 2);
+        points = getExtremePoints(settings.getGenerationDrillDiameter().getValue()  / 2);
         ArrayList<LayerElement> drillPoints = new ArrayList<>();
         drillPoints.addAll(board.getBoard().getLayer(Board.LayerType.DRILLING).getElements());
         drillPoints.addAll(generateDrillHoles(points[0], points[1]));
@@ -71,9 +69,13 @@ public class OutlineGenerator
 
     private List<GerberPrimitive> generateLines(Point from, Point to)
     {
-        int adjustedTabLength = (DRILL_DIAMETER * HOLES_COUNT + HOLES_SPACING * (HOLES_COUNT + 1) + TOOL_DIAMETER) / 2;
+        ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+        int adjustedTabLength = (settings.getGenerationDrillDiameter().getValue() *
+                settings.getGenerationHolesCount().getValue() + settings.getGenerationHolesSpacing().getValue() *
+                (settings.getGenerationHolesCount().getValue() + 1) +
+                settings.getGenerationToolDiameter().getValue()) / 2;
         ArrayList<GerberPrimitive> result = new ArrayList<>();
-        Aperture aperture = new CircularAperture(TOOL_DIAMETER);
+        Aperture aperture = new CircularAperture(settings.getGenerationToolDiameter().getValue());
         Point midPoint1 = getOffsetMidpoint(from, to, -adjustedTabLength);
         result.add(new LinearShape(from.getX(), from.getY(), midPoint1.getX(), midPoint1.getY(), aperture,
                 GerberPrimitive.Polarity.DARK));
@@ -85,12 +87,14 @@ public class OutlineGenerator
 
     private List<? extends LayerElement> generateDrillHoles(Point from, Point to)
     {
-        int offset = -((DRILL_DIAMETER + HOLES_SPACING) * (HOLES_COUNT - 1)) / 2;
+        ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+        int offset = -((settings.getGenerationDrillDiameter().getValue() + settings.getGenerationHolesSpacing().getValue()) *
+                (settings.getGenerationHolesCount().getValue() - 1)) / 2;
         ArrayList<LayerElement> points = new ArrayList<>();
-        for (int i = 0; i < HOLES_COUNT; i++)
+        for (int i = 0; i < settings.getGenerationHolesCount().getValue(); i++)
         {
-            points.add(new DrillPoint(getOffsetMidpoint(from, to, offset), DRILL_DIAMETER));
-            offset += DRILL_DIAMETER + HOLES_SPACING;
+            points.add(new DrillPoint(getOffsetMidpoint(from, to, offset), settings.getGenerationDrillDiameter().getValue()));
+            offset += settings.getGenerationDrillDiameter().getValue() + settings.getGenerationHolesSpacing().getValue();
         }
         return points;
     }

@@ -7,12 +7,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
-import org.cirqwizard.generation.outline.OutlineGenerator;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -136,7 +136,8 @@ public class PanelValidator
 
     private Point[] getBoardExtremePoints(PanelBoard board)
     {
-        int offset = board.isGenerateOutline() ? OutlineGenerator.TOOL_DIAMETER : 0;
+        int offset = board.isGenerateOutline() ?
+                SettingsFactory.getContourMillingSettings().getGenerationToolDiameter().getValue() : 0;
         return new Point[]{
                 new Point(board.getX() - offset, board.getY() - offset),
                 new Point(board.getX() - offset, board.getY() + board.getBoard().getHeight() + offset),

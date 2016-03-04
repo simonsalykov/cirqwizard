@@ -17,6 +17,22 @@ package org.cirqwizard.settings;
 public class ContourMillingSettings extends SettingsGroup
 {
     @PersistentPreference
+    @PreferenceGroup(name = "Outline generation")
+    private UserPreference<Integer> generationToolDiameter = new UserPreference<>("End mill diameter", 1_000, "mm");
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Outline generation")
+    private UserPreference<Integer> generationDrillDiameter = new UserPreference<>("Drill diameter", 600, "mm");
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Outline generation")
+    private UserPreference<Integer> generationHolesCount = new UserPreference<>("Holes count", 4, "holes").setType(PreferenceType.INTEGER);
+
+    @PersistentPreference
+    @PreferenceGroup(name = "Outline generation")
+    private UserPreference<Integer> generationHolesSpacing = new UserPreference<>("Holes spacing", 250, "mm");
+
+    @PersistentPreference
     @PreferenceGroup(name = "Feeds")
     private UserPreference<Integer> feedXY = new UserPreference<>("X and Y axes", 300_000, "mm/min");
 
@@ -58,6 +74,46 @@ public class ContourMillingSettings extends SettingsGroup
     public String getPreferencesPrefix()
     {
         return "contour-milling";
+    }
+
+    public UserPreference<Integer> getGenerationToolDiameter()
+    {
+        return generationToolDiameter;
+    }
+
+    public void setGenerationToolDiameter(UserPreference<Integer> generationToolDiameter)
+    {
+        this.generationToolDiameter = generationToolDiameter;
+    }
+
+    public UserPreference<Integer> getGenerationDrillDiameter()
+    {
+        return generationDrillDiameter;
+    }
+
+    public void setGenerationDrillDiameter(UserPreference<Integer> generationDrillDiameter)
+    {
+        this.generationDrillDiameter = generationDrillDiameter;
+    }
+
+    public UserPreference<Integer> getGenerationHolesCount()
+    {
+        return generationHolesCount;
+    }
+
+    public void setGenerationHolesCount(UserPreference<Integer> generationHolesCount)
+    {
+        this.generationHolesCount = generationHolesCount;
+    }
+
+    public UserPreference<Integer> getGenerationHolesSpacing()
+    {
+        return generationHolesSpacing;
+    }
+
+    public void setGenerationHolesSpacing(UserPreference<Integer> generationHolesSpacing)
+    {
+        this.generationHolesSpacing = generationHolesSpacing;
     }
 
     public UserPreference<Integer> getFeedXY()
