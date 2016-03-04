@@ -1,4 +1,4 @@
-package org.cirqwizard.fx;
+package org.cirqwizard.fx.panel;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -14,13 +14,13 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBSize;
+import org.cirqwizard.fx.PanelPane;
+import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.generation.outline.OutlineGenerator;
-import org.cirqwizard.generation.toolpath.Toolpath;
-import org.cirqwizard.geom.Point;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.LayerElement;
 import org.cirqwizard.layers.Panel;
@@ -56,6 +56,7 @@ public class PanelController extends ScreenController implements Initializable
     @FXML private VBox errorBox;
     private CheckBox ignoreErrorCheckBox;
     @FXML private Button continueButton;
+    private PanelValidator validator;
 
     private boolean resetCacheOnChange = true;
 
@@ -103,7 +104,7 @@ public class PanelController extends ScreenController implements Initializable
         {
             event.getRowValue().setX(event.getNewValue());
             panelPane.getPanel().resetCacheTimestamps();
-            validateBoards();
+            validator.validateBoards();
             savePanel();
             panelPane.render();
         });
@@ -113,45 +114,19 @@ public class PanelController extends ScreenController implements Initializable
         {
             event.getRowValue().setY(event.getNewValue());
             panelPane.getPanel().resetCacheTimestamps();
-            validateBoards();
+            validator.validateBoards();
             savePanel();
             panelPane.render();
         });
         boardOutlineColumn.setCellValueFactory(new PropertyValueFactory<>("generateOutline"));
-        boardOutlineColumn.setCellFactory(p ->
-            new CheckBoxTableCell<>(index ->
-            {
-                PanelBoard board = boardsTable.getItems().get(index);
-                SimpleBooleanProperty generate = new SimpleBooleanProperty(board.isGenerateOutline());
-                generate.addListener((v, oldV, newV) ->
-                {
-                    board.setGenerateOutline(newV);
-                    if (newV)
-                    {
-                        List<LayerElement> elements = new OutlineGenerator(board).generateOutline();
-                        board.getBoard().getLayer(Board.LayerType.MILLING).setElements(elements);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            board.loadBoard();
-                        }
-                        catch (IOException e)
-                        {
-                            LoggerFactory.logException("Could not load board files", e);
-                        }
-                    }
-                    panelPane.render();
-                });
-                return generate;
-            }));
+        boardOutlineColumn.setCellFactory(p -> new OutlineCheckBoxTableCell(boardsTable, panelPane,
+                getMainApplication().getContext().getPanelFile(), validator));
 
         panelPane.setBoardDragListener(() ->
         {
             panelPane.getPanel().resetCacheTimestamps();
             panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
-            validateBoards();
+            validator.validateBoards();
             refreshTable();
         });
 
@@ -175,7 +150,13 @@ public class PanelController extends ScreenController implements Initializable
                 ApplicationConstants.getRegistrationPinsInset());
         getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
                 ApplicationConstants.getRegistrationPinsInset());
-        validateBoards();
+        validator = new PanelValidator(panelPane.getPanel(), errorBox, ignoreErrorCheckBox, () ->
+        {
+            savePanel();
+            panelPane.render();
+            refreshTable();
+        });
+        validator.validateBoards();
     }
 
     @Override
@@ -258,7 +239,7 @@ public class PanelController extends ScreenController implements Initializable
             savePanel();
             panelPane.render();
             refreshTable();
-            validateBoards();
+            validator.validateBoards();
         }
         catch (IOException e)
         {
@@ -272,162 +253,13 @@ public class PanelController extends ScreenController implements Initializable
         savePanel();
         panelPane.render();
         refreshTable();
-        validateBoards();
+        validator.validateBoards();
     }
 
     private void savePanel()
     {
-        Panel panel = getMainApplication().getContext().getPanel();
-        panel.save(getMainApplication().getContext().getPanelFile());
-    }
-
-    private String trimBoardName(String fullName)
-    {
-        return fullName.substring(fullName.lastIndexOf(File.separatorChar) + 1, fullName.length());
-    }
-
-    private void locateMissingFiles(PanelBoard board)
-    {
-        FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All supported files", "*.sol", "*.cmp"));
-        File file = chooser.showOpenDialog(null);
-        if (file != null)
-        {
-            try
-            {
-                board.setFilename(file.getAbsolutePath().substring(0,
-                        file.getAbsolutePath().lastIndexOf('.')));
-                board.loadBoard();
-                if (board.getBoard().hasLayers())
-                {
-                    savePanel();
-                    validateBoards();
-                    panelPane.render();
-                    refreshTable();
-                }
-            }
-            catch (IOException e)
-            {
-                LoggerFactory.logException("Could not load board data", e);
-            }
-        }
-    }
-
-    private void validateBoards()
-    {
-        errorBox.getChildren().clear();
-        Panel panel = panelPane.getPanel();
-        panel.getBoards().stream().forEach(b ->
-        {
-            if (!validateFit(panel, b))
-                errorBox.getChildren().add(createErrorLabel("Board " + trimBoardName(b.getFilename()) +
-                        " does not fit in the panel"));
-            if (!validatePinClearance(panel, b))
-                errorBox.getChildren().add(createErrorLabel("Board " + trimBoardName(b.getFilename()) +
-                        " overlaps with registration pins"));
-            if (!b.getBoard().hasLayers())
-            {
-                Text text = new Text("Board " + trimBoardName(b.getFilename()) +
-                        " could not be found. Perhaps the files were moved?");
-                text.getStyleClass().add("text");
-                Hyperlink hyperlink = new Hyperlink("Locate files");
-                hyperlink.setOnAction(event -> locateMissingFiles(b));
-                TextFlow flow = new TextFlow(text, hyperlink);
-                flow.getStyleClass().add("error-box");
-                errorBox.getChildren().add(flow);
-            }
-        });
-        for (int i = 0; i < panel.getBoards().size(); i++)
-        {
-            for (int j = i + 1; j < panel.getBoards().size(); j++)
-            {
-                PanelBoard b1 = panel.getBoards().get(i);
-                PanelBoard b2 = panel.getBoards().get(j);
-                if (!validateBoardsOverlap(b1, b2))
-                    errorBox.getChildren().add(createErrorLabel("Boards " + trimBoardName(b1.getFilename()) + " and " +
-                            trimBoardName(b2.getFilename()) + " overlap"));
-            }
-        }
-        if (!errorBox.getChildren().isEmpty() && errorBox.getChildren().stream().noneMatch(n -> n instanceof TextFlow))
-            errorBox.getChildren().add(ignoreErrorCheckBox);
-        errorBox.setVisible(!errorBox.getChildren().isEmpty());
-        errorBox.setManaged(errorBox.isVisible());
-        ignoreErrorCheckBox.setSelected(false);
-        errorBox.getParent().layout();
-        errorBox.getParent().layout();
-        errorBox.getParent().layout();
-    }
-
-    private Label createErrorLabel(String message)
-    {
-        Label label = new Label(message);
-        label.setWrapText(true);
-        label.getStyleClass().add("error-box");
-        label.setPrefWidth(1000);
-        label.setMinSize(200, Label.USE_PREF_SIZE);
-        return label;
-    }
-
-    private boolean validateFit(Panel panel, PanelBoard board)
-    {
-        return !(board.getX() < 0 || board.getY() < 0 ||
-                board.getX() + board.getBoard().getWidth() > panel.getSize().getWidth() ||
-                board.getY() + board.getBoard().getHeight() > panel.getSize().getHeight());
-    }
-
-    private boolean validatePinClearance(Panel panel, PanelBoard board)
-    {
-        for (Point p : panel.getPinLocations())
-            if (boardContainsPoint(board, p, ApplicationConstants.REGISTRATION_PIN_RADIUS))
-                return false;
-        return true;
-    }
-
-    private boolean boardContainsPoint(PanelBoard board, Point point, int radius)
-    {
-        if (point.getX() >= board.getX() && point.getX() <= board.getX() + board.getBoard().getWidth() &&
-                point.getY() >= board.getY() && point.getY() <= board.getY() + board.getBoard().getHeight())
-            return true;
-        Point p1 = new Point(board.getX(), board.getY());
-        Point p2 = p1.add(new Point(0, board.getBoard().getHeight()));
-        Point p3 = p1.add(new Point(board.getBoard().getWidth(), board.getBoard().getHeight()));
-        Point p4 = p1.add(new Point(board.getBoard().getWidth(), 0));
-        if (lineIntersectsCircle(p1, p2, point, radius))
-            return true;
-        if (lineIntersectsCircle(p2, p3, point, radius))
-            return true;
-        if (lineIntersectsCircle(p3, p4, point, radius))
-            return true;
-        if (lineIntersectsCircle(p4, p1, point, radius))
-            return true;
-        return false;
-    }
-
-    private boolean lineIntersectsCircle(Point lineFrom, Point lineTo, Point circleCenter, int radius)
-    {
-        double lineLength = lineFrom.distanceTo(lineTo);
-        Point directionVector = lineTo.subtract(lineFrom);
-        double dx = directionVector.getX() / lineLength;
-        double dy = directionVector.getY() / lineLength;
-        Point tt = circleCenter.subtract(lineFrom);
-        double t = dx * tt.getX() + dy * tt.getY();
-        Point circleCenterProjection = new Point((int)(t * dx * lineFrom.getX()), (int)(t * dy * lineFrom.getY()));
-        return circleCenterProjection.distanceTo(circleCenter) <= radius;
-    }
-
-    private boolean validateBoardsOverlap(PanelBoard board1, PanelBoard board2)
-    {
-        Point[] points = new Point[]
-        {
-            new Point(board2.getX(), board2.getY()),
-            new Point(board2.getX(), board2.getY() + board2.getBoard().getHeight()),
-            new Point(board2.getX() + board2.getBoard().getWidth(), board2.getY() + board2.getBoard().getHeight()),
-            new Point(board2.getX() + board2.getBoard().getWidth(), board2.getY())
-        };
-        for (Point p : points)
-            if (boardContainsPoint(board1, p, 0))
-                return false;
-        return true;
+        Context context = getMainApplication().getContext();
+        context.getPanel().save(context.getPanelFile());
     }
 
 }

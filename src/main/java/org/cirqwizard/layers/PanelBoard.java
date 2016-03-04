@@ -1,5 +1,7 @@
 package org.cirqwizard.layers;
 
+import org.cirqwizard.generation.outline.OutlineGenerator;
+import org.cirqwizard.logging.LoggerFactory;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Transient;
 
@@ -121,9 +123,22 @@ public class PanelBoard
 
     public void rotate(boolean clockwise)
     {
+        if (generateOutline)
+        {
+            try
+            {
+                loadBoard(true);
+            }
+            catch (IOException e)
+            {
+                LoggerFactory.logException("Could not load board files", e);
+            }
+        }
         angle += clockwise ? 90 : -90;
         angle %= 360;
         board.rotate(clockwise);
+        if (generateOutline)
+            new OutlineGenerator(this).generate();
     }
 
     public Board getBoard()
@@ -132,6 +147,11 @@ public class PanelBoard
     }
 
     public void loadBoard() throws IOException
+    {
+        loadBoard(false);
+    }
+
+    private void loadBoard(boolean omitOutlineGeneration) throws IOException
     {
         board = new Board();
         board.loadLayers(filename);
@@ -143,6 +163,8 @@ public class PanelBoard
             board.rotate(angle > 0);
             rotations += rotations > 0 ? -1 : 1;
         }
+        if (generateOutline && !omitOutlineGeneration)
+            new OutlineGenerator(this).generate();
     }
 
     public void centerInPanel(Panel panel)

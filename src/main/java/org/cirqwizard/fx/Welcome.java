@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
+import org.cirqwizard.fx.panel.PanelController;
 import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;

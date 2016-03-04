@@ -124,6 +124,7 @@ public class PanelPane extends Region
 
         renderLayer(g, Board.LayerType.BOTTOM, BOTTOM_TRACE_COLOR);
         renderLayer(g, Board.LayerType.TOP, TOP_TRACE_COLOR);
+        renderLayer(g, Board.LayerType.DRILLING, DRILL_POINT_COLOR);
         renderLayer(g, Board.LayerType.MILLING, CONTOUR_COLOR);
         rendered = true;
     }

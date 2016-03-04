@@ -28,6 +28,7 @@ import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
+import org.cirqwizard.fx.panel.PanelController;
 import org.cirqwizard.fx.pp.InsertPPHead;
 import org.cirqwizard.fx.pp.PPGroup;
 import org.cirqwizard.fx.pp.PlacingOverview;

@@ -16,22 +16,22 @@
                 <HBox spacing="10" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10">
                     <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomIn" pickOnBounds="true">
                         <image>
-                            <Image url="@icons/zoom-in.png" preserveRatio="true" smooth="true"/>
+                            <Image url="@../icons/zoom-in.png" preserveRatio="true" smooth="true"/>
                         </image>
                     </ImageView>
                     <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#zoomOut" pickOnBounds="true">
                         <image>
-                            <Image url="@icons/zoom-out.png" preserveRatio="true" smooth="true"/>
+                            <Image url="@../icons/zoom-out.png" preserveRatio="true" smooth="true"/>
                         </image>
                     </ImageView>
                     <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#rotateCw" pickOnBounds="true">
                         <image>
-                            <Image url="@icons/rotate-cw.png" preserveRatio="true" smooth="true"/>
+                            <Image url="@../icons/rotate-cw.png" preserveRatio="true" smooth="true"/>
                         </image>
                     </ImageView>
                     <ImageView fitWidth="24" fitHeight="24" onMouseClicked="#rotateCcw" pickOnBounds="true">
                         <image>
-                            <Image url="@icons/rotate-ccw.png" preserveRatio="true" smooth="true"/>
+                            <Image url="@../icons/rotate-ccw.png" preserveRatio="true" smooth="true"/>
                         </image>
                     </ImageView>
                 </HBox>
