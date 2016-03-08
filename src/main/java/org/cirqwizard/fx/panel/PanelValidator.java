@@ -1,3 +1,16 @@
+/*
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.cirqwizard.fx.panel;
 
 import javafx.scene.control.CheckBox;
@@ -17,9 +30,6 @@ import org.cirqwizard.settings.SettingsFactory;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by simon on 02.03.16.
- */
 public class PanelValidator
 {
     private Panel panel;

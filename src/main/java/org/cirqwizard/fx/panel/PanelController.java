@@ -1,12 +1,23 @@
+/*
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package org.cirqwizard.fx.panel;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
@@ -20,10 +31,6 @@ import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.fx.PanelPane;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
-import org.cirqwizard.generation.outline.OutlineGenerator;
-import org.cirqwizard.layers.Board;
-import org.cirqwizard.layers.LayerElement;
-import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;
@@ -32,7 +39,6 @@ import org.cirqwizard.settings.SettingsFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class PanelController extends ScreenController implements Initializable
