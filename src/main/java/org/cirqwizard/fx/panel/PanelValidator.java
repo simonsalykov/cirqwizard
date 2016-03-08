@@ -60,7 +60,7 @@ public class PanelValidator
             {
                 Text text = new Text("Board " + trimBoardName(b.getFilename()) +
                         " could not be found. Perhaps the files were moved?");
-                text.getStyleClass().add("text");
+                text.getStyleClass().add("label");
                 Hyperlink hyperlink = new Hyperlink("Locate files");
                 hyperlink.setOnAction(event -> locateMissingFiles(b));
                 TextFlow flow = new TextFlow(text, hyperlink);
