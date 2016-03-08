@@ -59,7 +59,7 @@ public class TraceGCodeGenerator
         if (mirror)
         {
             MachineSettings machineSettings = SettingsFactory.getMachineSettings();
-            int laminateWidth = context.getPcbSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() : machineSettings.getLargePcbWidth().getValue();
+            int laminateWidth = context.getPanel().getSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() : machineSettings.getLargePcbWidth().getValue();
             int pinX = machineSettings.getReferencePinX().getValue();
             g54X = pinX * 2 + laminateWidth - context.getG54X();
         }

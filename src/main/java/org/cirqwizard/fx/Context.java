@@ -32,7 +32,6 @@ public class Context
     private Tool insertedTool;
     private ToolSettings currentMillingTool;
     private int currentMillingToolIndex;
-    private PCBSize pcbSize;
     private Integer g54X;
     private Integer g54Y;
     private Integer g54Z;
@@ -86,16 +85,6 @@ public class Context
     public void setCurrentMillingToolIndex(int currentMillingToolIndex)
     {
         this.currentMillingToolIndex = currentMillingToolIndex;
-    }
-
-    public PCBSize getPcbSize()
-    {
-        return pcbSize;
-    }
-
-    public void setPcbSize(PCBSize pcbSize)
-    {
-        this.pcbSize = pcbSize;
     }
 
     public Integer getG54X()
