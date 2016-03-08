@@ -30,7 +30,7 @@ public class ContourMillingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Outline generation")
-    private UserPreference<Integer> generationHolesSpacing = new UserPreference<>("Holes spacing", 250, "mm");
+    private UserPreference<Integer> generationHolesSpacing = new UserPreference<>("Holes spacing", 50, "mm");
 
     @PersistentPreference
     @PreferenceGroup(name = "Feeds")
