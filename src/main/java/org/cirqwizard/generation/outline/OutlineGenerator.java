@@ -7,6 +7,7 @@ import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.gerber.appertures.CircularAperture;
 import org.cirqwizard.layers.Board;
+import org.cirqwizard.layers.Layer;
 import org.cirqwizard.layers.LayerElement;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.settings.ContourMillingSettings;
@@ -36,6 +37,8 @@ public class OutlineGenerator
         contourShapes.addAll(generateLines(points[1], points[2]));
         contourShapes.addAll(generateLines(points[2], points[3]));
         contourShapes.addAll(generateLines(points[3], points[0]));
+        if (board.getBoard().getLayer(Board.LayerType.MILLING) == null)
+            board.getBoard().setLayer(Board.LayerType.MILLING, new Layer());
         board.getBoard().getLayer(Board.LayerType.MILLING).setElements(contourShapes);
 
         points = getExtremePoints(settings.getGenerationDrillDiameter().getValue()  / 2);
