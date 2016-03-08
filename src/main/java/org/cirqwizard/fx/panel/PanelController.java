@@ -165,24 +165,26 @@ public class PanelController extends ScreenController implements Initializable
         validator.validateBoards();
     }
 
+    private EventHandler<? super KeyEvent> shortcutHandler = event -> {
+
+        if (event.isConsumed())
+            return;
+        if (KEY_CODE_ZOOM_IN.match(event))
+        {
+            zoomIn();
+            event.consume();
+        }
+        else if (KEY_CODE_ZOOM_OUT.match(event))
+        {
+            zoomOut();
+            event.consume();
+        }
+    };
+
     @Override
     public EventHandler<? super KeyEvent> getShortcutHandler()
     {
-        return event -> {
-
-            if (event.isConsumed())
-                return;
-            if (KEY_CODE_ZOOM_IN.match(event))
-            {
-                zoomIn();
-                event.consume();
-            }
-            else if (KEY_CODE_ZOOM_OUT.match(event))
-            {
-                zoomOut();
-                event.consume();
-            }
-        };
+        return shortcutHandler;
     }
 
     private void refreshTable()
