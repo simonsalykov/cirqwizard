@@ -29,18 +29,17 @@ import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
+import org.cirqwizard.generation.toolpath.PPPoint;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.PPSettings;
 import org.cirqwizard.settings.PredefinedLocationSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.generation.toolpath.PPPoint;
 
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 public class ComponentPlacement extends ScreenController implements Initializable
 {
     @FXML private Label header;
-    @FXML private ComboBox<String> componentName;
+    @FXML private ComboBox<PPPoint> componentName;
 
     @FXML private TitledPane pickupPane;
     @FXML private RealNumberTextField pickupX;
@@ -72,7 +71,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @FXML private Button moveHeadAwayButton;
     @FXML private Button vacuumOffButton;
 
-    private ObservableList<String> componentNames;
+    private ObservableList<PPPoint> components;
     private HashMap<Integer, Integer[]> placementOffsets = new HashMap<>();
 
     private static final int feederOffsetX = 10 * ApplicationConstants.RESOLUTION;
@@ -99,8 +98,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
-        componentNames = FXCollections.observableArrayList();
-        componentName.setItems(componentNames);
+        components = FXCollections.observableArrayList();
+        componentName.setItems(components);
         componentName.valueProperty().addListener((v, oldV, newV) -> updateComponent());
 
         KeyboardHandler keyboardHandler = new KeyboardHandler();
@@ -137,9 +136,9 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         ComponentId id =  context.getCurrentComponent();
         header.setText(id.getPackaging() + " " + id.getValue());
 
-        componentNames.setAll(context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+        components.setAll(context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
                 map(c -> (PPPoint)c).
-                filter(p -> p.getId().equals(id)).map(PPPoint::getName).collect(Collectors.toList()));
+                filter(p -> p.getId().equals(id)).collect(Collectors.toList()));
         componentName.getSelectionModel().select(0);
         pickupNGoButton.setDisable(true);
         placementPane.setDisable(true);
@@ -161,31 +160,23 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     private void updateComponent()
     {
-        Context context = getMainApplication().getContext();
-        for (PPPoint p : (List<PPPoint>)context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT))
+        PPPoint p = componentName.getSelectionModel().getSelectedItem();
+        targetX.setIntegerValue(p.getPoint().getX());
+        targetY.setIntegerValue(p.getPoint().getY());
+        targetAngle.setIntegerValue(p.getAngle());
+
+        Integer[] offsets = placementOffsets.get(p.getAngle());
+        if (offsets != null)
         {
-            if (p.getName().equals(componentName.getValue()))
-            {
-                targetX.setIntegerValue(p.getPoint().getX());
-                targetY.setIntegerValue(p.getPoint().getY());
-                targetAngle.setIntegerValue(p.getAngle());
-
-                Integer[] offsets = placementOffsets.get(p.getAngle());
-                if (offsets != null)
-                {
-                    placementX.setIntegerValue(offsets[0]);
-                    placementY.setIntegerValue(offsets[1]);
-                    placementAngle.setIntegerValue(offsets[2]);
-                }
-                else
-                {
-                    placementX.setIntegerValue(null);
-                    placementY.setIntegerValue(null);
-                    placementAngle.setIntegerValue(null);
-                }
-
-                break;
-            }
+            placementX.setIntegerValue(offsets[0]);
+            placementY.setIntegerValue(offsets[1]);
+            placementAngle.setIntegerValue(offsets[2]);
+        }
+        else
+        {
+            placementX.setIntegerValue(null);
+            placementY.setIntegerValue(null);
+            placementAngle.setIntegerValue(null);
         }
         pickupPane.setDisable(false);
         atPickupLocation = false;

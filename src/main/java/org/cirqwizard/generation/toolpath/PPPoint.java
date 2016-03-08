@@ -122,6 +122,12 @@ public class PPPoint implements LayerElement
     }
 
     @Override
+    public String toString()
+    {
+        return name;
+    }
+
+    @Override
     public boolean isVisible()
     {
         return false;
