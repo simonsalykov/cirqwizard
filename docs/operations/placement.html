@@ -132,21 +132,21 @@
         
         
         
-        
-        
-        <li><a href="/docs/preparation/gerber.html">Preparation - Gerber files</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/file_selection.html">Preparation - File selection</a></li>
+        <li><a href="/docs/gerber.html">Gerber files</a></li>
         
         
         
-        <li><a href="/docs/preparation/pcb_orientation.html">Preparation - PCB orientation</a></li>
+        
+        
+        <li><a href="/docs/panel/panel-creating.html">Panel - creating</a></li>
         
         
         
-        <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
+        <li><a href="/docs/panel/panel-overview.html">Panel - overview</a></li>
+        
+        
+        
+        <li><a href="/docs/preparation/homing.html">Homing</a></li>
         
         
         
@@ -251,20 +251,12 @@
     
   </header>
   
-  <p><span class="caps">SMD</span> components placement involves the steps described below. If it follows previous operations in the process, some steps might be omitted.</p>
-<h3>Opening files and selecting orientation</h3>
-<p>Open files and select board orientation following advices of <a href="/docs/preparation/file_selection.html">Preparation &#8211; File selection</a> and <a href="/docs/preparation/pcb_orienation.html">Preparation &#8211; <span class="caps">PCB</span> orientation</a> sections. Please note, that this operation requires a file with <strong>.mnt</strong> extension, as explained in <a href="/docs/preparation/gerber.html">Preparation &#8211; Gerber files</a></p>
-<h3>Machine homing</h3>
-<p>Home your machine as explained in <a href="/docs/preparation/homing.html">Preparation &#8211; Homing</a> section.</p>
+  <p><span class="caps">SMD</span> components placement involves the steps described below.</p>
 <h3>Placing <span class="caps">PCB</span> laminate on the machine bed</h3>
-<p><img src="/images/screenshots/v1.4/pp/pcb_placement.png" alt="" /></p>
-<p>As instructed, put <span class="caps">PCB</span> laminate on the machine bed and select which size of laminate you use.</p>
+<p><img src="/images/screenshots/v1.6/insulation_milling/pcb_placement.png" alt="" /></p>
+<p>As instructed, put <span class="caps">PCB</span> laminate and spacer on the machine bed. You can use <strong>Manual control</strong> popup to move the machine&#8217;s head out of the way.</p>
 <h3>Inserting Pick-and-place head in the machine</h3>
 <p>As instructed, insert pick-and-place head in the machine and make all necessary connections.</p>
-<h3>Establishing X and Y offsets</h3>
-<p>X and Y offsets determine the location of lower left corner of your board on the laminate. Usually you would know these values from previous operations.</p>
-<p><img src="/images/screenshots/v1.4/pp/xy_offsets.png" alt="" /></p>
-<p><strong>Show me where it is</strong> button moves the machine head to the specified location. Should you wish to be very precise in pinpointing the location on the laminate, <strong>Move Z axis</strong> pane allows you to lower the head, moving the tool closer to laminate surface.</p>
 <h3>Reviewing components list</h3>
 <p><img src="/images/screenshots/v1.4/pp/overview.png" alt="" /></p>
 <p>The program presents you a list of all the components that are going to be placed. That&#8217;s a good moment to make sure you have everything at hand.</p>
@@ -287,7 +279,7 @@
 	</tr>
 	<tr>
 		<td> Component pitch </td>
-		<td> Pitch of the components in tape/reel </td>
+		<td> Pitch of the components in tape </td>
 	</tr>
 </table>
 <p>These values are needed on the next stage to calculate the location of the components on the panel.</p>
@@ -340,6 +332,8 @@ It also contains buttons <strong>Move head away</strong> which gets the head as 
 
 
 
+
+<script type="text/javascript" src="/javascripts/retina.js"></script>
 
 
 </body>

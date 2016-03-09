@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-02-09T15:11:59+01:00</updated>
+  <updated>2016-03-09T23:38:44+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.0]]></title>
+    <link href="http://cirqwizard.org//blog/2016/03/09/version-1-dot-6-0/"/>
+    <updated>2016-03-09T18:22:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2016/03/09/version-1-dot-6-0</id>
+    <content type="html"><![CDATA[<p>This version introduces a new feature &#8211; panels. Panels allow to place more than one board on the laminate. Preview also provides better feedback on the exact location of the boards with respect to the edges of the laminate and registration pins. Check out the updated documentation!</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.5.13]]></title>

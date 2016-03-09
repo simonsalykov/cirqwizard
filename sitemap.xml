@@ -79,12 +79,16 @@
         <lastmod>2016-02-09T15:01:12+01:00</lastmod>
     </url>
     <url>
+        <loc>http://cirqwizard.org//blog/2016/03/09/version-1-dot-6-0/</loc>
+        <lastmod>2016-03-09T18:29:59+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://cirqwizard.org//blog/archives/</loc>
-        <lastmod>2016-02-09T15:01:12+01:00</lastmod>
+        <lastmod>2016-03-09T18:29:59+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//blog/</loc>
-        <lastmod>2016-02-09T15:01:12+01:00</lastmod>
+        <lastmod>2016-03-09T18:29:59+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/firmware.html</loc>
@@ -95,48 +99,48 @@
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
     </url>
     <url>
+        <loc>http://cirqwizard.org//docs/gerber.html</loc>
+        <lastmod>2016-03-09T11:11:50+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://cirqwizard.org//docs/intro.html</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/contour_milling.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T17:42:17+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/dispensing.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T18:00:27+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/drilling.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T17:58:07+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/milling.html</loc>
-        <lastmod>2015-10-07T17:18:51+02:00</lastmod>
+        <lastmod>2016-03-09T17:57:05+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/placement.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T18:06:57+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/operations/rubout.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T17:38:10+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//docs/preparation/file_selection.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <loc>http://cirqwizard.org//docs/panel/panel-creating.html</loc>
+        <lastmod>2016-03-09T16:38:04+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//docs/preparation/gerber.html</loc>
-        <lastmod>2015-07-13T17:18:45+02:00</lastmod>
+        <loc>http://cirqwizard.org//docs/panel/panel-overview.html</loc>
+        <lastmod>2016-03-09T17:54:39+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/preparation/homing.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/preparation/pcb_orientation.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T11:11:38+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/application.html</loc>
@@ -144,7 +148,7 @@
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/contour_milling.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+        <lastmod>2016-03-09T18:10:38+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//docs/settings/dispensing.html</loc>
@@ -184,7 +188,7 @@
     </url>
     <url>
         <loc>http://cirqwizard.org//downloads/</loc>
-        <lastmod>2016-02-09T15:11:49+01:00</lastmod>
+        <lastmod>2016-03-09T23:18:59+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//features/contour_milling.html</loc>
@@ -216,7 +220,7 @@
     </url>
     <url>
         <loc>http://cirqwizard.org//</loc>
-        <lastmod>2016-02-09T15:01:12+01:00</lastmod>
+        <lastmod>2016-03-09T18:29:59+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//</loc>

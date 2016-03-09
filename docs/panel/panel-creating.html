@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Preparation - File selection - cirQWizard</title>
+  <title>Panel - creating - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//docs/preparation/file_selection.html">
+  <link rel="canonical" href="http://cirqwizard.org//docs/panel/panel-creating.html">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -132,21 +132,21 @@
         
         
         
-        
-        
-        <li><a href="/docs/preparation/gerber.html">Preparation - Gerber files</a></li>
-        
-        
-        
-        <li><a href="/docs/preparation/file_selection.html">Preparation - File selection</a></li>
+        <li><a href="/docs/gerber.html">Gerber files</a></li>
         
         
         
-        <li><a href="/docs/preparation/pcb_orientation.html">Preparation - PCB orientation</a></li>
+        
+        
+        <li><a href="/docs/panel/panel-creating.html">Panel - creating</a></li>
         
         
         
-        <li><a href="/docs/preparation/homing.html">Preparation - Homing</a></li>
+        <li><a href="/docs/panel/panel-overview.html">Panel - overview</a></li>
+        
+        
+        
+        <li><a href="/docs/preparation/homing.html">Homing</a></li>
         
         
         
@@ -247,12 +247,21 @@
 <article role="article" class="span9">
   
   <header class="page-header">
-    <h1 class="entry-title">Preparation - File Selection</h1>
+    <h1 class="entry-title">Panel - Creating</h1>
     
   </header>
   
-  <p>After opening cirQWizard you need to select <span class="caps">PCB</span> design files to work with (you can refer to section <a href="/docs/preparation/gerber.html">Preparation &#8211; Gerber</a> for information on what these files are). Open file dialog lets you select either <strong>.cmp</strong> (top layer traces) or <strong>.sol</strong> (bottom layer traces) file. It does not matter which file exactly you select &#8211; the application will then attempt to load all supported files, looking for files with extensions corresponding to other layers in the same folder.<br />
-<img src="/images/screenshots/v1.4/file_selection.png" alt="" /></p>
+  <h3>Panels</h3>
+<p>Panel represents a piece of a blank <span class="caps">PCB</span> laminate that you are going to use. It can contain one or several boards on a panel.</p>
+<p>Panel is saved in a file with .cxml extension. The file references gerber files with the boards located on the panel. Thus, if gerber files are moved or modified, integrity of a panel layout can be compromised. Panel is saved in a file with .cxml extension.</p>
+<h3>Creating empty panel</h3>
+<p>There are two ways to create a panel. Empty panel can be created by clicking on a Create panel link on the first screen of cirQWizard:<br />
+<img src="/images/screenshots/v1.6/panel/create-empty.gif" alt="" /><br />
+In this case, the application asks where to save panel file.</p>
+<h3>Creating a panel from a gerber file</h3>
+<p>Another possibility is to open a gerber file for either top or bottom layer of the board to be produced.<br />
+<img src="/images/screenshots/v1.6/panel/panel-create-gerber.gif" alt="" /><br />
+When this option is used, the panel file is automatically saved in the same folder as the specified gerber file with the name matching the gerber file name.</p>
   
     <footer>
       
@@ -288,6 +297,8 @@
 
 
 
+
+<script type="text/javascript" src="/javascripts/retina.js"></script>
 
 
 </body>
