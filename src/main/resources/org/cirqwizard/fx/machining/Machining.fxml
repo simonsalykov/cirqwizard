@@ -40,47 +40,42 @@
             <padding>
                 <Insets bottom="10" left="15" right="15"/>
             </padding>
-            <children>
-                <HBox alignment="TOP_LEFT" spacing="10.0" AnchorPane.leftAnchor="0">
-                    <children>
-                        <Button fx:id="goButton" onAction="#executeProgram"
-                                styleClass="red-background" text="Run"/>
-                        <Separator orientation="VERTICAL"/>
-                        <Button onAction="#enableSelected">
-                            <graphic>
-                                <ImageView id="selection-include" pickOnBounds="true">
-                                    <image>
-                                        <Image url="@../icons/selection-include.png" preserveRatio="true"
-                                               smooth="true"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Button onAction="#disableSelected">
-                            <graphic>
-                                <ImageView id="selection-exclude" pickOnBounds="true">
-                                    <image>
-                                        <Image url="@../icons/selection-exclude.png" preserveRatio="true"
-                                               smooth="true"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                        <Separator orientation="VERTICAL"/>
-                        <Button mnemonicParsing="false" onAction="#showGCodeListing">
-                            <graphic>
-                                <ImageView id="gcode" pickOnBounds="true">
-                                    <image>
-                                        <Image url="@../icons/gcode.png" preserveRatio="true" smooth="true"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                    </children>
-                </HBox>
-                <Button defaultButton="true" mnemonicParsing="false" onAction="#next" text="Continue"
-                        AnchorPane.rightAnchor="0"/>
-            </children>
+            <HBox alignment="TOP_LEFT" spacing="10.0" AnchorPane.leftAnchor="0">
+                <Button fx:id="goButton" onAction="#executeProgram"
+                        styleClass="red-background" text="Run"/>
+                <Separator orientation="VERTICAL"/>
+                <Button onAction="#enableSelected">
+                    <graphic>
+                        <ImageView id="selection-include" pickOnBounds="true">
+                            <image>
+                                <Image url="@../icons/selection-include.png" preserveRatio="true"
+                                       smooth="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button onAction="#disableSelected">
+                    <graphic>
+                        <ImageView id="selection-exclude" pickOnBounds="true">
+                            <image>
+                                <Image url="@../icons/selection-exclude.png" preserveRatio="true"
+                                       smooth="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Separator orientation="VERTICAL"/>
+                <Button fx:id="showGCodeButton" onAction="#showGCodeListing">
+                    <graphic>
+                        <ImageView id="gcode" pickOnBounds="true">
+                            <image>
+                                <Image url="@../icons/gcode.png" preserveRatio="true" smooth="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+            <Button defaultButton="true" onAction="#next" text="Continue" AnchorPane.rightAnchor="0"/>
         </AnchorPane>
     </VBox>
     <Region fx:id="veil" styleClass="pcb-veil" visible="false"/>

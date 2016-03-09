@@ -21,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
@@ -30,6 +31,7 @@ import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.layers.Panel;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
+import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +45,8 @@ public class Welcome extends ScreenController
 {
     private static final String PREFERENCE_NAME = "interface.recent.files";
 
-    @FXML
-    private GridPane recentFilesPane;
+    @FXML private GridPane recentFilesPane;
+    @FXML private VBox missingSettingsBox;
 
     @Override
     protected String getFxmlName()
@@ -70,6 +72,8 @@ public class Welcome extends ScreenController
             hyperlink.setOnAction(handler);
             recentFilesPane.add(hyperlink, 0, i);
         }
+        missingSettingsBox.setVisible(SettingsFactory.getAllGroups().stream().anyMatch(g -> g.validate() != null));
+        missingSettingsBox.setManaged(missingSettingsBox.isVisible());
     }
 
     private void openFile(String filename)

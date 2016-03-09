@@ -34,6 +34,7 @@ import org.cirqwizard.fx.controls.RealNumberTextFieldTableCell;
 import org.cirqwizard.layers.PanelBoard;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;
+import org.cirqwizard.settings.MachineSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.io.File;
@@ -152,10 +153,14 @@ public class PanelController extends ScreenController implements Initializable
         resetCacheOnChange = true;
         refreshTable();
         zoomToFit(true);
-        getMainApplication().getContext().setG54X(SettingsFactory.getMachineSettings().getReferencePinX().getValue() -
-                ApplicationConstants.getRegistrationPinsInset());
-        getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
-                ApplicationConstants.getRegistrationPinsInset());
+        MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+        if (machineSettings.getReferencePinX().getValue() != null && machineSettings.getReferencePinY().getValue() != null)
+        {
+            getMainApplication().getContext().setG54X(machineSettings.getReferencePinX().getValue() -
+                    ApplicationConstants.getRegistrationPinsInset());
+            getMainApplication().getContext().setG54Y(machineSettings.getReferencePinY().getValue() -
+                    ApplicationConstants.getRegistrationPinsInset());
+        }
         validator = new PanelValidator(panelPane.getPanel(), errorBox, ignoreErrorCheckBox, () ->
         {
             savePanel();

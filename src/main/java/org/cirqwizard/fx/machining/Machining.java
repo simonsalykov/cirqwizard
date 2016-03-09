@@ -41,6 +41,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     @FXML protected ScrollPane scrollPane;
 
     @FXML protected Button goButton;
+    @FXML protected Button showGCodeButton;
 
     @FXML protected Region veil;
     @FXML protected VBox gcodePane;
@@ -159,7 +160,8 @@ public abstract class Machining extends SettingsDependentScreenController implem
         Context context = getMainApplication().getContext();
         serialService = new SerialInterfaceService(getMainApplication());
         if (!goButton.disableProperty().isBound())
-            goButton.setDisable(getMainApplication().getCNCController() == null);
+            goButton.setDisable(isRunningDisabled());
+        showGCodeButton.setDisable(isWcsDefined());
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
@@ -170,6 +172,19 @@ public abstract class Machining extends SettingsDependentScreenController implem
         pcbPane.repaint();
         generateToolpaths();
         pcbPane.repaint();
+    }
+
+    protected boolean isRunningDisabled()
+    {
+        return getMainApplication().getCNCController() == null ||
+                isWcsDefined();
+    }
+
+    private boolean isWcsDefined()
+    {
+        return getMainApplication().getContext().getG54X() == null ||
+                getMainApplication().getContext().getG54Y() == null ||
+                getMainApplication().getContext().getG54Z() == null;
     }
 
     public void zoomIn()

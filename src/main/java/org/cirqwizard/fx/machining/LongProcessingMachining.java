@@ -104,7 +104,7 @@ public abstract class LongProcessingMachining extends Machining
     public void refresh()
     {
         stopGenerationButton.setDisable(false);
-        if (getMainApplication().getCNCController() != null)
+        if (!isRunningDisabled())
             goButton.disableProperty().bind(longProcessingService.runningProperty());
         generationPane.visibleProperty().bind(longProcessingService.runningProperty());
         veil.visibleProperty().bind(longProcessingService.runningProperty());

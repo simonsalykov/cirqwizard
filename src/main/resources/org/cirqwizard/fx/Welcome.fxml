@@ -2,12 +2,19 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
-    <Hyperlink layoutX="85.0" layoutY="80.0" onAction="#createPanel" text="Create panel" />
-    <Hyperlink layoutX="85.0" layoutY="116.0" onAction="#openFile" text="Open file" />
-    <TitledPane animated="false" collapsible="false" layoutY="161.0" prefHeight="165.0" prefWidth="306.0" text="Recent files" AnchorPane.leftAnchor="85.0" AnchorPane.rightAnchor="100.0">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<VBox fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml">
+    <padding>
+        <Insets left="85" right="85" top="50" bottom="50"/>
+    </padding>
+    <Hyperlink onAction="#createPanel" text="Create panel" />
+    <Hyperlink onAction="#openFile" text="Open file" />
+    <VBox minHeight="30"/>
+    <TitledPane animated="false" collapsible="false" text="Recent files">
       <content>
-            <GridPane id="recentFilePane" fx:id="recentFilesPane" prefHeight="181.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <GridPane id="recentFilePane" fx:id="recentFilesPane">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -21,10 +28,23 @@
             </GridPane>
       </content>
     </TitledPane>
-    <VBox id="VBox" layoutX="79.0" layoutY="431.0" spacing="5.0">
-        <Hyperlink onAction="#showSettings" text="Settings" />
-        <Hyperlink onAction="#firmware" text="Flash firmware" />
-        <Hyperlink onAction="#openMDI" text="Direct GCode control" />
+    <VBox VBox.vgrow="ALWAYS" minHeight="30"/>
+    <VBox fx:id="missingSettingsBox" visible="false">
+        <VBox styleClass="error-box">
+            <TextFlow>
+                <Text text="Some mandatory settings are not specified. Not all functions will be available or work as expected." styleClass="label"/>
+                <Hyperlink text="Check settings..." onAction="#showSettings"/>
+            </TextFlow>
+        </VBox>
+        <VBox minHeight="30"/>
     </VBox>
-    <Hyperlink layoutY="485.0" onAction="#showAbout" text="About cirQWizard" AnchorPane.rightAnchor="102.0" />
-</AnchorPane>
+    <HBox>
+        <VBox id="VBox" spacing="5.0">
+            <Hyperlink onAction="#showSettings" text="Settings" />
+            <Hyperlink onAction="#firmware" text="Flash firmware" />
+            <Hyperlink onAction="#openMDI" text="Direct GCode control" />
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS"/>
+        <Hyperlink onAction="#showAbout" text="About cirQWizard" />
+    </HBox>
+</VBox>

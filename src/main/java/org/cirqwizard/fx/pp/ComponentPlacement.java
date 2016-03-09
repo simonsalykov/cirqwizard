@@ -32,10 +32,7 @@ import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.generation.toolpath.PPPoint;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.pp.ComponentId;
-import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.settings.PPSettings;
-import org.cirqwizard.settings.PredefinedLocationSettings;
-import org.cirqwizard.settings.SettingsFactory;
+import org.cirqwizard.settings.*;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -144,18 +141,25 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         placementPane.setDisable(true);
         manualZ.setDisable(true);
 
-        int x = SettingsFactory.getMachineSettings().getReferencePinX().getValue();
-        pickupX.setIntegerValue(x + feederOffsetX + context.getComponentPitch() / 2);
-        int y = SettingsFactory.getMachineSettings().getReferencePinY().getValue();
-        pickupY.setIntegerValue(context.getFeeder().getYForRow(y + feederOffsetY, context.getFeederRow()));
+        MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+
+        boolean referencePinsDefined = machineSettings.getReferencePinX().getValue() != null &&
+                machineSettings.getReferencePinY().getValue() != null;
+        if (referencePinsDefined)
+        {
+            pickupX.setIntegerValue(machineSettings.getReferencePinX().getValue() + feederOffsetX +
+                    context.getComponentPitch() / 2);
+            pickupY.setIntegerValue(context.getFeeder().getYForRow(machineSettings.getReferencePinY().getValue() +
+                    feederOffsetY, context.getFeederRow()));
+        }
 
         gotoTargetButton.setDisable(true);
 
-        boolean noMachineConnected = getMainApplication().getCNCController() == null;
-        gotoPickupButton.setDisable(noMachineConnected);
-        pickupButton.setDisable(noMachineConnected);
-        moveHeadAwayButton.setDisable(noMachineConnected);
-        vacuumOffButton.setDisable(noMachineConnected);
+        boolean disableOperation = getMainApplication().getCNCController() == null || !referencePinsDefined;
+        gotoPickupButton.setDisable(disableOperation);
+        pickupButton.setDisable(disableOperation);
+        moveHeadAwayButton.setDisable(disableOperation);
+        vacuumOffButton.setDisable(disableOperation);
     }
 
     private void updateComponent()
