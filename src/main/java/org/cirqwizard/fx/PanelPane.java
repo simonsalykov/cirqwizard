@@ -40,7 +40,8 @@ public class PanelPane extends Region
     public static final Color SELECTED_BOARD_BACKGROUND_COLOR = Color.web("#eeffee");
     public static final Color CONTOUR_COLOR = Color.MAGENTA;
 
-    private static final int ZOOM_INCREMENT = 15;
+    private static final int ZOOM_INCREMENT = 20;
+    private static final int MIN_ZOOM = 30;
     private static final int PADDING = 5000;
     private static final int CONTOUR_WIDTH = 100;
     private static final int PIN_DIAMETER = 3000;
@@ -174,6 +175,7 @@ public class PanelPane extends Region
     public void zoomIn()
     {
         zoom -= ZOOM_INCREMENT;
+        zoom = Math.max(zoom, MIN_ZOOM);
         render();
     }
 

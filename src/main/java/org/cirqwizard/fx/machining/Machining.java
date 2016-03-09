@@ -176,7 +176,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     {
         double scale = pcbPane.scaleProperty().getValue() + 0.005;
         scale = Math.max(scale, 0.005);
-        scale = Math.min(scale, 1);
+        scale = Math.min(scale, 0.045);
         pcbPane.scaleProperty().setValue(scale);
     }
 
@@ -184,7 +184,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     {
         double scale = pcbPane.scaleProperty().getValue() - 0.005;
         scale = Math.max(scale, 0.005);
-        scale = Math.min(scale, 1);
+        scale = Math.min(scale, 0.045);
         pcbPane.scaleProperty().setValue(scale);
     }
 
