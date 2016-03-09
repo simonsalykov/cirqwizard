@@ -38,7 +38,7 @@
         </VBox>
         <VBox minHeight="30"/>
     </VBox>
-    <HBox>
+    <HBox alignment="BOTTOM_LEFT">
         <VBox id="VBox" spacing="5.0">
             <Hyperlink onAction="#showSettings" text="Settings" />
             <Hyperlink onAction="#firmware" text="Flash firmware" />
