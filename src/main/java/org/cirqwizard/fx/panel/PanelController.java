@@ -200,6 +200,7 @@ public class PanelController extends ScreenController implements Initializable
             panelPane.getSelectedBoard().rotate(true);
             panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
             panelPane.render();
+            validator.validateBoards();
         }
     }
 
@@ -210,6 +211,7 @@ public class PanelController extends ScreenController implements Initializable
             panelPane.getSelectedBoard().rotate(false);
             panelPane.getPanel().save(getMainApplication().getContext().getPanelFile());
             panelPane.render();
+            validator.validateBoards();
         }
     }
 
