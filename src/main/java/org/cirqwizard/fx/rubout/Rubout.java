@@ -51,9 +51,8 @@ public abstract class Rubout extends LongProcessingMachining
     {
         pcbPane.setToolpathColor(PCBPane.ENABLED_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(getCurrentLayer()));
-
-        super.refresh();
         getMainApplication().getContext().setG54Z(SettingsFactory.getRubOutSettings().getZOffset().getValue());
+        super.refresh();
     }
 
     protected abstract int getCacheId();

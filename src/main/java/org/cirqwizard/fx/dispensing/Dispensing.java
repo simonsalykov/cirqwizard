@@ -43,13 +43,12 @@ public class Dispensing extends Machining
     @Override
     public void refresh()
     {
-        super.refresh();
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
         getMainApplication().getContext().setG54Z(settings.getZOffset().getValue());
-
         pcbPane.setGerberColor(PCBPane.SOLDER_PAD_COLOR);
         pcbPane.setToolpathColor(PCBPane.PASTE_TOOLPATH_COLOR);
         pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.SOLDER_PASTE));
+        super.refresh();
     }
 
     @Override
