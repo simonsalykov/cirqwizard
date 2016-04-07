@@ -64,15 +64,18 @@ public class Board
             setLayer(LayerType.TOP, new Layer(new GerberParser(new FileReader(filename + ".cmp")).parse()));
         if (new File(filename + ".sol").exists())
             setLayer(LayerType.BOTTOM, new Layer(new GerberParser(new FileReader(filename + ".sol")).parse()));
+        ImportSettings importSettings = SettingsFactory.getImportSettings();
         if (new File(filename + ".drd").exists())
-                setLayer(LayerType.DRILLING, new Layer(new ExcellonParser(new FileReader(filename + ".drd")).parse()));
+                setLayer(LayerType.DRILLING, new Layer(new ExcellonParser(importSettings.getExcellonIntegerPlaces().getValue(),
+                        importSettings.getExcellonDecimalPlaces().getValue(),
+                        importSettings.getExcellonUnits().getValue().getMultiplier(),
+                        new FileReader(filename + ".drd")).parse()));
         if (new File(filename + ".ncl").exists())
             setLayer(LayerType.MILLING, new Layer(new GerberParser(new FileReader(filename + ".ncl")).parse()));
         if (new File(filename + ".crc").exists())
             setLayer(LayerType.SOLDER_PASTE, new Layer(new GerberParser(new FileReader(filename + ".crc")).parse()));
         if (new File(filename + ".mnt").exists())
         {
-            ImportSettings importSettings = SettingsFactory.getImportSettings();
             setLayer(LayerType.PLACEMENT, new Layer(new PPParser(new FileReader(filename + ".mnt"),
                     importSettings.getCentroidFileFormat().getValue().getRegex(),
                     importSettings.getCentroidUnits().getValue().getMultiplier()).parse()));
