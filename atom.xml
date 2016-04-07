@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-03-09T23:38:44+01:00</updated>
+  <updated>2016-04-07T16:12:44+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.1]]></title>
+    <link href="http://cirqwizard.org//blog/2016/04/07/version-1-dot-6-1/"/>
+    <updated>2016-04-07T16:10:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2016/04/07/version-1-dot-6-1</id>
+    <content type="html"><![CDATA[<p>This version fixes a couple of bugs introduced in a previous release.</p>
+<p>The release notes are below:<br />
+<h2>        Bug</p>
+</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-178'>CQ-178</a>] &#8211;         Dispensing and rubout features don&#39;t work</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-179'>CQ-179</a>] &#8211;         Excellon import settings don&#39;t work</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.6.0]]></title>
@@ -344,17 +359,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.3.10
 <p>The system can be accessed at <a href="https://cirqwizard.atlassian.net/">https://cirqwizard.atlassian.net/</a> There you can find detailed information about issues addressed in each release, issues scheduled for the next releases, new features we are thinking about and all those annoying bugs no one has time to fix ;)</p>
 <p>What&#8217;s even better, after simple registration procedure everyone can contribute to the project &#8211; you can comment on issues, vote for them so that we know which issues are important to you, create new issues reporting bugs you&#8217;ve encountered or suggesting new great features!</p>
 <p>Help us make cirQWizard even more awesome!</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Blog goes live &amp; version 1.2.2]]></title>
-    <link href="http://cirqwizard.org//blog/2014/03/24/blog-goes-live-and-version-1-dot-2-2/"/>
-    <updated>2014-03-24T14:18:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2014/03/24/blog-goes-live-and-version-1-dot-2-2</id>
-    <content type="html"><![CDATA[<p>As the community of cirQWizard users grows, we feel it&#8217;s the right time to add another communication channel to keep everyone up to date on what we have done and what we are up to. So, from now on here we will be blogging about things happening to cirQWizard &#8211; new releases, known problems and workarounds, useful hints and whatever comes to our mind and we feel is appropriate to share.</p>
-<p>Needless to say, your comments are much appreciated! Feel free to share your thoughts in comments section below every article.</p>
-<p>So, today the news is that the version 1.2.2 is out. That&#8217;s a bug-fix release. The most important bug fixed there was the one that was causing missing segments of the tool paths during generation. This was caused by insufficient memory available to cirQWizard to utilize all of the available <span class="caps">CPU</span> cores. Now the application attempts to reprocess failed part of the board. You would see progress indicator jumping chaotically, as this happening. If this happens to you, you would know cirQWizard is running low on memory. Then it doesn&#8217;t make sense to run that many processing threads. To make more efficient use of your resources you can go to <strong>Settings&#8594;Application</strong> and decrease <strong>Processing threads</strong> value. With a bit of trial and error you can find a value, that would work well for you.</p>
-<p>We&#8217;re setting up a public access to the issue tracking system we use to develop cirQWizard. This would give everyone interested in depth information about what exactly was included in the released versions, as well as what we are working on at the moment and what we are thinking about. Stay tuned!</p>]]></content>
   </entry>
   
 </feed>
