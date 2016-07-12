@@ -432,4 +432,27 @@ public class ExcellonParserTest
         assertEquals(900, points.get(0).getToolDiameter());
     }
 
+    @Test
+    public void testNoDecimalPart() throws IOException
+    {
+        String fileContent = "M48\n" +
+                ";DRILL file {KiCad 4.0.2+e4-6225~38~ubuntu16.04.1-stable} date dom 10 jul 2016 23:16:58 CEST\n" +
+                ";FORMAT={-:-/ absolute / inch / decimal}\n" +
+                "FMAT,2\n" +
+                "INCH,TZ\n" +
+                "T6C0.039\n" +
+                "%\n" +
+                "G90\n" +
+                "G05\n" +
+                "M72\n" +
+                "T6\n" +
+                "X2.Y-2.85\n";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(50800, -72390), points.get(0).getPoint());
+        assertEquals(1000, points.get(0).getToolDiameter());
+    }
 }
