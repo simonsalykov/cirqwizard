@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-04-07T16:36:45+02:00</updated>
+  <updated>2016-07-13T00:51:28+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.2]]></title>
+    <link href="http://cirqwizard.org//blog/2016/07/13/version-1-dot-6-2/"/>
+    <updated>2016-07-13T00:49:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2016/07/13/version-1-dot-6-2</id>
+    <content type="html"><![CDATA[<p>This is a quick fix of a bug in Excellon parser (<a href="https://cirqwizard.atlassian.net/browse/CQ-182">CQ-182</a>).</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.6.1]]></title>
@@ -348,17 +356,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.3.10
 	</tr>
 </table>
 <p>For now, as this feature isn&#8217;t yet thoroughly tested, the default value for <strong>Additional passes</strong> is 0, which effectively disables it. Feel free to experiment and let us know which settings you like most!</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Issue tracking system up and running]]></title>
-    <link href="http://cirqwizard.org//blog/2014/03/25/issue-tracking-system-up-and-running/"/>
-    <updated>2014-03-25T00:13:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2014/03/25/issue-tracking-system-up-and-running</id>
-    <content type="html"><![CDATA[<p>As a next step in our effort to make cirQWizard even more open and transparent we&#8217;ve migrated to publicly available issue tracking system.</p>
-<p>The system can be accessed at <a href="https://cirqwizard.atlassian.net/">https://cirqwizard.atlassian.net/</a> There you can find detailed information about issues addressed in each release, issues scheduled for the next releases, new features we are thinking about and all those annoying bugs no one has time to fix ;)</p>
-<p>What&#8217;s even better, after simple registration procedure everyone can contribute to the project &#8211; you can comment on issues, vote for them so that we know which issues are important to you, create new issues reporting bugs you&#8217;ve encountered or suggesting new great features!</p>
-<p>Help us make cirQWizard even more awesome!</p>]]></content>
   </entry>
   
 </feed>
