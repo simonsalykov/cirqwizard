@@ -198,10 +198,10 @@ public class ExcellonParser
         }
         if (decimalPartStart < 0)
             decimalPartStart = leadingZeros ? integerPlaces : str.length() - decimalPlaces;
-        decimalPartStart = Math.max(decimalPartStart, 0);
         long number = 0;
         if (decimalPartStart < str.length())
-            number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(decimalPartStart)))).longValue();
+            number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(
+                    str.substring(Math.max(decimalPartStart, 0))))).longValue();
         for (int i = 0; i < str.length() - decimalPartStart; i++)
             number /= 10;
         if (str.length() > decimalPlaces)

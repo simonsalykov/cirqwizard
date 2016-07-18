@@ -15,13 +15,13 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.test.excellon;
 
 import org.cirqwizard.excellon.ExcellonParser;
-import org.cirqwizard.geom.Point;
 import org.cirqwizard.generation.toolpath.DrillPoint;
+import org.cirqwizard.geom.Point;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -455,4 +455,25 @@ public class ExcellonParserTest
         assertEquals(new Point(50800, -72390), points.get(0).getPoint());
         assertEquals(1000, points.get(0).getToolDiameter());
     }
+
+    @Test
+    public void testTrailingZeros() throws IOException
+    {
+        String fileContent = "%\n" +
+                "M48\n" +
+                "M72\n" +
+                "T01C0.0394\n" +
+                "%\n" +
+                "T01\n" +
+                "X947Y20239\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(2, 4, new BigDecimal(25400), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(2405, 51407), points.get(0).getPoint());
+        assertEquals(1000, points.get(0).getToolDiameter());
+    }
+
 }
