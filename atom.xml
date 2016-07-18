@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-07-13T00:51:28+02:00</updated>
+  <updated>2016-07-18T13:11:02+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.3]]></title>
+    <link href="http://cirqwizard.org//blog/2016/07/18/version-1-dot-6-3/"/>
+    <updated>2016-07-18T13:07:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2016/07/18/version-1-dot-6-3</id>
+    <content type="html"><![CDATA[<p>Another quick fix of a bug in Excellon parser (<a href="https://cirqwizard.atlassian.net/browse/CQ-183">CQ-183</a>), they seem to be coming in swarms&#8230;</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.6.2]]></title>
@@ -327,35 +335,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.3.10
 <ul>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-95'>CQ-95</a>] &#8211;         Add target that runs the application to the build.xml</li>
 </ul>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.3.0 released]]></title>
-    <link href="http://cirqwizard.org//blog/2014/03/27/version-1-dot-3-0-released/"/>
-    <updated>2014-03-27T19:13:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2014/03/27/version-1-dot-3-0-released</id>
-    <content type="html"><![CDATA[<p>Version 1.3.0 is a feature release, which adds a possibility to request milling tool path generation algorithm to make several passes around traces (or only around pads). This hopefully should decrease the possibility of solder bridges between pads or between pads and ground plane.</p>
-<p>Additional passes considerably increase milling time, regardless of whether it&#8217;s pads only or entire traces. But hopefully, there will be more time gained by not having to troubleshoot bridges.</p>
-<p>The relevant settings in the <strong>Insulation milling</strong> tab are:</p>
-<table class="table table-bordered ">
-	<tr>
-		<th>Setting </th>
-		<th>Meaning </th>
-	</tr>
-	<tr>
-		<td> Additional passes </td>
-		<td> Number of additional passes to be generated </td>
-	</tr>
-	<tr>
-		<td> Additional passes overlap </td>
-		<td> The overlap between previous pass and each successive pass </td>
-	</tr>
-	<tr>
-		<td> Additional passes around pads only </td>
-		<td> Whether to generate additional passes around all traces, or around pads only </td>
-	</tr>
-</table>
-<p>For now, as this feature isn&#8217;t yet thoroughly tested, the default value for <strong>Additional passes</strong> is 0, which effectively disables it. Feel free to experiment and let us know which settings you like most!</p>]]></content>
   </entry>
   
 </feed>
