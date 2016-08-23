@@ -15,6 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.optimizer;
 
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.settings.ApplicationConstants;
 
 import java.util.Random;
 
@@ -22,6 +23,8 @@ public class Phenotype
 {
     private int[] genes;
     private Double fitness = null;
+
+    private static double MOTION_PENALTY = 2000;
 
     public Phenotype(int[] genes)
     {
@@ -39,7 +42,11 @@ public class Phenotype
         for (int i : genes)
         {
             Chain chain = env.getChains().get(i);
-            fitness += currentLocation.distanceTo(chain.getStart());
+            if (currentLocation.distanceTo(chain.getStart()) > ApplicationConstants.ROUNDING)
+            {
+                fitness += currentLocation.distanceTo(chain.getStart());
+                fitness += MOTION_PENALTY;
+            }
             currentLocation = chain.getEnd();
         }
 

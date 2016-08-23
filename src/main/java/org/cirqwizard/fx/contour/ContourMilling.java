@@ -27,6 +27,7 @@ import org.cirqwizard.generation.gcode.MillingGCodeGenerator;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.ChainDetector;
 import org.cirqwizard.generation.optimizer.Optimizer;
+import org.cirqwizard.generation.optimizer.TimeEstimator;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.Board;
@@ -75,16 +76,25 @@ public class ContourMilling extends Machining
     protected void generateToolpaths()
     {
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
+        double feed = convertToDouble(settings.getFeedXY().getValue()) / 60;
+        double zFeed = convertToDouble(settings.getFeedZ().getValue()) / 60;
+        double arcFeed = convertToDouble(settings.getFeedXY().getDefaultValue()) / 60 * settings.getFeedArcs().getValue() / 100;
+        double clearance = convertToDouble(settings.getClearance().getValue());
+        double safetyHeight = convertToDouble(settings.getSafetyHeight().getValue());
+
         List<Toolpath> toolpaths = new MillingToolpathGenerator(
                 (List<GerberPrimitive>) getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.MILLING)).
                 generate();
+        double originalDuration = TimeEstimator.calculateTotalDuration(toolpaths, feed, zFeed, arcFeed, clearance, safetyHeight,
+                false, ApplicationConstants.ROUNDING);
         List<Chain> chains = new ChainDetector(toolpaths).detect();
-        chains = new Optimizer(chains, convertToDouble(settings.getFeedXY().getValue()) / 60,
-                convertToDouble(settings.getFeedZ().getValue()) / 60,
-                convertToDouble(settings.getFeedXY().getDefaultValue()) / 60 * settings.getFeedArcs().getValue() / 100,
-                convertToDouble(settings.getClearance().getValue()),
-                convertToDouble(settings.getSafetyHeight().getValue()), 100, new SimpleBooleanProperty()).optimize();
-        toolpaths = chains.stream().map(Chain::getSegments).flatMap(Collection::stream).collect(Collectors.toList());
+        chains = new Optimizer(chains, feed, zFeed, arcFeed, clearance, safetyHeight, 100, new SimpleBooleanProperty()).optimize();
+        List<Toolpath> optimizedToolpaths = chains.stream().map(Chain::getSegments).flatMap(Collection::stream).collect(Collectors.toList());
+        double optimizedDuration = TimeEstimator.calculateTotalDuration(toolpaths, feed, zFeed, arcFeed, clearance, safetyHeight,
+                false, ApplicationConstants.ROUNDING);
+        System.out.println("## " + originalDuration + " / " + optimizedDuration);
+        if (optimizedDuration < originalDuration)
+            toolpaths = optimizedToolpaths;
         getMainApplication().getContext().getPanel().setToolpaths(Board.LayerType.MILLING, toolpaths);
         pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
     }

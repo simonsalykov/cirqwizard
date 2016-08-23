@@ -21,6 +21,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import org.cirqwizard.generation.toolpath.Toolpath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -90,6 +91,12 @@ public class Optimizer
         }
 
         Phenotype mostFit = currentGeneration.getBestFitness(environment);
+
+        int[] originalGenes = new int[environment.getChains().size()];
+        Arrays.setAll(originalGenes, i -> i);
+        Phenotype original = new Phenotype(originalGenes);
+        System.out.println("@@ mostFit: " + mostFit.calculateFitness(environment) + ", original: " + original.calculateFitness(environment));
+
         ArrayList<Chain> result = new ArrayList<>();
         for (int i : mostFit.getGenes())
             result.add(environment.getChains().get(i));
