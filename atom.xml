@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-07-18T13:11:02+02:00</updated>
+  <updated>2016-08-23T17:41:56+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.4]]></title>
+    <link href="http://cirqwizard.org//blog/2016/08/23/version-1-dot-6-4/"/>
+    <updated>2016-08-23T17:08:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2016/08/23/version-1-dot-6-4</id>
+    <content type="html"><![CDATA[<p>Contour milling tool paths optimization introduced in version 1.5.12, sometimes seems to come up with solutions which are far worse than original non-optimized paths. Version 1.6.4 now checks if optimization actually resulted in improved milling time and applies the results only in this case.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.6.3]]></title>
@@ -307,33 +315,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.3.10
 <h2>        New Feature</h2>
 <ul>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-3'>CQ-3</a>] &#8211;         Visual guidance on offset selection screen</li>
-</ul>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.3.1 released]]></title>
-    <link href="http://cirqwizard.org//blog/2014/04/08/version-1-dot-3-1-released/"/>
-    <updated>2014-04-08T19:24:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2014/04/08/version-1-dot-3-1-released</id>
-    <content type="html"><![CDATA[<p>Version 1.3.1 is mostly a bug fix release. Here is the list of things fixed in this version:</p>
-<h2>        Bug</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-17'>CQ-17</a>] &#8211;         Exception on start up when using autodetect</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-30'>CQ-30</a>] &#8211;         Select all command on drilling screen selects holes irrespective of their diameter</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-77'>CQ-77</a>] &#8211;         Tabbing out of &quot;Tool diameter&quot; on machining screen doesn&#39;t trigger regeneration</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-85'>CQ-85</a>] &#8211;         Tool paths cache invalidation is inconsistent</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-90'>CQ-90</a>] &#8211;         Tool paths not regenerated when changing number of passes</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-93'>CQ-93</a>] &#8211;         <span class="caps">NPE</span> in SerialInterfaceFactory.getSerialInterfaces()</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-96'>CQ-96</a>] &#8211;         Empty lines in excellon file cause parser to fail</li>
-</ul>
-<h2>        Improvement</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-70'>CQ-70</a>] &#8211;         Better visibility for &quot;Go&quot; button on machining screen</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-91'>CQ-91</a>] &#8211;         Relabel &quot;Lower &amp; Test&quot; button</li>
-</ul>
-<h2>        Task</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-95'>CQ-95</a>] &#8211;         Add target that runs the application to the build.xml</li>
 </ul>]]></content>
   </entry>
   
