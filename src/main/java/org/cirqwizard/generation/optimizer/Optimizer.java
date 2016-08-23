@@ -91,12 +91,6 @@ public class Optimizer
         }
 
         Phenotype mostFit = currentGeneration.getBestFitness(environment);
-
-        int[] originalGenes = new int[environment.getChains().size()];
-        Arrays.setAll(originalGenes, i -> i);
-        Phenotype original = new Phenotype(originalGenes);
-        System.out.println("@@ mostFit: " + mostFit.calculateFitness(environment) + ", original: " + original.calculateFitness(environment));
-
         ArrayList<Chain> result = new ArrayList<>();
         for (int i : mostFit.getGenes())
             result.add(environment.getChains().get(i));

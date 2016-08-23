@@ -90,9 +90,8 @@ public class ContourMilling extends Machining
         List<Chain> chains = new ChainDetector(toolpaths).detect();
         chains = new Optimizer(chains, feed, zFeed, arcFeed, clearance, safetyHeight, 100, new SimpleBooleanProperty()).optimize();
         List<Toolpath> optimizedToolpaths = chains.stream().map(Chain::getSegments).flatMap(Collection::stream).collect(Collectors.toList());
-        double optimizedDuration = TimeEstimator.calculateTotalDuration(toolpaths, feed, zFeed, arcFeed, clearance, safetyHeight,
+        double optimizedDuration = TimeEstimator.calculateTotalDuration(optimizedToolpaths, feed, zFeed, arcFeed, clearance, safetyHeight,
                 false, ApplicationConstants.ROUNDING);
-        System.out.println("## " + originalDuration + " / " + optimizedDuration);
         if (optimizedDuration < originalDuration)
             toolpaths = optimizedToolpaths;
         getMainApplication().getContext().getPanel().setToolpaths(Board.LayerType.MILLING, toolpaths);

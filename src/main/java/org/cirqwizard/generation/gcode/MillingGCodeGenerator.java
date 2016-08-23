@@ -24,6 +24,7 @@ import org.cirqwizard.generation.toolpath.CircularToolpath;
 import org.cirqwizard.generation.toolpath.CuttingToolpath;
 import org.cirqwizard.generation.toolpath.LinearToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.settings.ApplicationConstants;
 
 import java.util.List;
 
@@ -61,7 +62,9 @@ public class MillingGCodeGenerator
             if (!toolpath.isEnabled())
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
-            if (prevLocation == null || !prevLocation.equals(curve.getFrom()))
+            if (prevLocation == null ||
+                    Math.abs(prevLocation.getX() - curve.getFrom().getX()) > ApplicationConstants.ROUNDING ||
+                    Math.abs(prevLocation.getY() - curve.getFrom().getY()) > ApplicationConstants.ROUNDING)
             {
                 postprocessor.rapid(str, null, null, clearance);
                 postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), clearance);
