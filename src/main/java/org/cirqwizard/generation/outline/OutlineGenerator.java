@@ -53,7 +53,10 @@ public class OutlineGenerator
 
         points = getExtremePoints(settings.getGenerationDrillDiameter().getValue()  / 2);
         ArrayList<LayerElement> drillPoints = new ArrayList<>();
-        drillPoints.addAll(board.getBoard().getLayer(Board.LayerType.DRILLING).getElements());
+        if (board.getBoard().getLayer(Board.LayerType.DRILLING) == null)
+            board.getBoard().setLayer(Board.LayerType.DRILLING, new Layer());
+        else
+            drillPoints.addAll(board.getBoard().getLayer(Board.LayerType.DRILLING).getElements());
         drillPoints.addAll(generateDrillHoles(points[0], points[1]));
         drillPoints.addAll(generateDrillHoles(points[1], points[2]));
         drillPoints.addAll(generateDrillHoles(points[2], points[3]));
