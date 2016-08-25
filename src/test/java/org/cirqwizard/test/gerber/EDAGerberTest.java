@@ -549,4 +549,112 @@ public class EDAGerberTest
         assertEquals(new Point(5156, 16611), l.getFrom());
         assertEquals(new Point(6451, 15290), l.getTo());
     }
+
+    @Test
+    public void testAllegroFile() throws IOException
+    {
+        String fileContent = "%FSLAX55Y55*MOIN*%\n" +
+                "%IR0*IPPOS*OFA0.00000B0.00000*MIA0B0*SFA1.00000B1.00000*%\n" +
+                "%ADD14C,.024*%\n" +
+                "%ADD11C,.06*%\n" +
+                "%ADD10C,.025*%\n" +
+                "%ADD13C,.035*%\n" +
+                "%ADD12C,.065*%\n" +
+                "%ADD15C,.015*%\n" +
+                "%ADD16C,.070004*%\n" +
+                "%ADD17C,.075004*%\n" +
+                "G75*\n" +
+                "%LPD*%\n" +
+                "G75*\n" +
+                "G36*\n" +
+                "G01X90625Y7880D02*\n" +
+                "Y94565D01*\n" +
+                "X86684Y98505D01*\n" +
+                "Y141847D01*\n" +
+                "X82744D01*\n" +
+                "Y149728D01*\n" +
+                "X90625D01*\n" +
+                "X94565Y153668D01*\n" +
+                "Y173369D01*\n" +
+                "X94094Y173840D01*\n" +
+                "X94084Y173905D01*\n" +
+                "G03X91160Y176828I-3459J-536D01*\n" +
+                "G01X91096Y176838D01*\n" +
+                "X90625Y177309D01*\n" +
+                "X82744D01*\n" +
+                "Y189130D01*\n" +
+                "X94565D01*\n" +
+                "Y193070D01*\n" +
+                "X86684D01*\n" +
+                "Y216711D01*\n" +
+                "X102445D01*\n" +
+                "Y203200D01*\n" +
+                "X93306D01*\n" +
+                "G03Y198700I-2681J-2250D01*\n" +
+                "G01X100436D01*\n" +
+                "G02X100719Y198017I0J-400D01*\n" +
+                "G01X100195Y197493D01*\n" +
+                "Y139597D01*\n" +
+                "X94565Y133967D01*\n" +
+                "Y106385D01*\n" +
+                "X98505Y102445D01*\n" +
+                "Y19701D01*\n" +
+                "X102445Y15761D01*\n" +
+                "X122904D01*\n" +
+                "X125094Y13570D01*\n" +
+                "X133350D01*\n" +
+                "X134774Y12147D01*\n" +
+                "X144220D01*\n" +
+                "X147834Y15761D01*\n" +
+                "X232472D01*\n" +
+                "X236412Y19701D01*\n" +
+                "Y55163D01*\n" +
+                "X232267Y59308D01*\n" +
+                "X232261Y59382D01*\n" +
+                "G03X228807Y62836I-3739J-285D01*\n" +
+                "G01X228733Y62842D01*\n" +
+                "X224591Y66983D01*\n" +
+                "X212771D01*\n" +
+                "X208831Y63043D01*\n" +
+                "Y55163D01*\n" +
+                "X200950Y47282D01*\n" +
+                "X197010D01*\n" +
+                "X193070Y51223D01*\n" +
+                "Y59103D01*\n" +
+                "X200950Y66983D01*\n" +
+                "Y80557D01*\n" +
+                "G02X201690Y80767I400J0D01*\n" +
+                "G03X206828Y85942I3191J1970D01*\n" +
+                "G02X207036Y86684I208J342D01*\n" +
+                "G01X226367D01*\n" +
+                "G02X226575Y85942I0J-400D01*\n" +
+                "G03X230468I1947J-3205D01*\n" +
+                "G02X230676Y86684I208J342D01*" +
+                "G01X241110D01*\n" +
+                "X255181Y72614D01*\n" +
+                "X296447D01*\n" +
+                "X310518Y86684D01*\n" +
+                "X316987D01*\n" +
+                "G02X317194Y85942I0J-400D01*\n" +
+                "G03X321088I1947J-3205D01*\n" +
+                "G02X321296Y86684I208J342D01*\n" +
+                "G01X334917D01*\n" +
+                "Y63043D01*\n" +
+                "X248233D01*\n" +
+                "Y7880D01*\n" +
+                "X90625D01*\n" +
+                "G37*\n" +
+                "M02*";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        List<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(1, elements.size());
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Region.class, p.getClass());
+        Region region = (Region) p;
+        assertEquals(75, region.getSegments().size());
+        assertEquals(new Point(21016, 2001), region.getMin());
+        assertEquals(new Point(85068, 55044), region.getMax());
+    }
 }
