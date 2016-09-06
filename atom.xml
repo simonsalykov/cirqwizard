@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-09-06T14:45:47+02:00</updated>
+  <updated>2016-09-06T14:46:33+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -18,7 +18,7 @@
     <link href="http://cirqwizard.org//blog/2016/09/06/version-1-dot-6-6/"/>
     <updated>2016-09-06T14:41:00+02:00</updated>
     <id>http://cirqwizard.org//blog/2016/09/06/version-1-dot-6-6</id>
-    <content type="html"><![CDATA[<p>Version 1.6.6 is another bug-fixing release, addressing an issue with centroid file formats, bug https://cirqwizard.atlassian.net/browse/CQ-187:CQ-187, to be specific.</p>]]></content>
+    <content type="html"><![CDATA[<p>Version 1.6.6 is another bug-fixing release, addressing an issue with centroid file formats, bug <a href="https://cirqwizard.atlassian.net/browse/CQ-187">CQ-187</a>, to be specific.</p>]]></content>
   </entry>
   
   <entry>
