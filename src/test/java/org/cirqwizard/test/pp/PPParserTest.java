@@ -19,6 +19,7 @@ import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.PPParser;
 import org.cirqwizard.settings.DistanceUnit;
 import org.cirqwizard.generation.toolpath.PPPoint;
+import org.cirqwizard.settings.PickAndPlaceFormat;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -111,8 +112,8 @@ public class PPParserTest
     public void testDesignSpark() throws IOException
     {
         String fileContent = "\"Name\",\"Component\",\"Side\",\"Centre X\",\"Centre Y\",\"Rotation\"\n" +
-                "\"U3\",\"BSS84\",\"Top\",\"220.7\",\"271.0\",\"90.00\"";
-        String regex = "\"(?<name>\\S+)\",\"(?<package>\\S+)\",\"Top\",\"(?<x>\\d+.?\\d*)\",\"(?<y>\\d+.?\\d*)\",\"(?<angle>\\d+.?\\d*)\"(?<value>.*)";
+                "\"U3\",\"BSS84\",\"Top\",\"220.7\",\"-271.0\",\"90.00\"";
+        String regex = PickAndPlaceFormat.DESIGNSPARK.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -120,7 +121,7 @@ public class PPParserTest
         assertEquals(1, points.size());
         PPPoint p = points.get(0);
         assertEquals(new ComponentId("BSS84", ""), p.getId());
-        assertEquals(new Point(220700, 271000), p.getPoint());
+        assertEquals(new Point(220700, -271000), p.getPoint());
         assertEquals(90000, p.getAngle());
         assertEquals("U3", p.getName());
 
