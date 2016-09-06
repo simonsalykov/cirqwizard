@@ -111,8 +111,8 @@ public class PPParserTest
     @Test
     public void testDesignSpark() throws IOException
     {
-        String fileContent = "\"Name\",\"Component\",\"Side\",\"Centre X\",\"Centre Y\",\"Rotation\"\n" +
-                "\"U3\",\"BSS84\",\"Top\",\"220.7\",\"-271.0\",\"90.00\"";
+        String fileContent = "\"Name\",\"Component\",\"Side\",\"Centre X\",\"Centre Y\",\"Rotation\",\"Value\"\n" +
+                "\"U3\",\"BSS84\",\"Top\",\"220.7\",\"-271.0\",\"90.00\",\"10\"";
         String regex = PickAndPlaceFormat.DESIGNSPARK.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
@@ -120,7 +120,7 @@ public class PPParserTest
 
         assertEquals(1, points.size());
         PPPoint p = points.get(0);
-        assertEquals(new ComponentId("BSS84", ""), p.getId());
+        assertEquals(new ComponentId("BSS84", "10"), p.getId());
         assertEquals(new Point(220700, -271000), p.getPoint());
         assertEquals(90000, p.getAngle());
         assertEquals("U3", p.getName());
