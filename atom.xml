@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-09-06T14:46:33+02:00</updated>
+  <updated>2016-09-29T14:03:23+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.7]]></title>
+    <link href="http://cirqwizard.org//blog/2016/09/29/version-1-dot-6-7/"/>
+    <updated>2016-09-29T14:01:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2016/09/29/version-1-dot-6-7</id>
+    <content type="html"><![CDATA[<p>Another bug squashed &#8211; <a href="https://cirqwizard.atlassian.net/browse/CQ-188">CQ-188</a> One by one, they&#8217;ll be all gone!</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.6.6]]></title>
@@ -225,22 +233,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.1
     <content type="html"><![CDATA[<p>Version 1.5.0 comes with the long promised copper rub out feature. That&#8217;s an additional step which you can choose to perform after insulation milling (it&#8217;s skipped by default &#8211; check the new <strong>Copper rub out</strong> section in the <strong>Settings</strong> to turn it on).</p>
 <p>As opposed to insulation milling, which simply isolates traces on the copper layer, this step completely removes copper from the places on the board, where it&#8217;s not supposed to be according to the layout. This is often required in circuits, involving radio frequencies or high voltages &#8211; unconnected copper alters electrical features of the board in undesired way.</p>
 <p>The implementation may not win the prettiest algorithm contest. It might not be the fastest algorithm on Earth either. But at least it&#8217;s here today and it gets the job done. We&#8217;ll address algorithm inefficiencies later down the road.</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Major UI revamp in 1.4.0]]></title>
-    <link href="http://cirqwizard.org//blog/2014/08/15/major-ui-revamp-in-1-dot-4-0/"/>
-    <updated>2014-08-15T14:30:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2014/08/15/major-ui-revamp-in-1-dot-4-0</id>
-    <content type="html"><![CDATA[<p>This version addresses user interface usability issues which were raised by our users. It rearranges controls in a way that keeps intuitive step-by-step wizard approach appreciated by those who are just getting their feet wet in <span class="caps">PCB</span> milling, but allows for greater flexibility required by more experienced users.</p>
-<p>So, the major new features are:</p>
-<ul>
-	<li>Breadcrumb bar navigation, allowing for direct jumps between application screens (no more <strong>Go back</strong>, <strong>Go back</strong>, <strong>Go back</strong> clicking to get to the screen you want to return to)</li>
-	<li><strong>Manual control</strong> popover accessible from every screen of application, allowing to move machine&#8217;s axes as you please</li>
-	<li>Predefined locations &#8211; in addition to already existing <strong>Far away</strong>, there&#8217;s now also <strong>Tool change</strong> location. Both of them with all three coordinates: X, Y and Z.</li>
-	<li><strong>Settings</strong> popover accessible from operations screens &#8211; you can now change all the settings related to the operation you are currently performing right from the operation screen. No need to go back to settings anymore to change additional passes overlap or pre-feed delay!</li>
-</ul>
-<p>This version has also seen major code refactoring, paving a way for new exciting features, which were held back by growing code complexity.</p>]]></content>
   </entry>
   
 </feed>
