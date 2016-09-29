@@ -204,7 +204,7 @@ public class ExcellonParser
                     str.substring(Math.max(decimalPartStart, 0))))).longValue();
         for (int i = 0; i < str.length() - decimalPartStart; i++)
             number /= 10;
-        if (str.length() > decimalPlaces)
+        if (decimalPartStart > 0 && decimalPartStart <= str.length())
             number += coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(0, decimalPartStart)))).longValue();
         return (int)(number * (negative ? -1 : 1));
     }

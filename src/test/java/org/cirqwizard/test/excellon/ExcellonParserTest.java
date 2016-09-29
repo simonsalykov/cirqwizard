@@ -476,4 +476,35 @@ public class ExcellonParserTest
         assertEquals(1000, points.get(0).getToolDiameter());
     }
 
+    @Test
+    public void testCQ188() throws IOException
+    {
+        String fileContent = "G92\n" +
+                "M48\n" +
+                "INCH,LZ\n" +
+                "FMAT,2\n" +
+                "T01C0.0280\n" +
+                "T02C0.0300\n" +
+                "T03C0.0320\n" +
+                "T04C0.0354\n" +
+                "T05C0.0787\n" +
+                "T06C0.0420\n" +
+                "DETECT,ON\n" +
+                "%\n" +
+                "G90\n" +
+                "T04\n" +
+                "X02909Y0237\n" +
+                "Y0247\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(2, 4, new BigDecimal(25400), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(2, points.size());
+
+        assertEquals(new Point(73888, 60198), points.get(0).getPoint());
+        assertEquals(900, points.get(0).getToolDiameter());
+        assertEquals(new Point(73888, 62738), points.get(1).getPoint());
+        assertEquals(900, points.get(0).getToolDiameter());
+    }
+
 }
