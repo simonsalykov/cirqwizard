@@ -22,7 +22,7 @@ public class RubOutSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Tool")
-    private UserPreference<Integer> speed = new UserPreference<>("Speed", 1390, "µs").setType(PreferenceType.INTEGER);
+    private UserPreference<Integer> speed = new UserPreference<>("Speed", 1390, "\u00B5s").setType(PreferenceType.INTEGER);
 
     @PersistentPreference
     @PreferenceGroup(name = "Feed")

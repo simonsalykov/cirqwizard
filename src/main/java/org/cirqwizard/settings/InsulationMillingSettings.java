@@ -34,7 +34,7 @@ public class InsulationMillingSettings extends SettingsGroup
     @Override
     public String getName()
     {
-        return "Insulation milling";
+        return "Isolation milling";
     }
 
     @Override
