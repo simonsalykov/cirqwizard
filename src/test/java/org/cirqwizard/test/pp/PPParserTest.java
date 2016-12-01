@@ -37,7 +37,7 @@ public class PPParserTest
         String fileContent = "C1  7.68  2.67   0 1µF SMD_0603\n" +
                 "C5 26.10 16.64 270 100nF SMD_0603\n" +
                 "C8 26.10 16.64 270 SMD_0805";
-        String regex = "(?<name>\\S+)\\s+(?<x>\\d+.?\\d*)\\s+(?<y>\\d+.?\\d*)\\s+(?<angle>\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?";
+        String regex = PickAndPlaceFormat.EAGLE.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -68,7 +68,7 @@ public class PPParserTest
         String fileContent = "\"C1\",\"100nF\",\"KERKO5X4R5\",\"23.876000\",\"14.732000\",\"90\",\"TOP\",\"THD\"\n" +
                 "\"J16\",\"JUMPER\",\"JUMPER\",\"\",\"\",\"0\",\"TOP\",\"THD\"\n" +
                 "\"R1\",\"10kOhm\",\"RESC6432X70N\",\"29.972000\",\"56.388000\",\"180\",\"TOP\",\"SMD\"";
-        String regex = "\"(?<name>\\S+)\",\"(?<value>\\S+)\",\"(?<package>\\S+)\",\"(?<x>\\d+.?\\d*)\",\"(?<y>\\d+.?\\d*)\",\"(?<angle>\\d+)\",\"TOP\",\"SMD\"";
+        String regex = PickAndPlaceFormat.ULTIBOARD.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -88,7 +88,7 @@ public class PPParserTest
                 "\n" +
                 "C11        CAP-0805           124.0028mm     65.4342mm    124.0028mm     65.4342mm    122.9028mm     65.4342mm  B        360.00 100nF          \n" +
                 "C11        CAP-0805           -124.0028mm     -65.4342mm    -124.0028mm     -65.4342mm    -122.9028mm     -65.4342mm  B        -360.00 100nF          ";
-        String regex = "(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>-?\\d+.?\\d*)mm\\s+(?<y>-?\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>-?\\d+.\\d*)\\s+(?<value>\\S+)\\s*";
+        String regex = PickAndPlaceFormat.ALTIUM.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -132,7 +132,7 @@ public class PPParserTest
     {
         String fileContent = "Ref,Side,Val,Package,PosX,PosY,Rot\n" +
                 "C1,F.Cu,100 nF,R_0805,104.673,-81.432,90\n";
-        String regex = "(?<name>\\S+),.*,(?<value>.+?),(?<package>\\S+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*)";
+        String regex = PickAndPlaceFormat.KICAD.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -150,7 +150,7 @@ public class PPParserTest
     {
         String fileContent = "RefDes,Name,X (mm),Y (mm),Side,Rotate,Value\n" +
                 "C1,CAP_0603,47.72,18.42,Top,270,2.2uF";
-        String regex= "(?<name>\\S+),(?<package>.+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),Top,(?<angle>\\d+.?\\d*),(?<value>\\S*)";
+        String regex= PickAndPlaceFormat.DIPTRACE.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -169,7 +169,7 @@ public class PPParserTest
     {
         String fileContent = "name,x,y,angle,value,package\n" +
                 "C1,40.147,19.883,270.00,100nF,CAP-0805-100nF-10%-X7R\n";
-        String regex= "(?<name>\\S+),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*),(?<value>\\S*),(?<package>.*)";
+        String regex = PickAndPlaceFormat.EASYPC.getRegex();
 
         PPParser parser = new PPParser(new StringReader(fileContent), regex);
         List<PPPoint> points = parser.parse();
@@ -190,7 +190,7 @@ public class PPParserTest
                 "\n" +
                 "\"R1\",\"15\",\"1206\",TOP,180,1548,90\n" +
                 "\"R3\",\"15.4\",\"1206\",TOP,180,2190,90\n";
-        String regex = "\"(?<name>\\S+)\",\"(?<value>\\S*)\",\"(?<package>.*)\",TOP,(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>\\d+.?\\d*)";
+        String regex = PickAndPlaceFormat.PROTEUS.getRegex();
         PPParser parser = new PPParser(new StringReader(fileContent), regex, DistanceUnit.THOU.getMultiplier());
         List<PPPoint> points = parser.parse();
 
