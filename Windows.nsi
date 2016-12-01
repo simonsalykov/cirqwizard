@@ -32,7 +32,7 @@ InstallDirRegKey HKCU "Software\cirQWizard" ""
 Section ;"Required"
      SetOutPath $INSTDIR
      File /r build\launch4j\*.*
-     File /r "C:\Program files\Java\jdk1.8.0_72\jre"
+     File /r "C:\Program files\Java\jdk1.8.0_111\jre"
      File "src\main\resources\package\windows\cirQWizard.ico"
 
      WriteUninstaller $INSTDIR\uninstaller.exe
