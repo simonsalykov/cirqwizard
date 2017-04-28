@@ -43,13 +43,13 @@ public class DrillPoint extends CuttingToolpath implements LayerElement
     @Override
     public Point getMin()
     {
-        return point;
+        return point.add(new Point(-getToolDiameter() / 2, -getToolDiameter() / 2));
     }
 
     @Override
     public Point getMax()
     {
-        return point;
+        return point.add(new Point(getToolDiameter() / 2, getToolDiameter() / 2));
 
     }
 
