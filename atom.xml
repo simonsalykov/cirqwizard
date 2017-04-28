@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2016-12-01T21:26:15+01:00</updated>
+  <updated>2017-04-28T23:24:11+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.6.9]]></title>
+    <link href="http://cirqwizard.org//blog/2017/04/28/version-1-dot-6-9/"/>
+    <updated>2017-04-28T23:20:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2017/04/28/version-1-dot-6-9</id>
+    <content type="html"><![CDATA[<p>Bug squashing never stops! We&#8217;ve just got rid of some more of them:</p>
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-191'>CQ-191</a>] &#8211;         Excellon parser incorrectly handles omitted zeroes</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-192'>CQ-192</a>] &#8211;         Incorrect board dimensions calculation</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-193'>CQ-193</a>] &#8211;         Incorrect default for Move height parameter in PP</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-195'>CQ-195</a>] &#8211;         Outline generation algorithm doesn&#39;t take into account drilling hole diameter</li>
+</ul>
+<h2>        Improvement</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-194'>CQ-194</a>] &#8211;         Keep out area around locating pins</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.6.8]]></title>
@@ -208,28 +227,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.2
 <ul>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-135'>CQ-135</a>] &#8211;         Incorrect tool paths generation with clear polarity layers in gerber</li>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-136'>CQ-136</a>] &#8211;         Excellon files with explicitly specified positive coordinate are not parsed</li>
-</ul>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.5.1]]></title>
-    <link href="http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1/"/>
-    <updated>2014-09-29T17:48:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1</id>
-    <content type="html"><![CDATA[<p>Version 1.5.1 is mostly a bugfix release. Below are release notes with the links to the exact issues fixed:</p>
-Release Notes &#8211; cirQWizard &#8211; Version 1.5.1
-
-<h2>        Bug</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-92'>CQ-92</a>] &#8211;         Stop button on tool paths generation pane doesn&#39;t stop generation</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-130'>CQ-130</a>] &#8211;         Firmware update instability</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-131'>CQ-131</a>] &#8211;         Check for non-empty settings is broken</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-134'>CQ-134</a>] &#8211;         ExcellonParser fails with <span class="caps">NPE</span> if no tool is specified</li>
-</ul>
-
-<h2>        New Feature</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-133'>CQ-133</a>] &#8211;         Support for R command in Excellon files</li>
 </ul>]]></content>
   </entry>
   
