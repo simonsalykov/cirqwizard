@@ -190,22 +190,23 @@ public class ExcellonParser
         if (negative)
             str = str.substring(1);
 
-        int decimalPartStart = str.indexOf('.');
-        if (decimalPartStart >= 0)
+        if (str.indexOf('.') < 0) // Decimal point location needs to be deduced
         {
-            str = str.replace(".", "");
-            decimalPlaces = str.length() - decimalPartStart;
+            while (str.length() < integerPlaces + decimalPlaces)
+            {
+                if (leadingZeros)
+                    str = str + "0";
+                else
+                    str = "0" + str;
+            }
         }
-        if (decimalPartStart < 0)
-            decimalPartStart = leadingZeros ? integerPlaces : str.length() - decimalPlaces;
-        long number = 0;
-        if (decimalPartStart < str.length())
-            number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(
-                    str.substring(Math.max(decimalPartStart, 0))))).longValue();
-        for (int i = 0; i < str.length() - decimalPartStart; i++)
+        else
+            return (new BigDecimal(str).multiply(coordinatesConversionRatio)).intValue() * (negative ? -1 : 1);
+
+        long number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(integerPlaces)))).longValue();
+        for (int i = 0; i < decimalPlaces; i++)
             number /= 10;
-        if (decimalPartStart > 0 && decimalPartStart <= str.length())
-            number += coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(0, decimalPartStart)))).longValue();
+        number += coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(0, integerPlaces)))).longValue();
         return (int)(number * (negative ? -1 : 1));
     }
 

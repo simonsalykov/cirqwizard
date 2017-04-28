@@ -204,7 +204,7 @@ public class ExcellonParserTest
                 "X0123209Y0399330\n" +
                 "M30";
 
-        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ExcellonParser parser = new ExcellonParser(3, 4, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
         List<DrillPoint> points = parser.parse();
         assertEquals(2, points.size());
 
@@ -230,7 +230,7 @@ public class ExcellonParserTest
                 "X0123209Y0399330\n" +
                 "M30";
 
-        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        ExcellonParser parser = new ExcellonParser(3, 4, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
         List<DrillPoint> points = parser.parse();
         assertEquals(2, points.size());
 
@@ -505,6 +505,33 @@ public class ExcellonParserTest
         assertEquals(900, points.get(0).getToolDiameter());
         assertEquals(new Point(73888, 62738), points.get(1).getPoint());
         assertEquals(900, points.get(0).getToolDiameter());
+    }
+
+    @Test
+    public void testCQ191() throws IOException
+    {
+        String fileContent = "M48\n" +
+                ";Layer_Color=9474304\n" +
+                ";FILE_FORMAT=4:3\n" +
+                "METRIC,LZ\n" +
+                ";TYPE=PLATED\n" +
+                "T2F00S00C0.600\n" +
+                "%\n" +
+                "T02\n" +
+                "X0030935Y006492\n" +
+                "Y006746\n" +
+                "Y007\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(4, 3, new BigDecimal(1000), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(3, points.size());
+        assertEquals(new Point(30935, 64920), points.get(0).getPoint());
+        assertEquals(600, points.get(0).getToolDiameter());
+        assertEquals(new Point(30935, 67460), points.get(1).getPoint());
+        assertEquals(600, points.get(1).getToolDiameter());
+        assertEquals(new Point(30935, 70000), points.get(2).getPoint());
+        assertEquals(600, points.get(2).getToolDiameter());
     }
 
 }
