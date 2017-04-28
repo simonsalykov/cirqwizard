@@ -17,13 +17,18 @@ import org.cirqwizard.fx.Context;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.ChainDetector;
 import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.appertures.Aperture;
+import org.cirqwizard.gerber.appertures.CircularAperture;
 import org.cirqwizard.layers.Board;
 import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RuboutToolpathGenerationService extends GenerationService
 {
@@ -38,6 +43,7 @@ public class RuboutToolpathGenerationService extends GenerationService
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
         int diameter = settings.getToolDiameter().getValue();
         List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
+        elements.addAll(createPinKeepout());
 
         List<Toolpath> toolpaths = new ArrayList<>();
         for (int pass = 0; pass < 2; pass++)
@@ -75,5 +81,12 @@ public class RuboutToolpathGenerationService extends GenerationService
             toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
 
         return new ChainDetector(toolpaths).detect();
+    }
+
+    private List<GerberPrimitive> createPinKeepout()
+    {
+        Aperture aperture = new CircularAperture(5000);
+        return Arrays.stream(getContext().getPanel().getPinLocations()).map(p -> new Flash(p.getX(), p.getY(),
+                aperture, GerberPrimitive.Polarity.DARK)).collect(Collectors.toList());
     }
 }
