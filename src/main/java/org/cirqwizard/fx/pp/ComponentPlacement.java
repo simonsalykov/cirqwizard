@@ -14,14 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamResolution;
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,9 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -47,12 +39,9 @@ import org.cirqwizard.layers.Board;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.settings.*;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 
@@ -108,8 +97,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     private Integer placementZ;
 
-    private boolean microscopeStreamRunning;
-    private ObjectProperty<Image> microscopeImageProperty;
+    private MicroscopeController microscopeController;
 
     @Override
     protected String getFxmlName()
@@ -138,8 +126,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         placementAngle.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
         manualZ.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
 
-        microscopeImageProperty = new SimpleObjectProperty<>();
-        microscopeImageView.imageProperty().bind(microscopeImageProperty);
+        microscopeController = new MicroscopeController(microscopeImageView);
         microscopeControlPane.visibleProperty().bind(microscopeImageView.visibleProperty());
     }
 
@@ -200,13 +187,13 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         vacuumOffButton.setDisable(noMachineConnected);
 
         microscopeImageView.setVisible(false);
-        startMicroscopeThread();
+        microscopeController.startThread();
     }
 
     @Override
     public void onDeactivation()
     {
-        stopMicroscopeThread();
+        microscopeController.stopThread();
     }
 
     private void updateComponent()
@@ -382,6 +369,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     public void showMicroscopePickupPane()
     {
+        if (SettingsFactory.getPpSettings().getUsbCamera().getValue().equals(PPSettings.NO_CAMERA_STRING))
+            return;
         microscopeControlsBox.getChildren().add(0, pickupButton);
         microscopeControlsBox.getChildren().add(0, zControlPane);
         microscopeControlsBox.getChildren().add(0, pickupYPane);
@@ -392,6 +381,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     public void showMicroscopePlacementPane()
     {
+        if (SettingsFactory.getPpSettings().getUsbCamera().getValue().equals(PPSettings.NO_CAMERA_STRING))
+            return;
         microscopeControlsBox.getChildren().add(0, placeButton);
         microscopeControlsBox.getChildren().add(0, zControlPane);
         microscopeControlsBox.getChildren().add(0, placementAnglePane);
@@ -405,61 +396,9 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     {
         regularPane.setVisible(false);
         microscopeImageView.setVisible(true);
-
-        startMicroscopeThread();
+        microscopeController.startThread();
     }
 
-    private static int webCamId = 0;
-
-    private void startMicroscopeThread()
-    {
-        if (microscopeStreamRunning)
-            return;
-
-        microscopeStreamRunning = true;
-        Thread thread = new Thread()
-        {
-            @Override
-            public void run()
-            {
-                Webcam webCam = Webcam.getWebcams().get(webCamId);
-                webCam.setCustomViewSizes(new Dimension[] {WebcamResolution.UXGA.getSize()});
-                webCam.setViewSize(WebcamResolution.UXGA.getSize());
-                webCam.open();
-
-                while (microscopeStreamRunning)
-                {
-                    try
-                    {
-                        if (!microscopeImageView.isVisible())
-                        {
-                            sleep(20);
-                            continue;
-                        }
-
-                        BufferedImage grabbedImage;
-                        if ((grabbedImage = webCam.getImage()) != null)
-                        {
-                            WritableImage image = SwingFXUtils.toFXImage(grabbedImage, null);
-                            Platform.runLater(() -> microscopeImageProperty.set(image));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-    private void stopMicroscopeThread()
-    {
-        microscopeStreamRunning = false;
-        new Thread(() -> Webcam.getWebcams().get(webCamId).close()).start();
-    }
 
     public void hideMicroscopePane()
     {

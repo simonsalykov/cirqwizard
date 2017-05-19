@@ -14,9 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.settings;
 
+import com.github.sarxos.webcam.Webcam;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -37,8 +39,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 public class SettingsEditor extends ScreenController implements Initializable
 {
@@ -207,10 +213,21 @@ public class SettingsEditor extends ScreenController implements Initializable
         }
         else
         {
-            List items = p.getItems();
+            final ObservableList<String> items = FXCollections.observableArrayList();
+            if (p.getItems() != null)
+                items.addAll(p.getItems());
             if (p.getType() == PreferenceType.SERIAL_PORT)
-                items = SerialInterfaceFactory.getSerialInterfaces(mainApplication.getSerialInterface());
-            editor = new ComboBox(FXCollections.observableArrayList(items));
+                items.addAll(SerialInterfaceFactory.getSerialInterfaces(mainApplication.getSerialInterface()));
+            else if (p.getType() == PreferenceType.USB_CAMERA)
+            {
+                items.add(PPSettings.NO_CAMERA_STRING);
+                new Thread(() ->
+                {
+                    List<String> cams = Webcam.getWebcams().stream().map(Webcam::getName).collect(Collectors.toList());
+                    items.addAll(cams);
+                }).start();
+            }
+            editor = new ComboBox(items);
             ((ComboBox)editor).getSelectionModel().select(p.getValue());
             ((ComboBox)editor).getSelectionModel().selectedItemProperty().addListener((v, oldV, newV) ->
             {

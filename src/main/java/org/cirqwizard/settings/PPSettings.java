@@ -16,6 +16,12 @@ package org.cirqwizard.settings;
 
 public class PPSettings extends SettingsGroup
 {
+    public final static String NO_CAMERA_STRING = "No camera assistance";
+
+    @PersistentPreference
+    @PreferenceGroup(name =  "Camera assistance")
+    private UserPreference<String> usbCamera = new UserPreference<>("USB camera", null, "", PreferenceType.USB_CAMERA);
+
     @PersistentPreference
     @PreferenceGroup(name =  "Heights")
     private UserPreference<Integer> pickupHeight = new UserPreference<>("Pickup height", -14_200, "mm");
@@ -38,6 +44,16 @@ public class PPSettings extends SettingsGroup
     public String getPreferencesPrefix()
     {
         return "pp";
+    }
+
+    public UserPreference<String> getUsbCamera()
+    {
+        return usbCamera;
+    }
+
+    public void setUsbCamera(UserPreference<String> usbCamera)
+    {
+        this.usbCamera = usbCamera;
     }
 
     public UserPreference<Integer> getPickupHeight()
