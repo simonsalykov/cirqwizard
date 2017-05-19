@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.rubout;
 
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.layers.Board;
 
 public class TopRubout extends Rubout
 {
@@ -26,9 +26,9 @@ public class TopRubout extends Rubout
     }
 
     @Override
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getTopTracesLayer();
+        return Board.LayerType.TOP;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TopRubout extends Rubout
     @Override
     protected long getLayerModificationDate()
     {
-        return getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
+        return 0; //getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
     }
 
     @Override

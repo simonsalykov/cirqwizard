@@ -22,7 +22,7 @@ public class PPSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name =  "Heights")
-    private UserPreference<Integer> moveHeight = new UserPreference<>("Move height", 800, "mm");
+    private UserPreference<Integer> moveHeight = new UserPreference<>("Move height", 0, "mm");
 
     @PersistentPreference
     @PreferenceGroup(name =  "Rotation")

@@ -15,15 +15,15 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.rubout;
 
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.fx.PCBPane;
+import org.cirqwizard.layers.Board;
 
 public class BottomRubout extends Rubout
 {
     @Override
     public void refresh()
     {
-        pcbPane.setGerberColor(PCBPaneFX.BOTTOM_TRACE_COLOR);
+        pcbPane.setGerberColor(PCBPane.BOTTOM_TRACE_COLOR);
         super.refresh();
     }
 
@@ -34,9 +34,9 @@ public class BottomRubout extends Rubout
     }
 
     @Override
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getBottomTracesLayer();
+        return Board.LayerType.BOTTOM;
     }
 
     @Override
@@ -48,7 +48,8 @@ public class BottomRubout extends Rubout
     @Override
     protected long getLayerModificationDate()
     {
-        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
+        return 0;
+//        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
     }
 
     @Override

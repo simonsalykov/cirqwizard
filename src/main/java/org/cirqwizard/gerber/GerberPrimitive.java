@@ -14,11 +14,14 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import org.cirqwizard.appertures.Aperture;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.appertures.Aperture;
+import org.cirqwizard.layers.LayerElement;
+
+import java.awt.*;
 
 
-public abstract class GerberPrimitive
+public abstract class GerberPrimitive implements LayerElement
 {
     protected Aperture aperture;
     private Polarity polarity;
@@ -42,11 +45,22 @@ public abstract class GerberPrimitive
     public abstract void move(Point point);
     public abstract Point getMin();
     public abstract Point getMax();
+    public abstract void render(Graphics2D g, double inflation);
 
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
+    }
 
-    public static enum Polarity
+    public enum Polarity
     {
         CLEAR, DARK
     }
 
+    @Override
+    public boolean isVisible()
+    {
+        return aperture != null && aperture.isVisible();
+    }
 }

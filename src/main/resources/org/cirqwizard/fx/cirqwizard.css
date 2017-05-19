@@ -94,6 +94,11 @@
     -fx-fill: transparent;
 }
 
+.board-selection-rect {
+    -fx-stroke: darkgreen;
+    -fx-fill: transparent;
+}
+
 .pcb-disabled {
      -fx-stroke: #dcdcdc;
 }
@@ -233,3 +238,11 @@
         -fx-background-color: white;
         -fx-effect: dropshadow( gaussian, black , 10 , 0.1, 2, 2);
  }
+
+.error-box {
+    -fx-border-color: #be1d00;
+    -fx-border-width: 3.0;
+    -fx-border-radius: 5.0;
+    -fx-padding: 5.0;
+    -fx-background-color: #ffe0e0;
+}

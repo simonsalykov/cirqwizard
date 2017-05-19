@@ -19,65 +19,164 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
-import javafx.scene.layout.Region;
-import javafx.scene.shape.Shape;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.LayerElement;
 
 import java.io.IOException;
+import java.util.List;
 
 
-public class PCBPane extends Region
+public class PCBPane extends javafx.scene.layout.Region
 {
     private static final double DEFAULT_SCALE = 0.005;
 
-    private Group group = new Group();
-    private Property<ObservableList<Shape>> items = new SimpleListProperty<>();
-    private Property<Double> scaleProperty = new SimpleObjectProperty<>(DEFAULT_SCALE);
+    public static final Color BACKGROUND_COLOR = Color.web("#ddfbdd");
+    public static final Color ENABLED_TOOLPATH_COLOR = Color.web("#191970");
+    public static final Color PASTE_TOOLPATH_COLOR = Color.GOLD;
+    public static final Color DISABLED_TOOLPATH_COLOR = Color.web("#dcdcdc");
+    public static final Color SELECTED_TOOLPATH_COLOR = Color.CYAN;
+    public static final Color TOP_TRACE_COLOR = Color.RED;
+    public static final Color BOTTOM_TRACE_COLOR = Color.BLUE;
+    public static final Color DRILL_POINT_COLOR = Color.BLACK;
+    public static final Color CONTOUR_COLOR = Color.MAGENTA;
+    public static final Color SOLDER_PAD_COLOR = Color.NAVY;
+    public static final Color PCB_BORDER = Color.BLACK;
 
-    private Translate translateTransform = new Translate(0, 0);
-    private Scale scaleTransform = new Scale(scaleProperty().getValue(), -scaleProperty().getValue());
+    private Property<Double> scaleProperty = new SimpleObjectProperty<>(DEFAULT_SCALE);
 
     private double boardWidth;
     private double boardHeight;
 
+    private java.util.List<? extends LayerElement> gerberPrimitives;
+    private Property<ObservableList<Toolpath>> toolpaths = new SimpleListProperty<>();
+
+    private Canvas canvas;
+    private Rectangle selectionRectangle;
+
+    private Color gerberColor = TOP_TRACE_COLOR;
+    private Color toolpathColor = ENABLED_TOOLPATH_COLOR;
+
+    private boolean flipHorizontal = false;
+
     public PCBPane()
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PcbPane.fxml"));
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try
-        {
-            fxmlLoader.load();
-            getChildren().add(group);
-            group.getTransforms().add(translateTransform);
-            group.getTransforms().add(scaleTransform);
-            layoutBoundsProperty().addListener((v, oldV, newV) -> bestFit());
-        }
-        catch (IOException exception)
-        {
-            throw new RuntimeException(exception);
-        }
-
-        scaleProperty.addListener((v, oldV, newV) -> rescale());
-        items.addListener((v, oldV, newV) ->
-        {
-            group.getChildren().clear();
-            if (newV != null && !newV.isEmpty())
-                group.getChildren().addAll(newV);
-            boardWidth = group.getLayoutBounds().getWidth();
-            boardHeight = group.getLayoutBounds().getHeight();
-            setPrefSize(boardWidth * scaleProperty.getValue(), boardHeight * scaleProperty.getValue());
-            bestFit();
-            rescale();
-        });
+        scaleProperty.addListener((v, oldV, newV) ->  repaint());
+        toolpaths.addListener((v, oldV, newV) -> repaint());
     }
 
-    public Property<ObservableList<Shape>> itemsProperty()
+    public Property<ObservableList<Toolpath>> toolpathsProperty()
     {
-        return items;
+        return toolpaths;
+    }
+
+    public void setGerberPrimitives(List<? extends LayerElement> gerberPrimitives)
+    {
+        this.gerberPrimitives = gerberPrimitives;
+        repaint();
+    }
+
+    public void setGerberColor(Color gerberColor)
+    {
+        this.gerberColor = gerberColor;
+    }
+
+    public void setToolpathColor(Color toolpathColor)
+    {
+        this.toolpathColor = toolpathColor;
+    }
+
+    public boolean isFlipHorizontal()
+    {
+        return flipHorizontal;
+    }
+
+    public void setFlipHorizontal(boolean flipHorizontal)
+    {
+        this.flipHorizontal = flipHorizontal;
+        repaint();
+    }
+
+    public void repaint()
+    {
+        getChildren().remove(canvas);
+        renderImage();
+        getChildren().add(canvas);
+    }
+
+    public void repaint(List<? extends Toolpath> toolpaths)
+    {
+        GraphicsContext g = canvas.getGraphicsContext2D();
+        toolpaths.forEach(t -> renderToolpath(g, t));
+    }
+
+    private void renderImage()
+    {
+        canvas = new Canvas(boardWidth * scaleProperty.getValue() + 1, boardHeight * scaleProperty.getValue() + 1);
+        GraphicsContext g = canvas.getGraphicsContext2D();
+        g.setFill(BACKGROUND_COLOR);
+        g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        g.setStroke(PCB_BORDER);
+        g.setLineWidth(1);
+        g.strokeRect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
+        g.scale(scaleProperty.getValue() * (flipHorizontal ? -1 : 1), -scaleProperty.getValue());
+        g.translate(flipHorizontal ? -boardWidth : 0, -boardHeight);
+        if (gerberPrimitives != null)
+            gerberPrimitives.forEach(p -> renderPrimitive(g, p));
+        if (toolpaths.getValue() != null)
+            toolpaths.getValue().forEach(t -> renderToolpath(g, t));
+    }
+
+    private void renderPrimitive(GraphicsContext g, LayerElement element)
+    {
+        if (!element.isVisible())
+            return;
+
+        Color color = gerberColor;
+        if ((element instanceof GerberPrimitive) && ((GerberPrimitive)element).getPolarity() == GerberPrimitive.Polarity.CLEAR)
+            color = BACKGROUND_COLOR;
+        g.setStroke(color);
+        g.setFill(color);
+        element.render(g);
+    }
+
+    private void renderToolpath(GraphicsContext g, Toolpath toolpath)
+    {
+        Color color = toolpath.isEnabled() ? toolpathColor : DISABLED_TOOLPATH_COLOR;
+        if (toolpath.isSelected())
+            color = SELECTED_TOOLPATH_COLOR;
+        g.setStroke(color);
+        g.setFill(color);
+        toolpath.render(g);
+    }
+
+    public void setSelection(Point2D point, double width, double height)
+    {
+        if (selectionRectangle != null)
+            getChildren().remove(selectionRectangle);
+        selectionRectangle = new Rectangle();
+        selectionRectangle.setStrokeWidth(0.5);
+        selectionRectangle.getStyleClass().add("pcb-selection-rect");
+        // It seems that in this case transforms get converted to int somewhere down the road. So can't use them here
+        selectionRectangle.setX(point.getX() * scaleProperty().getValue());
+        selectionRectangle.setY((-point.getY() - height + boardHeight) * scaleProperty().getValue());
+        selectionRectangle.setWidth(width * scaleProperty().getValue());
+        selectionRectangle.setHeight(height * scaleProperty().getValue());
+        getChildren().add(selectionRectangle);
+    }
+
+    public void clearSelection()
+    {
+        if (selectionRectangle != null)
+        {
+            getChildren().remove(selectionRectangle);
+            selectionRectangle = null;
+        }
     }
 
     public Property<Double> scaleProperty()
@@ -85,18 +184,13 @@ public class PCBPane extends Region
         return scaleProperty;
     }
 
-    public void bestFit()
+    public void setBoardWidth(double boardWidth)
     {
-        double scale = Math.min(getWidth() / group.getLayoutBounds().getWidth(), getHeight() / group.getLayoutBounds().getHeight());
-        scaleProperty.setValue(scale);
+        this.boardWidth = boardWidth;
     }
 
-    private void rescale()
+    public void setBoardHeight(double boardHeight)
     {
-        scaleTransform.setX(scaleProperty.getValue());
-        scaleTransform.setY(-scaleProperty.getValue());
-        translateTransform.setY(boardHeight * scaleProperty.getValue());
-        setPrefSize(boardWidth * scaleProperty.getValue(), boardHeight * scaleProperty.getValue());
+        this.boardHeight = boardHeight;
     }
-
 }

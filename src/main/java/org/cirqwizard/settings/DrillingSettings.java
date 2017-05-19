@@ -22,7 +22,7 @@ public class DrillingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Tool")
-    private UserPreference<Integer> speed = new UserPreference<>("Speed", 1390, "µs", PreferenceType.INTEGER);
+    private UserPreference<Integer> speed = new UserPreference<>("Speed", 1390, "\u00B5s", PreferenceType.INTEGER);
 
     @PersistentPreference
     @PreferenceGroup(name = "Heights")

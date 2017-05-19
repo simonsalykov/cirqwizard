@@ -17,12 +17,13 @@ package org.cirqwizard.fx.drilling;
 import org.cirqwizard.fx.OperationsScreenGroup;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.ScreenGroup;
-import org.cirqwizard.fx.common.XYOffsets;
+import org.cirqwizard.generation.toolpath.DrillPoint;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DrillingGroup extends OperationsScreenGroup
 {
@@ -34,7 +35,7 @@ public class DrillingGroup extends OperationsScreenGroup
     @Override
     protected boolean isEnabled()
     {
-        return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getDrillingLayer() != null;
+        return super.isEnabled() && !getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.DRILLING).isEmpty();
     }
 
     @Override
@@ -44,7 +45,12 @@ public class DrillingGroup extends OperationsScreenGroup
         if (!isEnabled())
             return children;
 
-        List<Integer> drillDiameters = getMainApplication().getContext().getPcbLayout().getDrillingLayer().getDrillDiameters();
+        List<DrillPoint> drillPoints = (List<DrillPoint>) getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.DRILLING);
+        List<Integer> drillDiameters = drillPoints.stream().
+                map(DrillPoint::getToolDiameter).
+                distinct().
+                sorted().
+                collect(Collectors.toList());
         for (int d : drillDiameters)
         {
             ScreenGroup group = new ScreenGroup("Drilling " + ApplicationConstants.formatToolDiameter(d) + "mm")
@@ -59,7 +65,6 @@ public class DrillingGroup extends OperationsScreenGroup
             group.setParent(this);
             children.add(group.setMainApplication(getMainApplication()).
                     addChild(new InsertDrill().setMainApplication(getMainApplication())).
-                    addChild(new XYOffsets(SettingsFactory.getDrillingSettings()).setMainApplication(getMainApplication())).
                     addChild(new Drilling().setMainApplication(getMainApplication())));
         }
 

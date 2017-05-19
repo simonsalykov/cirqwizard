@@ -16,16 +16,21 @@ package org.cirqwizard.fx.dispensing;
 
 import javafx.collections.FXCollections;
 import javafx.scene.layout.GridPane;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.Machining;
 import org.cirqwizard.fx.settings.SettingsEditor;
-import org.cirqwizard.gcode.PasteGCodeGenerator;
-import org.cirqwizard.layers.Layer;
-import org.cirqwizard.layers.SolderPasteLayer;
+import org.cirqwizard.generation.DispensingToolpathGenerator;
+import org.cirqwizard.generation.gcode.PasteGCodeGenerator;
+import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.DispensingSettings;
 import org.cirqwizard.settings.SettingsFactory;
+
+import java.util.List;
 
 public class Dispensing extends Machining
 {
@@ -38,13 +43,12 @@ public class Dispensing extends Machining
     @Override
     public void refresh()
     {
-        super.refresh();
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
         getMainApplication().getContext().setG54Z(settings.getZOffset().getValue());
-
-        pcbPane.setGerberColor(PCBPaneFX.SOLDER_PAD_COLOR);
-        pcbPane.setToolpathColor(PCBPaneFX.PASTE_TOOLPATH_COLOR);
-        pcbPane.setGerberPrimitives(((SolderPasteLayer)getCurrentLayer()).getElements());
+        pcbPane.setGerberColor(PCBPane.SOLDER_PAD_COLOR);
+        pcbPane.setToolpathColor(PCBPane.PASTE_TOOLPATH_COLOR);
+        pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.SOLDER_PASTE));
+        super.refresh();
     }
 
     @Override
@@ -54,25 +58,27 @@ public class Dispensing extends Machining
     }
 
     @Override
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getSolderPasteLayer();
+        return Board.LayerType.SOLDER_PASTE;
     }
 
     @Override
     protected void generateToolpaths()
     {
-        SolderPasteLayer solderPasteLayer = (SolderPasteLayer) getCurrentLayer();
-        solderPasteLayer.generateToolpaths(SettingsFactory.getDispensingSettings().getNeedleDiameter().getValue());
-        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(solderPasteLayer.getToolpaths()));
-
+        List<Toolpath> toolpaths = new DispensingToolpathGenerator((List<GerberPrimitive>)
+                getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.SOLDER_PASTE)).
+                generate(SettingsFactory.getDispensingSettings().getNeedleDiameter().getValue());
+        pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
     }
 
     @Override
     protected String generateGCode()
     {
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
-        PasteGCodeGenerator generator = new PasteGCodeGenerator(getMainApplication().getContext());
+        Context context = getMainApplication().getContext();
+        PasteGCodeGenerator generator = new PasteGCodeGenerator(context.getG54X(), context.getG54Y(), context.getG54Z(),
+                pcbPane.toolpathsProperty().getValue());
         return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
                 settings.getPostFeedPause().getValue(), settings.getFeed().getValue(), settings.getClearance().getValue(),
                 settings.getWorkingHeight().getValue());

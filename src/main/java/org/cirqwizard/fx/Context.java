@@ -14,9 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import org.cirqwizard.layers.PCBLayout;
+import org.cirqwizard.layers.Panel;
 import org.cirqwizard.pp.ComponentId;
 import org.cirqwizard.pp.Feeder;
 import org.cirqwizard.settings.ToolSettings;
@@ -28,61 +26,26 @@ import java.util.Map;
 
 public class Context
 {
-    public static enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
-
-    private ObjectProperty<PCBLayout> pcbLayout = new SimpleObjectProperty<>();
+    public enum PcbPlacement {FACE_UP, FACE_DOWN, FACE_UP_SPACER}
 
     private PcbPlacement pcbPlacement;
     private Tool insertedTool;
     private ToolSettings currentMillingTool;
     private int currentMillingToolIndex;
-    private PCBSize pcbSize;
     private Integer g54X;
     private Integer g54Y;
     private Integer g54Z;
 
     private int currentDrill;
 
-    private int boardWidth;
-    private int boardHeight;
-
     private ComponentId currentComponent;
     private Feeder feeder;
     private int feederRow;
     private Integer componentPitch;
-    private Map<String, Integer> pitchCache;
+    private Map<String, Integer> pitchCache = new HashMap<>();
 
-    public PCBLayout getPcbLayout()
-    {
-        return pcbLayout.get();
-    }
-
-    public ObjectProperty<PCBLayout> pcbLayoutProperty()
-    {
-        return pcbLayout;
-    }
-
-    public void setFile(File file)
-    {
-        pcbPlacement = null;
-        insertedTool = null;
-        currentMillingTool = null;
-        currentMillingToolIndex = -1;
-        pcbSize = null;
-        g54X = null;
-        g54Y = null;
-        g54Z = null;
-        currentDrill = 0;
-        boardWidth = 0;
-        boardHeight = 0;
-        currentComponent = null;
-        feeder = null;
-        feederRow = 0;
-        componentPitch = 0;
-        pitchCache = new HashMap<>();
-        pcbLayout.setValue(new PCBLayout());
-        pcbLayout.getValue().setFile(file);
-    }
+    private Panel panel;
+    private File panelFile;
 
     public PcbPlacement getPcbPlacement()
     {
@@ -124,16 +87,6 @@ public class Context
         this.currentMillingToolIndex = currentMillingToolIndex;
     }
 
-    public PCBSize getPcbSize()
-    {
-        return pcbSize;
-    }
-
-    public void setPcbSize(PCBSize pcbSize)
-    {
-        this.pcbSize = pcbSize;
-    }
-
     public Integer getG54X()
     {
         return g54X;
@@ -172,26 +125,6 @@ public class Context
     public void setCurrentDrill(int currentDrill)
     {
         this.currentDrill = currentDrill;
-    }
-
-    public int getBoardHeight()
-    {
-        return boardHeight;
-    }
-
-    public void setBoardHeight(int boardHeight)
-    {
-        this.boardHeight = boardHeight;
-    }
-
-    public int getBoardWidth()
-    {
-        return boardWidth;
-    }
-
-    public void setBoardWidth(int boardWidth)
-    {
-        this.boardWidth = boardWidth;
     }
 
     public ComponentId getCurrentComponent()
@@ -242,5 +175,25 @@ public class Context
     public void savePitchToCache(String componentPackage, Integer pitch)
     {
         pitchCache.put(componentPackage, pitch);
+    }
+
+    public Panel getPanel()
+    {
+        return panel;
+    }
+
+    public void setPanel(Panel panel)
+    {
+        this.panel = panel;
+    }
+
+    public File getPanelFile()
+    {
+        return panelFile;
+    }
+
+    public void setPanelFile(File panelFile)
+    {
+        this.panelFile = panelFile;
     }
 }

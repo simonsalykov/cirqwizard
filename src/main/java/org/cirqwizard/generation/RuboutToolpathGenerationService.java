@@ -16,18 +16,23 @@ package org.cirqwizard.generation;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.ChainDetector;
-import org.cirqwizard.layers.Layer;
-import org.cirqwizard.layers.TraceLayer;
+import org.cirqwizard.generation.toolpath.Toolpath;
+import org.cirqwizard.gerber.Flash;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.gerber.appertures.Aperture;
+import org.cirqwizard.gerber.appertures.CircularAperture;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.settings.RubOutSettings;
 import org.cirqwizard.settings.SettingsFactory;
-import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RuboutToolpathGenerationService extends GenerationService
 {
-    public RuboutToolpathGenerationService(Context context, Layer layer)
+    public RuboutToolpathGenerationService(Context context, Board.LayerType layer)
     {
         super(context, layer);
     }
@@ -37,7 +42,8 @@ public class RuboutToolpathGenerationService extends GenerationService
     {
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
         int diameter = settings.getToolDiameter().getValue();
-        TraceLayer traceLayer = (TraceLayer) getLayer();
+        List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
+        elements.addAll(createPinKeepout());
 
         List<Toolpath> toolpaths = new ArrayList<>();
         for (int pass = 0; pass < 2; pass++)
@@ -45,8 +51,8 @@ public class RuboutToolpathGenerationService extends GenerationService
             if (cancelledProperty().get())
                 return null;
             ToolpathGenerator g = new ToolpathGenerator();
-            g.init(getContext().getBoardWidth() + 1, getContext().getBoardHeight() + 1,
-                    pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, traceLayer.getElements(),
+            g.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
+                    pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, elements,
                     cancelledProperty());
             setCurrentStage("Generating tool paths...");
             progressProperty().bind(g.progressProperty());
@@ -60,9 +66,9 @@ public class RuboutToolpathGenerationService extends GenerationService
             return null;
 
         final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
-        generator.init(getContext().getBoardWidth() + 1, getContext().getBoardHeight() + 1,
+        generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
                 settings.getInitialOffset().getValue(),
-                diameter, settings.getOverlap().getValue(), traceLayer.getElements(),
+                diameter, settings.getOverlap().getValue(), elements,
                 SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), cancelledProperty());
         progressProperty().unbind();
         progressProperty().bind(generator.progressProperty());
@@ -75,5 +81,12 @@ public class RuboutToolpathGenerationService extends GenerationService
             toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
 
         return new ChainDetector(toolpaths).detect();
+    }
+
+    private List<GerberPrimitive> createPinKeepout()
+    {
+        Aperture aperture = new CircularAperture(5000);
+        return Arrays.stream(getContext().getPanel().getPinLocations()).map(p -> new Flash(p.getX(), p.getY(),
+                aperture, GerberPrimitive.Polarity.DARK)).collect(Collectors.toList());
     }
 }

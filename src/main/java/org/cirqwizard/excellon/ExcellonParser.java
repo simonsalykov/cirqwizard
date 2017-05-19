@@ -16,7 +16,7 @@ package org.cirqwizard.excellon;
 
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.settings.ApplicationConstants;
-import org.cirqwizard.toolpath.DrillPoint;
+import org.cirqwizard.generation.toolpath.DrillPoint;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,7 +68,7 @@ public class ExcellonParser
         this.reader = reader;
     }
 
-    public ArrayList<DrillPoint> parse() throws IOException
+    public List<DrillPoint> parse() throws IOException
     {
         LineNumberReader r = new LineNumberReader(reader);
         String str;
@@ -189,20 +190,23 @@ public class ExcellonParser
         if (negative)
             str = str.substring(1);
 
-        int decimalPartStart = str.indexOf('.');
-        if (decimalPartStart >= 0)
+        if (str.indexOf('.') < 0) // Decimal point location needs to be deduced
         {
-            str = str.replace(".", "");
-            decimalPlaces = str.length() - decimalPartStart;
+            while (str.length() < integerPlaces + decimalPlaces)
+            {
+                if (leadingZeros)
+                    str = str + "0";
+                else
+                    str = "0" + str;
+            }
         }
-        if (decimalPartStart < 0)
-            decimalPartStart = leadingZeros ? integerPlaces : str.length() - decimalPlaces;
-        decimalPartStart = Math.max(decimalPartStart, 0);
-        long number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(decimalPartStart)))).longValue();
-        for (int i = 0; i < str.length() - decimalPartStart; i++)
+        else
+            return (new BigDecimal(str).multiply(coordinatesConversionRatio)).intValue() * (negative ? -1 : 1);
+
+        long number = coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(integerPlaces)))).longValue();
+        for (int i = 0; i < decimalPlaces; i++)
             number /= 10;
-        if (str.length() > decimalPlaces)
-            number += coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(0, decimalPartStart)))).longValue();
+        number += coordinatesConversionRatio.multiply(new BigDecimal(Long.valueOf(str.substring(0, integerPlaces)))).longValue();
         return (int)(number * (negative ? -1 : 1));
     }
 

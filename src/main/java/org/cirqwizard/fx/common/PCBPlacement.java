@@ -16,26 +16,14 @@ package org.cirqwizard.fx.common;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.fx.ScreenController;
-import org.cirqwizard.settings.ApplicationValues;
-import org.cirqwizard.settings.SettingsFactory;
 
 
 public abstract class PCBPlacement extends ScreenController
 {
     @FXML protected Button continueButton;
-    @FXML protected VBox radioButtonsBox;
-    @FXML protected RadioButton smallPCB;
-    @FXML protected RadioButton largePCB;
-
-    @FXML protected VBox errorBox;
-    @FXML protected CheckBox ignoreErrorCheckbox;
     @FXML protected Label text;
 
     @Override
@@ -55,18 +43,6 @@ public abstract class PCBPlacement extends ScreenController
     {
         Context context = getMainApplication().getContext();
         context.setPcbPlacement(null);
-        PCBSize pcbSize = context.getPcbSize();
-        if (pcbSize == null)
-            pcbSize = SettingsFactory.getApplicationValues().getPcbSize().getValue();
-        if (pcbSize == PCBSize.Small)
-            smallPCB.setSelected(true);
-        else if (pcbSize == PCBSize.Large)
-            largePCB.setSelected(true);
-
-        errorBox.setVisible(false);
-        ignoreErrorCheckbox.setSelected(false);
-
-        updateComponents();
     }
 
     protected abstract Context.PcbPlacement getExpectedPlacement();
@@ -84,30 +60,4 @@ public abstract class PCBPlacement extends ScreenController
         super.next();
     }
 
-    private boolean checkSelectedPcbSize()
-    {
-        Context context = getMainApplication().getContext();
-        return context.getPcbSize().checkFit(context.getBoardWidth(), context.getBoardHeight());
-    }
-
-    public void updateComponents()
-    {
-        Context context = getMainApplication().getContext();
-        errorBox.setVisible(false);
-
-        if (smallPCB.isSelected())
-            context.setPcbSize(PCBSize.Small);
-        else if (largePCB.isSelected())
-            context.setPcbSize(PCBSize.Large);
-        ApplicationValues applicationValues = SettingsFactory.getApplicationValues();
-        applicationValues.getPcbSize().setValue(context.getPcbSize());
-        applicationValues.save();
-
-        continueButton.setDisable(radioButtonsBox.isVisible() && !smallPCB.isSelected() && !largePCB.isSelected());
-        if (context.getPcbSize() != null && !checkSelectedPcbSize())
-        {
-            errorBox.setVisible(true);
-            continueButton.setDisable(!ignoreErrorCheckbox.isSelected());
-        }
-    }
 }

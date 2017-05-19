@@ -15,13 +15,14 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.test.excellon;
 
 import org.cirqwizard.excellon.ExcellonParser;
+import org.cirqwizard.generation.toolpath.DrillPoint;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.toolpath.DrillPoint;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,7 +49,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(10454, 11854), points.get(0).getPoint());
@@ -82,7 +83,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(70200, -149900), points.get(0).getPoint());
@@ -108,7 +109,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(22860, 13335), points.get(0).getPoint());
@@ -143,7 +144,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(4, points.size());
 
         assertEquals(new Point(77464, 13103), points.get(0).getPoint());
@@ -181,7 +182,7 @@ public class ExcellonParserTest
                 "X5.05000Y2.69000\n";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(128270, 68326), points.get(0).getPoint());
@@ -203,8 +204,8 @@ public class ExcellonParserTest
                 "X0123209Y0399330\n" +
                 "M30";
 
-        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        ExcellonParser parser = new ExcellonParser(3, 4, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
         assertEquals(2, points.size());
 
         assertEquals(new Point(12320, 37393), points.get(0).getPoint());
@@ -229,8 +230,8 @@ public class ExcellonParserTest
                 "X0123209Y0399330\n" +
                 "M30";
 
-        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        ExcellonParser parser = new ExcellonParser(3, 4, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
         assertEquals(2, points.size());
 
         assertEquals(new Point(12320, 37393), points.get(0).getPoint());
@@ -256,7 +257,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(59436, 36703), points.get(0).getPoint());
@@ -281,7 +282,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(3, points.size());
 
         assertEquals(new Point(59436, 36703), points.get(0).getPoint());
@@ -303,7 +304,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(635, 12763), points.get(0).getPoint());
@@ -319,7 +320,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(635, 12763), points.get(0).getPoint());
@@ -347,7 +348,7 @@ public class ExcellonParserTest
                 "R04Y-10000";
 
         ExcellonParser parser = new ExcellonParser(2, 5, ExcellonParser.INCHES_MM_RATIO, new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(10, points.size());
 
         assertEquals(new Point(134620, 129540), points.get(0).getPoint());
@@ -380,7 +381,7 @@ public class ExcellonParserTest
                 "X0Y0\n";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(0, 0), points.get(0).getPoint());
@@ -400,7 +401,7 @@ public class ExcellonParserTest
                 "M30";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(23037, 78000), points.get(0).getPoint());
@@ -424,11 +425,113 @@ public class ExcellonParserTest
                 "X014491Y02111";
 
         ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
-        ArrayList<DrillPoint> points = parser.parse();
+        List<DrillPoint> points = parser.parse();
         assertEquals(1, points.size());
 
         assertEquals(new Point(36807, 53619), points.get(0).getPoint());
         assertEquals(900, points.get(0).getToolDiameter());
+    }
+
+    @Test
+    public void testNoDecimalPart() throws IOException
+    {
+        String fileContent = "M48\n" +
+                ";DRILL file {KiCad 4.0.2+e4-6225~38~ubuntu16.04.1-stable} date dom 10 jul 2016 23:16:58 CEST\n" +
+                ";FORMAT={-:-/ absolute / inch / decimal}\n" +
+                "FMAT,2\n" +
+                "INCH,TZ\n" +
+                "T6C0.039\n" +
+                "%\n" +
+                "G90\n" +
+                "G05\n" +
+                "M72\n" +
+                "T6\n" +
+                "X2.Y-2.85\n";
+
+        ExcellonParser parser = new ExcellonParser(new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(50800, -72390), points.get(0).getPoint());
+        assertEquals(1000, points.get(0).getToolDiameter());
+    }
+
+    @Test
+    public void testTrailingZeros() throws IOException
+    {
+        String fileContent = "%\n" +
+                "M48\n" +
+                "M72\n" +
+                "T01C0.0394\n" +
+                "%\n" +
+                "T01\n" +
+                "X947Y20239\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(2, 4, new BigDecimal(25400), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(1, points.size());
+
+        assertEquals(new Point(2405, 51407), points.get(0).getPoint());
+        assertEquals(1000, points.get(0).getToolDiameter());
+    }
+
+    @Test
+    public void testCQ188() throws IOException
+    {
+        String fileContent = "G92\n" +
+                "M48\n" +
+                "INCH,LZ\n" +
+                "FMAT,2\n" +
+                "T01C0.0280\n" +
+                "T02C0.0300\n" +
+                "T03C0.0320\n" +
+                "T04C0.0354\n" +
+                "T05C0.0787\n" +
+                "T06C0.0420\n" +
+                "DETECT,ON\n" +
+                "%\n" +
+                "G90\n" +
+                "T04\n" +
+                "X02909Y0237\n" +
+                "Y0247\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(2, 4, new BigDecimal(25400), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(2, points.size());
+
+        assertEquals(new Point(73888, 60198), points.get(0).getPoint());
+        assertEquals(900, points.get(0).getToolDiameter());
+        assertEquals(new Point(73888, 62738), points.get(1).getPoint());
+        assertEquals(900, points.get(0).getToolDiameter());
+    }
+
+    @Test
+    public void testCQ191() throws IOException
+    {
+        String fileContent = "M48\n" +
+                ";Layer_Color=9474304\n" +
+                ";FILE_FORMAT=4:3\n" +
+                "METRIC,LZ\n" +
+                ";TYPE=PLATED\n" +
+                "T2F00S00C0.600\n" +
+                "%\n" +
+                "T02\n" +
+                "X0030935Y006492\n" +
+                "Y006746\n" +
+                "Y007\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(4, 3, new BigDecimal(1000), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(3, points.size());
+        assertEquals(new Point(30935, 64920), points.get(0).getPoint());
+        assertEquals(600, points.get(0).getToolDiameter());
+        assertEquals(new Point(30935, 67460), points.get(1).getPoint());
+        assertEquals(600, points.get(1).getToolDiameter());
+        assertEquals(new Point(30935, 70000), points.get(2).getPoint());
+        assertEquals(600, points.get(2).getToolDiameter());
     }
 
 }

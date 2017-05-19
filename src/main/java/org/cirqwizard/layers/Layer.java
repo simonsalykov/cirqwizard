@@ -11,21 +11,57 @@ This program is free software: you can redistribute it and/or modify
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 package org.cirqwizard.layers;
 
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.toolpath.Toolpath;
 
 import java.util.List;
 
-
-public abstract class Layer
+public class Layer
 {
-    public abstract void rotate(boolean clockwise);
-    public abstract void move(Point point);
-    public abstract Point getMinPoint();
-    public abstract Point getMaxPoint();
+    private List<? extends LayerElement> elements;
 
-    public abstract List<? extends Toolpath> getToolpaths();
+    public Layer()
+    {
+    }
+
+    public Layer(List<? extends LayerElement> elements)
+    {
+        this.elements = elements;
+    }
+
+    public List<? extends LayerElement> getElements()
+    {
+        return elements;
+    }
+
+    public void setElements(List<? extends LayerElement> elements)
+    {
+        this.elements = elements;
+    }
+
+    public Point getMinPoint()
+    {
+        int minX = elements.stream().mapToInt(p -> p.getMin().getX()).min().getAsInt();
+        int minY = elements.stream().mapToInt(p -> p.getMin().getY()).min().getAsInt();
+        return new Point(minX, minY);
+    }
+
+    public Point getMaxPoint()
+    {
+        int maxX = elements.stream().mapToInt(p -> p.getMax().getX()).max().getAsInt();
+        int maxY = elements.stream().mapToInt(p -> p.getMax().getY()).max().getAsInt();
+        return new Point(maxX, maxY);
+    }
+
+    public void move(Point p)
+    {
+        elements.stream().forEach(e -> e.move(p));
+    }
+
+    public void rotate(boolean clockwise)
+    {
+        elements.stream().forEach(e -> e.rotate(clockwise));
+    }
+
 }

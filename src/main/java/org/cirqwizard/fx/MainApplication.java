@@ -19,7 +19,6 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.cirqwizard.fx.common.XYOffsets;
 import org.cirqwizard.fx.contour.ContourMilling;
 import org.cirqwizard.fx.contour.InsertContourMill;
 import org.cirqwizard.fx.dispensing.Dispensing;
@@ -29,17 +28,19 @@ import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
-import org.cirqwizard.fx.settings.SettingsEditor;
+import org.cirqwizard.fx.panel.PanelController;
 import org.cirqwizard.fx.pp.InsertPPHead;
 import org.cirqwizard.fx.pp.PPGroup;
 import org.cirqwizard.fx.pp.PlacingOverview;
 import org.cirqwizard.fx.rubout.BottomRubout;
 import org.cirqwizard.fx.rubout.TopRubout;
+import org.cirqwizard.fx.settings.SettingsEditor;
 import org.cirqwizard.fx.traces.InsertTool;
 import org.cirqwizard.fx.traces.ZOffset;
 import org.cirqwizard.fx.traces.bottom.BottomTraceMilling;
 import org.cirqwizard.fx.traces.top.PCBPlacement;
 import org.cirqwizard.fx.traces.top.TopTraceMilling;
+import org.cirqwizard.layers.Board;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.*;
 import org.cirqwizard.settings.Settings;
@@ -65,12 +66,13 @@ public class MainApplication extends Application
             @Override
             protected boolean isEnabled()
             {
-                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getTopTracesLayer() != null;
+                return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
+                        map(b -> b.getBoard().getLayer(Board.LayerType.TOP)).
+                        anyMatch(l -> l != null);
             }
         }.setMainApplication(this).
         addChild(new PCBPlacement().setMainApplication(this)).
-        addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings(), SettingsFactory.getRubOutSettings()).setMainApplication(this)).
-        addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
+        addChild(new OperationsScreenGroup("Isolation milling").setMainApplication(this).
                 addChild(new InsertTool().setMainApplication(this)).
                 addChild(new ZOffset().setMainApplication(this)).
                 addChild(new TopTraceMilling().setMainApplication(this))).
@@ -90,12 +92,13 @@ public class MainApplication extends Application
             @Override
             protected boolean isEnabled()
             {
-                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getBottomTracesLayer() != null;
+                return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
+                        map(b -> b.getBoard().getLayer(Board.LayerType.BOTTOM)).
+                        anyMatch(l -> l != null);
             }
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
-            addChild(new XYOffsets(SettingsFactory.getInsulationMillingSettings(), SettingsFactory.getRubOutSettings()).setMainApplication(this)).
-            addChild(new OperationsScreenGroup("Insulation milling").setMainApplication(this).
+            addChild(new OperationsScreenGroup("Isolation milling").setMainApplication(this).
                             addChild(new InsertTool().setMainApplication(this)).
                             addChild(new ZOffset().setMainApplication(this)).
                             addChild(new BottomTraceMilling().setMainApplication(this))
@@ -116,12 +119,13 @@ public class MainApplication extends Application
             @Override
             protected boolean isEnabled()
             {
-                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getMillingLayer() != null;
+                return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
+                        map(b -> b.getBoard().getLayer(Board.LayerType.MILLING)).
+                        anyMatch(l -> l != null);
             }
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
             addChild(new InsertContourMill().setMainApplication(this)).
-            addChild(new XYOffsets(SettingsFactory.getContourMillingSettings()).setMainApplication(this)).
             addChild(new ContourMilling().setMainApplication(this));
 
     private ScreenController dispensingGroup = new OperationsScreenGroup("Dispensing")
@@ -129,17 +133,23 @@ public class MainApplication extends Application
             @Override
             protected boolean isEnabled()
             {
-                return super.isEnabled() && getMainApplication().getContext().getPcbLayout().getSolderPasteLayer() != null;
+                return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
+                        map(b -> b.getBoard().getLayer(Board.LayerType.SOLDER_PASTE)).
+                        anyMatch(l -> l != null);
             }
         }.setMainApplication(this).
             addChild(new PCBPlacement().setMainApplication(this)).
             addChild(new InsertSyringe().setMainApplication(this)).
             addChild(new SyringeBleeding().setMainApplication(this)).
-            addChild(new XYOffsets(SettingsFactory.getDispensingSettings()).setMainApplication(this)).
             addChild(new Dispensing().setMainApplication(this));
 
+    private PPGroup ppGroup = (PPGroup)(new PPGroup("Pick and place").setMainApplication(this).
+            addChild(new PCBPlacement().setMainApplication(this)).
+            addChild(new InsertPPHead().setMainApplication(this)).
+            addChild(new PlacingOverview().setMainApplication(this)));
+
     private ScreenController root = new Welcome().setMainApplication(this).
-            addChild(new Orientation().setMainApplication(this)).
+            addChild(new PanelController().setMainApplication(this)).
             addChild(new Homing().setMainApplication(this)).
             addChild(topTracesGroup).
             addChild(bottomTracesGroup).
@@ -147,11 +157,7 @@ public class MainApplication extends Application
                     addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this))).
             addChild(contourMillingGroup).
             addChild(dispensingGroup).
-            addChild(new PPGroup("Pick and place").setMainApplication(this).
-                    addChild(new PCBPlacement().setMainApplication(this)).
-                    addChild(new InsertPPHead().setMainApplication(this)).
-                    addChild(new XYOffsets(SettingsFactory.getPpSettings()).setMainApplication(this)).
-                    addChild(new PlacingOverview().setMainApplication(this))).
+            addChild(ppGroup).
             addChild(new Terminal().setMainApplication(this)).
             addChild(new ScreenGroup("Misc").setVisible(false).setMainApplication(this).
                     addChild(new SettingsEditor().setMainApplication(this)).
@@ -197,6 +203,12 @@ public class MainApplication extends Application
             }
         }
         return null;
+    }
+
+    public void resetContext()
+    {
+        ppGroup.resetDynamicChildren();
+        context = new Context();
     }
 
     public ScreenController getCurrentScreen()

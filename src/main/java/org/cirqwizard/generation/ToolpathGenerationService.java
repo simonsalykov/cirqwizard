@@ -16,16 +16,18 @@ package org.cirqwizard.generation;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.ChainDetector;
-import org.cirqwizard.layers.Layer;
-import org.cirqwizard.layers.TraceLayer;
+import org.cirqwizard.gerber.GerberPrimitive;
+import org.cirqwizard.layers.*;
 import org.cirqwizard.settings.ToolSettings;
-import org.cirqwizard.toolpath.Toolpath;
+import org.cirqwizard.generation.toolpath.Toolpath;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ToolpathGenerationService extends GenerationService
 {
-    public ToolpathGenerationService(Context context, Layer layer)
+    public ToolpathGenerationService(Context context, Board.LayerType layer)
     {
         super(context, layer);
     }
@@ -37,9 +39,9 @@ public class ToolpathGenerationService extends GenerationService
         int diameter = currentTool.getDiameter();
 
         final ToolpathGenerator generator = new ToolpathGenerator();
-        TraceLayer traceLayer = (TraceLayer) getLayer();
-        generator.init(getContext().getBoardWidth() + 1, getContext().getBoardHeight() + 1,
-                diameter / 2, diameter, traceLayer.getElements(), cancelledProperty());
+        List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
+        generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
+                diameter / 2, diameter, elements, cancelledProperty());
         setCurrentStage("Generating tool paths...");
         progressProperty().bind(generator.progressProperty());
 
@@ -60,8 +62,8 @@ public class ToolpathGenerationService extends GenerationService
                 for (int i = 0 ; i < currentTool.getAdditionalPasses(); i++)
                 {
                     int offset = diameter * (100 - currentTool.getAdditionalPassesOverlap()) / 100;
-                    generator.init(getContext().getBoardWidth() + 1, getContext().getBoardHeight() + 1,
-                            diameter / 2 + offset * (i + 1), diameter, traceLayer.getElements(),
+                    generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
+                            diameter / 2 + offset * (i + 1), diameter, elements,
                             cancelledProperty());
                     List<Toolpath> additionalToolpaths = generator.generate();
                     if (additionalToolpaths == null || additionalToolpaths.size() == 0)
@@ -84,10 +86,14 @@ public class ToolpathGenerationService extends GenerationService
     private List<Toolpath> generatePadsOnlyAdditionalPasses()
     {
         ToolSettings currentTool = getContext().getCurrentMillingTool();
-        TraceLayer traceLayer = (TraceLayer) getLayer();
-        AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(getContext().getBoardWidth() + 1,
-                getContext().getBoardHeight() + 1, currentTool.getAdditionalPasses(),
-                currentTool.getAdditionalPassesOverlap(), currentTool.getDiameter(), traceLayer.getElements());
+        List<? extends LayerElement> elements = getContext().getPanel().getBoards().stream().
+                map(b -> b.getBoard().getLayer(Board.LayerType.TOP)).
+                filter(l -> l != null).
+                map(Layer::getElements).
+                flatMap(Collection::stream).collect(Collectors.toList());
+        AdditionalToolpathGenerator additionalGenerator = new AdditionalToolpathGenerator(getContext().getPanel().getSize().getWidth() + 1,
+                getContext().getPanel().getSize().getHeight() + 1, currentTool.getAdditionalPasses(),
+                currentTool.getAdditionalPassesOverlap(), currentTool.getDiameter(), (List<GerberPrimitive>) elements);
         progressProperty().unbind();
         progressProperty().bind(additionalGenerator.progressProperty());
         return new ToolpathMerger(additionalGenerator.generate(), getMergeTolerance()).merge();

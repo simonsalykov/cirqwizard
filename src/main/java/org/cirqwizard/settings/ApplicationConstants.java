@@ -19,8 +19,8 @@ import java.text.NumberFormat;
 
 public class ApplicationConstants
 {
-    private static NumberFormat toolDiameterFormat = new DecimalFormat("0.0#");
-    private static DecimalFormat decimalFormat = new DecimalFormat("0.0#");
+    private static final NumberFormat toolDiameterFormat = new DecimalFormat("0.0#");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0.0#");
 
     public static final int RESOLUTION = 1000;
     public static final int ROUNDING = 30;
@@ -32,6 +32,9 @@ public class ApplicationConstants
     private final static int Z_RAPID_ACCELERATION = 50_000;
     private final static int FEED_ACCELERATION = 50_000;
     private final static int ARC_FEED = 400_000;
+
+    public final static int REGISTRATION_PINS_INSET = 5_000;
+    public final static int REGISTRATION_PIN_RADIUS = 1_500;
 
     public static int getXRapids()
     {
@@ -73,9 +76,9 @@ public class ApplicationConstants
         return ARC_FEED;
     }
 
-    public static NumberFormat getToolDiameterFormat()
+    public static int getRegistrationPinsInset()
     {
-        return toolDiameterFormat;
+        return REGISTRATION_PINS_INSET;
     }
 
     public static String formatToolDiameter(int diameter)

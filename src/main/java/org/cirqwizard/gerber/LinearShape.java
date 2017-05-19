@@ -14,9 +14,15 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import org.cirqwizard.appertures.Aperture;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.shape.StrokeLineCap;
+import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.gerber.appertures.CircularAperture;
+
+import java.awt.*;
+import java.awt.geom.Line2D;
 
 
 public class LinearShape extends InterpolatingShape
@@ -77,5 +83,34 @@ public class LinearShape extends InterpolatingShape
         if (aperture != null)
             p = p.add(new Point(aperture.getWidth() / 2, aperture.getHeight() / 2));
         return p;
+    }
+
+    @Override
+    public void render(Graphics2D g, double inflation)
+    {
+        int cap = getAperture() instanceof CircularAperture ? BasicStroke.CAP_ROUND : BasicStroke.CAP_SQUARE;
+        double width = Math.max(getAperture().getWidth() + inflation * 2, 0);
+        g.setStroke(new BasicStroke((float) width, cap, BasicStroke.JOIN_ROUND));
+        g.draw(new Line2D.Double(getFrom().getX(), getFrom().getY(),
+                getTo().getX(), getTo().getY()));
+
+    }
+
+    @Override
+    public void render(GraphicsContext g)
+    {
+        g.setLineCap(getAperture() instanceof CircularAperture ? StrokeLineCap.ROUND : StrokeLineCap.SQUARE);
+        g.setLineWidth(getAperture().getWidth());
+        g.strokeLine(getFrom().getX(), getFrom().getY(), getTo().getX(), getTo().getY());
+
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        LinearShape clone = (LinearShape) super.clone();
+        clone.line = new Line(new Point(line.getFrom().getX(), line.getFrom().getY()),
+                new Point(line.getTo().getX(), line.getTo().getY()));
+        return clone;
     }
 }

@@ -16,19 +16,18 @@ package org.cirqwizard.fx.traces;
 
 import javafx.scene.layout.GridPane;
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
 import org.cirqwizard.fx.machining.LongProcessingMachining;
-import org.cirqwizard.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.GenerationService;
+import org.cirqwizard.generation.gcode.TraceGCodeGenerator;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.generation.optimizer.OptimizationService;
-import org.cirqwizard.layers.TraceLayer;
+import org.cirqwizard.generation.toolpath.ToolpathsCacheKey;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.InsulationMillingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 import org.cirqwizard.settings.ToolSettings;
-import org.cirqwizard.toolpath.ToolpathsCacheKey;
 
 import java.util.List;
 
@@ -44,8 +43,7 @@ public abstract class TraceMilling extends LongProcessingMachining
     protected boolean isEnabled()
     {
         Context context = getMainApplication().getContext();
-        return InsertTool.EXPECTED_TOOL.equals(context.getInsertedTool()) &&
-                context.getG54X() != null && context.getG54Y() != null && context.getG54Z() != null;
+        return InsertTool.EXPECTED_TOOL.equals(context.getInsertedTool()) && context.getG54Z() != null;
     }
 
     @Override
@@ -58,8 +56,8 @@ public abstract class TraceMilling extends LongProcessingMachining
     @Override
     public void refresh()
     {
-        pcbPane.setToolpathColor(PCBPaneFX.ENABLED_TOOLPATH_COLOR);
-        pcbPane.setGerberPrimitives(((TraceLayer)getCurrentLayer()).getElements());
+        pcbPane.setToolpathColor(PCBPane.ENABLED_TOOLPATH_COLOR);
+        pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(getCurrentLayer()));
 
         super.refresh();
     }
@@ -83,7 +81,7 @@ public abstract class TraceMilling extends LongProcessingMachining
     protected ToolpathsCacheKey getCacheKey()
     {
         ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
-        return new ToolpathsCacheKey(getCacheId(), getMainApplication().getContext().getPcbLayout().getAngle(), currentTool.getDiameter(),
+        return new ToolpathsCacheKey(getCacheId(), currentTool.getDiameter(),
                 currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
     }
 
@@ -102,7 +100,7 @@ public abstract class TraceMilling extends LongProcessingMachining
         InsulationMillingSettings settings = SettingsFactory.getInsulationMillingSettings();
         ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
         int arcFeed = (currentTool.getFeedXY() * currentTool.getArcs() / 100);
-        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), getCurrentLayer().getToolpaths(), mirror());
+        TraceGCodeGenerator generator = new TraceGCodeGenerator(getMainApplication().getContext(), pcbPane.toolpathsProperty().getValue(), mirror());
         return generator.generate(new RTPostprocessor(), currentTool.getFeedXY(), currentTool.getFeedZ(), arcFeed,
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 currentTool.getSpeed());

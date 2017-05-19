@@ -1,49 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?scenebuilder-stylesheet ../../../../out/production/cirqwizard/org/cirqwizard/fx/cirqwizard.css?>
-
+<?import javafx.geometry.Insets?>
 <StackPane fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
-    <children>
-        <AnchorPane id="AnchorPane" prefHeight="563.0" prefWidth="780.0">
-            <children>
-                <Label layoutX="77.0" layoutY="80.0" styleClass="h1" text="Direct GCode control"/>
-                <Label alignment="TOP_LEFT" layoutY="140.0" prefHeight="47.0" prefWidth="-1.0"
-                       text="On this screen you can control your device using GCode - type GCode in a corresponding field and press Send button."
-                       wrapText="true" AnchorPane.leftAnchor="107.0" AnchorPane.rightAnchor="58.0"/>
-                <VBox id="VBox" alignment="TOP_LEFT" spacing="5.0" AnchorPane.bottomAnchor="110.0"
-                      AnchorPane.leftAnchor="77.0" AnchorPane.rightAnchor="266.0" AnchorPane.topAnchor="201.0">
-                    <children>
-                        <Label text="GCode input:"/>
-                        <TextArea fx:id="gCodeInputTextArea" prefHeight="-1.0" prefWidth="-1.0" wrapText="true"
-                                  VBox.vgrow="ALWAYS"/>
-                    </children>
-                </VBox>
-                <Button fx:id="executeGCodeButton" layoutX="77.0" mnemonicParsing="false" onAction="#executeGCode"
-                        prefWidth="457.0" text="Send" AnchorPane.bottomAnchor="71.0"/>
-                <VBox id="VBox" alignment="TOP_LEFT" prefWidth="170.0" spacing="5.0" AnchorPane.bottomAnchor="114.0"
-                      AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="197.0">
-                    <children>
-                        <Label text="Response:"/>
-                        <TextArea fx:id="responseTextArea" editable="false" prefHeight="-1.0" prefWidth="-1.0"
-                                  wrapText="true" VBox.vgrow="ALWAYS"/>
-                    </children>
-                </VBox>
-            </children>
-        </AnchorPane>
-        <Region fx:id="veil" styleClass="pcb-veil" visible="false"/>
-        <VBox fx:id="executionPane" maxWidth="600" maxHeight="200" spacing="20" alignment="CENTER" styleClass="pcb-popup-pane">
-            <Label text="Executing program"/>
-            <ProgressBar fx:id="executionProgressBar" prefWidth="400.0" progress="0.0"/>
-            <HBox alignment="CENTER" spacing="5.0">
-                <children>
-                    <Label text="Time elapsed:"/>
-                    <Label fx:id="timeElapsedLabel"/>
-                </children>
-            </HBox>
-            <Button onAction="#stopExecution" text="Stop" />
-        </VBox>
-    </children>
+    <VBox layoutX="50.0" layoutY="20.0" AnchorPane.rightAnchor="50.0" spacing="20">
+        <padding>
+            <Insets bottom="20" left="50" right="50" top="20"/>
+        </padding>
+        <Label styleClass="h1" text="Direct GCode control"/>
+        <Label text="On this screen you can control your device using GCode - type GCode in a corresponding field and press Send button."
+               wrapText="true" />
+        <SplitPane style="-fx-box-border: transparent; -fx-background-color: transparent" VBox.vgrow="ALWAYS" dividerPositions="0.7">
+            <VBox spacing="20">
+                <padding>
+                    <Insets right="15"/>
+                </padding>
+                <Label text="GCode input:"/>
+                <TextArea fx:id="gCodeInputTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
+                <Button fx:id="executeGCodeButton" onAction="#executeGCode" text="Send"/>
+            </VBox>
+            <VBox spacing="20">
+                <padding>
+                    <Insets left="15"/>
+                </padding>
+                <Label text="Response:"/>
+                <TextArea fx:id="responseTextArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </SplitPane>
+    </VBox>
+    <Region fx:id="veil" styleClass="pcb-veil" visible="false"/>
+    <VBox fx:id="executionPane" maxWidth="600" maxHeight="200" spacing="20" alignment="CENTER"
+          styleClass="pcb-popup-pane">
+        <Label text="Executing program"/>
+        <ProgressBar fx:id="executionProgressBar" prefWidth="400.0" progress="0.0"/>
+        <HBox alignment="CENTER" spacing="5.0">
+            <Label text="Time elapsed:"/>
+            <Label fx:id="timeElapsedLabel"/>
+        </HBox>
+        <Button onAction="#stopExecution" text="Stop"/>
+    </VBox>
 </StackPane>

@@ -15,9 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.traces.top;
 
 import org.cirqwizard.fx.Context;
-import org.cirqwizard.fx.PCBPaneFX;
+import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.traces.TraceMilling;
-import org.cirqwizard.layers.Layer;
+import org.cirqwizard.layers.Board;
 
 public class TopTraceMilling extends TraceMilling
 {
@@ -25,7 +25,7 @@ public class TopTraceMilling extends TraceMilling
     public void refresh()
     {
         super.refresh();
-        pcbPane.setGerberColor(PCBPaneFX.TOP_TRACE_COLOR);
+        pcbPane.setGerberColor(PCBPane.TOP_TRACE_COLOR);
     }
 
     @Override
@@ -35,9 +35,9 @@ public class TopTraceMilling extends TraceMilling
     }
 
     @Override
-    protected Layer getCurrentLayer()
+    protected Board.LayerType getCurrentLayer()
     {
-        return getMainApplication().getContext().getPcbLayout().getTopTracesLayer();
+        return Board.LayerType.TOP;
     }
 
     @Override
@@ -55,6 +55,6 @@ public class TopTraceMilling extends TraceMilling
     @Override
     protected long getLayerModificationDate()
     {
-        return getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
+        return 0; //getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
     }
 }

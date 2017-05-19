@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import org.cirqwizard.fx.*?>
-<?import org.cirqwizard.fx.PCBPane?>
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
 <?scenebuilder-classpath-element ../../../../../out/production/cirqwizard?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import org.cirqwizard.fx.PCBPane?>
 <AnchorPane id="AnchorPane" fx:id="view" styleClass="main-pane" xmlns:fx="http://javafx.com/fxml" >
   <children>
     <Label alignment="CENTER" layoutY="24.0" styleClass="h1" text="Choose orientation:" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />

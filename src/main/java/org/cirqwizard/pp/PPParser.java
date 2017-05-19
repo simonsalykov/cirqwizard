@@ -18,7 +18,7 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.ApplicationConstants;
 import org.cirqwizard.settings.DistanceUnit;
-import org.cirqwizard.toolpath.PPPoint;
+import org.cirqwizard.generation.toolpath.PPPoint;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

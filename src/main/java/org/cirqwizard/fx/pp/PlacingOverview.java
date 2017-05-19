@@ -14,10 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.pp;
 
-import org.cirqwizard.fx.ScreenController;
-import org.cirqwizard.pp.ComponentId;
-import org.cirqwizard.toolpath.PPPoint;
-import org.cirqwizard.toolpath.Toolpath;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,15 +22,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.cirqwizard.fx.ScreenController;
+import org.cirqwizard.generation.toolpath.PPPoint;
+import org.cirqwizard.layers.Board;
+import org.cirqwizard.layers.LayerElement;
+import org.cirqwizard.pp.ComponentId;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 
 public class PlacingOverview extends ScreenController implements Initializable
@@ -75,9 +74,9 @@ public class PlacingOverview extends ScreenController implements Initializable
     public void refresh()
     {
         HashMap<ComponentId, Row> rowsMap = new HashMap<>();
-        for (Toolpath t : getMainApplication().getContext().getPcbLayout().getComponentsLayer().getToolpaths())
+        for (LayerElement e : getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.PLACEMENT))
         {
-            PPPoint p = (PPPoint) t;
+            PPPoint p = (PPPoint) e;
             if (rowsMap.get(p.getId()) == null)
             {
                 rowsMap.put(p.getId(), new Row(p.getId().getPackaging(), p.getId().getValue(), 1, p.getName()));
