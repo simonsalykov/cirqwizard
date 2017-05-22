@@ -3,9 +3,11 @@ package org.cirqwizard.fx.pp;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamResolution;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
+import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.awt.*;
@@ -15,30 +17,31 @@ import java.util.Optional;
 /**
  * Created by simon on 19.05.17.
  */
+// TODO: fast click through screens = exception
 public class MicroscopeController
 {
-    private boolean microscopeStreamRunning;
+    private SimpleBooleanProperty isRunning = new SimpleBooleanProperty();
     private Webcam webCam;
     private ImageView imageView;
 
-    public MicroscopeController(ImageView imageView)
+    public void setImageView(ImageView imageView)
     {
         this.imageView = imageView;
     }
 
     public void startThread()
     {
-        if (microscopeStreamRunning)
+        if (isRunning.get())
             return;
 
-        microscopeStreamRunning = true;
+        isRunning.set(true);
         Thread thread = new Thread(() ->
         {
             Optional<Webcam> webcamOptional = Webcam.getWebcams().stream().
                     filter(i -> i.getName().equals(SettingsFactory.getPpSettings().getUsbCamera().getValue())).findFirst();
             if (!webcamOptional.isPresent())
             {
-                microscopeStreamRunning = false;
+                isRunning.set(false);
                 return;
             }
 
@@ -47,14 +50,14 @@ public class MicroscopeController
             {
                 webCam.setCustomViewSizes(new Dimension[]{WebcamResolution.UXGA.getSize()});
                 webCam.setViewSize(WebcamResolution.UXGA.getSize());
-                webCam.open();
+                webCam.open(true);
             }
 
-            while (microscopeStreamRunning)
+            while (isRunning.get())
             {
                 try
                 {
-                    if (!imageView.isVisible())
+                    if (imageView == null)
                     {
                         Thread.sleep(20);
                         continue;
@@ -65,13 +68,14 @@ public class MicroscopeController
                     if (imageBytes != null)
                     {
                         i.getPixelWriter().setPixels(0, 0, 1600, 1200, PixelFormat.getByteRgbInstance(), imageBytes, 4800);
-                        Platform.runLater(() -> imageView.setImage(i));
-//                        Platform.runLater(() -> microscopeImageProperty.set(i));
+                        if (imageView != null)
+                            Platform.runLater(() -> imageView.setImage(i));
                     }
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    LoggerFactory.logException("Exception caught in USB camera thread", e);
                 }
             }
         });
@@ -81,7 +85,21 @@ public class MicroscopeController
 
     public void stopThread()
     {
-        microscopeStreamRunning = false;
-        new Thread(() -> webCam.close()).start();
+        isRunning.set(false);
+        new Thread(() ->
+        {
+            if (webCam != null)
+                webCam.close();
+        }).start();
+    }
+
+    public boolean isRunning()
+    {
+        return isRunning.get();
+    }
+
+    public SimpleBooleanProperty isRunningProperty()
+    {
+        return isRunning;
     }
 }
