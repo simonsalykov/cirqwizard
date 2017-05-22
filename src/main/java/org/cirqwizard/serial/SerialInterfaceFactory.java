@@ -37,7 +37,7 @@ public class SerialInterfaceFactory
                 return new SerialInterfaceImpl(port, 38400);
         }
 
-        return new SerialInterfaceStub();
+        return null;
     }
 
 }
