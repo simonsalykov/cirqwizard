@@ -1,28 +1,30 @@
 package org.cirqwizard.fx.pp;
 
-import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamResolution;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.settings.SettingsFactory;
+import org.openimaj.video.capture.Device;
+import org.openimaj.video.capture.VideoCapture;
 
-import java.awt.*;
-import java.nio.ByteBuffer;
-import java.util.Optional;
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by simon on 19.05.17.
  */
-// TODO: fast click through screens = exception
 public class MicroscopeController
 {
     private SimpleBooleanProperty isRunning = new SimpleBooleanProperty();
-    private Webcam webCam;
     private ImageView imageView;
+    private OpenCVFrameGrabber grabber;
 
     public void setImageView(ImageView imageView)
     {
@@ -34,23 +36,32 @@ public class MicroscopeController
         if (isRunning.get())
             return;
 
-        isRunning.set(true);
         Thread thread = new Thread(() ->
         {
-            Optional<Webcam> webcamOptional = Webcam.getWebcams().stream().
-                    filter(i -> i.getName().equals(SettingsFactory.getPpSettings().getUsbCamera().getValue())).findFirst();
-            if (!webcamOptional.isPresent())
+            int selectedCam = -1;
+            List<String> webcams = VideoCapture.getVideoDevices().stream().map(Device::getNameStr).collect(Collectors.toList());
+            for (int i = 0; i < webcams.size(); i++)
+                if (webcams.get(i).equals(SettingsFactory.getPpSettings().getUsbCamera().getValue()))
+                    selectedCam = i;
+
+            if (selectedCam < 0)
+                return;
+
+            isRunning.set(true);
+
+            grabber = new OpenCVFrameGrabber(selectedCam);
+            grabber.setImageWidth(1280);
+            grabber.setImageHeight(720);
+
+            try
+            {
+                grabber.start();
+            }
+            catch (FrameGrabber.Exception e)
             {
                 isRunning.set(false);
+                LoggerFactory.logException("Exception caught starting USB camera thread", e);
                 return;
-            }
-
-            webCam = webcamOptional.get();
-            if (!webCam.isOpen())
-            {
-                webCam.setCustomViewSizes(new Dimension[]{WebcamResolution.UXGA.getSize()});
-                webCam.setViewSize(WebcamResolution.UXGA.getSize());
-                webCam.open(true);
             }
 
             while (isRunning.get())
@@ -63,14 +74,13 @@ public class MicroscopeController
                         continue;
                     }
 
-                    WritableImage i = new WritableImage(1600, 1200);
-                    ByteBuffer imageBytes = webCam.getImageBytes();
-                    if (imageBytes != null)
-                    {
-                        i.getPixelWriter().setPixels(0, 0, 1600, 1200, PixelFormat.getByteRgbInstance(), imageBytes, 4800);
-                        if (imageView != null)
-                            Platform.runLater(() -> imageView.setImage(i));
-                    }
+                    org.bytedeco.javacv.Frame f = grabber.grab();
+                    BufferedImage bi = new BufferedImage(f.imageWidth, f.imageHeight, BufferedImage.TYPE_3BYTE_BGR);
+                    Java2DFrameConverter.copy(f, bi);
+                    WritableImage i = new WritableImage(bi.getWidth(), bi.getHeight());
+                    SwingFXUtils.toFXImage(bi, i);
+                    if (imageView != null)
+                        Platform.runLater(() -> imageView.setImage(i));
                 }
                 catch (Exception e)
                 {
@@ -81,16 +91,6 @@ public class MicroscopeController
         });
         thread.setDaemon(true);
         thread.start();
-    }
-
-    public void stopThread()
-    {
-        isRunning.set(false);
-        new Thread(() ->
-        {
-            if (webCam != null)
-                webCam.close();
-        }).start();
     }
 
     public boolean isRunning()

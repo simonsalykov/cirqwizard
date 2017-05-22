@@ -14,7 +14,6 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx.settings;
 
-import com.github.sarxos.webcam.Webcam;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -32,6 +31,8 @@ import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.*;
+import org.openimaj.video.capture.Device;
+import org.openimaj.video.capture.VideoCapture;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -39,11 +40,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 public class SettingsEditor extends ScreenController implements Initializable
@@ -223,7 +221,7 @@ public class SettingsEditor extends ScreenController implements Initializable
                 items.add(PPSettings.NO_CAMERA_STRING);
                 new Thread(() ->
                 {
-                    List<String> cams = Webcam.getWebcams().stream().map(Webcam::getName).collect(Collectors.toList());
+                    List<String> cams = VideoCapture.getVideoDevices().stream().map(Device::getNameStr).collect(Collectors.toList());
                     items.addAll(cams);
                 }).start();
             }

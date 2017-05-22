@@ -30,6 +30,7 @@ import org.cirqwizard.fx.misc.Firmware;
 import org.cirqwizard.fx.misc.ManualDataInput;
 import org.cirqwizard.fx.panel.PanelController;
 import org.cirqwizard.fx.pp.InsertPPHead;
+import org.cirqwizard.fx.pp.MicroscopeController;
 import org.cirqwizard.fx.pp.PPGroup;
 import org.cirqwizard.fx.pp.PlacingOverview;
 import org.cirqwizard.fx.rubout.BottomRubout;
@@ -58,6 +59,7 @@ public class MainApplication extends Application
     private Context context = new Context();
     private SerialInterface serialInterface;
     private CNCController cncController;
+    private MicroscopeController microscopeController = new MicroscopeController();
 
     private MainViewController mainView = (MainViewController) new MainViewController().setMainApplication(this);
 
@@ -291,6 +293,10 @@ public class MainApplication extends Application
         return cncController;
     }
 
+    public MicroscopeController getMicroscopeController()
+    {
+        return microscopeController;
+    }
 
     public List<ScreenController> getSiblings(ScreenController scene)
     {

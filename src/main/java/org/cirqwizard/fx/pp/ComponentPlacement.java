@@ -99,8 +99,6 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     private Integer placementZ;
 
-    private MicroscopeController microscopeController;
-
     @Override
     protected String getFxmlName()
     {
@@ -129,8 +127,6 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         manualZ.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
 
         microscopeControlPane.visibleProperty().bind(microscopeImageView.visibleProperty());
-        microscopeController = new MicroscopeController();
-        microscopeOnButton.disableProperty().bind(Bindings.not(microscopeController.isRunningProperty()));
     }
 
     private class KeyboardHandler implements EventHandler<KeyEvent>
@@ -189,15 +185,15 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         moveHeadAwayButton.setDisable(noMachineConnected);
         vacuumOffButton.setDisable(noMachineConnected);
 
-        microscopeController.startThread();
+        getMainApplication().getMicroscopeController().startThread();
         microscopeImageView.setVisible(false);
+        microscopeOnButton.disableProperty().bind(Bindings.not(getMainApplication().getMicroscopeController().isRunningProperty()));
     }
 
     @Override
     public void onDeactivation()
     {
-        microscopeController.setImageView(null);
-        microscopeController.stopThread();
+        getMainApplication().getMicroscopeController().setImageView(null);
     }
 
     private void updateComponent()
@@ -374,7 +370,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     public void showMicroscopePickupPane()
     {
         if (SettingsFactory.getPpSettings().getUsbCamera().getValue().equals(PPSettings.NO_CAMERA_STRING) ||
-                !microscopeController.isRunning())
+                !getMainApplication().getMicroscopeController().isRunning())
             return;
         microscopeControlsBox.getChildren().add(0, pickupButton);
         microscopeControlsBox.getChildren().add(0, zControlPane);
@@ -386,7 +382,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     public void showMicroscopePlacementPane()
     {
         if (SettingsFactory.getPpSettings().getUsbCamera().getValue().equals(PPSettings.NO_CAMERA_STRING) ||
-                !microscopeController.isRunning())
+                !getMainApplication().getMicroscopeController().isRunning())
             return;
         microscopeControlsBox.getChildren().add(0, placeButton);
         microscopeControlsBox.getChildren().add(0, zControlPane);
@@ -398,7 +394,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     public void showMicroscopePane()
     {
-        microscopeController.setImageView(microscopeImageView);
+        getMainApplication().getMicroscopeController().setImageView(microscopeImageView);
         regularPane.setVisible(false);
         microscopeImageView.setVisible(true);
     }
@@ -408,7 +404,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     {
         if (!microscopeImageView.isVisible())
             return;
-        microscopeController.setImageView(null);
+        getMainApplication().getMicroscopeController().setImageView(null);
         microscopeImageView.setVisible(false);
         regularPane.setVisible(true);
 
