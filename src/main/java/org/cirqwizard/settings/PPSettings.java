@@ -20,7 +20,7 @@ public class PPSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name =  "Camera assistance")
-    private UserPreference<String> usbCamera = new UserPreference<>("USB camera", null, "", PreferenceType.USB_CAMERA);
+    private UserPreference<String> usbCamera = new UserPreference<>("USB camera", NO_CAMERA_STRING, "", PreferenceType.USB_CAMERA);
 
     @PersistentPreference
     @PreferenceGroup(name =  "Heights")
