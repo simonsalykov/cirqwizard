@@ -38,49 +38,49 @@ public class ToolpathGenerationService extends GenerationService
         ToolSettings currentTool = getContext().getCurrentMillingTool();
         int diameter = currentTool.getDiameter();
 
-        final ToolpathGenerator generator = new ToolpathGenerator();
+        final VectorToolPathGenerator generator = new VectorToolPathGenerator();
         List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
         generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
                 diameter / 2, diameter, elements, cancelledProperty());
         setCurrentStage("Generating tool paths...");
         progressProperty().bind(generator.progressProperty());
 
-        List<Toolpath> toolpaths = generator.generate();
+        return generator.generate();
 
-        if (isCancelled())
-            return null;
-        if (toolpaths == null || toolpaths.size() == 0)
-            return null;
-        toolpaths = new ToolpathMerger(toolpaths, getMergeTolerance()).merge();
+//        if (isCancelled())
+//            return null;
+//        if (toolpaths == null || toolpaths.size() == 0)
+//            return null;
+//        toolpaths = new ToolpathMerger(toolpaths, getMergeTolerance()).merge();
+//
+//        if (currentTool.getAdditionalPasses() > 0)
+//        {
+//            setCurrentStage("Generating additional passes...");
+//
+//            if (!currentTool.isAdditionalPassesPadsOnly())
+//            {
+//                for (int i = 0 ; i < currentTool.getAdditionalPasses(); i++)
+//                {
+//                    int offset = diameter * (100 - currentTool.getAdditionalPassesOverlap()) / 100;
+//                    generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
+//                            diameter / 2 + offset * (i + 1), diameter, elements,
+//                            cancelledProperty());
+//                    List<Toolpath> additionalToolpaths = generator.generate();
+//                    if (additionalToolpaths == null || additionalToolpaths.size() == 0)
+//                        continue;
+//                    if (isCancelled())
+//                        return null;
+//                    toolpaths.addAll(new ToolpathMerger(additionalToolpaths, getMergeTolerance()).merge());
+//                }
+//            }
+//            else
+//            {
+//                progressProperty().unbind();
+//                generatePadsOnlyAdditionalPasses();
+//            }
+//        }
 
-        if (currentTool.getAdditionalPasses() > 0)
-        {
-            setCurrentStage("Generating additional passes...");
-
-            if (!currentTool.isAdditionalPassesPadsOnly())
-            {
-                for (int i = 0 ; i < currentTool.getAdditionalPasses(); i++)
-                {
-                    int offset = diameter * (100 - currentTool.getAdditionalPassesOverlap()) / 100;
-                    generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
-                            diameter / 2 + offset * (i + 1), diameter, elements,
-                            cancelledProperty());
-                    List<Toolpath> additionalToolpaths = generator.generate();
-                    if (additionalToolpaths == null || additionalToolpaths.size() == 0)
-                        continue;
-                    if (isCancelled())
-                        return null;
-                    toolpaths.addAll(new ToolpathMerger(additionalToolpaths, getMergeTolerance()).merge());
-                }
-            }
-            else
-            {
-                progressProperty().unbind();
-                generatePadsOnlyAdditionalPasses();
-            }
-        }
-
-        return new ChainDetector(toolpaths).detect();
+//        return new ChainDetector(toolpaths).detect();
     }
 
     private List<Toolpath> generatePadsOnlyAdditionalPasses()

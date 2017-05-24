@@ -41,6 +41,7 @@ repositories {
 dependencies {
     compile('org.scream3r:jssc:2.8.0')
     compile('org.simpleframework:simple-xml:2.7.1')
+    compile('com.vividsolutions:jts-core:1.14.0')
     testCompile ('junit:junit:4.11')
 }
 

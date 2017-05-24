@@ -76,7 +76,7 @@ public abstract class LongProcessingMachining extends Machining
 
                         for (Chain p : chains)
                             toolpaths.addAll(p.getSegments());
-                        updateCache(toolpaths);
+//                        updateCache(toolpaths);
                         getMainApplication().getContext().getPanel().setToolpaths(getCurrentLayer(), toolpaths);
                         Platform.runLater(() -> pcbPane.toolpathsProperty().setValue(
                                 FXCollections.observableArrayList(toolpaths)));
