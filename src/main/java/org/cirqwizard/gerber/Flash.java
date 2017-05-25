@@ -14,6 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Polygon;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.StrokeLineCap;
 import org.cirqwizard.gerber.appertures.*;
@@ -289,6 +291,12 @@ public class Flash extends GerberPrimitive
                 }
             }
         }
+    }
+
+    @Override
+    public Polygon createPolygon(int inflation)
+    {
+        return aperture.createPolygon(point.getX(), point.getY(), inflation);
     }
 
     @Override

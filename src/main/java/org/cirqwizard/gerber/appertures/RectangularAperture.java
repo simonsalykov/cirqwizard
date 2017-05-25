@@ -14,6 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
+
 public class RectangularAperture extends Aperture
 {
     private int dimensions[] = new int[2];
@@ -74,5 +78,15 @@ public class RectangularAperture extends Aperture
         int width = dimensions[0] / 2;
         int height = dimensions[1] / 2;
         return (int) Math.sqrt(width * width + height * height);
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        return VectorToolPathGenerator.factory.createPolygon(new Coordinate[]{new Coordinate(x - dimensions[0] / 2 - inflation, y - dimensions[1] / 2 - inflation),
+                new Coordinate(x + dimensions[0] / 2 + inflation, y - dimensions[1] / 2 - inflation),
+                new Coordinate(x + dimensions[0] / 2 + inflation, y + dimensions[1] / 2 + inflation),
+                new Coordinate(x - dimensions[0] / 2 - inflation, y + dimensions[1] / 2 + inflation),
+                new Coordinate(x - dimensions[0] / 2 - inflation, y - dimensions[1] / 2 - inflation)});
     }
 }

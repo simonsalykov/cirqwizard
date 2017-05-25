@@ -120,36 +120,37 @@ public abstract class LongProcessingMachining extends Machining
 
     private boolean loadFromCache()
     {
-        try
-        {
-            String filename = getMainApplication().getContext().getPanelFile().getAbsolutePath();
-            filename = filename.substring(0, filename.lastIndexOf('.'));
-            ToolpathsCache cache = ToolpathsPersistor.loadFromFile(filename + ".tmp");
-            if (!getMainApplication().getContext().getPanel().isCacheValid())
-            {
-                File cacheFile = new File(filename + ".tmp");
-                if (cacheFile.exists())
-                    cacheFile.delete();
-                return false;
-            }
-
-            if (cache == null)
-                return false;
-
-            List<Toolpath> toolpaths = cache.getToolpaths(getCacheKey());
-            if (toolpaths != null)
-            {
-                cacheKey = getCacheKey();
-                getMainApplication().getContext().getPanel().setToolpaths(getCurrentLayer(), toolpaths);
-                pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
-                return true;
-            }
-        }
-        catch (ToolpathPersistingException e)
-        {
-            LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
-        }
         return false;
+//        try
+//        {
+//            String filename = getMainApplication().getContext().getPanelFile().getAbsolutePath();
+//            filename = filename.substring(0, filename.lastIndexOf('.'));
+//            ToolpathsCache cache = ToolpathsPersistor.loadFromFile(filename + ".tmp");
+//            if (!getMainApplication().getContext().getPanel().isCacheValid())
+//            {
+//                File cacheFile = new File(filename + ".tmp");
+//                if (cacheFile.exists())
+//                    cacheFile.delete();
+//                return false;
+//            }
+//
+//            if (cache == null)
+//                return false;
+//
+//            List<Toolpath> toolpaths = cache.getToolpaths(getCacheKey());
+//            if (toolpaths != null)
+//            {
+//                cacheKey = getCacheKey();
+//                getMainApplication().getContext().getPanel().setToolpaths(getCurrentLayer(), toolpaths);
+//                pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
+//                return true;
+//            }
+//        }
+//        catch (ToolpathPersistingException e)
+//        {
+//            LoggerFactory.getApplicationLogger().log(Level.INFO, e.getMessage(), e);
+//        }
+//        return false;
     }
 
     private void updateCache(List<Toolpath> toolpaths)
