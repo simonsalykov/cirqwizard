@@ -13,10 +13,13 @@ This program is free software: you can redistribute it and/or modify
 */
 package org.cirqwizard.gerber.appertures.macro;
 
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.gerber.appertures.Aperture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ApertureMacro extends Aperture
 {
@@ -68,5 +71,12 @@ public class ApertureMacro extends Aperture
     public int getCircumRadius()
     {
         return 2000;
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        return (Polygon) VectorToolPathGenerator.factory.createGeometryCollection(primitives.stream().
+                map(p -> p.createPolygon(x, y, inflation)).toArray(Polygon[]::new)).buffer(0);
     }
 }

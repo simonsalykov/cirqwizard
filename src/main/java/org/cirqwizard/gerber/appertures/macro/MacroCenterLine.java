@@ -14,6 +14,9 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures.macro;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.geom.Point;
 
 public class MacroCenterLine extends MacroPrimitive
@@ -59,5 +62,13 @@ public class MacroCenterLine extends MacroPrimitive
     public MacroPrimitive clone()
     {
         return new MacroCenterLine(width, height, center, getRotationAngle());
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        return (Polygon) VectorToolPathGenerator.factory.createLineString(new Coordinate[]{
+                new Coordinate(getFrom().getX() + x, getFrom().getY() + y),
+                new Coordinate(getTo().getX() + x, getTo().getY() + y)}).buffer(getHeight());
     }
 }

@@ -48,10 +48,7 @@ public abstract class GerberPrimitive implements LayerElement
     public abstract Point getMax();
     public abstract void render(Graphics2D g, double inflation);
 
-    public com.vividsolutions.jts.geom.Polygon createPolygon(int inflation)
-    {
-        return null;
-    }
+    public abstract com.vividsolutions.jts.geom.Polygon createPolygon(int inflation);
 
 
     @Override

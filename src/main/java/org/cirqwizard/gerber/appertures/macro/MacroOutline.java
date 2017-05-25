@@ -14,6 +14,9 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures.macro;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.geom.Point;
 
 import java.util.ArrayList;
@@ -56,5 +59,21 @@ public class MacroOutline extends MacroPrimitive
     public MacroPrimitive clone()
     {
         return new MacroOutline(points, getRotationAngle());
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        List<Coordinate> coordinates = new ArrayList<>();
+        for (int i = 0; i < getTranslatedPoints().size(); i++)
+        {
+            Point point = getPoints().get(i);
+            coordinates.add(new Coordinate(point.getX() + x, point.getY() + y));
+        }
+        coordinates.add(coordinates.get(0));
+
+        Coordinate[] c = new Coordinate[coordinates.size()];
+        coordinates.toArray(c);
+        return VectorToolPathGenerator.factory.createPolygon(c);
     }
 }

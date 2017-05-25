@@ -13,6 +13,7 @@ This program is free software: you can redistribute it and/or modify
 */
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Polygon;
 import org.cirqwizard.geom.Point;
 
 import java.util.ArrayList;
@@ -91,5 +92,11 @@ public class PolygonalAperture extends Aperture
     public int getCircumRadius()
     {
         return (maxX - minX) / 2;
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        throw new IllegalArgumentException("Not implemented");
     }
 }

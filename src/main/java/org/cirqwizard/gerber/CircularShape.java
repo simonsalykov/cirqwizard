@@ -14,9 +14,12 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Polygon;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeLineCap;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
@@ -24,6 +27,7 @@ import org.cirqwizard.gerber.appertures.CircularAperture;
 
 import java.awt.*;
 import java.awt.geom.Arc2D;
+import java.util.ArrayList;
 
 public class CircularShape extends InterpolatingShape
 {
@@ -142,6 +146,30 @@ public class CircularShape extends InterpolatingShape
                 -Math.toDegrees(getArc().getStart()),
                 Math.toDegrees(getArc().getAngle()) * (getArc().isClockwise() ? 1 : -1),
                 ArcType.OPEN);
+    }
+
+    public java.util.List<Coordinate> getLineStringCoordinates()
+    {
+        int segments = 10;
+        double angle = arc.getStart();
+        double angularIncrement = (arc.getEnd(false) - arc.getStart()) / segments;
+        java.util.List<Coordinate> coordinates = new ArrayList<>();
+        for (int i = 0; i < segments; i++)
+        {
+            coordinates.add(new Coordinate(arc.getCenter().getX() + (double)arc.getRadius() * Math.cos(angle),
+                    arc.getCenter().getY() + (double)arc.getRadius() * Math.sin(angle)));
+            angle += angularIncrement;
+        }
+        return coordinates;
+    }
+
+    @Override
+    public Polygon createPolygon(int inflation)
+    {
+        java.util.List<Coordinate> c = getLineStringCoordinates();
+        Coordinate[] coordinates = new Coordinate[c.size()];
+        c.toArray(coordinates);
+        return (Polygon) VectorToolPathGenerator.factory.createLineString(coordinates).buffer(aperture.getWidth() + inflation);
     }
 
     @Override

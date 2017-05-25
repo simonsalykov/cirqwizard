@@ -179,10 +179,11 @@ public abstract class LongProcessingMachining extends Machining
         this.boundService = service;
         Platform.runLater(() ->
         {
-            overallProgressBar.progressProperty().unbind();
+            overallProgressBar.setProgress(-1);
+//            overallProgressBar.progressProperty().unbind();
             generationStageLabel.textProperty().unbind();
             machiningTimeEstimationLabel.textProperty().unbind();
-            overallProgressBar.progressProperty().bind(service.progressProperty());
+//            overallProgressBar.progressProperty().bind(service.progressProperty());
             generationStageLabel.textProperty().bind(service.currentStageProperty());
             machiningTimeEstimationLabel.textProperty().bind(service.additionalInformationProperty());
         });

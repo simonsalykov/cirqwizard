@@ -14,6 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
+
 public class OvalAperture extends Aperture
 {
     private int width, height;
@@ -70,5 +75,33 @@ public class OvalAperture extends Aperture
     public int getCircumRadius()
     {
         return (int) Math.sqrt(width * width + height * height);
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        double width = Math.max(this.width + inflation * 2, 0);
+        double height = Math.max(this.height + inflation * 2, 0);
+        double d = Math.min(width, height);
+        double l = isHorizontal() ? width - height : height - width;
+        double xOffset = isHorizontal() ? l / 2 : 0;
+        double yOffset = isHorizontal() ? 0 : l / 2;
+        double rectX = isHorizontal() ? x - l / 2 : x - width / 2;
+        double rectY = isHorizontal() ? y - height / 2 : y - l / 2;
+        double rectWidth = isHorizontal() ? l : width;
+        double rectHeight = isHorizontal() ? height : l;
+
+        Polygon c1 = (Polygon) VectorToolPathGenerator.factory.
+                createPoint(new Coordinate(x - xOffset - d / 2, y + yOffset - d / 2)).buffer(d / 2);
+        Polygon c2 = (Polygon) VectorToolPathGenerator.factory.
+                createPoint(new Coordinate(x + xOffset - d / 2, y - yOffset - d / 2)).buffer(d / 2);
+        Polygon rect = VectorToolPathGenerator.factory.createPolygon(new Coordinate[]{
+                new Coordinate(rectX, rectY),
+                new Coordinate(rectX + rectWidth, rectY),
+                new Coordinate(rectX + rectWidth, rectY + rectHeight),
+                new Coordinate(rectX, rectY + rectHeight),
+                new Coordinate(rectX, rectY)});
+
+        return (Polygon) VectorToolPathGenerator.factory.createGeometryCollection(new Geometry[]{c1, rect, c2}).buffer(0);
     }
 }

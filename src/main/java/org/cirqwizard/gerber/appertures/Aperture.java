@@ -55,9 +55,6 @@ public abstract class Aperture
 
     public abstract int getCircumRadius();
 
-    public Polygon createPolygon(int x, int y, int inflation)
-    {
-        return null;
-    }
+    public abstract Polygon createPolygon(int x, int y, int inflation);
 
 }
