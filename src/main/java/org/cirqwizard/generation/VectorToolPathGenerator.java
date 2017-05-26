@@ -55,16 +55,46 @@ public class VectorToolPathGenerator extends AbstractToolpathGenerator
             chains.add(processCoordinates(polygon.getInteriorRingN(i).getCoordinates()));
     }
 
+    private Geometry processGeometries(GerberPrimitive.Polarity polarity, Geometry resultingGeometry, List<Geometry> geometriesList)
+    {
+        Geometry[] geometries = new Geometry[geometriesList.size()];
+        geometriesList.toArray(geometries);
+        Geometry union = factory.createGeometryCollection(geometries).buffer(0);
+        if (polarity == GerberPrimitive.Polarity.DARK)
+        {
+            if (resultingGeometry == null)
+                return union;
+            else
+                return factory.createGeometryCollection(new Geometry[]{resultingGeometry, union}).buffer(0);
+        }
+        else
+            return resultingGeometry.difference(union);
+    }
+
+
     public List<Chain> generate()
     {
         List<Chain> chains = new ArrayList<>();
-        Polygon[] polygons = primitives.stream().map(p -> p.createPolygon(inflation)).filter(Objects::nonNull).toArray(Polygon[]::new);
-        Geometry union = factory.createGeometryCollection(polygons).buffer(0);
-        if (union instanceof Polygon)
-            processPolygon(chains, (Polygon) union);
+        GerberPrimitive.Polarity currentPolarity = primitives.get(0).getPolarity();
+        List<Geometry> currentGeometryCollection = new ArrayList<>();
+        Geometry resultingGeometry = null;
+        for (GerberPrimitive p : primitives)
+        {
+            if (p.getPolarity() != currentPolarity)
+            {
+                resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
+                currentGeometryCollection = new ArrayList<>();
+                currentPolarity = p.getPolarity();
+            }
+            currentGeometryCollection.add(p.createPolygon(inflation));
+        }
+        resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
+
+        if (resultingGeometry instanceof Polygon)
+            processPolygon(chains, (Polygon) resultingGeometry);
         else
         {
-            MultiPolygon g = (MultiPolygon) union;
+            MultiPolygon g = (MultiPolygon) resultingGeometry;
             for (int j = 0; j < g.getNumGeometries(); j++)
                 processPolygon(chains, (Polygon) g.getGeometryN(j));
         }
