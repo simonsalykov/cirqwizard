@@ -10,7 +10,6 @@ import org.cirqwizard.gerber.GerberPrimitive;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by simon on 24.05.17.
@@ -20,20 +19,20 @@ public class VectorToolPathGenerator extends AbstractToolpathGenerator
     private static final PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.FIXED);
     public static final GeometryFactory factory = new GeometryFactory(precisionModel);
 
-    private int width;
-    private int height;
     private int toolDiameter;
     private BooleanProperty cancelledProperty;
+    private int additionalPasses;
+    private int additionalPassesOverlap;
 
-    public void init(int width, int height, int inflation, int toolDiameter, List<GerberPrimitive> primitives,
-                     BooleanProperty cancelledProperty)
+    public VectorToolPathGenerator(int inflation, int toolDiameter, List<GerberPrimitive> primitives, BooleanProperty cancelledProperty,
+                     int additionalPasses, int additionalPassesOverlap)
     {
-        this.width = width;
-        this.height = height;
         this.inflation = inflation;
         this.toolDiameter = toolDiameter;
         this.primitives = primitives;
         this.cancelledProperty = cancelledProperty;
+        this.additionalPasses = additionalPasses;
+        this.additionalPassesOverlap = additionalPassesOverlap;
     }
 
     private Chain processCoordinates(Coordinate[] coordinates)
@@ -71,10 +70,8 @@ public class VectorToolPathGenerator extends AbstractToolpathGenerator
             return resultingGeometry.difference(union);
     }
 
-
     public List<Chain> generate()
     {
-        List<Chain> chains = new ArrayList<>();
         GerberPrimitive.Polarity currentPolarity = primitives.get(0).getPolarity();
         List<Geometry> currentGeometryCollection = new ArrayList<>();
         Geometry resultingGeometry = null;
@@ -90,6 +87,20 @@ public class VectorToolPathGenerator extends AbstractToolpathGenerator
         }
         resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
 
+        List<Chain> chains = new ArrayList<>();
+
+        addChains(resultingGeometry, chains);
+        for (int i = 0; i < additionalPasses; i++)
+        {
+            int offset = toolDiameter * (100 - additionalPassesOverlap) / 100;
+            resultingGeometry = resultingGeometry.buffer(offset);
+            addChains(resultingGeometry, chains);
+        }
+        return chains;
+    }
+
+    private void addChains(Geometry resultingGeometry, List<Chain> chains)
+    {
         if (resultingGeometry instanceof Polygon)
             processPolygon(chains, (Polygon) resultingGeometry);
         else
@@ -98,7 +109,6 @@ public class VectorToolPathGenerator extends AbstractToolpathGenerator
             for (int j = 0; j < g.getNumGeometries(); j++)
                 processPolygon(chains, (Polygon) g.getGeometryN(j));
         }
-        return chains;
     }
 
 }

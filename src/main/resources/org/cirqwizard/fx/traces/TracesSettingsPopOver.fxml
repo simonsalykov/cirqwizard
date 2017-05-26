@@ -55,8 +55,6 @@
         <Label text="Overlap" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <TextField fx:id="additonalPassesOverlapTextField" prefWidth="75" GridPane.rowIndex="2" GridPane.columnIndex="1" />
         <Label text="\%" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-        <Label text="Only around pads" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="additionalPassesPadsOnlyCheckBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
     </GridPane>
 
 </VBox>

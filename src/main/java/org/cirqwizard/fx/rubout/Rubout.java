@@ -55,8 +55,6 @@ public abstract class Rubout extends LongProcessingMachining
         super.refresh();
     }
 
-    protected abstract int getCacheId();
-    protected abstract long getLayerModificationDate();
     protected abstract boolean mirror();
 
     @Override
@@ -73,14 +71,6 @@ public abstract class Rubout extends LongProcessingMachining
         return new OptimizationService(getMainApplication().getContext(), chains, getMergeTolerance(), settings.getFeedXY().getValue(),
                 settings.getFeedZ().getValue(), settings.getFeedArcs().getValue(), settings.getClearance().getValue(),
                 settings.getSafetyHeight().getValue());
-    }
-
-    @Override
-    protected ToolpathsCacheKey getCacheKey()
-    {
-        RubOutSettings settings = SettingsFactory.getRubOutSettings();
-        return new ToolpathsCacheKey(getCacheId(), settings.getToolDiameter().getValue(), 0,
-                0, false, settings.getInitialOffset().getValue(), settings.getOverlap().getValue());
     }
 
     @Override

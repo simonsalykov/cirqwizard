@@ -78,21 +78,12 @@ public abstract class TraceMilling extends LongProcessingMachining
     }
 
     @Override
-    protected ToolpathsCacheKey getCacheKey()
-    {
-        ToolSettings currentTool = getMainApplication().getContext().getCurrentMillingTool();
-        return new ToolpathsCacheKey(getCacheId(), currentTool.getDiameter(),
-                currentTool.getAdditionalPasses(), currentTool.getAdditionalPassesOverlap(), currentTool.isAdditionalPassesPadsOnly(), 0, 0);
-    }
-
-    @Override
     protected int getMergeTolerance()
     {
         return getMainApplication().getContext().getCurrentMillingTool().getDiameter() / 4;
     }
 
     protected abstract boolean mirror();
-    protected abstract int getCacheId();
 
     @Override
     protected String generateGCode()

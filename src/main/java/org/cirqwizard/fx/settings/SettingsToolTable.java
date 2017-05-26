@@ -48,7 +48,6 @@ public class SettingsToolTable implements Initializable
     @FXML private TableColumn<ToolSettings, Integer> zOffsetColumn;
     @FXML private TableColumn<ToolSettings, Integer> additionalPassesColumn;
     @FXML private TableColumn<ToolSettings, Integer> additionalPassesOverlapColumn;
-    @FXML private TableColumn<ToolSettings, Boolean> additionalPassesPadsOnly;
 
     @FXML private Button deleteButton;
 
@@ -133,13 +132,6 @@ public class SettingsToolTable implements Initializable
         additionalPassesOverlapColumn.setOnEditCommit(event ->
         {
             event.getRowValue().setAdditionalPassesOverlap(event.getNewValue());
-            saveLibrary();
-        });
-        additionalPassesPadsOnly.setCellValueFactory(new PropertyValueFactory<>("additionalPassesPadsOnly"));
-        additionalPassesPadsOnly.setCellFactory(param -> new CheckBoxTableCell<>());
-        additionalPassesPadsOnly.setOnEditCommit(event ->
-        {
-            event.getRowValue().setAdditionalPassesPadsOnly(event.getNewValue());
             saveLibrary();
         });
 

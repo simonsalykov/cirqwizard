@@ -22,7 +22,6 @@
             <TableColumn fx:id="zOffsetColumn" text="Z offset" editable="true"/>
             <TableColumn fx:id="additionalPassesColumn" prefWidth="150" text="Additional passes" editable="true"/>
             <TableColumn fx:id="additionalPassesOverlapColumn" text="Overlap" editable="true"/>
-            <TableColumn fx:id="additionalPassesPadsOnly" prefWidth="100" text="Pads only" editable="true"/>
         </columns>
     </TableView>
 </VBox>

@@ -45,15 +45,4 @@ public class BottomTraceMilling extends TraceMilling
         return true;
     }
 
-    @Override
-    protected int getCacheId()
-    {
-        return 1;
-    }
-
-    @Override
-    protected long getLayerModificationDate()
-    {
-        return 0; //getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
-    }
 }
