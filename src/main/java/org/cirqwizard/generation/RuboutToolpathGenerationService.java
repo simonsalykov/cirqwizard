@@ -44,9 +44,8 @@ public class RuboutToolpathGenerationService extends GenerationService
         int diameter = settings.getToolDiameter().getValue();
         List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
         elements.addAll(createPinKeepout());
-        VectorRuboutGenerator generator =  new VectorRuboutGenerator(getContext().getPanel().getSize().getWidth(),
-                getContext().getPanel().getSize().getHeight(), elements, diameter, cancelledProperty(),
-                settings.getInitialOffset().getValue());
+        VectorRuboutGenerator generator =  new VectorRuboutGenerator(getContext().getPanel().getBoards(), elements, diameter,
+                cancelledProperty(), settings.getInitialOffset().getValue());
         return generator.generate();
     }
 
