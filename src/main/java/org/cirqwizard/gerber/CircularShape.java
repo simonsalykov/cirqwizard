@@ -150,11 +150,11 @@ public class CircularShape extends InterpolatingShape
 
     public java.util.List<Coordinate> getLineStringCoordinates()
     {
-        int segments = 10;
+        int segments = arc.getRadius() / 100;
         double angle = arc.getStart();
-        double angularIncrement = (arc.getEnd(false) - arc.getStart()) / segments;
+        double angularIncrement = arc.getAngle() / segments * (arc.isClockwise() ? -1 : 1);
         java.util.List<Coordinate> coordinates = new ArrayList<>();
-        for (int i = 0; i < segments; i++)
+        for (int i = 0; i <= segments; i++)
         {
             coordinates.add(new Coordinate(arc.getCenter().getX() + (double)arc.getRadius() * Math.cos(angle),
                     arc.getCenter().getY() + (double)arc.getRadius() * Math.sin(angle)));
@@ -164,12 +164,12 @@ public class CircularShape extends InterpolatingShape
     }
 
     @Override
-    public Polygon createPolygon(int inflation)
+    public Geometry createGeometry(int inflation)
     {
         java.util.List<Coordinate> c = getLineStringCoordinates();
         Coordinate[] coordinates = new Coordinate[c.size()];
         c.toArray(coordinates);
-        return (Polygon) VectorToolPathGenerator.factory.createLineString(coordinates).buffer(aperture.getWidth() + inflation);
+        return VectorToolPathGenerator.factory.createLineString(coordinates).buffer(aperture.getWidth() / 2 + inflation);
     }
 
     @Override

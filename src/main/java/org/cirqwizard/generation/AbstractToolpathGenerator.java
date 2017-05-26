@@ -152,7 +152,7 @@ public class AbstractToolpathGenerator
                 currentGeometryCollection = new ArrayList<>();
                 currentPolarity = p.getPolarity();
             }
-            currentGeometryCollection.add(p.createPolygon(inflation));
+            currentGeometryCollection.add(p.createGeometry(inflation));
         }
         resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
         return resultingGeometry;

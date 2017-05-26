@@ -164,7 +164,7 @@ public class Region extends GerberPrimitive
     }
 
     @Override
-    public Polygon createPolygon(int inflation)
+    public Geometry createGeometry(int inflation)
     {
         List<Coordinate> coordinateList = new ArrayList<>();
         InterpolatingShape firstSegment = (InterpolatingShape) getSegments().get(0);

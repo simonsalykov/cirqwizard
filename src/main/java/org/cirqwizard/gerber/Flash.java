@@ -294,7 +294,7 @@ public class Flash extends GerberPrimitive
     }
 
     @Override
-    public Polygon createPolygon(int inflation)
+    public Geometry createGeometry(int inflation)
     {
         return aperture.createPolygon(point.getX(), point.getY(), inflation);
     }

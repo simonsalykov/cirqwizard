@@ -14,7 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Geometry;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.layers.LayerElement;
@@ -48,7 +48,7 @@ public abstract class GerberPrimitive implements LayerElement
     public abstract Point getMax();
     public abstract void render(Graphics2D g, double inflation);
 
-    public abstract com.vividsolutions.jts.geom.Polygon createPolygon(int inflation);
+    public abstract Geometry createGeometry(int inflation);
 
 
     @Override

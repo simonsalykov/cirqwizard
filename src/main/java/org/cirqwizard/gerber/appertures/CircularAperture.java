@@ -78,6 +78,7 @@ public class CircularAperture extends Aperture
     @Override
     public Polygon createPolygon(int x, int y, int inflation)
     {
-        return (Polygon) VectorToolPathGenerator.factory.createPoint(new Coordinate(x, y)).buffer(diameter / 2 + inflation);
+        return (Polygon) VectorToolPathGenerator.factory.createPoint(new Coordinate(x, y)).buffer(diameter / 2 + inflation,
+                diameter / 1000 * 5);
     }
 }

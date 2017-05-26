@@ -109,10 +109,10 @@ public class LinearShape extends InterpolatingShape
     }
 
     @Override
-    public Polygon createPolygon(int inflation)
+    public Geometry createGeometry(int inflation)
     {
         double width = Math.max(getAperture().getWidth() + inflation * 2, 0) / 2;
-        return (Polygon) VectorToolPathGenerator.factory.createLineString(new Coordinate[]{new Coordinate(getFrom().getX(), getFrom().getY()),
+        return VectorToolPathGenerator.factory.createLineString(new Coordinate[]{new Coordinate(getFrom().getX(), getFrom().getY()),
                 new Coordinate(getTo().getX(), getTo().getY())}).buffer(width);
     }
 

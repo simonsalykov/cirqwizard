@@ -6,7 +6,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import javafx.beans.property.BooleanProperty;
 import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.gerber.GerberPrimitive;
-import org.cirqwizard.layers.Board;
 import org.cirqwizard.layers.PanelBoard;
 
 import java.util.ArrayList;
