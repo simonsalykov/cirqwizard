@@ -44,43 +44,10 @@ public class RuboutToolpathGenerationService extends GenerationService
         int diameter = settings.getToolDiameter().getValue();
         List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
         elements.addAll(createPinKeepout());
-
-        List<Toolpath> toolpaths = new ArrayList<>();
-        for (int pass = 0; pass < 2; pass++)
-        {
-            if (cancelledProperty().get())
-                return null;
-            ToolpathGenerator g = new ToolpathGenerator();
-            g.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
-                    pass * (diameter - settings.getOverlap().getValue()) + settings.getInitialOffset().getValue() + diameter / 2, diameter, elements,
-                    cancelledProperty());
-            setCurrentStage("Generating tool paths...");
-            progressProperty().bind(g.progressProperty());
-
-            List<Toolpath> t = g.generate();
-            if (t == null || t.size() == 0)
-                continue;
-            toolpaths.addAll(new ToolpathMerger(t, diameter / 4).merge());
-        }
-        if (cancelledProperty().get())
-            return null;
-
-        final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
-        generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
-                settings.getInitialOffset().getValue(),
-                diameter, settings.getOverlap().getValue(), elements,
-                SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), cancelledProperty());
-        progressProperty().unbind();
-        progressProperty().bind(generator.progressProperty());
-
-        List<Toolpath> t = generator.generate();
-        if (cancelledProperty().get())
-            return null;
-        final int mergeTolerance = diameter / 10;
-        if (t != null && t.size() > 0)
-            toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
-
-        return new ChainDetector(toolpaths).detect();
+        VectorRuboutGenerator generator =  new VectorRuboutGenerator(getContext().getPanel().getSize().getWidth(),
+                getContext().getPanel().getSize().getHeight(), elements, diameter, cancelledProperty(),
+                settings.getInitialOffset().getValue());
+        return generator.generate();
     }
 
     private List<GerberPrimitive> createPinKeepout()
