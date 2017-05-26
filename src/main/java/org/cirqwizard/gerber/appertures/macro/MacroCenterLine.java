@@ -16,6 +16,8 @@ package org.cirqwizard.gerber.appertures.macro;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.operation.buffer.BufferOp;
+import com.vividsolutions.jts.operation.buffer.BufferParameters;
 import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.geom.Point;
 
@@ -69,6 +71,8 @@ public class MacroCenterLine extends MacroPrimitive
     {
         return (Polygon) VectorToolPathGenerator.factory.createLineString(new Coordinate[]{
                 new Coordinate(getFrom().getX() + x, getFrom().getY() + y),
-                new Coordinate(getTo().getX() + x, getTo().getY() + y)}).buffer(getHeight());
+                new Coordinate(getTo().getX() + x, getTo().getY() + y)}).
+                buffer(getHeight() / 2, BufferParameters.DEFAULT_QUADRANT_SEGMENTS, BufferParameters.CAP_FLAT).
+                buffer(inflation, BufferParameters.DEFAULT_QUADRANT_SEGMENTS, BufferParameters.CAP_FLAT);
     }
 }

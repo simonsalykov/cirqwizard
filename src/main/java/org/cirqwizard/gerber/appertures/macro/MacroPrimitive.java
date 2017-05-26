@@ -53,8 +53,5 @@ public abstract class MacroPrimitive
 
     public abstract MacroPrimitive clone();
 
-    public Polygon createPolygon(int x, int y, int inflation)
-    {
-        return null;
-    }
+    public abstract Polygon createPolygon(int x, int y, int inflation);
 }

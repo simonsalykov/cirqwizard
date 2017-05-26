@@ -55,7 +55,8 @@ public class MacroCircle extends MacroPrimitive
     @Override
     public Polygon createPolygon(int x, int y, int inflation)
     {
-        return (Polygon) VectorToolPathGenerator.factory.createPoint(new Coordinate(center.getX() + x, center.getY() + y)).
-                buffer(diameter / 2);
+        return (Polygon) VectorToolPathGenerator.factory.
+                createPoint(new Coordinate(getCenter().getX() + x, getCenter().getY() + y)).
+                buffer(diameter / 2 + inflation);
     }
 }
