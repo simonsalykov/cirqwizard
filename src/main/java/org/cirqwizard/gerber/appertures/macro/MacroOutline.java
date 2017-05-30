@@ -74,6 +74,6 @@ public class MacroOutline extends MacroPrimitive
 
         Coordinate[] c = new Coordinate[coordinates.size()];
         coordinates.toArray(c);
-        return VectorToolPathGenerator.factory.createPolygon(c);
+        return (Polygon) VectorToolPathGenerator.factory.createPolygon(c).buffer(inflation);
     }
 }
