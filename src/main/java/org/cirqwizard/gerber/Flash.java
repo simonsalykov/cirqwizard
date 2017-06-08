@@ -277,13 +277,9 @@ public class Flash extends GerberPrimitive
                     double y = getY();
 
                     g.beginPath();
-                    Point point = outline.getPoints().get(0);
+                    Point point = outline.getTranslatedPoints().get(0);
                     g.moveTo(point.getX() + x, point.getY() + y);
-                    for (int i = 1; i < outline.getTranslatedPoints().size(); i++)
-                    {
-                        point = outline.getPoints().get(i);
-                        g.lineTo(point.getX() + x, point.getY() + y);
-                    }
+                    outline.getTranslatedPoints().forEach(tp -> g.lineTo(tp.getX() + x, tp.getY() + y));
                     g.closePath();
                     g.fill();
                 }
