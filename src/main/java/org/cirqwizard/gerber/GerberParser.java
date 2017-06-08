@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
+import org.cirqwizard.geom.Arc;
 import org.cirqwizard.gerber.appertures.*;
 import org.cirqwizard.gerber.appertures.macro.*;
 import org.cirqwizard.geom.Point;
@@ -431,7 +432,28 @@ public class GerberParser
             {
                 Integer i = dataBlock.getI() == null ? 0 : dataBlock.getI();
                 Integer j = dataBlock.getJ() == null ? 0 : dataBlock.getJ();
-                primitive = new CircularShape(x, y, newX, newY, x + i, y + j,
+                Point center = new Point(x + i, y + j);
+                if (arcQuadrantMode == ArcQuadrantMode.SINGLE_QUADRANT)
+                {
+                    Point from = new Point(x, y);
+                    Point to = new Point(newX, newY);
+                    Point[] centers = new Point[] {new Point(x + i, y + j), new Point(x + i, y - j),
+                            new Point(x - i, y + j), new Point(x - i, y - j)};
+                    for (Point p : centers)
+                    {
+                        if (Math.abs(1 - p.distanceTo(from) / p.distanceTo(to)) > 0.1)
+                            continue; // Radii are too different - that's not a valid arc
+                        double angle = new Arc(from, to, p, (int) from.distanceTo(center),
+                                currentInterpolationMode == InterpolationMode.CLOCKWISE_CIRCULAR).getAngle();
+                        if (angle <= Math.PI)
+                        {
+                            center = p;
+                            break;
+                        }
+
+                    }
+                }
+                primitive = new CircularShape(x, y, newX, newY,  center.getX(), center.getY(),
                         currentInterpolationMode == InterpolationMode.CLOCKWISE_CIRCULAR, aperture, polarity);
             }
         }
