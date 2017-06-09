@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2017-05-31T15:35:00+02:00</updated>
+  <updated>2017-06-09T16:58:18+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,24 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.7.1]]></title>
+    <link href="http://cirqwizard.org//blog/2017/06/09/version-1-dot-7-1/"/>
+    <updated>2017-06-09T16:43:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2017/06/09/version-1-dot-7-1</id>
+    <content type="html"><![CDATA[<p>Previous version came out rather beefy, so in this version we shaved down some excess weight. We also squashed a couple of bugs, while we were at it:</p>
+Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-199'>CQ-199</a>] &#8211;         Single quadrant arcs are not parsed correctly</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-201'>CQ-201</a>] &#8211;         Outline macro are not properly displayed</li>
+</ul>
+<h2>        Improvement</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-197'>CQ-197</a>] &#8211;         Optimize release size</li>
+</ul>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.7.0]]></title>
@@ -214,14 +232,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.5
 <ul>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-138'>CQ-138</a>] &#8211;         Get rid off controls FX in bread crumb bar navigation</li>
 </ul>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.5.3]]></title>
-    <link href="http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-3/"/>
-    <updated>2014-10-06T14:27:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2014/10/06/version-1-dot-5-3</id>
-    <content type="html"><![CDATA[<p>Version 1.5.3 is another take at a bug with incorrect passes in gerbers with different polarities, which was addresses in the previous version, but wasn&#8217;t completely fixed.</p>]]></content>
   </entry>
   
 </feed>
