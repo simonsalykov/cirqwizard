@@ -29,6 +29,11 @@ public class ImportSettings extends SettingsGroup
             setInstantiator(DistanceUnit::forName);
 
     @PersistentPreference
+    @PreferenceGroup(name = "Excellon")
+    private UserPreference<ZerosOmission> zeroesOmision = new UserPreference<>("Zeroes omission", ZerosOmission.LEADING_OMITTED, "").
+            setItems(ZerosOmission.values()).setInstantiator(ZerosOmission::forName);
+
+    @PersistentPreference
     @PreferenceGroup(name = "Pick and place")
     private UserPreference<PickAndPlaceFormat> centroidFileFormat = new UserPreference<>("File format", PickAndPlaceFormat.EAGLE, "").
             setItems(PickAndPlaceFormat.values()).
@@ -83,6 +88,16 @@ public class ImportSettings extends SettingsGroup
     public void setExcellonUnits(UserPreference<DistanceUnit> excellonUnits)
     {
         this.excellonUnits = excellonUnits;
+    }
+
+    public UserPreference<ZerosOmission> getZeroesOmision()
+    {
+        return zeroesOmision;
+    }
+
+    public void setZeroesOmision(UserPreference<ZerosOmission> zeroesOmision)
+    {
+        this.zeroesOmision = zeroesOmision;
     }
 
     public UserPreference<PickAndPlaceFormat> getCentroidFileFormat()

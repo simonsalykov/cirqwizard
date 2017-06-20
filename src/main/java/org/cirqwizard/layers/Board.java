@@ -69,6 +69,7 @@ public class Board
                 setLayer(LayerType.DRILLING, new Layer(new ExcellonParser(importSettings.getExcellonIntegerPlaces().getValue(),
                         importSettings.getExcellonDecimalPlaces().getValue(),
                         importSettings.getExcellonUnits().getValue().getMultiplier(),
+                        importSettings.getZeroesOmision().getValue().isLeadingZeros(),
                         new FileReader(filename + ".drd")).parse()));
         if (new File(filename + ".ncl").exists())
             setLayer(LayerType.MILLING, new Layer(new GerberParser(new FileReader(filename + ".ncl")).parse()));

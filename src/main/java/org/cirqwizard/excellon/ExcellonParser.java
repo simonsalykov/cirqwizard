@@ -48,7 +48,7 @@ public class ExcellonParser
     private BigDecimal coordinatesConversionRatio;
     private int integerPlaces;
     private int decimalPlaces;
-    private boolean leadingZeros = false;
+    private boolean leadingZeros;
 
     private Integer x = null;
     private Integer y = null;
@@ -62,9 +62,15 @@ public class ExcellonParser
 
     public ExcellonParser(int integerPlaces, int decimalPlaces, BigDecimal coordinatesConversionRatio, Reader reader)
     {
+        this(integerPlaces, decimalPlaces, coordinatesConversionRatio, false, reader);
+    }
+
+    public ExcellonParser(int integerPlaces, int decimalPlaces, BigDecimal coordinatesConversionRatio, boolean leadingZeros, Reader reader)
+    {
         this.integerPlaces = integerPlaces;
         this.decimalPlaces = decimalPlaces;
         this.coordinatesConversionRatio = coordinatesConversionRatio;
+        this.leadingZeros = leadingZeros;
         this.reader = reader;
     }
 
