@@ -195,6 +195,8 @@ public class ExcellonParser
         boolean negative = str.startsWith("-");
         if (negative)
             str = str.substring(1);
+        if (str.startsWith("+"))
+            str = str.substring(1);
 
         if (str.indexOf('.') < 0) // Decimal point location needs to be deduced
         {

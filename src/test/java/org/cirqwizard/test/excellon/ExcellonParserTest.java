@@ -534,4 +534,27 @@ public class ExcellonParserTest
         assertEquals(600, points.get(2).getToolDiameter());
     }
 
+    @Test
+    public void testProteusFile() throws IOException
+    {
+        String fileContent = "M48\n" +
+                "METRIC,TZ\n" +
+                "T01C1.4000\n" +
+                "T05C1.6000\n" +
+                "%\n" +
+                "T01\n" +
+                "X+27040Y-23360\n" +
+                "T05\n" +
+                "X+3660Y+39720\n" +
+                "M30";
+
+        ExcellonParser parser = new ExcellonParser(2, 3, new BigDecimal(1000), new StringReader(fileContent));
+        List<DrillPoint> points = parser.parse();
+        assertEquals(2, points.size());
+        assertEquals(new Point(27040, -23360), points.get(0).getPoint());
+        assertEquals(1400, points.get(0).getToolDiameter());
+        assertEquals(new Point(3660, 39720), points.get(1).getPoint());
+        assertEquals(1600, points.get(1).getToolDiameter());
+    }
+
 }
