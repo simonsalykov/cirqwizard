@@ -15,7 +15,10 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.toolpath;
 
 
+import org.cirqwizard.logging.LoggerFactory;
+
 import java.io.*;
+import java.util.logging.Level;
 
 
 public class ToolpathsPersistor
@@ -23,7 +26,10 @@ public class ToolpathsPersistor
     public static ToolpathsCache loadFromFile(String filename) throws ToolpathPersistingException
     {
         if(!new File(filename).exists())
+        {
+            LoggerFactory.getApplicationLogger().log(Level.FINE, "Cache file was not found");
             return null;
+        }
 
         ToolpathsCache toolpathsCache;
         try

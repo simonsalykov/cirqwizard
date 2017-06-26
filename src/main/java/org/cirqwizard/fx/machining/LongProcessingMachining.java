@@ -127,14 +127,20 @@ public abstract class LongProcessingMachining extends Machining
             ToolpathsCache cache = ToolpathsPersistor.loadFromFile(filename + ".tmp");
             if (!getMainApplication().getContext().getPanel().isCacheValid())
             {
+                LoggerFactory.getApplicationLogger().log(Level.FINE, "Cache validation for panel failed");
                 File cacheFile = new File(filename + ".tmp");
                 if (cacheFile.exists())
                     cacheFile.delete();
                 return false;
             }
+            LoggerFactory.getApplicationLogger().log(Level.FINE, "Panel cache validation successful");
 
             if (cache == null)
+            {
+                LoggerFactory.getApplicationLogger().log(Level.INFO, "Loaded cache was null");
                 return false;
+            }
+            LoggerFactory.getApplicationLogger().log(Level.FINE, "Using tool paths from cache");
 
             List<Toolpath> toolpaths = cache.getToolpaths(getCacheKey());
             if (toolpaths != null)

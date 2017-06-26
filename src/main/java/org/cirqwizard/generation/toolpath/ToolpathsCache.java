@@ -15,9 +15,12 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.generation.toolpath;
 
 
+import org.cirqwizard.logging.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 
 public class ToolpathsCache implements Serializable
@@ -28,6 +31,7 @@ public class ToolpathsCache implements Serializable
     {
         if (traces.containsKey(cacheKey))
             return traces.get(cacheKey);
+        LoggerFactory.getApplicationLogger().log(Level.INFO, "Cache did not contain key: " + cacheKey);
         return null;
     }
 

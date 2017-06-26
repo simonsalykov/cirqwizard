@@ -21,6 +21,7 @@ import org.simpleframework.xml.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
 
 public class PanelBoard
 {
@@ -118,12 +119,14 @@ public class PanelBoard
 
     private boolean validateTimestamp(Date timestamp, File file)
     {
+        LoggerFactory.getApplicationLogger().log(Level.FINE, "Validating cache timestamp for file " + file + ", timestamp: " + timestamp);
         if (timestamp == null && !file.exists())
             return true;
         if (timestamp == null && file.exists())
             return false;
         if (!file.exists())
             return false;
+        LoggerFactory.getApplicationLogger().log(Level.FINE, "File last modified: " + new Date(file.lastModified()));
         return timestamp.compareTo(new Date(file.lastModified())) >= 0;
     }
 
