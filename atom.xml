@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2017-06-20T14:11:41+02:00</updated>
+  <updated>2017-06-26T21:41:49+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.7.3]]></title>
+    <link href="http://cirqwizard.org//blog/2017/06/26/version-1-dot-7-3/"/>
+    <updated>2017-06-26T13:21:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2017/06/26/version-1-dot-7-3</id>
+    <content type="html"><![CDATA[<p>This version fixes another Excellon parsing bug, which was introduced in one of the previous versions &#8211; <a href="https://cirqwizard.atlassian.net/browse/CQ-204">CQ-204</a></p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.7.2]]></title>
@@ -204,24 +212,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
 <p><a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12400">1.5.6</a><br />
 <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12401">1.5.7</a><br />
 <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12500">1.5.8</a></p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.5.5]]></title>
-    <link href="http://cirqwizard.org//blog/2015/01/13/version-1-dot-5-5/"/>
-    <updated>2015-01-13T16:55:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2015/01/13/version-1-dot-5-5</id>
-    <content type="html"><![CDATA[<p>This is another bug fix release. The list of addressed bugs is below:</p>
-Release Notes &#8211; cirQWizard &#8211; Version 1.5.5
-<h2>        Bug</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-147'>CQ-147</a>] &#8211;         Missing Z offset validation is broken</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-149'>CQ-149</a>] &#8211;         Lines with sub-micron lengths are ignored in Gerbers</li>
-</ul>
-<h2>        Improvement</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-148'>CQ-148</a>] &#8211;         Lift spindle before moving inside the working envelope</li>
-</ul>]]></content>
   </entry>
   
 </feed>
