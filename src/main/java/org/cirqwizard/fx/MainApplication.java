@@ -19,6 +19,10 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.cirqoid.cnc.controller.serial.SerialException;
+import org.cirqoid.cnc.controller.serial.SerialInterface;
+import org.cirqoid.cnc.controller.serial.SerialInterfaceFactory;
+import org.cirqoid.cnc.controller.serial.SerialInterfaceImpl;
 import org.cirqwizard.fx.contour.ContourMilling;
 import org.cirqwizard.fx.contour.InsertContourMill;
 import org.cirqwizard.fx.dispensing.Dispensing;
@@ -230,44 +234,40 @@ public class MainApplication extends Application
 
     public void connectSerialPort(String port)
     {
-        new Thread()
+        new Thread(() ->
         {
-            @Override
-            public void run()
+            mainView.disableManualControl();
+            try
             {
-                mainView.disableManualControl();
+                if (serialInterface != null)
+                    serialInterface.close();
+                if (port != null && port.length() > 0)
+                    serialInterface = new SerialInterfaceImpl(port, 115200);
+                else
+                    serialInterface = SerialInterfaceFactory.autodetect();
+            }
+            catch (SerialException e)
+            {
+                LoggerFactory.logException("Can't connect to selected serial port - " + port, e);
                 try
                 {
-                    if (serialInterface != null)
-                        serialInterface.close();
-                    if (port != null && port.length() > 0)
-                        serialInterface = new SerialInterfaceImpl(port, 38400);
-                    else
-                        serialInterface = SerialInterfaceFactory.autodetect();
+                    serialInterface = SerialInterfaceFactory.autodetect();
                 }
-                catch (SerialException e)
+                catch (SerialException e1)
                 {
-                    LoggerFactory.logException("Can't connect to selected serial port - " + port, e);
-                    try
-                    {
-                        serialInterface = SerialInterfaceFactory.autodetect();
-                    }
-                    catch (SerialException e1)
-                    {
-                        LoggerFactory.logException("Can't connect to any serial port", e);
-                        serialInterface = null;
-                    }
-                }
-
-                if (serialInterface == null)
-                    cncController = null;
-                else
-                {
-                    Platform.runLater(mainView::enableManualControl);
-                    cncController = new CNCController(serialInterface, MainApplication.this);
+                    LoggerFactory.logException("Can't connect to any serial port", e);
+                    serialInterface = null;
                 }
             }
-        }.start();
+
+            if (serialInterface == null)
+                cncController = null;
+            else
+            {
+                Platform.runLater(mainView::enableManualControl);
+                cncController = new CNCController(serialInterface, MainApplication.this);
+            }
+        }).start();
     }
 
     @Override

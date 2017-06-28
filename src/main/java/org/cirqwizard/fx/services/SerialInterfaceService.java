@@ -20,10 +20,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.cirqwizard.fx.MainApplication;
-import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.serial.ExecutionException;
-import org.cirqwizard.serial.SerialException;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -107,30 +104,30 @@ public class SerialInterfaceService extends Service
                     if (isCancelled())
                         throw new InterruptedException();
 
-                    try
-                    {
-                        mainApplication.getSerialInterface().send(programLines.get(i), 20000000, responseBuilder, false);
-                    }
-                    catch (SerialException | ExecutionException e)
-                    {
-                        if (!suppressExceptions)
-                            throw e;
-                    }
-                    if (readResponses)
-                        Platform.runLater(() -> responses.setValue(responseBuilder.toString()));
+//                    try
+//                    {
+                            mainApplication.getCNCController().send(programLines.get(i), 20000);
+//                    }
+//                    catch (SerialException | ExecutionException e)
+//                    {
+//                        if (!suppressExceptions)
+//                            throw e;
+//                    }
+//                    if (readResponses)
+//                        Platform.runLater(() -> responses.setValue(responseBuilder.toString()));
                     updateProgress(i, programLines.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(() -> executionTime.setValue(s));
                 }
-            }
-            catch (SerialException | ExecutionException e)
-            {
-                LoggerFactory.logException("Error communicating with the controller", e);
-                mainApplication.getCNCController().interruptProgram();
-                ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
-                        "Something went wrong while communicating with the controller. " +
-                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
-                alert.showAndWait();
+//            }
+//            catch (SerialException | ExecutionException e)
+//            {
+//                LoggerFactory.logException("Error communicating with the controller", e);
+//                mainApplication.getCNCController().interruptProgram();
+//                ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
+//                        "Something went wrong while communicating with the controller. " +
+//                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
+//                alert.showAndWait();
             }
             catch (InterruptedException e)
             {

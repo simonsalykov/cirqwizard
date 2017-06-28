@@ -14,11 +14,18 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.serial;
 
+import org.cirqoid.cnc.controller.commands.Command;
+import org.cirqoid.cnc.controller.interpreter.Interpreter;
+import org.cirqoid.cnc.controller.interpreter.ParsingException;
+import org.cirqoid.cnc.controller.serial.SerialException;
+import org.cirqoid.cnc.controller.serial.SerialInterface;
 import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.post.PostProcessorFactory;
 import org.cirqwizard.post.Postprocessor;
+
+import java.util.List;
 
 
 public class CNCController
@@ -26,37 +33,35 @@ public class CNCController
     private final static long PROGRAM_INTERRUPTION_TIMEOUT = 100000;
     private final static long COMMAND_TIMEOUT = 4000;
 
+    private Interpreter interpreter;
     private SerialInterface serial;
     private MainApplication mainApplication;
 
     public CNCController(SerialInterface serial, MainApplication mainApplication)
     {
+        this.interpreter = new Interpreter();
         this.serial = serial;
         this.mainApplication = mainApplication;
     }
 
-    private void send(String str, long timeout)
-    {
-        send(str, timeout, null, false);
-    }
-
-    private void send(String str, long timeout, StringBuilder response, boolean suppressExceptions)
+    public void send(String str, long timeout)
     {
         try
         {
-            serial.send(str, timeout, response, suppressExceptions);
+            List<Command> commands = interpreter.interpretBlocks(str);
+            for (Command c : commands)
+            {
+                c.setId(serial.getPacketId());
+                serial.send(c);
+            }
         }
-        catch (SerialException | ExecutionException e)
+        catch (SerialException | ParsingException e)
         {
             LoggerFactory.logException("Communication with controller failed: ", e);
             ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
                     "Something went wrong while communicating with the controller. " +
                     "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
             alert.showAndWait();
-        }
-        catch (InterruptedException e)
-        {
-            LoggerFactory.logException("InterruptedException in CNCController.send(): ", e);
         }
     }
 
@@ -209,14 +214,15 @@ public class CNCController
 
     public String getFirmwareVersion()
     {
-        StringBuilder str = new StringBuilder();
-        Postprocessor post = PostProcessorFactory.getPostProcessor();
-        post.getFirmwareVersion(str);
-        StringBuilder response = new StringBuilder();
-        send(str.toString(), 500, response, true);
-        String firmware = response.toString();
-        if (firmware.indexOf('\n') > 0)
-            firmware = firmware.substring(0, firmware.indexOf('\n'));
-        return firmware;
+        return null;
+//        StringBuilder str = new StringBuilder();
+//        Postprocessor post = PostProcessorFactory.getPostProcessor();
+//        post.getFirmwareVersion(str);
+//        StringBuilder response = new StringBuilder();
+//        send(str.toString(), 500, response, true);
+//        String firmware = response.toString();
+//        if (firmware.indexOf('\n') > 0)
+//            firmware = firmware.substring(0, firmware.indexOf('\n'));
+//        return firmware;
     }
 }

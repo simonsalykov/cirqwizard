@@ -15,9 +15,9 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.misc;
 
 import javafx.scene.layout.VBox;
+import org.cirqoid.cnc.controller.serial.SerialInterface;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.serial.SerialInterface;
 import org.cirqwizard.stm32.STM32BootLoaderInterface;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
