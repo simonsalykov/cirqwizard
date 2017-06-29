@@ -332,7 +332,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         hideMicroscopePane();
 
         PPSettings settings = SettingsFactory.getPpSettings();
-        int z = settings.getPickupHeight().getValue() - 3 * ApplicationConstants.RESOLUTION;
+        int z = settings.getPickupHeight().getValue() - settings.getPcbOffset().getValue();
         getMainApplication().getCNCController().place(z, settings.getMoveHeight().getValue());
         manualZ.setDisable(false);
         manualZ.setIntegerValue(settings.getMoveHeight().getValue());
