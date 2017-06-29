@@ -72,13 +72,15 @@ public abstract class Dispensing extends Machining
         pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
     }
 
+    protected abstract boolean mirror();
+
     @Override
     protected String generateGCode()
     {
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
         Context context = getMainApplication().getContext();
-        PasteGCodeGenerator generator = new PasteGCodeGenerator(context.getG54X(), context.getG54Y(), context.getG54Z(),
-                pcbPane.toolpathsProperty().getValue());
+        PasteGCodeGenerator generator = new PasteGCodeGenerator(context, pcbPane.toolpathsProperty().getValue(),
+                mirror());
         return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
                 settings.getPostFeedPause().getValue(), settings.getFeed().getValue(), settings.getClearance().getValue(),
                 settings.getWorkingHeight().getValue());

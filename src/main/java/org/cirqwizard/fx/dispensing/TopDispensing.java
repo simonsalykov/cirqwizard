@@ -12,4 +12,10 @@ public class TopDispensing extends Dispensing
     {
         return Board.LayerType.SOLDER_PASTE_TOP;
     }
+
+    @Override
+    protected boolean mirror()
+    {
+        return false;
+    }
 }

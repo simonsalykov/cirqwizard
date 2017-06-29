@@ -12,4 +12,10 @@ public class BottomDispensing extends Dispensing
     {
         return Board.LayerType.SOLDER_PASTE_BOTTOM;
     }
+
+    @Override
+    protected boolean mirror()
+    {
+        return true;
+    }
 }
