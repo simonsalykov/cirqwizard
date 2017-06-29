@@ -21,9 +21,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.cirqwizard.fx.contour.ContourMilling;
 import org.cirqwizard.fx.contour.InsertContourMill;
-import org.cirqwizard.fx.dispensing.Dispensing;
-import org.cirqwizard.fx.dispensing.InsertSyringe;
-import org.cirqwizard.fx.dispensing.SyringeBleeding;
+import org.cirqwizard.fx.dispensing.*;
 import org.cirqwizard.fx.drilling.DrillingGroup;
 import org.cirqwizard.fx.misc.About;
 import org.cirqwizard.fx.misc.Firmware;
@@ -63,7 +61,7 @@ public class MainApplication extends Application
 
     private MainViewController mainView = (MainViewController) new MainViewController().setMainApplication(this);
 
-    private ScreenController topTracesGroup = new OperationsScreenGroup("Top layer")
+    private ScreenController topTracesGroup = new OperationsScreenGroup("Isolation milling - top")
         {
             @Override
             protected boolean isEnabled()
@@ -89,7 +87,7 @@ public class MainApplication extends Application
                         addChild(new org.cirqwizard.fx.rubout.InsertTool().setMainApplication(this)).
                         addChild(new TopRubout().setMainApplication(this)));
 
-    private ScreenController bottomTracesGroup = new OperationsScreenGroup("Bottom layer")
+    private ScreenController bottomTracesGroup = new OperationsScreenGroup("Isolation milling - bottom")
         {
             @Override
             protected boolean isEnabled()
@@ -130,20 +128,35 @@ public class MainApplication extends Application
             addChild(new InsertContourMill().setMainApplication(this)).
             addChild(new ContourMilling().setMainApplication(this));
 
-    private ScreenController dispensingGroup = new OperationsScreenGroup("Dispensing")
+    private ScreenController topDispensingGroup = new OperationsScreenGroup("Dispensing - top")
         {
             @Override
             protected boolean isEnabled()
             {
                 return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
-                        map(b -> b.getBoard().getLayer(Board.LayerType.SOLDER_PASTE)).
+                        map(b -> b.getBoard().getLayer(Board.LayerType.SOLDER_PASTE_TOP)).
                         anyMatch(l -> l != null);
             }
         }.setMainApplication(this).
             addChild(new PCBPlacement().setMainApplication(this)).
             addChild(new InsertSyringe().setMainApplication(this)).
             addChild(new SyringeBleeding().setMainApplication(this)).
-            addChild(new Dispensing().setMainApplication(this));
+            addChild(new TopDispensing().setMainApplication(this));
+
+    private ScreenController bottomDispensingGroup = new OperationsScreenGroup("Dispensing - bottom")
+        {
+            @Override
+            protected boolean isEnabled()
+            {
+                return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
+                        map(b -> b.getBoard().getLayer(Board.LayerType.SOLDER_PASTE_BOTTOM)).
+                        anyMatch(l -> l != null);
+            }
+        }.setMainApplication(this).
+            addChild(new PCBPlacement().setMainApplication(this)).
+            addChild(new InsertSyringe().setMainApplication(this)).
+            addChild(new SyringeBleeding().setMainApplication(this)).
+            addChild(new BottomDispensing().setMainApplication(this));
 
     private PPGroup ppGroup = (PPGroup)(new PPGroup("Pick and place").setMainApplication(this).
             addChild(new PCBPlacement().setMainApplication(this)).
@@ -158,7 +171,8 @@ public class MainApplication extends Application
             addChild(new DrillingGroup("Drilling").setMainApplication(this).
                     addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this))).
             addChild(contourMillingGroup).
-            addChild(dispensingGroup).
+            addChild(topDispensingGroup).
+            addChild(bottomDispensingGroup).
             addChild(ppGroup).
             addChild(new Terminal().setMainApplication(this)).
             addChild(new ScreenGroup("Misc").setVisible(false).setMainApplication(this).

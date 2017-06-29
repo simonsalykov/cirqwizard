@@ -31,7 +31,7 @@ public class Board
 {
     public enum LayerType
     {
-        TOP, BOTTOM, DRILLING, MILLING, SOLDER_PASTE, PLACEMENT
+        TOP, BOTTOM, DRILLING, MILLING, SOLDER_PASTE_TOP, SOLDER_PASTE_BOTTOM, PLACEMENT
     }
 
     private HashMap<LayerType, Layer> layers = new HashMap<>();
@@ -74,7 +74,9 @@ public class Board
         if (new File(filename + ".ncl").exists())
             setLayer(LayerType.MILLING, new Layer(new GerberParser(new FileReader(filename + ".ncl")).parse()));
         if (new File(filename + ".crc").exists())
-            setLayer(LayerType.SOLDER_PASTE, new Layer(new GerberParser(new FileReader(filename + ".crc")).parse()));
+            setLayer(LayerType.SOLDER_PASTE_TOP, new Layer(new GerberParser(new FileReader(filename + ".crc")).parse()));
+        if (new File(filename + ".crs").exists())
+            setLayer(LayerType.SOLDER_PASTE_BOTTOM, new Layer(new GerberParser(new FileReader(filename + ".crs")).parse()));
         if (new File(filename + ".mnt").exists())
         {
             setLayer(LayerType.PLACEMENT, new Layer(new PPParser(new FileReader(filename + ".mnt"),
