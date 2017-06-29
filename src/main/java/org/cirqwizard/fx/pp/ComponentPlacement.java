@@ -33,6 +33,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.Context;
+import org.cirqwizard.fx.PCBSize;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.generation.toolpath.PPPoint;
@@ -99,6 +100,13 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     private Integer placementZ;
 
+    private boolean mirror;
+
+    public ComponentPlacement(boolean mirror)
+    {
+        this.mirror = mirror;
+    }
+
     @Override
     protected String getFxmlName()
     {
@@ -157,7 +165,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         ComponentId id =  context.getCurrentComponent();
         header.setText(id.getPackaging() + " " + id.getValue());
 
-        components.setAll(context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+        components.setAll(context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT_TOP).stream().
                 map(c -> (PPPoint)c).
                 filter(p -> p.getId().equals(id)).collect(Collectors.toList()));
         componentName.getSelectionModel().select(0);
@@ -258,9 +266,20 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     private int getTargetX()
     {
-        int x = targetX.getIntegerValue() + getMainApplication().getContext().getG54X();
+        int x = targetX.getIntegerValue();
         if (placementX.getIntegerValue() != null)
             x += placementX.getIntegerValue();
+        if (mirror)
+        {
+            MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+            int laminateWidth = getMainApplication().getContext().getPanel().getSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() :
+                    machineSettings.getLargePcbWidth().getValue();
+            int pinX = machineSettings.getReferencePinX().getValue();
+            int offset = pinX * 2 + laminateWidth - getMainApplication().getContext().getG54X();
+            x = offset - x;
+        }
+        else
+            x += getMainApplication().getContext().getG54X();
         return x;
     }
 

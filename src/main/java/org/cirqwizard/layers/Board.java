@@ -31,7 +31,7 @@ public class Board
 {
     public enum LayerType
     {
-        TOP, BOTTOM, DRILLING, MILLING, SOLDER_PASTE_TOP, SOLDER_PASTE_BOTTOM, PLACEMENT
+        TOP, BOTTOM, DRILLING, MILLING, SOLDER_PASTE_TOP, SOLDER_PASTE_BOTTOM, PLACEMENT_TOP, PLACEMENT_BOTTOM
     }
 
     private HashMap<LayerType, Layer> layers = new HashMap<>();
@@ -79,8 +79,14 @@ public class Board
             setLayer(LayerType.SOLDER_PASTE_BOTTOM, new Layer(new GerberParser(new FileReader(filename + ".crs")).parse()));
         if (new File(filename + ".mnt").exists())
         {
-            setLayer(LayerType.PLACEMENT, new Layer(new PPParser(new FileReader(filename + ".mnt"),
-                    importSettings.getCentroidFileFormat().getValue().getRegex(),
+            setLayer(LayerType.PLACEMENT_TOP, new Layer(new PPParser(new FileReader(filename + ".mnt"),
+                    importSettings.getCentroidFileFormat().getValue().getTopRegex(),
+                    importSettings.getCentroidUnits().getValue().getMultiplier()).parse()));
+        }
+        if (new File(filename + ".mnt").exists())
+        {
+            setLayer(LayerType.PLACEMENT_BOTTOM, new Layer(new PPParser(new FileReader(filename + ".mnt"),
+                    importSettings.getCentroidFileFormat().getValue().getBottomRegex(),
                     importSettings.getCentroidUnits().getValue().getMultiplier()).parse()));
         }
         List<LayerType> toRemove = layers.keySet().stream().filter(k -> layers.get(k).getElements().isEmpty()).collect(Collectors.toList());

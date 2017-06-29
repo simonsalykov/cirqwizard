@@ -15,27 +15,50 @@ package org.cirqwizard.settings;
 
 public enum PickAndPlaceFormat
 {
-    EAGLE("(?<name>\\S+)\\s+(?<x>-?\\d+.?\\d*)\\s+(?<y>-?\\d+.?\\d*)\\s+(?<angle>-?\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?", "Eagle"),
-    ALTIUM("(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>-?\\d+.?\\d*)mm\\s+(?<y>-?\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>-?\\d+.\\d*)\\s+(?<value>\\S+)\\s*", "Altium Designer"),
-    ULTIBOARD("\"(?<name>\\S+)\",\"(?<value>\\S+)\",\"(?<package>\\S+)\",\"(?<x>-?\\d+.?\\d*)\",\"(?<y>-?\\d+.?\\d*)\",\"(?<angle>-?\\d+)\",\"TOP\",\"SMD\"", "UltiBoard"),
-    DESIGNSPARK("\"(?<name>\\S+)\",\"(?<package>\\S+)\",\"Top\",\"(?<x>-?\\d+.?\\d*)\",\"(?<y>-?\\d+.?\\d*)\",\"(?<angle>-?\\d+.?\\d*)\",\"(?<value>.*)\"", "DesignSpark"),
-    KICAD("(?<name>\\S+),.*,(?<value>.+?),(?<package>\\S+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*)", "KiCAD"),
-    DIPTRACE("(?<name>\\S+),(?<package>.+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),Top,(?<angle>-?\\d+.?\\d*),(?<value>\\S*)", "DipTrace"),
-    EASYPC("(?<name>\\S+),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*),(?<value>\\S*),(?<package>.*)", "EasyPC"),
-    PROTEUS("\"(?<name>\\S+)\",\"(?<value>\\S*)\",\"(?<package>.*)\",TOP,(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*)", "Proteus");
+    EAGLE("(?<name>\\S+)\\s+(?<x>-?\\d+.?\\d*)\\s+(?<y>-?\\d+.?\\d*)\\s+(?<angle>-?\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?",
+            "(?<name>\\S+)\\s+(?<x>-?\\d+.?\\d*)\\s+(?<y>-?\\d+.?\\d*)\\s+(?<angle>-?\\d+)\\s+(?<value>\\S+)\\s*(?<package>\\S+)?",
+            "Eagle"),
+    ALTIUM("(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>-?\\d+.?\\d*)mm\\s+(?<y>-?\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>-?\\d+.\\d*)\\s+(?<value>\\S+)\\s*",
+            "(?<name>\\S+)\\s+(?<package>\\S+)\\s+(?<x>-?\\d+.?\\d*)mm\\s+(?<y>-?\\d+.?\\d*)mm\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+\\S+\\s+(?<angle>-?\\d+.\\d*)\\s+(?<value>\\S+)\\s*",
+            "Altium Designer"),
+    ULTIBOARD("\"(?<name>\\S+)\",\"(?<value>\\S+)\",\"(?<package>\\S+)\",\"(?<x>-?\\d+.?\\d*)\",\"(?<y>-?\\d+.?\\d*)\",\"(?<angle>-?\\d+)\",\"TOP\",\"SMD\"",
+            "\"(?<name>\\S+)\",\"(?<value>\\S+)\",\"(?<package>\\S+)\",\"(?<x>-?\\d+.?\\d*)\",\"(?<y>-?\\d+.?\\d*)\",\"(?<angle>-?\\d+)\",\"BOTTOM\",\"SMD\"",
+            "UltiBoard"),
+    DESIGNSPARK("\"(?<name>\\S+)\",\"(?<package>\\S+)\",\"Top\",\"(?<x>-?\\d+.?\\d*)\",\"(?<y>-?\\d+.?\\d*)\",\"(?<angle>-?\\d+.?\\d*)\",\"(?<value>.*)\"",
+            "\"(?<name>\\S+)\",\"(?<package>\\S+)\",\"Bottom\",\"(?<x>-?\\d+.?\\d*)\",\"(?<y>-?\\d+.?\\d*)\",\"(?<angle>-?\\d+.?\\d*)\",\"(?<value>.*)\"",
+            "DesignSpark"),
+    KICAD("(?<name>\\S+),.*,(?<value>.+?),(?<package>\\S+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*)",
+            "(?<name>\\S+),.*,(?<value>.+?),(?<package>\\S+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*)",
+            "KiCAD"),
+    DIPTRACE("(?<name>\\S+),(?<package>.+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),Top,(?<angle>-?\\d+.?\\d*),(?<value>\\S*)",
+            "(?<name>\\S+),(?<package>.+?),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),Bottom,(?<angle>-?\\d+.?\\d*),(?<value>\\S*)",
+            "DipTrace"),
+    EASYPC("(?<name>\\S+),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*),(?<value>\\S*),(?<package>.*)",
+            "(?<name>\\S+),(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*),(?<value>\\S*),(?<package>.*)",
+            "EasyPC"),
+    PROTEUS("\"(?<name>\\S+)\",\"(?<value>\\S*)\",\"(?<package>.*)\",TOP,(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*)",
+            "\"(?<name>\\S+)\",\"(?<value>\\S*)\",\"(?<package>.*)\",BOTTOM,(?<x>-?\\d+.?\\d*),(?<y>-?\\d+.?\\d*),(?<angle>-?\\d+.?\\d*)",
+            "Proteus");
 
-    private String regex;
+    private String topRegex;
+    private String bottomRegex;
     private String name;
 
-    PickAndPlaceFormat(String regex, String name)
+    PickAndPlaceFormat(String topRegex, String bottomRegex, String name)
     {
-        this.regex = regex;
+        this.topRegex = topRegex;
+        this.bottomRegex = bottomRegex;
         this.name = name;
     }
 
-    public String getRegex()
+    public String getTopRegex()
     {
-        return regex;
+        return topRegex;
+    }
+
+    public String getBottomRegex()
+    {
+        return bottomRegex;
     }
 
     public String getName()

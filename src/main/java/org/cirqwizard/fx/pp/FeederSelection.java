@@ -77,7 +77,7 @@ public class FeederSelection extends ScreenController implements Initializable
         Context context = getMainApplication().getContext();
         ComponentId id = context.getCurrentComponent();
 
-        long count = context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+        long count = context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT_TOP).stream().
                 map(c -> (PPPoint)c).
                 filter(c -> c.getId().equals(id)).count();
         countOfComponents.setText("You will need " + count + " such component(s)");

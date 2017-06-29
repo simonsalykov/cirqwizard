@@ -46,6 +46,7 @@ import org.cirqwizard.settings.Settings;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.prefs.Preferences;
 
 
@@ -121,7 +122,7 @@ public class MainApplication extends Application
             {
                 return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
                         map(b -> b.getBoard().getLayer(Board.LayerType.MILLING)).
-                        anyMatch(l -> l != null);
+                        anyMatch(Objects::nonNull);
             }
         }.setMainApplication(this).
             addChild(new org.cirqwizard.fx.drilling.PCBPlacement().setMainApplication(this)).
@@ -135,7 +136,7 @@ public class MainApplication extends Application
             {
                 return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
                         map(b -> b.getBoard().getLayer(Board.LayerType.SOLDER_PASTE_TOP)).
-                        anyMatch(l -> l != null);
+                        anyMatch(Objects::nonNull);
             }
         }.setMainApplication(this).
             addChild(new PCBPlacement().setMainApplication(this)).
@@ -150,18 +151,23 @@ public class MainApplication extends Application
             {
                 return super.isEnabled() && getMainApplication().getContext().getPanel().getBoards().stream().
                         map(b -> b.getBoard().getLayer(Board.LayerType.SOLDER_PASTE_BOTTOM)).
-                        anyMatch(l -> l != null);
+                        anyMatch(Objects::nonNull);
             }
         }.setMainApplication(this).
-            addChild(new PCBPlacement().setMainApplication(this)).
+            addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
             addChild(new InsertSyringe().setMainApplication(this)).
             addChild(new SyringeBleeding().setMainApplication(this)).
             addChild(new BottomDispensing().setMainApplication(this));
 
-    private PPGroup ppGroup = (PPGroup)(new PPGroup("Pick and place").setMainApplication(this).
+    private PPGroup topPpGroup = (PPGroup)(new PPGroup(Board.LayerType.PLACEMENT_TOP,"Pick and place - top").setMainApplication(this).
             addChild(new PCBPlacement().setMainApplication(this)).
             addChild(new InsertPPHead().setMainApplication(this)).
-            addChild(new PlacingOverview().setMainApplication(this)));
+            addChild(new PlacingOverview(Board.LayerType.PLACEMENT_TOP).setMainApplication(this)));
+
+    private PPGroup bottomPpGroup = (PPGroup)(new PPGroup(Board.LayerType.PLACEMENT_BOTTOM, "Pick and place - bottom").setMainApplication(this).
+            addChild(new org.cirqwizard.fx.traces.bottom.PCBPlacement().setMainApplication(this)).
+            addChild(new InsertPPHead().setMainApplication(this)).
+            addChild(new PlacingOverview(Board.LayerType.PLACEMENT_BOTTOM).setMainApplication(this)));
 
     private ScreenController root = new Welcome().setMainApplication(this).
             addChild(new PanelController().setMainApplication(this)).
@@ -173,7 +179,8 @@ public class MainApplication extends Application
             addChild(contourMillingGroup).
             addChild(topDispensingGroup).
             addChild(bottomDispensingGroup).
-            addChild(ppGroup).
+            addChild(topPpGroup).
+            addChild(bottomPpGroup).
             addChild(new Terminal().setMainApplication(this)).
             addChild(new ScreenGroup("Misc").setVisible(false).setMainApplication(this).
                     addChild(new SettingsEditor().setMainApplication(this)).
@@ -223,7 +230,7 @@ public class MainApplication extends Application
 
     public void resetContext()
     {
-        ppGroup.resetDynamicChildren();
+        topPpGroup.resetDynamicChildren();
         context = new Context();
     }
 
