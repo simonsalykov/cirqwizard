@@ -14,7 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.serial;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.cirqoid.cnc.controller.commands.Command;
+import org.cirqoid.cnc.controller.commands.Response;
 import org.cirqoid.cnc.controller.interpreter.Interpreter;
 import org.cirqoid.cnc.controller.interpreter.ParsingException;
 import org.cirqoid.cnc.controller.serial.SerialException;
@@ -26,6 +30,7 @@ import org.cirqwizard.post.PostProcessorFactory;
 import org.cirqwizard.post.Postprocessor;
 
 import java.util.List;
+import java.util.logging.Level;
 
 
 public class CNCController
@@ -42,12 +47,39 @@ public class CNCController
         this.interpreter = new Interpreter();
         this.serial = serial;
         this.mainApplication = mainApplication;
+        serial.setLogger(LoggerFactory.getSerialLogger());
+        serial.addListener(null, l ->
+        {
+            if (l.getCode().isExecutionError())
+            {
+                try
+                {
+                    LoggerFactory.getApplicationLogger().log(Level.SEVERE, "Command execution failed. Command id:  " + l.getPacketId() + ", code: " + l.getCode());
+                    Platform.runLater(() ->
+                    {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong while executing the command. " +
+                                "Command #" + l.getPacketId() + " failed with code " + l.getCode() +
+                                ". The most sensible thing to do now would be to close the program and start over again. Sorry about that.", ButtonType.OK);
+                        alert.setHeaderText("Oops! That's embarrassing!");
+                        alert.setTitle("Controller error");
+                        alert.showAndWait();
+                    });
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void send(String str, long timeout)
     {
         try
         {
+            // TODO: this needs to be handled better
+            if (serial.getCurrentError() != null && serial.getCurrentError().getCode() == Response.Code.NOT_HOMED)
+                serial.resetError();
             List<Command> commands = interpreter.interpretBlocks(str);
             for (Command c : commands)
             {

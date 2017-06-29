@@ -43,7 +43,7 @@ public class LoggerFactory
         try
         {
             FileHandler serialFileHandler = new FileHandler("%t/cirqwizard-serial.log", true);
-            serialFileHandler.setFormatter(new SimpleFormatter());
+            serialFileHandler.setFormatter(new SerialLogFormatter());
             serialLogger.setLevel(Level.ALL);
             serialLogger.addHandler(serialFileHandler);
         }
