@@ -19,7 +19,8 @@ public abstract class Command
         REQUEST_VERSION(6),
         SPINDLE_CONTROL(7),
         RELAY_CONTROL(8),
-        SLEEP(9);
+        SLEEP(9),
+        ENTER_BOOTLOADER(10);
 
         private int id;
 

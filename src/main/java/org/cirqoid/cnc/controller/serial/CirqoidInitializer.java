@@ -22,7 +22,10 @@ public class CirqoidInitializer
             {
                 try
                 {
-                    sendInitPacket(serialInterface, ((VersionResponse)response).getHardwareVersion());
+                    VersionResponse r = (VersionResponse) response;
+                    serialInterface.setHardwareVersion(r.getHardwareVersion());
+                    serialInterface.setSoftwareVersion(r.getSoftwareVersion());
+                    sendInitPacket(serialInterface, r.getHardwareVersion());
                 }
                 catch (SerialException e)
                 {

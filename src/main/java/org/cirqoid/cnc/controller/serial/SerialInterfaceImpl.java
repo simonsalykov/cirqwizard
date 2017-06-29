@@ -55,12 +55,15 @@ public class SerialInterfaceImpl implements SerialInterface
 
     private Logger logger;
 
+    private int hardwareVersion;
+    private int softwareVersion;
+
     public SerialInterfaceImpl(String commPortName, int baudrate) throws SerialException
     {
         this.baudrate = baudrate;
         try
         {
-            initUSART(commPortName, baudrate, SerialPort.PARITY_NONE);
+            initUSART(commPortName, false);
             CirqoidInitializer.initDevice(this);
         }
         catch (SerialPortException e)
@@ -110,35 +113,46 @@ public class SerialInterfaceImpl implements SerialInterface
         return null;
     }
 
-    private void initUSART(String name, int baudrate, int parity) throws SerialPortException
+    private void initUSART(String name, boolean bootloader) throws SerialPortException
     {
         if (port != null)
+        {
+            try
+            {
+                port.removeEventListener();
+            }
+            catch (SerialPortException e) {}
             port.closePort();
+        }
 
         portName = name;
         port = new SerialPort(portName);
         port.openPort();
-        port.setParams(baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, parity);
-        port.setEventsMask(SerialPort.MASK_RXCHAR);
-        port.addEventListener(serialPortEvent ->
+        port.setParams(bootloader ? 57600 : baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+                bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
+        if (!bootloader)
         {
-            try
+            port.setEventsMask(SerialPort.MASK_RXCHAR);
+            port.addEventListener(serialPortEvent ->
             {
-                byte[] b = port.readBytes();
-                if (bufferPointer + b.length < MAX_PACKET_SIZE)
+                try
                 {
-                    System.arraycopy(b, 0, buffer, bufferPointer, b.length);
-                    bufferPointer += b.length;
+                    byte[] b = port.readBytes();
+                    if (bufferPointer + b.length < MAX_PACKET_SIZE)
+                    {
+                        System.arraycopy(b, 0, buffer, bufferPointer, b.length);
+                        bufferPointer += b.length;
+                    }
+                    Response p;
+                    while ((p = parseBuffer()) != null)
+                        processParsedPacket(p);
                 }
-                Response p;
-                while ((p = parseBuffer()) != null)
-                    processParsedPacket(p);
-            }
-            catch (SerialPortException e)
-            {
-                e.printStackTrace();
-            }
-        });
+                catch (SerialPortException e)
+                {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     private void processParsedPacket(Response response)
@@ -161,8 +175,10 @@ public class SerialInterfaceImpl implements SerialInterface
     {
         try
         {
-            initUSART(portName, bootloader ? 57600 : baudrate, bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
-            timeout = bootloader ? 25000 : -1;
+            initUSART(portName, bootloader);
+            timeout = bootloader ? 30000 : -1;
+            if (!bootloader)
+                CirqoidInitializer.initDevice(this);
         }
         catch (Exception e)
         {
@@ -288,5 +304,25 @@ public class SerialInterfaceImpl implements SerialInterface
     public void setLogger(Logger logger)
     {
         this.logger = logger;
+    }
+
+    public int getHardwareVersion()
+    {
+        return hardwareVersion;
+    }
+
+    public void setHardwareVersion(int hardwareVersion)
+    {
+        this.hardwareVersion = hardwareVersion;
+    }
+
+    public int getSoftwareVersion()
+    {
+        return softwareVersion;
+    }
+
+    public void setSoftwareVersion(int softwareVersion)
+    {
+        this.softwareVersion = softwareVersion;
     }
 }

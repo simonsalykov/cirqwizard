@@ -37,4 +37,8 @@ public interface SerialInterface
     Response getCurrentError();
     void resetError();
     void setLogger(Logger logger);
+    int getHardwareVersion();
+    void setHardwareVersion(int hardwareVersion);
+    int getSoftwareVersion();
+    void setSoftwareVersion(int softwareVersion);
 }

@@ -246,15 +246,7 @@ public class CNCController
 
     public String getFirmwareVersion()
     {
-        return null;
-//        StringBuilder str = new StringBuilder();
-//        Postprocessor post = PostProcessorFactory.getPostProcessor();
-//        post.getFirmwareVersion(str);
-//        StringBuilder response = new StringBuilder();
-//        send(str.toString(), 500, response, true);
-//        String firmware = response.toString();
-//        if (firmware.indexOf('\n') > 0)
-//            firmware = firmware.substring(0, firmware.indexOf('\n'));
-//        return firmware;
+        int v = serial.getSoftwareVersion();
+        return "Cirqoid firmware v" + ((v >> 16) & 0xFF) + "." + ((v >> 8) & 0xFF) + "." + (v & 0xFF);
     }
 }

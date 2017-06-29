@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.stm32;
 
+import org.cirqoid.cnc.controller.commands.EnterBootloaderCommand;
 import org.cirqoid.cnc.controller.serial.SerialException;
 import org.cirqoid.cnc.controller.serial.SerialInterface;
 import org.cirqwizard.serial.ExecutionException;
@@ -45,7 +46,9 @@ public class STM32BootLoaderInterface
     {
         try
         {
-//            serialInterface.send("$$$reset\r\n", 2000);
+            EnterBootloaderCommand command = new EnterBootloaderCommand();
+            command.setId(serialInterface.getPacketId());
+            serialInterface.send(command);
             Thread.sleep(1000);
         }
         catch (InterruptedException e)

@@ -95,4 +95,28 @@ public class SerialInterfaceStub implements SerialInterface
     {
 
     }
+
+    @Override
+    public int getHardwareVersion()
+    {
+        return 0;
+    }
+
+    @Override
+    public void setHardwareVersion(int hardwareVersion)
+    {
+
+    }
+
+    @Override
+    public int getSoftwareVersion()
+    {
+        return 0;
+    }
+
+    @Override
+    public void setSoftwareVersion(int softwareVersion)
+    {
+
+    }
 }
