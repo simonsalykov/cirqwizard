@@ -32,18 +32,6 @@ public class TopRubout extends Rubout
     }
 
     @Override
-    protected int getCacheId()
-    {
-        return 2;
-    }
-
-    @Override
-    protected long getLayerModificationDate()
-    {
-        return 0; //getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
-    }
-
-    @Override
     protected boolean mirror()
     {
         return false;

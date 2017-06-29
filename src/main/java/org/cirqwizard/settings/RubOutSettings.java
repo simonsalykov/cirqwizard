@@ -58,10 +58,6 @@ public class RubOutSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Rub-out")
-    private UserPreference<Integer> overlap = new UserPreference<>("Overlap", 20, "%").setType(PreferenceType.PERCENT).setTriggersInvalidation(true);
-
-    @PersistentPreference
-    @PreferenceGroup(name = "Rub-out")
     private UserPreference<Integer> initialOffset = new UserPreference<>("Initial offset", 200, "mm").setTriggersInvalidation(true);
 
     @Override
@@ -174,16 +170,6 @@ public class RubOutSettings extends SettingsGroup
     public void setSkipRubOut(UserPreference<Boolean> skipRubOut)
     {
         this.skipRubOut = skipRubOut;
-    }
-
-    public UserPreference<Integer> getOverlap()
-    {
-        return overlap;
-    }
-
-    public void setOverlap(UserPreference<Integer> overlap)
-    {
-        this.overlap = overlap;
     }
 
     public UserPreference<Integer> getInitialOffset()

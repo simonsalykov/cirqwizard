@@ -14,8 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Polygon;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.StrokeLineCap;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.gerber.appertures.Aperture;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
@@ -103,6 +106,14 @@ public class LinearShape extends InterpolatingShape
         g.setLineWidth(getAperture().getWidth());
         g.strokeLine(getFrom().getX(), getFrom().getY(), getTo().getX(), getTo().getY());
 
+    }
+
+    @Override
+    public Geometry createGeometry(int inflation)
+    {
+        double width = Math.max(getAperture().getWidth() + inflation * 2, 0) / 2;
+        return VectorToolPathGenerator.factory.createLineString(new Coordinate[]{new Coordinate(getFrom().getX(), getFrom().getY()),
+                new Coordinate(getTo().getX(), getTo().getY())}).buffer(width);
     }
 
     @Override

@@ -15,7 +15,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber;
 
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Polygon;
 import javafx.scene.canvas.GraphicsContext;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.geom.Arc;
 import org.cirqwizard.geom.Point;
 
@@ -158,6 +161,25 @@ public class Region extends GerberPrimitive
 
         g.closePath();
         g.fill();
+    }
+
+    @Override
+    public Geometry createGeometry(int inflation)
+    {
+        List<Coordinate> coordinateList = new ArrayList<>();
+        InterpolatingShape firstSegment = (InterpolatingShape) getSegments().get(0);
+        coordinateList.add(new Coordinate(firstSegment.getFrom().getX(), firstSegment.getFrom().getY()));
+        segments.forEach(segment ->
+        {
+            if (segment instanceof LinearShape)
+                coordinateList.add(new Coordinate(((LinearShape) segment).getTo().getX(), ((LinearShape) segment).getTo().getY()));
+            else if (segment instanceof CircularShape)
+                coordinateList.addAll(((CircularShape)segment).getLineStringCoordinates());
+        });
+
+        Coordinate[] coordinates = new Coordinate[coordinateList.size()];
+        coordinateList.toArray(coordinates);
+        return VectorToolPathGenerator.factory.createPolygon(coordinates);
     }
 
     @Override

@@ -46,15 +46,4 @@ public class TopTraceMilling extends TraceMilling
         return false;
     }
 
-    @Override
-    protected int getCacheId()
-    {
-        return 0;
-    }
-
-    @Override
-    protected long getLayerModificationDate()
-    {
-        return 0; //getMainApplication().getContext().getPcbLayout().getTopLayerModificationDate();
-    }
 }

@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures.macro;
 
+import com.vividsolutions.jts.geom.Polygon;
 import org.cirqwizard.geom.Point;
 
 public abstract class MacroPrimitive
@@ -51,4 +52,6 @@ public abstract class MacroPrimitive
     }
 
     public abstract MacroPrimitive clone();
+
+    public abstract Polygon createPolygon(int x, int y, int inflation);
 }

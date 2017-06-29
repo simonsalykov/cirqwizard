@@ -14,6 +14,10 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
+
 public class CircularAperture extends Aperture
 {
     private int diameter;
@@ -69,5 +73,12 @@ public class CircularAperture extends Aperture
     public int getCircumRadius()
     {
         return diameter / 2;
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        return (Polygon) VectorToolPathGenerator.factory.createPoint(new Coordinate(x, y)).buffer(diameter / 2 + inflation,
+                diameter / 1000 * 5);
     }
 }

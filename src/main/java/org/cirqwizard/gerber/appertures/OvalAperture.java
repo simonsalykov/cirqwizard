@@ -14,6 +14,11 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
+
 public class OvalAperture extends Aperture
 {
     private int width, height;
@@ -70,5 +75,23 @@ public class OvalAperture extends Aperture
     public int getCircumRadius()
     {
         return (int) Math.sqrt(width * width + height * height);
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        double l = isHorizontal() ? width - height : height - width;
+        if (width > height)
+        {
+            return (Polygon) VectorToolPathGenerator.factory.createLineString(new Coordinate[]{
+                    new Coordinate(x - l / 2, y),
+                    new Coordinate(x + l / 2, y)}).buffer(height / 2 + inflation);
+        }
+        else
+        {
+            return (Polygon) VectorToolPathGenerator.factory.createLineString(new Coordinate[]{
+                    new Coordinate(x, y - l / 2),
+                    new Coordinate(x, y + l / 2)}).buffer(width / 2 + inflation);
+        }
     }
 }

@@ -40,19 +40,6 @@ public class BottomRubout extends Rubout
     }
 
     @Override
-    protected int getCacheId()
-    {
-        return 3;
-    }
-
-    @Override
-    protected long getLayerModificationDate()
-    {
-        return 0;
-//        return getMainApplication().getContext().getPcbLayout().getBottomLayerModificationDate();
-    }
-
-    @Override
     protected boolean mirror()
     {
         return true;

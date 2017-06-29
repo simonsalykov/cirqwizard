@@ -53,7 +53,6 @@ public class TracesSettingsPopOver implements Initializable
 
     @FXML private TextField additionalPassesCountTextField;
     @FXML private TextField additonalPassesOverlapTextField;
-    @FXML private CheckBox additionalPassesPadsOnlyCheckBox;
 
     private Context context;
     private SettingsDependentScreenController listener;
@@ -158,12 +157,6 @@ public class TracesSettingsPopOver implements Initializable
             saveLibrary();
         });
         addInvalidationListenerToTextField(additonalPassesOverlapTextField);
-        additionalPassesPadsOnlyCheckBox.selectedProperty().addListener((v, oldV, newV) ->
-        {
-            toolComboBox.getItems().get(toolComboBox.getSelectionModel().getSelectedIndex()).setAdditionalPassesPadsOnly(newV);
-            saveLibrary();
-            listener.settingsInvalidated();
-        });
     }
 
     public Node getView()
@@ -216,7 +209,6 @@ public class TracesSettingsPopOver implements Initializable
         workingHeightTextField.setIntegerValue(settings.getWorkingHeight().getValue());
         additionalPassesCountTextField.setText(String.valueOf(currentTool.getAdditionalPasses()));
         additonalPassesOverlapTextField.setText(String.valueOf(currentTool.getAdditionalPassesOverlap()));
-        additionalPassesPadsOnlyCheckBox.setSelected(currentTool.isAdditionalPassesPadsOnly());
     }
 
     private void addInvalidationListenerToTextField(TextField textField)

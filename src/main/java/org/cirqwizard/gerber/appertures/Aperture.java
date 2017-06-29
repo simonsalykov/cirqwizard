@@ -14,6 +14,8 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Polygon;
+
 public abstract class Aperture
 {
     public enum HoleType
@@ -52,5 +54,7 @@ public abstract class Aperture
     public abstract int getHeight();
 
     public abstract int getCircumRadius();
+
+    public abstract Polygon createPolygon(int x, int y, int inflation);
 
 }

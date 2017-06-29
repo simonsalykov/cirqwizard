@@ -14,6 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.gerber.appertures;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
+
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
+
 public class OctagonalAperture extends Aperture
 {
     private int diameter;
@@ -69,5 +76,24 @@ public class OctagonalAperture extends Aperture
     public int getCircumRadius()
     {
         return diameter / 2;
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        double edgeOffset = (Math.pow(2, 0.5) - 1) / 2 * (diameter + inflation * 2);
+        double centerOffset = 0.5 * (diameter + inflation * 2);
+
+        return VectorToolPathGenerator.factory.createPolygon(new Coordinate[]{
+                new Coordinate(centerOffset + x, edgeOffset + y),
+                new Coordinate(edgeOffset + x, centerOffset + y),
+                new Coordinate(-edgeOffset + x, centerOffset + y),
+                new Coordinate(-centerOffset + x, edgeOffset + y),
+                new Coordinate(-centerOffset + x, -edgeOffset + y),
+                new Coordinate(-edgeOffset + x, -centerOffset + y),
+                new Coordinate(edgeOffset + x, -centerOffset + y),
+                new Coordinate(centerOffset + x, -edgeOffset + y),
+                new Coordinate(centerOffset + x, edgeOffset + y)
+        });
     }
 }

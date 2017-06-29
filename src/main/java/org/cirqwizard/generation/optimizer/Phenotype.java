@@ -18,11 +18,12 @@ import org.cirqwizard.geom.Point;
 import org.cirqwizard.settings.ApplicationConstants;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Phenotype
 {
     private int[] genes;
-    private Double fitness = null;
+    private double fitness = -1;
 
     private static double MOTION_PENALTY = 2000;
 
@@ -33,18 +34,19 @@ public class Phenotype
 
     public double calculateFitness(Environment env)
     {
-        if (fitness != null)
+        if (fitness >= 0)
             return fitness;
 
-        Point currentLocation = new Point(0, 0);
+        Point currentLocation = env.getChains().get(0).getStart();
         fitness = 0.0;
 
         for (int i : genes)
         {
             Chain chain = env.getChains().get(i);
-            if (currentLocation.distanceTo(chain.getStart()) > ApplicationConstants.ROUNDING)
+            double distance = currentLocation.distanceTo(chain.getStart());
+            if (distance > ApplicationConstants.ROUNDING)
             {
-                fitness += currentLocation.distanceTo(chain.getStart());
+                fitness += distance;
                 fitness += MOTION_PENALTY;
             }
             currentLocation = chain.getEnd();
@@ -60,7 +62,7 @@ public class Phenotype
 
     public Phenotype crossOver(Phenotype partner)
     {
-        Random random = new Random();
+        Random random = ThreadLocalRandom.current();
         int firstIndex = random.nextInt(genes.length);
         int lastIndex = random.nextInt(genes.length);
 
@@ -87,7 +89,7 @@ public class Phenotype
 
     public void mutate()
     {
-        Random random = new Random();
+        Random random = ThreadLocalRandom.current();
         int genesCount = random.nextInt(genes.length / 2);
         for (int i = 0; i < genesCount; i++)
         {

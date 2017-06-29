@@ -187,20 +187,22 @@ public abstract class Machining extends SettingsDependentScreenController implem
                 getMainApplication().getContext().getG54Z() == null;
     }
 
+    private void zoom(double factor)
+    {
+        double scale = pcbPane.scaleProperty().getValue() * factor;
+        scale = Math.max(scale, 0.005);
+        scale = Math.min(scale, 0.03);
+        pcbPane.scaleProperty().setValue(scale);
+    }
+
     public void zoomIn()
     {
-        double scale = pcbPane.scaleProperty().getValue() + 0.005;
-        scale = Math.max(scale, 0.005);
-        scale = Math.min(scale, 0.045);
-        pcbPane.scaleProperty().setValue(scale);
+        zoom(1.5);
     }
 
     public void zoomOut()
     {
-        double scale = pcbPane.scaleProperty().getValue() - 0.005;
-        scale = Math.max(scale, 0.005);
-        scale = Math.min(scale, 0.045);
-        pcbPane.scaleProperty().setValue(scale);
+        zoom(1 / 1.5);
     }
 
     public void flipHorizontal()

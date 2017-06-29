@@ -14,8 +14,13 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import org.cirqwizard.generation.optimizer.Chain;
 import org.cirqwizard.gerber.appertures.CircularAperture;
 import org.cirqwizard.gerber.appertures.macro.ApertureMacro;
 import org.cirqwizard.gerber.appertures.macro.MacroCircle;
@@ -133,6 +138,71 @@ public class AbstractToolpathGenerator
         }
 
         return result;
+    }
+    protected Geometry createLayerGeometry(int inflation)
+    {
+        GerberPrimitive.Polarity currentPolarity = primitives.get(0).getPolarity();
+        List<Geometry> currentGeometryCollection = new ArrayList<>();
+        Geometry resultingGeometry = null;
+        for (GerberPrimitive p : primitives)
+        {
+            if (p.getPolarity() != currentPolarity)
+            {
+                resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
+                currentGeometryCollection = new ArrayList<>();
+                currentPolarity = p.getPolarity();
+            }
+            currentGeometryCollection.add(p.createGeometry(inflation));
+        }
+        resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
+        return resultingGeometry;
+    }
+
+    protected void addChains(Geometry geometry, List<Chain> chains, int toolDiameter)
+    {
+        if (geometry instanceof Polygon)
+            processPolygon(chains, (Polygon) geometry, toolDiameter);
+        else
+        {
+            MultiPolygon g = (MultiPolygon) geometry;
+            for (int j = 0; j < g.getNumGeometries(); j++)
+                processPolygon(chains, (Polygon) g.getGeometryN(j), toolDiameter);
+        }
+    }
+
+    private void processPolygon(List<Chain> chains, Polygon polygon, int toolDiameter)
+    {
+        chains.add(processCoordinates(polygon.getExteriorRing().getCoordinates(), toolDiameter));
+        for (int i = 0; i < polygon.getNumInteriorRing(); i++)
+            chains.add(processCoordinates(polygon.getInteriorRingN(i).getCoordinates(), toolDiameter));
+    }
+
+    private Geometry processGeometries(GerberPrimitive.Polarity polarity, Geometry resultingGeometry, List<Geometry> geometriesList)
+    {
+        Geometry[] geometries = new Geometry[geometriesList.size()];
+        geometriesList.toArray(geometries);
+        Geometry union = VectorToolPathGenerator.factory.createGeometryCollection(geometries).buffer(0);
+        if (polarity == GerberPrimitive.Polarity.DARK)
+        {
+            if (resultingGeometry == null)
+                return union;
+            else
+                return VectorToolPathGenerator.factory.createGeometryCollection(new Geometry[]{resultingGeometry, union}).buffer(0);
+        }
+        else
+            return resultingGeometry.difference(union);
+    }
+
+    private Chain processCoordinates(Coordinate[] coordinates, int toolDiameter)
+    {
+        List<Toolpath> toolpaths = new ArrayList<>();
+        for (int i = 0; i < coordinates.length - 1; i++)
+        {
+            Point from = new Point((int) coordinates[i].x, (int) coordinates[i].y);
+            Point to= new Point((int) coordinates[i + 1].x, (int) coordinates[i + 1].y);
+            toolpaths.add(new LinearToolpath(toolDiameter, from, to));
+        }
+        return new Chain(toolpaths);
     }
 
 }
