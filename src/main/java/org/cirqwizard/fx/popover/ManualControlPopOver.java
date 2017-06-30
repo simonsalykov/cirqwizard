@@ -17,6 +17,8 @@ package org.cirqwizard.fx.popover;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.cirqwizard.fx.controls.RealNumberTextField;
@@ -84,7 +86,16 @@ public class ManualControlPopOver extends PopOverController
 
     public void home()
     {
-        getMainApplication().getCNCController().home(SettingsFactory.getMachineSettings().getYAxisDifference().getValue());
+        Integer value = SettingsFactory.getMachineSettings().getYAxisDifference().getValue();
+        if (value == null || value == 0)
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Mandatory parameter \"Y axis difference\" is not specified. Without this parameter homing is not possible", ButtonType.OK);
+            alert.setHeaderText("Homing is not possible");
+            alert.setTitle("Error");
+            alert.show();
+        }
+        else
+            getMainApplication().getCNCController().home(value);
     }
 
     public void moveAway()
