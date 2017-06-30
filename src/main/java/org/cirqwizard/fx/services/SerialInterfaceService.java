@@ -104,23 +104,15 @@ public class SerialInterfaceService extends Service
                     if (isCancelled())
                         throw new InterruptedException();
 
-//                    try
-//                    {
-                            mainApplication.getCNCController().send(programLines.get(i), 20000);
-//                    }
-//                    catch (SerialException | ExecutionException e)
-//                    {
-//                        if (!suppressExceptions)
-//                            throw e;
-//                    }
+                        mainApplication.getCNCController().send(programLines.get(i), 20000);
 //                    if (readResponses)
 //                        Platform.runLater(() -> responses.setValue(responseBuilder.toString()));
                     updateProgress(i, programLines.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(() -> executionTime.setValue(s));
                 }
-//            }
-//            catch (SerialException | ExecutionException e)
+            }
+//            catch (SerialException e)
 //            {
 //                LoggerFactory.logException("Error communicating with the controller", e);
 //                mainApplication.getCNCController().interruptProgram();
@@ -128,7 +120,7 @@ public class SerialInterfaceService extends Service
 //                        "Something went wrong while communicating with the controller. " +
 //                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
 //                alert.showAndWait();
-            }
+//            }
             catch (InterruptedException e)
             {
                 mainApplication.getCNCController().interruptProgram();

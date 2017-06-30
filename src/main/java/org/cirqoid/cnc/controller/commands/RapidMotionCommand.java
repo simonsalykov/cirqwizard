@@ -41,7 +41,8 @@ public class RapidMotionCommand extends Command
     public String toString()
     {
         return "RapidMotionCommand{" +
-                "positions=" + Arrays.toString(positions) +
+                "id=" + getId() +
+                ", positions=" + Arrays.toString(positions) +
                 '}';
     }
 }
