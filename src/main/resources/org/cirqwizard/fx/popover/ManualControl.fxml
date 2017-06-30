@@ -23,14 +23,38 @@
       <RowConstraints />
   </rowConstraints>
    <children>
-       <Button onAction="#home" mnemonicParsing="false" text="Home" prefWidth="120" GridPane.columnSpan="2" />
+       <Button onAction="#home" mnemonicParsing="false" text="Home" prefWidth="120" GridPane.columnSpan="2" >
+           <tooltip>
+               <Tooltip text="Performs homing needs to be done every time machine is powered up or E-Stop button was used"/>
+           </tooltip>
+       </Button>
         <Label text="X" GridPane.rowIndex="1" />
         <Label text="Y" GridPane.rowIndex="2" />
         <Label text="Z" GridPane.rowIndex="3" />
-        <RealNumberTextField fx:id="xTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#goToUpdatedCoordinates" />
-        <RealNumberTextField fx:id="yTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#goToUpdatedCoordinates" />
-        <RealNumberTextField fx:id="zTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" onAction="#goToUpdatedCoordinates" />
-        <Button onAction="#moveAway" text="Away" GridPane.rowIndex="4" prefWidth="120" GridPane.columnSpan="2"/>
-        <Button onAction="#moveToToolChange" text="Tool change" prefWidth="120" GridPane.rowIndex="5" GridPane.columnSpan="2"/>
+        <RealNumberTextField fx:id="xTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#goToUpdatedCoordinates">
+            <tooltip>
+                <Tooltip text="Press Enter to move machine to the specified location"/>
+            </tooltip>
+        </RealNumberTextField>
+        <RealNumberTextField fx:id="yTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#goToUpdatedCoordinates">
+            <tooltip>
+                <Tooltip text="Press Enter to move machine to the specified location"/>
+            </tooltip>
+        </RealNumberTextField>
+       <RealNumberTextField fx:id="zTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" onAction="#goToUpdatedCoordinates">
+           <tooltip>
+               <Tooltip text="Press Enter to move machine to the specified location"/>
+           </tooltip>
+       </RealNumberTextField>
+        <Button onAction="#moveAway" text="Away" GridPane.rowIndex="4" prefWidth="120" GridPane.columnSpan="2">
+            <tooltip>
+                <Tooltip text="Moves machine head away to allow access to the bed"/>
+            </tooltip>
+        </Button>
+        <Button onAction="#moveToToolChange" text="Tool change" prefWidth="120" GridPane.rowIndex="5" GridPane.columnSpan="2">
+            <tooltip>
+                <Tooltip text="Moves machine head to the front for a tool change"/>
+            </tooltip>
+        </Button>
    </children>
 </GridPane>

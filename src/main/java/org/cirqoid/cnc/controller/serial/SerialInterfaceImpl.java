@@ -91,6 +91,7 @@ public class SerialInterfaceImpl implements SerialInterface
             i++;
         if (i > 0)
         {
+            logger.log(Level.INFO, "Skipping " + i + " bytes...");
             System.arraycopy(buffer, i, buffer, 0, bufferPointer - i);
             bufferPointer -= i;
         }
