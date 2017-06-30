@@ -234,7 +234,7 @@ public class MainApplication extends Application
 
     public void connectSerialPort(String port)
     {
-        new Thread(() ->
+        Thread t = new Thread(() ->
         {
             mainView.disableManualControl();
             try
@@ -267,7 +267,9 @@ public class MainApplication extends Application
                 Platform.runLater(mainView::enableManualControl);
                 cncController = new CNCController(serialInterface, MainApplication.this);
             }
-        }).start();
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     @Override

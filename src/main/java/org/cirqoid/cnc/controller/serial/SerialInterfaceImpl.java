@@ -49,9 +49,10 @@ public class SerialInterfaceImpl implements SerialInterface
 
     private int lastAcknowledgedPacket = -1;
     private Response currentError;
+    private boolean isShuttingDown = false;
 
     private HashMap<Response.Code, List<ResponseListener>> listenersMap = new HashMap<>();
-    private ScheduledExecutorService listenersScheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private Logger logger;
 
@@ -64,7 +65,17 @@ public class SerialInterfaceImpl implements SerialInterface
         try
         {
             initUSART(commPortName, false);
-            CirqoidInitializer.initDevice(this);
+            scheduler.schedule(() ->
+            {
+                try
+                {
+                    CirqoidInitializer.initDevice(this);
+                }
+                catch (SerialException e)
+                {
+                    e.printStackTrace();
+                }
+            }, 0, TimeUnit.SECONDS);
         }
         catch (SerialPortException e)
         {
@@ -130,6 +141,7 @@ public class SerialInterfaceImpl implements SerialInterface
         port.openPort();
         port.setParams(bootloader ? 57600 : baudrate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
                 bootloader ? SerialPort.PARITY_EVEN : SerialPort.PARITY_NONE);
+        isShuttingDown = false;
         if (!bootloader)
         {
             port.setEventsMask(SerialPort.MASK_RXCHAR);
@@ -165,10 +177,10 @@ public class SerialInterfaceImpl implements SerialInterface
             currentError = response;
         if (listenersMap.get(response.getCode()) != null)
             listenersMap.get(response.getCode()).forEach(l ->
-                    listenersScheduler.schedule(() -> l.responseReceived(response), 0, TimeUnit.SECONDS));
+                    scheduler.schedule(() -> l.responseReceived(response), 0, TimeUnit.SECONDS));
         if (listenersMap.get(null) != null)
             listenersMap.get(null).forEach(l ->
-                    listenersScheduler.schedule(() -> l.responseReceived(response), 0, TimeUnit.SECONDS));
+                    scheduler.schedule(() -> l.responseReceived(response), 0, TimeUnit.SECONDS));
     }
 
     public void setBootloaderMode(boolean bootloader) throws SerialException
@@ -232,8 +244,9 @@ public class SerialInterfaceImpl implements SerialInterface
     {
         try
         {
+            isShuttingDown = true;
             port.closePort();
-            listenersScheduler.shutdown();
+            scheduler.shutdown();
         }
         catch (SerialPortException e)
         {
@@ -251,7 +264,7 @@ public class SerialInterfaceImpl implements SerialInterface
                 logger.log(Level.FINE, ">>> " + packet);
             port.writeBytes(packet.serializePacket());
             long timeout = System.currentTimeMillis() + 20000;
-            while (System.currentTimeMillis() < timeout && lastAcknowledgedPacket < packet.getId())
+            while (!isShuttingDown && System.currentTimeMillis() < timeout && lastAcknowledgedPacket < packet.getId())
                 Thread.sleep(10);
             if (lastAcknowledgedPacket < packet.getId())
                 throw new SerialException("Command timed out: " + packet.getId());
