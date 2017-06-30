@@ -267,8 +267,6 @@ public class ComponentPlacement extends ScreenController implements Initializabl
     private int getTargetX()
     {
         int x = targetX.getIntegerValue();
-        if (placementX.getIntegerValue() != null)
-            x += placementX.getIntegerValue();
         if (layer == Board.LayerType.PLACEMENT_BOTTOM)
         {
             MachineSettings machineSettings = SettingsFactory.getMachineSettings();
@@ -280,6 +278,8 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         }
         else
             x += getMainApplication().getContext().getG54X();
+        if (placementX.getIntegerValue() != null)
+            x += placementX.getIntegerValue();
         return x;
     }
 
