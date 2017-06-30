@@ -50,6 +50,8 @@ public class CirqoidInitializer
         packet.setAccelerationStartSpeed(1500);
         packet.setMotionCorrecionLagThreshold(0.002f);
         packet.setMotionCorrectionMinLagThreshold(200);
+        packet.setPositioningTolerance(5);
+        packet.setMotionsJointTolerance(5);
 
         SetParametersCommand.Axis x = new SetParametersCommand.Axis();
         x.enabled = true;

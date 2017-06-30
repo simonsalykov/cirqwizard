@@ -23,6 +23,8 @@ public class SetParametersCommandTest
         packet.setMinimumSpeed(2000);
         packet.setMotionCorrecionLagThreshold(0.1f);
         packet.setMotionCorrectionMinLagThreshold(20);
+        packet.setPositioningTolerance(5);
+        packet.setMotionsJointTolerance(10);
 
         SetParametersCommand.Axis x = new SetParametersCommand.Axis();
         x.enabled = true;
@@ -97,7 +99,7 @@ public class SetParametersCommandTest
         packet.setMotor(2 , m2);
 
         byte[] p = packet.serializePacket();
-        assertEquals(294, p.length);
+        assertEquals(302, p.length);
         int ptr = 0;
 
         assertEquals((byte)0xAA, p[ptr++]);
@@ -119,7 +121,7 @@ public class SetParametersCommandTest
         assertEquals(0x00, p[ptr++]);
         assertEquals(0x00, p[ptr++]);
         assertEquals(0x01, p[ptr++]);
-        assertEquals((byte)0x14, p[ptr++]);
+        assertEquals((byte)0x1C, p[ptr++]);
 
         // acceleration
         assertEquals(0x42, p[ptr++]);
@@ -168,6 +170,18 @@ public class SetParametersCommandTest
         assertEquals(0x00, p[ptr++]);
         assertEquals(0x00, p[ptr++]);
         assertEquals(0x14, p[ptr++]);
+
+        // positioningTolerance
+        assertEquals(0x00, p[ptr++]);
+        assertEquals(0x00, p[ptr++]);
+        assertEquals(0x00, p[ptr++]);
+        assertEquals(0x05, p[ptr++]);
+
+        // motionsJointTolerance
+        assertEquals(0x00, p[ptr++]);
+        assertEquals(0x00, p[ptr++]);
+        assertEquals(0x00, p[ptr++]);
+        assertEquals(0x0A, p[ptr++]);
 
         // axes[0].enabled
         assertEquals(0x00, p[ptr++]);
@@ -536,9 +550,9 @@ public class SetParametersCommandTest
         assertEquals((byte) 0xFF, p[ptr++]);
 
         // CRC
-        assertEquals((byte) 0xE3, p[ptr++]);
-        assertEquals((byte) 0x04, p[ptr++]);
-        assertEquals((byte) 0xBD, p[ptr++]);
-        assertEquals((byte) 0xA9, p[ptr++]);
+        assertEquals((byte) 0xEC, p[ptr++]);
+        assertEquals((byte) 0xC7, p[ptr++]);
+        assertEquals((byte) 0x51, p[ptr++]);
+        assertEquals((byte) 0x02, p[ptr++]);
     }
 }

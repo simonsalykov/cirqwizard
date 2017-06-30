@@ -65,6 +65,8 @@ public class SetParametersCommand extends Command
     private int minimumSpeed;
     private float motionCorrecionLagThreshold;
     private int motionCorrectionMinLagThreshold;
+    private int positioningTolerance;
+    private int motionsJointTolerance;
 
     // MachineParameters
     private Axis axes[] = new Axis[ApplicationConstants.MAX_AXES_COUNT];
@@ -150,6 +152,26 @@ public class SetParametersCommand extends Command
         this.motionCorrectionMinLagThreshold = motionCorrectionMinLagThreshold;
     }
 
+    public int getPositioningTolerance()
+    {
+        return positioningTolerance;
+    }
+
+    public void setPositioningTolerance(int positioningTolerance)
+    {
+        this.positioningTolerance = positioningTolerance;
+    }
+
+    public int getMotionsJointTolerance()
+    {
+        return motionsJointTolerance;
+    }
+
+    public void setMotionsJointTolerance(int motionsJointTolerance)
+    {
+        this.motionsJointTolerance = motionsJointTolerance;
+    }
+
     public Axis getAxis(int i)
     {
         return axes[i];
@@ -179,7 +201,7 @@ public class SetParametersCommand extends Command
     @Override
     public byte[] getPayload()
     {
-        ByteBuffer b = ByteBuffer.allocate(8 * 4 + 9 * 4 * ApplicationConstants.MAX_AXES_COUNT + 5 * 4 * ApplicationConstants.MAX_MOTORS_COUNT);
+        ByteBuffer b = ByteBuffer.allocate(10 * 4 + 9 * 4 * ApplicationConstants.MAX_AXES_COUNT + 5 * 4 * ApplicationConstants.MAX_MOTORS_COUNT);
         b.putFloat(acceleration);
         b.putInt(maxArcsFeed);
         b.putInt(motionCorrectionFrequency);
@@ -188,6 +210,8 @@ public class SetParametersCommand extends Command
         b.putInt(minimumSpeed);
         b.putFloat(motionCorrecionLagThreshold);
         b.putInt(motionCorrectionMinLagThreshold);
+        b.putInt(positioningTolerance);
+        b.putInt(motionsJointTolerance);
         for (Axis axis : axes)
         {
             b.putInt(axis.enabled ? 1 : 0);
@@ -230,6 +254,8 @@ public class SetParametersCommand extends Command
                 ", minimumSpeed=" + minimumSpeed +
                 ", motionCorrecionLagThreshold=" + motionCorrecionLagThreshold +
                 ", motionCorrectionMinLagThreshold=" + motionCorrectionMinLagThreshold +
+                ", positioningTolerance=" + positioningTolerance +
+                ", motionsJointTolerance=" + motionsJointTolerance +
                 ", axes=" + Arrays.toString(axes) +
                 ", motors=" + Arrays.toString(motors) +
                 '}';
