@@ -100,11 +100,11 @@ public class ComponentPlacement extends ScreenController implements Initializabl
 
     private Integer placementZ;
 
-    private boolean mirror;
+    private Board.LayerType layer;
 
-    public ComponentPlacement(boolean mirror)
+    public ComponentPlacement(Board.LayerType layer)
     {
-        this.mirror = mirror;
+        this.layer = layer;
     }
 
     @Override
@@ -165,7 +165,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         ComponentId id =  context.getCurrentComponent();
         header.setText(id.getPackaging() + " " + id.getValue());
 
-        components.setAll(context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT_TOP).stream().
+        components.setAll(context.getPanel().getCombinedElements(layer).stream().
                 map(c -> (PPPoint)c).
                 filter(p -> p.getId().equals(id)).collect(Collectors.toList()));
         componentName.getSelectionModel().select(0);
@@ -269,7 +269,7 @@ public class ComponentPlacement extends ScreenController implements Initializabl
         int x = targetX.getIntegerValue();
         if (placementX.getIntegerValue() != null)
             x += placementX.getIntegerValue();
-        if (mirror)
+        if (layer == Board.LayerType.PLACEMENT_BOTTOM)
         {
             MachineSettings machineSettings = SettingsFactory.getMachineSettings();
             int laminateWidth = getMainApplication().getContext().getPanel().getSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() :

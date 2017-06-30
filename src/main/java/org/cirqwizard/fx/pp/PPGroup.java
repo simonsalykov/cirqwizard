@@ -82,8 +82,8 @@ public class PPGroup extends OperationsScreenGroup
                     }
 
                 }.setMainApplication(getMainApplication()).
-                        addChild(new FeederSelection().setMainApplication(getMainApplication())).
-                        addChild(new ComponentPlacement(layer == Board.LayerType.PLACEMENT_BOTTOM).
+                        addChild(new FeederSelection(layer).setMainApplication(getMainApplication())).
+                        addChild(new ComponentPlacement(layer).
                                 setMainApplication(getMainApplication()))).
                 collect(Collectors.toList());
 

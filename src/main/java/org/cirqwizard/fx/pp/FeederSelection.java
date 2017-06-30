@@ -50,6 +50,13 @@ public class FeederSelection extends ScreenController implements Initializable
 
     private ObservableList<Integer> rows;
 
+    private Board.LayerType layer;
+
+    public FeederSelection(Board.LayerType layer)
+    {
+        this.layer = layer;
+    }
+
     @Override
     protected String getFxmlName()
     {
@@ -77,7 +84,7 @@ public class FeederSelection extends ScreenController implements Initializable
         Context context = getMainApplication().getContext();
         ComponentId id = context.getCurrentComponent();
 
-        long count = context.getPanel().getCombinedElements(Board.LayerType.PLACEMENT_TOP).stream().
+        long count = context.getPanel().getCombinedElements(layer).stream().
                 map(c -> (PPPoint)c).
                 filter(c -> c.getId().equals(id)).count();
         countOfComponents.setText("You will need " + count + " such component(s)");
