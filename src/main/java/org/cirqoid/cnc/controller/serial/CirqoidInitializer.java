@@ -82,7 +82,7 @@ public class CirqoidInitializer
         z.stepsPerMilli = 800.0f;
         z.lowLimit = HardwareSettings.getCirqoidSettings().getAxes()[2].getLowLimit();
         z.highLimit = HardwareSettings.getCirqoidSettings().getAxes()[2].getHighLimit();
-        z.seekrate = 1_500_000;
+        z.seekrate = 1_000_000;
         z.inverted = true;
         z.homingDirection = false;
         z.homingRate = 300_000;
