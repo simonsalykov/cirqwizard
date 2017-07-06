@@ -31,6 +31,10 @@ public class PPSettings extends SettingsGroup
     private UserPreference<Integer> moveHeight = new UserPreference<>("Move height", 0, "mm");
 
     @PersistentPreference
+    @PreferenceGroup(name =  "Heights")
+    private UserPreference<Integer> pcbOffset = new UserPreference<>("PCB surface offset", -3500, "mm");
+
+    @PersistentPreference
     @PreferenceGroup(name =  "Rotation")
     private UserPreference<Integer> rotationFeed = new UserPreference<>("Rotation feed", 100_000, "mm/min");
 
@@ -74,6 +78,16 @@ public class PPSettings extends SettingsGroup
     public void setMoveHeight(UserPreference<Integer> moveHeight)
     {
         this.moveHeight = moveHeight;
+    }
+
+    public UserPreference<Integer> getPcbOffset()
+    {
+        return pcbOffset;
+    }
+
+    public void setPcbOffset(UserPreference<Integer> pcbOffset)
+    {
+        this.pcbOffset = pcbOffset;
     }
 
     public UserPreference<Integer> getRotationFeed()

@@ -31,7 +31,7 @@ import org.cirqwizard.generation.toolpath.Toolpath;
 import java.util.List;
 
 
-public class TraceGCodeGenerator
+public class TraceGCodeGenerator extends GCodeGenerator
 {
     private Context context;
     private List<? extends Toolpath> toolpaths;
@@ -39,14 +39,10 @@ public class TraceGCodeGenerator
 
     public TraceGCodeGenerator(Context context, List<? extends Toolpath> toolpaths, boolean mirror)
     {
+        super(context, mirror);
         this.context = context;
         this.toolpaths = toolpaths;
         this.mirror = mirror;
-    }
-
-    private int getX(int x)
-    {
-        return mirror ? -x : x;
     }
 
     public String generate(Postprocessor postprocessor, int xyFeed, int zFeed, int arcFeed, int clearance, int safetyHeight,
@@ -55,14 +51,7 @@ public class TraceGCodeGenerator
         StringBuilder str = new StringBuilder();
         postprocessor.header(str);
 
-        int g54X = context.getG54X();
-        if (mirror)
-        {
-            MachineSettings machineSettings = SettingsFactory.getMachineSettings();
-            int laminateWidth = context.getPanel().getSize() == PCBSize.Small ? machineSettings.getSmallPcbWidth().getValue() : machineSettings.getLargePcbWidth().getValue();
-            int pinX = machineSettings.getReferencePinX().getValue();
-            g54X = pinX * 2 + laminateWidth - context.getG54X();
-        }
+        int g54X = getG54X();
 
         Toolpath firstToolpath = null;
         for (Toolpath t : toolpaths)

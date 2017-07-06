@@ -26,17 +26,19 @@ import java.util.stream.Collectors;
 
 public class PPGroup extends OperationsScreenGroup
 {
+    private Board.LayerType layer;
     private List<ScreenController> dynamicChildren;
 
-    public PPGroup(String name)
+    public PPGroup(Board.LayerType layer, String name)
     {
         super(name);
+        this.layer = layer;
     }
 
     @Override
     protected boolean isEnabled()
     {
-        return super.isEnabled() && !getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.PLACEMENT).isEmpty();
+        return super.isEnabled() && !getMainApplication().getContext().getPanel().getCombinedElements(layer).isEmpty();
     }
 
     @Override
@@ -60,7 +62,7 @@ public class PPGroup extends OperationsScreenGroup
         if (dynamicChildren != null)
             return dynamicChildren;
 
-        dynamicChildren = getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.PLACEMENT).stream().
+        dynamicChildren = getMainApplication().getContext().getPanel().getCombinedElements(layer).stream().
                 map(c -> ((PPPoint)c).getId()).
                 distinct().
                 map(c ->
@@ -80,8 +82,9 @@ public class PPGroup extends OperationsScreenGroup
                     }
 
                 }.setMainApplication(getMainApplication()).
-                        addChild(new FeederSelection().setMainApplication(getMainApplication())).
-                        addChild(new ComponentPlacement().setMainApplication(getMainApplication()))).
+                        addChild(new FeederSelection(layer).setMainApplication(getMainApplication())).
+                        addChild(new ComponentPlacement(layer).
+                                setMainApplication(getMainApplication()))).
                 collect(Collectors.toList());
 
         return dynamicChildren;

@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.generation.gcode;
 
+import org.cirqwizard.fx.Context;
 import org.cirqwizard.generation.toolpath.CuttingToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.geom.Curve;
@@ -22,18 +23,15 @@ import org.cirqwizard.post.Postprocessor;
 import java.util.List;
 
 
-public class PasteGCodeGenerator
+public class PasteGCodeGenerator extends GCodeGenerator
 {
-    private int g54X;
-    private int g54Y;
-    private int g54Z;
+    private Context context;
     private List<Toolpath> toolpaths;
 
-    public PasteGCodeGenerator(int g54X, int g54Y, int g54Z, List<Toolpath> toolpaths)
+    public PasteGCodeGenerator(Context context, List<Toolpath> toolpaths, boolean mirror)
     {
-        this.g54X = g54X;
-        this.g54Y = g54Y;
-        this.g54Z = g54Z;
+        super(context, mirror);
+        this.context = context;
         this.toolpaths = toolpaths;
     }
 
@@ -44,7 +42,7 @@ public class PasteGCodeGenerator
 
         postprocessor.selectMachineWS(str);
         postprocessor.rapid(str, null, null, 0);
-        postprocessor.setupG54(str, g54X, g54Y, g54Z);
+        postprocessor.setupG54(str, getG54X(), context.getG54Y(), context.getG54Z());
         postprocessor.selectWCS(str);
 
         boolean firstPad = true;
@@ -53,12 +51,12 @@ public class PasteGCodeGenerator
             if (!toolpath.isEnabled())
                 continue;
             Curve curve = ((CuttingToolpath)toolpath).getCurve();
-            postprocessor.rapid(str, curve.getFrom().getX(), curve.getFrom().getY(), firstPad ? null : clearance);
+            postprocessor.rapid(str, getX(curve.getFrom().getX()), curve.getFrom().getY(), firstPad ? null : clearance);
             firstPad = false;
             postprocessor.rapid(str, null, null, workingHeight);
             postprocessor.syringeOn(str);
             postprocessor.pause(str, preFeedPause);
-            postprocessor.linearInterpolation(str, curve.getTo().getX(), curve.getTo().getY(),
+            postprocessor.linearInterpolation(str, getX(curve.getTo().getX()), curve.getTo().getY(),
                     workingHeight, feed);
             postprocessor.syringeOff(str);
             postprocessor.pause(str, postFeedPause);

@@ -45,6 +45,12 @@ public class PlacingOverview extends ScreenController implements Initializable
     @FXML private TableColumn<Row, String> namesColumn;
 
     private ObservableList<Row> rows;
+    private Board.LayerType layer;
+
+    public PlacingOverview(Board.LayerType layer)
+    {
+        this.layer = layer;
+    }
 
     @Override
     protected String getFxmlName()
@@ -74,7 +80,7 @@ public class PlacingOverview extends ScreenController implements Initializable
     public void refresh()
     {
         HashMap<ComponentId, Row> rowsMap = new HashMap<>();
-        for (LayerElement e : getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.PLACEMENT))
+        for (LayerElement e : getMainApplication().getContext().getPanel().getCombinedElements(layer))
         {
             PPPoint p = (PPPoint) e;
             if (rowsMap.get(p.getId()) == null)

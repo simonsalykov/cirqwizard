@@ -26,13 +26,14 @@ import org.cirqwizard.generation.gcode.PasteGCodeGenerator;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.layers.Board;
+import org.cirqwizard.layers.LayerElement;
 import org.cirqwizard.post.RTPostprocessor;
 import org.cirqwizard.settings.DispensingSettings;
 import org.cirqwizard.settings.SettingsFactory;
 
 import java.util.List;
 
-public class Dispensing extends Machining
+public abstract class Dispensing extends Machining
 {
     @Override
     protected String getName()
@@ -47,9 +48,15 @@ public class Dispensing extends Machining
         getMainApplication().getContext().setG54Z(settings.getZOffset().getValue());
         pcbPane.setGerberColor(PCBPane.SOLDER_PAD_COLOR);
         pcbPane.setToolpathColor(PCBPane.PASTE_TOOLPATH_COLOR);
-        pcbPane.setGerberPrimitives(getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.SOLDER_PASTE));
+        pcbPane.setGerberPrimitives(getElements());
         super.refresh();
     }
+
+    private List<? extends LayerElement> getElements()
+    {
+        return getMainApplication().getContext().getPanel().getCombinedElements(getCurrentLayer());
+    }
+
 
     @Override
     public void populateSettingsGroup(GridPane pane, SettingsDependentScreenController listener)
@@ -58,27 +65,22 @@ public class Dispensing extends Machining
     }
 
     @Override
-    protected Board.LayerType getCurrentLayer()
-    {
-        return Board.LayerType.SOLDER_PASTE;
-    }
-
-    @Override
     protected void generateToolpaths()
     {
-        List<Toolpath> toolpaths = new DispensingToolpathGenerator((List<GerberPrimitive>)
-                getMainApplication().getContext().getPanel().getCombinedElements(Board.LayerType.SOLDER_PASTE)).
+        List<Toolpath> toolpaths = new DispensingToolpathGenerator((List<GerberPrimitive>) getElements()).
                 generate(SettingsFactory.getDispensingSettings().getNeedleDiameter().getValue());
         pcbPane.toolpathsProperty().setValue(FXCollections.observableArrayList(toolpaths));
     }
+
+    protected abstract boolean mirror();
 
     @Override
     protected String generateGCode()
     {
         DispensingSettings settings = SettingsFactory.getDispensingSettings();
         Context context = getMainApplication().getContext();
-        PasteGCodeGenerator generator = new PasteGCodeGenerator(context.getG54X(), context.getG54Y(), context.getG54Z(),
-                pcbPane.toolpathsProperty().getValue());
+        PasteGCodeGenerator generator = new PasteGCodeGenerator(context, pcbPane.toolpathsProperty().getValue(),
+                mirror());
         return generator.generate(new RTPostprocessor(), settings.getPreFeedPause().getValue(),
                 settings.getPostFeedPause().getValue(), settings.getFeed().getValue(), settings.getClearance().getValue(),
                 settings.getWorkingHeight().getValue());
