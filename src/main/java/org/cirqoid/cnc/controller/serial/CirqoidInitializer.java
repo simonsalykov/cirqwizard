@@ -86,11 +86,18 @@ public class CirqoidInitializer
         z.inverted = true;
         z.homingDirection = false;
         z.homingRate = 300_000;
+        z.seekAcceleration = 50.0f;
         packet.setAxis(2, z);
 
-        SetParametersCommand.Axis unused = new SetParametersCommand.Axis();
-        unused.enabled = false;
-        packet.setAxis(3, unused);
+        SetParametersCommand.Axis a = new SetParametersCommand.Axis();
+        a.enabled = true;
+        a.stepsPerMilli = 1600.0f / 360.0f * 100.0f;
+        a.lowLimit = HardwareSettings.getCirqoidSettings().getAxes()[3].getLowLimit();
+        a.highLimit =  HardwareSettings.getCirqoidSettings().getAxes()[3].getHighLimit();
+        a.seekrate = 500_000;
+        a.inverted = false;
+        a.seekAcceleration = 50.0f;
+        packet.setAxis(3, a);
 
         SetParametersCommand.Motor m0 = new SetParametersCommand.Motor();
         m0.axis = 0;
@@ -140,6 +147,13 @@ public class CirqoidInitializer
 
             z.seekAcceleration = 100.0f;
         }
+        SetParametersCommand.Motor m4 = new SetParametersCommand.Motor();
+        m4.axis = 3;
+        m4.feedbackProvider = SetParametersCommand.FeedbackProvider.OPEN_LOOP;
+        m4.invertFeedback = false;
+        m4.homingSensor = SetParametersCommand.HomingSensor.NONE;
+        m4.invertSensor = false;
+        packet.setMotor(4, m4);
 
         serialInterface.send(packet);
     }

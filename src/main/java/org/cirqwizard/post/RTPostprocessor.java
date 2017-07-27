@@ -176,8 +176,7 @@ public class RTPostprocessor implements Postprocessor
     @Override
     public void rotatePP(StringBuilder str, int angle, int feed)
     {
-        str.append("G1 A").append(formatCoordinate(angle / 100));
-        str.append(" F").append(formatCoordinate(feed)).append("\n");
+        str.append("G0 A").append(formatCoordinate(angle / 100)).append("\n");
     }
 
     @Override
