@@ -80,6 +80,7 @@ public class SetParametersCommandTest
         m0.invertFeedback = false;
         m0.homingSensor = SetParametersCommand.HomingSensor.NONE;
         m0.invertSensor = false;
+        m0.onDemand = true;
         packet.setMotor(0 , m0);
 
         SetParametersCommand.Motor m1 = new SetParametersCommand.Motor();
@@ -88,6 +89,7 @@ public class SetParametersCommandTest
         m1.invertFeedback = true;
         m1.homingSensor = SetParametersCommand.HomingSensor.GPIO;
         m1.invertSensor = true;
+        m1.onDemand = true;
         packet.setMotor(1 , m1);
 
         SetParametersCommand.Motor m2 = new SetParametersCommand.Motor();
@@ -96,10 +98,11 @@ public class SetParametersCommandTest
         m2.invertFeedback = true;
         m2.homingSensor = SetParametersCommand.HomingSensor.AS5311;
         m2.invertSensor = true;
+        m2.onDemand = false;
         packet.setMotor(2 , m2);
 
         byte[] p = packet.serializePacket();
-        assertEquals(302, p.length);
+        assertEquals(322, p.length);
         int ptr = 0;
 
         assertEquals((byte)0xAA, p[ptr++]);
@@ -121,7 +124,7 @@ public class SetParametersCommandTest
         assertEquals(0x00, p[ptr++]);
         assertEquals(0x00, p[ptr++]);
         assertEquals(0x01, p[ptr++]);
-        assertEquals((byte)0x1C, p[ptr++]);
+        assertEquals((byte)0x30, p[ptr++]);
 
         // acceleration
         assertEquals(0x42, p[ptr++]);
@@ -429,6 +432,12 @@ public class SetParametersCommandTest
         assertEquals((byte) 0x00, p[ptr++]);
         assertEquals((byte) 0x00, p[ptr++]);
 
+        // motors[0].onDemand
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x01, p[ptr++]);
+
         // motors[1].axis
         assertEquals((byte) 0x00, p[ptr++]);
         assertEquals((byte) 0x00, p[ptr++]);
@@ -454,6 +463,12 @@ public class SetParametersCommandTest
         assertEquals((byte) 0x01, p[ptr++]);
 
         // motors[1].invertHoming
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x01, p[ptr++]);
+
+        // motors[1].onDemand
         assertEquals((byte) 0x00, p[ptr++]);
         assertEquals((byte) 0x00, p[ptr++]);
         assertEquals((byte) 0x00, p[ptr++]);
@@ -489,6 +504,12 @@ public class SetParametersCommandTest
         assertEquals((byte) 0x00, p[ptr++]);
         assertEquals((byte) 0x01, p[ptr++]);
 
+        // motors[2].onDemand
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+        assertEquals((byte) 0x00, p[ptr++]);
+
         // motors[3].axis
         assertEquals((byte) 0xFF, p[ptr++]);
         assertEquals((byte) 0xFF, p[ptr++]);
@@ -514,6 +535,12 @@ public class SetParametersCommandTest
         assertEquals((byte) 0xFF, p[ptr++]);
 
         // motors[3].invertHoming
+        assertEquals((byte) 0xFF, p[ptr++]);
+        assertEquals((byte) 0xFF, p[ptr++]);
+        assertEquals((byte) 0xFF, p[ptr++]);
+        assertEquals((byte) 0xFF, p[ptr++]);
+
+        // motors[3].onDemand
         assertEquals((byte) 0xFF, p[ptr++]);
         assertEquals((byte) 0xFF, p[ptr++]);
         assertEquals((byte) 0xFF, p[ptr++]);
@@ -549,10 +576,16 @@ public class SetParametersCommandTest
         assertEquals((byte) 0xFF, p[ptr++]);
         assertEquals((byte) 0xFF, p[ptr++]);
 
+        // motors[4].onDemand
+        assertEquals((byte) 0xFF, p[ptr++]);
+        assertEquals((byte) 0xFF, p[ptr++]);
+        assertEquals((byte) 0xFF, p[ptr++]);
+        assertEquals((byte) 0xFF, p[ptr++]);
+
         // CRC
-        assertEquals((byte) 0xEC, p[ptr++]);
-        assertEquals((byte) 0xC7, p[ptr++]);
-        assertEquals((byte) 0x51, p[ptr++]);
-        assertEquals((byte) 0x02, p[ptr++]);
+        assertEquals((byte) 0xFD, p[ptr++]);
+        assertEquals((byte) 0xDC, p[ptr++]);
+        assertEquals((byte) 0xB8, p[ptr++]);
+        assertEquals((byte) 0x44, p[ptr++]);
     }
 }

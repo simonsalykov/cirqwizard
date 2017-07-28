@@ -54,6 +54,7 @@ public class SetParametersCommand extends Command
         public boolean invertFeedback;
         public HomingSensor homingSensor;
         public boolean invertSensor;
+        public boolean onDemand;
     }
 
     // MotionSettings
@@ -201,7 +202,7 @@ public class SetParametersCommand extends Command
     @Override
     public byte[] getPayload()
     {
-        ByteBuffer b = ByteBuffer.allocate(10 * 4 + 9 * 4 * ApplicationConstants.MAX_AXES_COUNT + 5 * 4 * ApplicationConstants.MAX_MOTORS_COUNT);
+        ByteBuffer b = ByteBuffer.allocate(10 * 4 + 9 * 4 * ApplicationConstants.MAX_AXES_COUNT + 6 * 4 * ApplicationConstants.MAX_MOTORS_COUNT);
         b.putFloat(acceleration);
         b.putInt(maxArcsFeed);
         b.putInt(motionCorrectionFrequency);
@@ -233,9 +234,10 @@ public class SetParametersCommand extends Command
                 b.putInt(motor.invertFeedback ? 1 : 0);
                 b.putInt(motor.homingSensor.i);
                 b.putInt(motor.invertSensor ? 1 : 0);
+                b.putInt(motor.onDemand ? 1 : 0);
             }
             else
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 6; i++)
                     b.putInt(-1);
         }
         return b.array();

@@ -74,7 +74,7 @@ public class CirqoidInitializer
         y.inverted = true;
         y.homingDirection = true;
         y.homingRate = 300_000;
-        y.seekAcceleration = 50.0f;
+        y.seekAcceleration = 40.0f;
         packet.setAxis(1, y);
 
         SetParametersCommand.Axis z = new SetParametersCommand.Axis();
@@ -153,6 +153,7 @@ public class CirqoidInitializer
         m4.invertFeedback = false;
         m4.homingSensor = SetParametersCommand.HomingSensor.NONE;
         m4.invertSensor = false;
+        m4.onDemand = true;
         packet.setMotor(4, m4);
 
         serialInterface.send(packet);
