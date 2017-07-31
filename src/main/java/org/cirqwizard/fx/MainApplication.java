@@ -15,7 +15,6 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -257,7 +256,6 @@ public class MainApplication extends Application
     {
         Thread t = new Thread(() ->
         {
-            mainView.disableManualControl();
             try
             {
                 if (serialInterface != null)
@@ -285,9 +283,8 @@ public class MainApplication extends Application
                 cncController = null;
             else
             {
-                Platform.runLater(mainView::enableManualControl);
-                mainView.addStatuUpdateHook(serialInterface);
                 cncController = new CNCController(serialInterface, MainApplication.this);
+                mainView.addStatusUpdateHook(cncController);
             }
         });
         t.setDaemon(true);

@@ -3,48 +3,41 @@ package org.cirqwizard.fx;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Circle;
+import org.cirqwizard.serial.CNCController;
+
+import java.util.HashMap;
 
 public class StatusIndicator extends Region
 {
-    public enum Status
+    private CNCController.Status status;
+
+    private static HashMap<CNCController.Status, String> tooltips = new HashMap<>();
+
+    static
     {
-        NOT_CONNECTED("status-not-connected", "Machine is not detected"),
-        ERROR("status-error", "Machine has reported an error. It is recommended to restart the application"),
-        NOT_HOMED("status-not-homed", "Your machine needs to be homed before any motion is performed"),
-        OK("status-ok", "All green!"),
-        RUNNING("status-running", "Program is being executed");
-
-        private String styleName;
-        private String tooltip;
-
-        Status(String styleName, String tooltip)
-        {
-            this.styleName = styleName;
-            this.tooltip = tooltip;
-        }
+        tooltips.put(CNCController.Status.NOT_CONNECTED, "Machine is not detected");
+        tooltips.put(CNCController.Status.ERROR, "Machine has reported an error. It is recommended to restart the application");
+        tooltips.put(CNCController.Status.NOT_HOMED, "Your machine needs to be homed before any motion is performed");
+        tooltips.put(CNCController.Status.OK, "All green!");
+        tooltips.put(CNCController.Status.RUNNING, "Command is being executed");
     }
-
-    private Status status;
-    private Circle circle;
-    private Tooltip tooltip;
 
     public StatusIndicator()
     {
         setPrefSize(30, 30);
-        circle = new Circle(15, 15, 10);
-        circle.getStyleClass().add("status-not-connected");
-        tooltip = new Tooltip();
-        Tooltip.install(circle, tooltip);
-        getChildren().add(circle);
     }
 
-    public void setStatus(Status status)
+    public void setStatus(CNCController.Status status)
     {
         this.status = status;
+        getChildren().clear();
+        Circle circle = new Circle(15, 15, 10);
+        Tooltip tooltip = new Tooltip();
+        Tooltip.install(circle, tooltip);
         circle.getStyleClass().removeAll();
-        circle.getStyleClass().add(status.styleName);
-        tooltip.setText(status.tooltip);
+        circle.getStyleClass().add("status-" + status);
+        tooltip.setText(tooltips.get(status));
+        getChildren().add(circle);
     }
-
 
 }

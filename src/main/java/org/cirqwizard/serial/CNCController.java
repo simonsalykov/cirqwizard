@@ -15,10 +15,12 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.serial;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.cirqoid.cnc.controller.commands.Command;
 import org.cirqoid.cnc.controller.commands.Response;
+import org.cirqoid.cnc.controller.commands.StatusResponse;
 import org.cirqoid.cnc.controller.interpreter.Interpreter;
 import org.cirqoid.cnc.controller.interpreter.ParsingException;
 import org.cirqoid.cnc.controller.serial.SerialException;
@@ -38,9 +40,16 @@ public class CNCController
     private final static long PROGRAM_INTERRUPTION_TIMEOUT = 100000;
     private final static long COMMAND_TIMEOUT = 4000;
 
+    public enum Status
+    {
+        NOT_CONNECTED, ERROR, NOT_HOMED, OK, RUNNING
+    }
+
     private Interpreter interpreter;
     private SerialInterface serial;
     private MainApplication mainApplication;
+    private SimpleObjectProperty<Status> status = new SimpleObjectProperty<>();
+    private long lastStatusUpdate = System.currentTimeMillis();
 
     public CNCController(SerialInterface serial, MainApplication mainApplication)
     {
@@ -70,6 +79,42 @@ public class CNCController
                 }
             }
         });
+        serial.addListener(Response.Code.STATUS, response ->
+        {
+            int runLevel = ((StatusResponse) response).getRunLevel();
+            switch (runLevel)
+            {
+                case 0: status.set(Status.ERROR); break;
+                case 1: status.set(Status.NOT_HOMED); break;
+                case 2: status.set(Status.OK); break;
+            }
+            this.lastStatusUpdate = System.currentTimeMillis();
+        });
+        Thread t = new Thread(() ->
+        {
+            while (true)
+            {
+                if (lastStatusUpdate < System.currentTimeMillis() - 1000)
+                    status.set(Status.NOT_CONNECTED);
+                try
+                {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException e) {}
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
+    public Status getStatus()
+    {
+        return status.get();
+    }
+
+    public SimpleObjectProperty<Status> statusProperty()
+    {
+        return status;
     }
 
     public void send(String str, long timeout)

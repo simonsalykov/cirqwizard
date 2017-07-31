@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.fx;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -32,9 +33,12 @@ import org.cirqwizard.fx.popover.ManualControlPopOver;
 import org.cirqwizard.fx.popover.OffsetsPopOver;
 import org.cirqwizard.fx.popover.SettingsPopOver;
 import org.cirqwizard.fx.util.ToolbarPopup;
+import org.cirqwizard.serial.CNCController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class MainViewController extends ScreenController
 {
@@ -51,6 +55,8 @@ public class MainViewController extends ScreenController
 
     private ScreenController currentScreen;
 
+    private long lastStatusUpdate = System.currentTimeMillis();
+
     @Override
     protected String getFxmlName()
     {
@@ -61,7 +67,7 @@ public class MainViewController extends ScreenController
     public void initialize()
     {
         settingsLink.managedProperty().bind(settingsLink.visibleProperty());
-        statusIndicator.setStatus(StatusIndicator.Status.NOT_CONNECTED);
+        statusIndicator.setStatus(CNCController.Status.NOT_CONNECTED);
     }
 
     public ScreenController getCurrentScreen()
@@ -170,16 +176,6 @@ public class MainViewController extends ScreenController
         popup.show(manualControlLink);
     }
 
-    public void enableManualControl()
-    {
-        //manualControlLink.setDisable(false);
-    }
-
-    public void disableManualControl()
-    {
-        //manualControlLink.setDisable(true);
-    }
-
     public void offsets()
     {
         ToolbarPopup popup = new ToolbarPopup(offsetsPopOver);
@@ -195,20 +191,16 @@ public class MainViewController extends ScreenController
         popup.show(settingsLink);
     }
 
-    public void addStatuUpdateHook(SerialInterface serialInterface)
+    public void addStatusUpdateHook(CNCController controller)
     {
-        serialInterface.addListener(Response.Code.STATUS, response ->
+        controller.statusProperty().addListener((v, oldV, newV) ->
         {
-            int runLevel = ((StatusResponse) response).getRunLevel();
-            switch (runLevel)
+            Platform.runLater(() ->
             {
-                case 0: statusIndicator.setStatus(StatusIndicator.Status.ERROR); break;
-                case 1: statusIndicator.setStatus(StatusIndicator.Status.NOT_HOMED); break;
-                case 2: statusIndicator.setStatus(StatusIndicator.Status.OK); break;
-            }
-            manualControlLink.setDisable(runLevel < 1);
+                statusIndicator.setStatus(newV);
+                manualControlLink.setDisable(newV == CNCController.Status.ERROR || newV == CNCController.Status.NOT_CONNECTED);
+            });
         });
-
     }
 
 }

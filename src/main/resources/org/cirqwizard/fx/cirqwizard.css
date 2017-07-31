@@ -248,31 +248,31 @@
 }
 
 
-.status-not-connected {
+.status-NOT_CONNECTED {
     -fx-stroke: #555555;
     -fx-stroke-width: 2;
     -fx-fill: #aaaaaa;
 }
 
-.status-error {
+.status-ERROR {
     -fx-stroke: #bb0000;
     -fx-stroke-width: 2;
     -fx-fill: #ff0000;
 }
 
-.status-not-homed {
+.status-NOT_HOMED {
     -fx-stroke: #bbbb00;
     -fx-stroke-width: 2;
     -fx-fill: #ffff00;
 }
 
-.status-ok {
+.status-OK {
     -fx-stroke: #00bb00;
     -fx-stroke-width: 2;
     -fx-fill: #00ff00;
 }
 
-.status-running {
+.status-RUNNING {
     -fx-stroke: #00bb00;
     -fx-stroke-width: 2;
     -fx-fill: #00ff00;
