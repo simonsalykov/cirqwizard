@@ -11,23 +11,15 @@
         <Label styleClass="h1" text="Direct GCode control"/>
         <Label text="On this screen you can control your device using GCode - type GCode in a corresponding field and press Send button."
                wrapText="true" />
-        <SplitPane style="-fx-box-border: transparent; -fx-background-color: transparent" VBox.vgrow="ALWAYS" dividerPositions="0.7">
-            <VBox spacing="20">
-                <padding>
-                    <Insets right="15"/>
-                </padding>
-                <Label text="GCode input:"/>
-                <TextArea fx:id="gCodeInputTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
-                <Button fx:id="executeGCodeButton" onAction="#executeGCode" text="Send"/>
-            </VBox>
-            <VBox spacing="20">
-                <padding>
-                    <Insets left="15"/>
-                </padding>
-                <Label text="Response:"/>
-                <TextArea fx:id="responseTextArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
-            </VBox>
-        </SplitPane>
+        <VBox spacing="20" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets right="15"/>
+            </padding>
+            <Label text="GCode input:"/>
+            <TextArea fx:id="gCodeInputTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
+            <Label text="" styleClass="error-message" fx:id="errorMessageLabel"/>
+            <Button fx:id="executeGCodeButton" onAction="#executeGCode" text="Send"/>
+        </VBox>
     </VBox>
     <Region fx:id="veil" styleClass="pcb-veil" visible="false"/>
     <VBox fx:id="executionPane" maxWidth="600" maxHeight="200" spacing="20" alignment="CENTER"

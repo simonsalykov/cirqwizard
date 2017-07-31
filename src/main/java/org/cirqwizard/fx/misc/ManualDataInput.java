@@ -23,8 +23,19 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.cirqoid.cnc.controller.commands.Command;
+import org.cirqoid.cnc.controller.interpreter.Context;
+import org.cirqoid.cnc.controller.interpreter.Interpreter;
+import org.cirqoid.cnc.controller.interpreter.ParsingException;
 import org.cirqwizard.fx.ScreenController;
+import org.cirqwizard.fx.services.SerialInterfaceCommandsService;
 import org.cirqwizard.fx.services.SerialInterfaceService;
+
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ManualDataInput extends ScreenController
@@ -32,13 +43,13 @@ public class ManualDataInput extends ScreenController
     @FXML private Region veil;
     @FXML private Button executeGCodeButton;
     @FXML private TextArea gCodeInputTextArea;
-    @FXML private TextArea responseTextArea;
 
     @FXML private VBox executionPane;
     @FXML private ProgressBar executionProgressBar;
     @FXML private Label timeElapsedLabel;
+    @FXML private Label errorMessageLabel;
 
-    private SerialInterfaceService serialService;
+    private SerialInterfaceCommandsService serialService;
 
     @Override
     protected String getFxmlName()
@@ -58,18 +69,59 @@ public class ManualDataInput extends ScreenController
         boolean noMachineConnected = getMainApplication().getCNCController() == null;
         executeGCodeButton.setDisable(noMachineConnected);
 
-        serialService = new SerialInterfaceService(getMainApplication());
+        serialService = new SerialInterfaceCommandsService(getMainApplication());
         executionProgressBar.progressProperty().bind(serialService.progressProperty());
         timeElapsedLabel.textProperty().bind(serialService.executionTimeProperty());
         executionPane.visibleProperty().bind(serialService.runningProperty());
-        responseTextArea.textProperty().bind(serialService.responsesProperty());
         veil.visibleProperty().bind(serialService.runningProperty());
+        setError(null);
     }
 
     public void executeGCode()
     {
-        serialService.setProgram(gCodeInputTextArea.getText(), true, true);
-        serialService.restart();
+        setError(null);
+        Interpreter interpreter = getMainApplication().getCNCController().getInterpreter();
+        Context contextBackup = (Context) interpreter.getContext().clone();
+
+        LineNumberReader reader = new LineNumberReader(new StringReader(gCodeInputTextArea.getText()));
+        List<Command> result = new ArrayList<>();
+        String str;
+        int position = 0;
+        int l = 0;
+        try
+        {
+            while ((str = reader.readLine()) != null)
+            {
+                l = str.length() + 1;
+                result.addAll(interpreter.interpretBlock(str));
+                position += str.length() + 1;
+            }
+
+            serialService.setCommands(result);
+            serialService.restart();
+        }
+        catch (IOException e) {}
+        catch (ParsingException e)
+        {
+            setError(e.getMessage());
+            gCodeInputTextArea.selectRange(position, position + l);
+            interpreter.setContext(contextBackup);
+        }
+    }
+
+    private void setError(String error)
+    {
+        if (error == null)
+        {
+            errorMessageLabel.setManaged(false);
+            errorMessageLabel.setVisible(false);
+        }
+        else
+        {
+            errorMessageLabel.setVisible(true);
+            errorMessageLabel.setManaged(true);
+            errorMessageLabel.setText(error);
+        }
     }
 
     public void stopExecution()

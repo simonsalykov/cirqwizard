@@ -26,6 +26,11 @@ public class Interpreter
         return context;
     }
 
+    public void setContext(Context context)
+    {
+        this.context = context;
+    }
+
     public List<Command> interpretBlocks(String blocks) throws ParsingException
     {
         LineNumberReader reader = new LineNumberReader(new StringReader(blocks));

@@ -20,7 +20,9 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import org.cirqoid.cnc.controller.commands.Command;
+import org.cirqoid.cnc.controller.serial.SerialException;
 import org.cirqwizard.fx.MainApplication;
+import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.IOException;
@@ -30,41 +32,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SerialInterfaceService extends Service
+public class SerialInterfaceCommandsService extends Service
 {
     private MainApplication mainApplication;
-    private List<String> programLines;
+    private List<Command> commands;
     private Property<String> executionTime = new SimpleStringProperty("");
     private Property<String> responses = new SimpleStringProperty("");
     private boolean readResponses;
     private boolean suppressExceptions;
 
-    public SerialInterfaceService(MainApplication mainApplication)
+    public SerialInterfaceCommandsService(MainApplication mainApplication)
     {
         this.mainApplication = mainApplication;
     }
 
-    public void setProgram(String program)
+    public void setCommands(List<Command> commands)
     {
-        setProgram(program, false, false);
-    }
-
-    public void setProgram(String program, boolean readResponses, boolean suppressExceptions)
-    {
-        this.readResponses = readResponses;
-        this.suppressExceptions = suppressExceptions;
-        programLines = new ArrayList<>();
-        LineNumberReader reader = new LineNumberReader(new StringReader(program));
-        String str;
-        try
-        {
-            while ((str = reader.readLine()) != null)
-                programLines.add(str);
-        }
-        catch (IOException e)
-        {
-            LoggerFactory.logException("Error reading a program from StringReader", e);
-        }
+        this.commands = commands;
     }
 
     public Property<String> executionTimeProperty()
@@ -95,33 +79,27 @@ public class SerialInterfaceService extends Service
         {
             try
             {
-                final StringBuilder responseBuilder = new StringBuilder();
-                if (readResponses)
-                    Platform.runLater(() -> responses.setValue(""));
-
                 long executionStartTime = System.currentTimeMillis();
-                for (int i = 0; i < programLines.size(); i++)
+                for (int i = 0; i < commands.size(); i++)
                 {
                     if (isCancelled())
                         throw new InterruptedException();
 
-                        mainApplication.getCNCController().send(programLines.get(i), 20000);
-//                    if (readResponses)
-//                        Platform.runLater(() -> responses.setValue(responseBuilder.toString()));
-                    updateProgress(i, programLines.size());
+                        mainApplication.getCNCController().send(commands.get(i));
+                    updateProgress(i, commands.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(() -> executionTime.setValue(s));
                 }
             }
-//            catch (SerialException e)
-//            {
-//                LoggerFactory.logException("Error communicating with the controller", e);
-//                mainApplication.getCNCController().interruptProgram();
-//                ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
-//                        "Something went wrong while communicating with the controller. " +
-//                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
-//                alert.showAndWait();
-//            }
+            catch (SerialException e)
+            {
+                LoggerFactory.logException("Error communicating with the controller", e);
+                mainApplication.getCNCController().interruptProgram();
+                ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
+                        "Something went wrong while communicating with the controller. " +
+                                "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
+                alert.showAndWait();
+            }
             catch (InterruptedException e)
             {
                 mainApplication.getCNCController().interruptProgram();

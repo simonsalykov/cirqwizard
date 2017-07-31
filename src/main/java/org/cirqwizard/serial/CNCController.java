@@ -82,10 +82,7 @@ public class CNCController
                 serial.resetError();
             List<Command> commands = interpreter.interpretBlocks(str);
             for (Command c : commands)
-            {
-                c.setId(serial.getPacketId());
-                serial.send(c);
-            }
+                send(c);
         }
         catch (SerialException | ParsingException e)
         {
@@ -97,9 +94,20 @@ public class CNCController
         }
     }
 
+    public void send(Command c) throws SerialException
+    {
+        c.setId(serial.getPacketId());
+        serial.send(c);
+    }
+
     private void send(String str)
     {
         send(str, COMMAND_TIMEOUT);
+    }
+
+    public Interpreter getInterpreter()
+    {
+        return interpreter;
     }
 
     public void home(Integer yDiff)
