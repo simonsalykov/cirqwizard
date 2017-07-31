@@ -49,7 +49,7 @@ public class CirqoidInitializer
         packet.setMinimumSpeed(100);
         packet.setAccelerationStartSpeed(1500);
         packet.setMotionCorrecionLagThreshold(0.002f);
-        packet.setMotionCorrectionMinLagThreshold(200);
+        packet.setMotionCorrectionMinLagThreshold(50);
         packet.setPositioningTolerance(5);
         packet.setMotionsJointTolerance(5);
 
