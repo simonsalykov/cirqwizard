@@ -269,7 +269,7 @@
 .status-OK {
     -fx-stroke: #00bb00;
     -fx-stroke-width: 2;
-    -fx-fill: #00ff00;
+    -fx-fill: #119911;
 }
 
 .status-RUNNING {

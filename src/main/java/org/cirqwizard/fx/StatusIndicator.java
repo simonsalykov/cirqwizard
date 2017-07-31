@@ -18,7 +18,7 @@ public class StatusIndicator extends Region
         tooltips.put(CNCController.Status.NOT_CONNECTED, "Machine is not detected");
         tooltips.put(CNCController.Status.ERROR, "Machine has reported an error. It is recommended to restart the application");
         tooltips.put(CNCController.Status.NOT_HOMED, "Your machine needs to be homed before any motion is performed");
-        tooltips.put(CNCController.Status.OK, "All green!");
+        tooltips.put(CNCController.Status.OK, "All good!");
         tooltips.put(CNCController.Status.RUNNING, "Command is being executed");
     }
 
@@ -34,7 +34,6 @@ public class StatusIndicator extends Region
         Circle circle = new Circle(15, 15, 10);
         Tooltip tooltip = new Tooltip();
         Tooltip.install(circle, tooltip);
-        circle.getStyleClass().removeAll();
         circle.getStyleClass().add("status-" + status);
         tooltip.setText(tooltips.get(status));
         getChildren().add(circle);

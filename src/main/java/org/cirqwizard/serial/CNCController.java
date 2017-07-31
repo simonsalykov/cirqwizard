@@ -87,6 +87,7 @@ public class CNCController
                 case 0: status.set(Status.ERROR); break;
                 case 1: status.set(Status.NOT_HOMED); break;
                 case 2: status.set(Status.OK); break;
+                case 3: status.set(Status.RUNNING); break;
             }
             this.lastStatusUpdate = System.currentTimeMillis();
         });
