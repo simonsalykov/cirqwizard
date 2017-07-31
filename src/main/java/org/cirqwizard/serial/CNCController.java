@@ -47,7 +47,6 @@ public class CNCController
         this.interpreter = new Interpreter();
         this.serial = serial;
         this.mainApplication = mainApplication;
-        serial.setLogger(LoggerFactory.getSerialLogger());
         serial.addListener(null, l ->
         {
             if (l.getCode().isExecutionError())

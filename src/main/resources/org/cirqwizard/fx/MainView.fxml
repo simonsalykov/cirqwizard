@@ -5,6 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.cirqwizard.fx.StatusIndicator?>
 <VBox fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <ToolBar fx:id="toolbar" prefHeight="40.0" prefWidth="200.0">
@@ -13,7 +14,8 @@
             <Region HBox.hgrow="ALWAYS" />
             <Hyperlink text="Offsets" fx:id="offsetsLink" onAction="#offsets"/>
             <Hyperlink text="Settings" fx:id="settingsLink" onAction="#settings"/>
-            <Hyperlink text="Manual control" fx:id="manualControlLink" onAction="#manualControl"/>
+            <Hyperlink text="Manual control" fx:id="manualControlLink" onAction="#manualControl" disable="true"/>
+            <StatusIndicator fx:id="statusIndicator"/>
         </items>
       </ToolBar>
       <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS" />

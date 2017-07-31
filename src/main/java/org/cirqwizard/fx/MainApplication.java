@@ -286,6 +286,7 @@ public class MainApplication extends Application
             else
             {
                 Platform.runLater(mainView::enableManualControl);
+                mainView.addStatuUpdateHook(serialInterface);
                 cncController = new CNCController(serialInterface, MainApplication.this);
             }
         });

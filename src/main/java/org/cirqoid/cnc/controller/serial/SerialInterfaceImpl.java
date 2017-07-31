@@ -21,6 +21,7 @@ import jssc.SerialPortTimeoutException;
 import org.cirqoid.cnc.controller.commands.Command;
 import org.cirqoid.cnc.controller.commands.PacketParsingException;
 import org.cirqoid.cnc.controller.commands.Response;
+import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -61,6 +62,7 @@ public class SerialInterfaceImpl implements SerialInterface
 
     public SerialInterfaceImpl(String commPortName, int baudrate) throws SerialException
     {
+        this.logger = LoggerFactory.getSerialLogger();
         this.baudrate = baudrate;
         try
         {
@@ -312,12 +314,6 @@ public class SerialInterfaceImpl implements SerialInterface
     public void resetError()
     {
         currentError = null;
-    }
-
-    @Override
-    public void setLogger(Logger logger)
-    {
-        this.logger = logger;
     }
 
     public int getHardwareVersion()

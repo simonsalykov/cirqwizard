@@ -25,6 +25,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import org.cirqoid.cnc.controller.commands.Response;
+import org.cirqoid.cnc.controller.commands.StatusResponse;
+import org.cirqoid.cnc.controller.serial.SerialInterface;
 import org.cirqwizard.fx.popover.ManualControlPopOver;
 import org.cirqwizard.fx.popover.OffsetsPopOver;
 import org.cirqwizard.fx.popover.SettingsPopOver;
@@ -40,6 +43,7 @@ public class MainViewController extends ScreenController
     @FXML private Hyperlink offsetsLink;
     @FXML private Hyperlink settingsLink;
     @FXML private Hyperlink manualControlLink;
+    @FXML private StatusIndicator statusIndicator;
 
     private ManualControlPopOver manualControlPopOver = new ManualControlPopOver();
     private OffsetsPopOver offsetsPopOver = new OffsetsPopOver();
@@ -57,6 +61,7 @@ public class MainViewController extends ScreenController
     public void initialize()
     {
         settingsLink.managedProperty().bind(settingsLink.visibleProperty());
+        statusIndicator.setStatus(StatusIndicator.Status.NOT_CONNECTED);
     }
 
     public ScreenController getCurrentScreen()
@@ -167,12 +172,12 @@ public class MainViewController extends ScreenController
 
     public void enableManualControl()
     {
-        manualControlLink.setDisable(false);
+        //manualControlLink.setDisable(false);
     }
 
     public void disableManualControl()
     {
-        manualControlLink.setDisable(true);
+        //manualControlLink.setDisable(true);
     }
 
     public void offsets()
@@ -188,6 +193,22 @@ public class MainViewController extends ScreenController
         SettingsDependentScreenController screen = (SettingsDependentScreenController) currentScreen;
         screen.populateSettingsGroup(settingsPopOver.getPane(), screen);
         popup.show(settingsLink);
+    }
+
+    public void addStatuUpdateHook(SerialInterface serialInterface)
+    {
+        serialInterface.addListener(Response.Code.STATUS, response ->
+        {
+            int runLevel = ((StatusResponse) response).getRunLevel();
+            switch (runLevel)
+            {
+                case 0: statusIndicator.setStatus(StatusIndicator.Status.ERROR); break;
+                case 1: statusIndicator.setStatus(StatusIndicator.Status.NOT_HOMED); break;
+                case 2: statusIndicator.setStatus(StatusIndicator.Status.OK); break;
+            }
+            manualControlLink.setDisable(runLevel < 1);
+        });
+
     }
 
 }

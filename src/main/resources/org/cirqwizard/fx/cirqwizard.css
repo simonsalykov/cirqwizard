@@ -246,3 +246,34 @@
     -fx-padding: 5.0;
     -fx-background-color: #ffe0e0;
 }
+
+
+.status-not-connected {
+    -fx-stroke: #555555;
+    -fx-stroke-width: 2;
+    -fx-fill: #aaaaaa;
+}
+
+.status-error {
+    -fx-stroke: #bb0000;
+    -fx-stroke-width: 2;
+    -fx-fill: #ff0000;
+}
+
+.status-not-homed {
+    -fx-stroke: #bbbb00;
+    -fx-stroke-width: 2;
+    -fx-fill: #ffff00;
+}
+
+.status-ok {
+    -fx-stroke: #00bb00;
+    -fx-stroke-width: 2;
+    -fx-fill: #00ff00;
+}
+
+.status-running {
+    -fx-stroke: #00bb00;
+    -fx-stroke-width: 2;
+    -fx-fill: #00ff00;
+}

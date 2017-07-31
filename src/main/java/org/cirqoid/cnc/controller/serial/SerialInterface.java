@@ -36,7 +36,6 @@ public interface SerialInterface
     void removeListener(Response.Code responseCode, ResponseListener listener);
     Response getCurrentError();
     void resetError();
-    void setLogger(Logger logger);
     int getHardwareVersion();
     void setHardwareVersion(int hardwareVersion);
     int getSoftwareVersion();

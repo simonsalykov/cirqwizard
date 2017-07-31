@@ -91,12 +91,6 @@ public class SerialInterfaceStub implements SerialInterface
     }
 
     @Override
-    public void setLogger(Logger logger)
-    {
-
-    }
-
-    @Override
     public int getHardwareVersion()
     {
         return 0;
