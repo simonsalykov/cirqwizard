@@ -77,7 +77,7 @@ public class SerialInterfaceImpl implements SerialInterface
                 {
                     e.printStackTrace();
                 }
-            }, 0, TimeUnit.SECONDS);
+            }, 1, TimeUnit.SECONDS);
         }
         catch (SerialPortException e)
         {
@@ -94,6 +94,10 @@ public class SerialInterfaceImpl implements SerialInterface
         if (i > 0)
         {
             logger.log(Level.INFO, "Skipping " + i + " bytes...");
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < i; j++)
+                sb.append(String.format("%02x ", buffer[j]));
+            logger.log(Level.INFO, sb.toString());
             System.arraycopy(buffer, i, buffer, 0, bufferPointer - i);
             bufferPointer -= i;
         }

@@ -56,18 +56,6 @@ public class MainViewController implements Initializable
         this.serialInterface = serialInterface;
     }
 
-    public void initDevice()
-    {
-        try
-        {
-            CirqoidInitializer.initDevice(serialInterface);
-        }
-        catch (SerialException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public void rapid()
     {
         RapidMotionCommand packet = new RapidMotionCommand(new int[] {Integer.valueOf(xCoordinate.getText()),
