@@ -183,11 +183,11 @@ public class GerberParser
         apertureMacros.put(macroName, apertureMacro);
     }
 
-    private final static Pattern PATTERN_MACRO_1 = Pattern.compile("1,(1|0),(\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_1 = Pattern.compile("1,(1|0),(\\d*.\\d*),(-?\\d*.\\d*),(-?\\d*.?\\d*)");
     private final static Pattern PATTERN_MACRO_4 = Pattern.compile("4,(1|0),(\\d*),(.*,)(-?\\d*.?\\d*)");
     private final static Pattern PATTERN_MACRO_4_COORDINATE_PAIR = Pattern.compile("(-?\\d*.?\\d*),(-?\\d*.?\\d*),");
-    private final static Pattern PATTERN_MACRO_20 = Pattern.compile("20,(1|0),(\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
-    private final static Pattern PATTERN_MACRO_21 = Pattern.compile("21,(1|0),(\\d+.\\d+),(\\d+.\\d+),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_20 = Pattern.compile("20,(1|0),(\\d*.\\d*),(-?\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_21 = Pattern.compile("21,(1|0),(\\d*.\\d*),(\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
 
     private void parseApertureMacroDefinition(String str)
     {

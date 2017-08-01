@@ -222,4 +222,38 @@ public class GerberMacroTest
         assertEquals(new Point(166732, 139841), f.getPoint());
     }
 
+    @Test
+    public void testOracdMacroCenterLine() throws IOException
+    {
+        String fileContent = "%FSLAX25Y25*MOMM*%\n" +
+                "%IR0*IPPOS*OFA0.00000B0.00000*MIA0B0*SFA1.00000B1.00000*%\n" +
+                "%AMMACRO12*\n" +
+                "21,1,2.,1.,0.0,0.0,90.172*%\n" +
+                "%ADD12MACRO12*%\n" +
+                "G54D12*\n" +
+                "X15145520Y13085760D03*\n" +
+                "M02*";
+
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        List<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(1, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(ApertureMacro.class, f.getAperture().getClass());
+        ApertureMacro macro = (ApertureMacro) f.getAperture();
+        assertEquals(1, macro.getPrimitives().size());
+        assertEquals(MacroCenterLine.class, macro.getPrimitives().get(0).getClass());
+        MacroCenterLine centerLine = (MacroCenterLine) macro.getPrimitives().get(0);
+        assertEquals(2000, centerLine.getWidth());
+        assertEquals(1000, centerLine.getHeight());
+        assertEquals(new Point(0, 0), centerLine.getCenter());
+        assertEquals(90, centerLine.getRotationAngle());
+
+        assertEquals(new Point(151455, 130857), f.getPoint());
+    }
+
 }
