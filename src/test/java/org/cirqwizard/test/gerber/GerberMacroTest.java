@@ -170,4 +170,56 @@ public class GerberMacroTest
         assertEquals(new Point(8732, 119216), f.getPoint());
     }
 
+    @Test
+    public void testOrcadMacroOutline() throws IOException
+    {
+        String fileContent = "%FSLAX25Y25*MOMM*%\n" +
+                "%IR0*IPPOS*OFA0.00000B0.00000*MIA0B0*SFA1.00000B1.00000*%\n" +
+                "%AMMACRO24*\n" +
+                "4,1,8,-2.0574,.254,\n" +
+                "-1.2446,.254,\n" +
+                "-1.2446,.8636,\n" +
+                "2.0574,.8636,\n" +
+                "2.0574,-.8636,\n" +
+                "-1.2446,-.8636,\n" +
+                "-1.2446,-.254,\n" +
+                "-2.0574,-.254,\n" +
+                "-2.0574,.254,\n" +
+                "0.0*\n" +
+                "%\n" +
+                "%ADD24MACRO24*%\n" +
+                "G54D24*\n" +
+                "X16673260Y13984100D03*\n" +
+                "M02*";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        List<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(1, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(ApertureMacro.class, f.getAperture().getClass());
+        ApertureMacro macro = (ApertureMacro) f.getAperture();
+        assertEquals(1, macro.getPrimitives().size());
+        assertEquals(MacroOutline.class, macro.getPrimitives().get(0).getClass());
+
+        MacroOutline outline = (MacroOutline)macro.getPrimitives().get(0);
+        assertEquals(8, outline.getPoints().size());
+
+        assertEquals(new Point(-2057, 254), outline.getPoints().get(0));
+        assertEquals(new Point(-1244, 254), outline.getPoints().get(1));
+        assertEquals(new Point(-1244, 863), outline.getPoints().get(2));
+        assertEquals(new Point(2057, 863), outline.getPoints().get(3));
+        assertEquals(new Point(2057, -863), outline.getPoints().get(4));
+        assertEquals(new Point(-1244, -863), outline.getPoints().get(5));
+        assertEquals(new Point(-1244, -254), outline.getPoints().get(6));
+        assertEquals(new Point(-2057, -254), outline.getPoints().get(7));
+
+        assertEquals(0, outline.getRotationAngle());
+
+        assertEquals(new Point(166732, 139841), f.getPoint());
+    }
+
 }
