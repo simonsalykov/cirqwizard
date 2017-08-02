@@ -201,7 +201,7 @@ public class SerialInterfaceImpl implements SerialInterface
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            LoggerFactory.logException("Error setting bootloader mode", e);
         }
     }
 

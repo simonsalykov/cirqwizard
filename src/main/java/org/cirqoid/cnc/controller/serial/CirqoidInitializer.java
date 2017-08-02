@@ -1,16 +1,23 @@
 package org.cirqoid.cnc.controller.serial;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.cirqoid.cnc.controller.commands.RequestVersionCommand;
 import org.cirqoid.cnc.controller.commands.Response;
 import org.cirqoid.cnc.controller.commands.SetParametersCommand;
 import org.cirqoid.cnc.controller.commands.VersionResponse;
 import org.cirqoid.cnc.controller.settings.HardwareSettings;
+import org.cirqwizard.logging.LoggerFactory;
 
 /**
  * Created by simon on 28.06.17.
  */
 public class CirqoidInitializer
 {
+    private static int SUPPORTED_FIRMWARE_MAJOR_VERSION = 1;
+    private static int SUPPORTED_FIRMWARE_MIDDLE_VERSION = 0;
+
     public static void initDevice(SerialInterface serialInterface) throws SerialException
     {
         RequestVersionCommand request = new RequestVersionCommand();
@@ -23,13 +30,29 @@ public class CirqoidInitializer
                 try
                 {
                     VersionResponse r = (VersionResponse) response;
+                    int middleVersion = (r.getSoftwareVersion() >> 8) & 0xFF;
+                    int majorVersion = (r.getSoftwareVersion() >> 16) & 0xFF;
+                    if (middleVersion != SUPPORTED_FIRMWARE_MIDDLE_VERSION || majorVersion != SUPPORTED_FIRMWARE_MAJOR_VERSION)
+                    {
+                        Platform.runLater(() ->
+                        {
+                            Alert alert = new Alert(Alert.AlertType.ERROR, "This version of cirQWizard is designed to" +
+                                    " work with controller firmware version " + SUPPORTED_FIRMWARE_MAJOR_VERSION + "." +
+                                    SUPPORTED_FIRMWARE_MIDDLE_VERSION + ".x Please flash new firmware before proceeding.", ButtonType.OK);
+                            alert.setHeaderText("Please update your firmware");
+                            alert.setTitle("Unsupported firmware version");
+                            alert.showAndWait();
+                        });
+                        throw new SerialException("Unsupported controller firmware");
+                    }
+
                     serialInterface.setHardwareVersion(r.getHardwareVersion());
                     serialInterface.setSoftwareVersion(r.getSoftwareVersion());
                     sendInitPacket(serialInterface, r.getHardwareVersion());
                 }
                 catch (SerialException e)
                 {
-                    e.printStackTrace();
+                    LoggerFactory.logException("Error initializing controller", e);
                 }
                 serialInterface.removeListener(Response.Code.VERSION_INFO, this);
             }
