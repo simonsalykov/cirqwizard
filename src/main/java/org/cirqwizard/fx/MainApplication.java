@@ -283,7 +283,7 @@ public class MainApplication extends Application
                 cncController = null;
             else
             {
-                cncController = new CNCController(serialInterface, MainApplication.this);
+                cncController = new CNCController(serialInterface);
                 mainView.addStatusUpdateHook(cncController);
             }
         });

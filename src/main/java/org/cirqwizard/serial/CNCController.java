@@ -47,15 +47,13 @@ public class CNCController
 
     private Interpreter interpreter;
     private SerialInterface serial;
-    private MainApplication mainApplication;
     private SimpleObjectProperty<Status> status = new SimpleObjectProperty<>();
     private long lastStatusUpdate = System.currentTimeMillis();
 
-    public CNCController(SerialInterface serial, MainApplication mainApplication)
+    public CNCController(SerialInterface serial)
     {
         this.interpreter = new Interpreter();
         this.serial = serial;
-        this.mainApplication = mainApplication;
         serial.addListener(null, l ->
         {
             if (l.getCode().isExecutionError())

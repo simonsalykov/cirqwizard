@@ -19,41 +19,25 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
 import org.cirqoid.cnc.controller.commands.Command;
-import org.cirqoid.cnc.controller.commands.PacketParsingException;
 import org.cirqoid.cnc.controller.commands.Response;
 import org.cirqwizard.logging.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class SerialInterfaceImpl implements SerialInterface
+public class SerialInterfaceImpl extends SerialInterface
 {
-    private final static int MAX_PACKET_SIZE = 2048;
-
     private SerialPort port;
     private int baudrate;
     private String portName;
     private int timeout = -1;
-    private int packetId = 0;
 
-    private byte buffer[] = new byte[MAX_PACKET_SIZE];
-    private int bufferPointer = 0;
+    private SerialBuffer buffer = new SerialBuffer();
 
-    private int lastAcknowledgedPacket = -1;
-    private Response currentError;
     private boolean isShuttingDown = false;
-
-    private HashMap<Response.Code, List<ResponseListener>> listenersMap = new HashMap<>();
-    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private Logger logger;
 
@@ -85,52 +69,6 @@ public class SerialInterfaceImpl implements SerialInterface
         }
     }
 
-    private Response parseBuffer()
-    {
-        int i = 0;
-        // TODO: check for double AA
-        while (buffer[i] != (byte)0xAA && i < bufferPointer)
-            i++;
-        if (i > 0)
-        {
-            logger.log(Level.INFO, "Skipping " + i + " bytes...");
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < i; j++)
-                sb.append(String.format("%02x ", buffer[j]));
-            logger.log(Level.INFO, sb.toString());
-            System.arraycopy(buffer, i, buffer, 0, bufferPointer - i);
-            bufferPointer -= i;
-        }
-        if (bufferPointer < 14)
-            return null;
-        ByteBuffer b = ByteBuffer.wrap(buffer, 10, 4);
-        int expectedLength = b.getInt() + 2 + 4 + 4 + 4 + 4;
-        if (expectedLength > MAX_PACKET_SIZE)
-        {
-            bufferPointer = 0;
-            return null;
-        }
-        if (bufferPointer < expectedLength)
-            return null;
-
-        byte[] packet = new byte[expectedLength - 2];
-        System.arraycopy(buffer, 2, packet, 0, expectedLength - 2);
-        try
-        {
-            Response parsed = Response.parsePacket(packet);
-            System.arraycopy(buffer, expectedLength, buffer, 0, bufferPointer - expectedLength);
-            bufferPointer -= expectedLength;
-            return parsed;
-        }
-        catch (PacketParsingException e)
-        {
-            System.out.println("Parsing failed: " + e.getMessage());
-            System.arraycopy(buffer, bufferPointer, buffer, 0, buffer.length - bufferPointer);
-            bufferPointer = 0;
-        }
-        return null;
-    }
-
     private void initUSART(String name, boolean bootloader) throws SerialPortException
     {
         if (port != null)
@@ -156,38 +94,18 @@ public class SerialInterfaceImpl implements SerialInterface
             {
                 try
                 {
-                    byte[] b = port.readBytes();
-                    if (bufferPointer + b.length < MAX_PACKET_SIZE)
-                    {
-                        System.arraycopy(b, 0, buffer, bufferPointer, b.length);
-                        bufferPointer += b.length;
-                    }
+                    buffer.addBytes(port.readBytes());
                     Response p;
-                    while ((p = parseBuffer()) != null)
+                    while ((p = buffer.parseBuffer()) != null)
                         processParsedPacket(p);
                 }
                 catch (SerialPortException e)
                 {
+                    LoggerFactory.logException("Exception caught while receiving data", e);
                     e.printStackTrace();
                 }
             });
         }
-    }
-
-    private void processParsedPacket(Response response)
-    {
-        if (logger != null)
-            logger.log(Level.FINE, "<<< " + response);
-        if (response.getCode() == Response.Code.OK)
-            lastAcknowledgedPacket = response.getPacketId();
-        else if (response.getCode().isExecutionError())
-            currentError = response;
-        if (listenersMap.get(response.getCode()) != null)
-            listenersMap.get(response.getCode()).forEach(l ->
-                    scheduler.schedule(() -> l.responseReceived(response), 0, TimeUnit.SECONDS));
-        if (listenersMap.get(null) != null)
-            listenersMap.get(null).forEach(l ->
-                    scheduler.schedule(() -> l.responseReceived(response), 0, TimeUnit.SECONDS));
     }
 
     public void setBootloaderMode(boolean bootloader) throws SerialException
@@ -283,29 +201,9 @@ public class SerialInterfaceImpl implements SerialInterface
         catch (InterruptedException e) {}
     }
 
-    @Override
-    public int getPacketId()
-    {
-        return packetId++;
-    }
-
     public String getPortName()
     {
         return portName;
-    }
-
-    @Override
-    public void addListener(Response.Code responseCode, ResponseListener listener)
-    {
-        List<ResponseListener> list = listenersMap.computeIfAbsent(responseCode, k -> new ArrayList<>());
-        list.add(listener);
-    }
-
-    @Override
-    public void removeListener(Response.Code responseCode, ResponseListener listener)
-    {
-        if (listenersMap.get(responseCode) != null)
-            listenersMap.get(responseCode).remove(listener);
     }
 
     @Override

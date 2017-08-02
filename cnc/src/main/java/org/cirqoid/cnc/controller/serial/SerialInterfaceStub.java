@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 
-public class SerialInterfaceStub implements SerialInterface
+public class SerialInterfaceStub extends SerialInterface
 {
     @Override
     public void setBootloaderMode(boolean bootloader) throws SerialException
