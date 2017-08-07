@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2017-08-01T21:57:37+02:00</updated>
+  <updated>2017-08-07T15:18:49+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,17 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 2.0.0-RC1]]></title>
+    <link href="http://cirqwizard.org//blog/2017/08/07/version-2-dot-0-0-rc1/"/>
+    <updated>2017-08-07T14:53:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2017/08/07/version-2-dot-0-0-rc1</id>
+    <content type="html"><![CDATA[<p>This is the first release candidate of version 2.0. The main focus was on improving tool path generation algorithms. Both isolation milling and rub out tool paths are now much more coherent and take way less time to be generated.</p>
+<p>This version also changes the way cirQWizard communicates with the controller. Thus, it requires update of Cirqoid&#8217;s firmware to version 0.3.&#215;. Keep in mind, that firmware 0.3.x won&#8217;t be compatible with previous versions of cirQWizard (though it&#8217;s still possible to downgrade firmware if you want to go back to the previous version).</p>
+<p>Recommended update procedure is to update the firmware first and then proceed with cirQWizard&#8217;s update.</p>
+<p>Also, as the name suggests &#8211; this is a release candidate. It&#8217;s quite possible some bugs are still there. If you happen to stumble upon one of them, drop us a note and will take care of that. The best place for dropping that note is cirQWizard&#8217;s forum.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.7.5]]></title>
@@ -197,15 +208,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
     <content type="html"><![CDATA[<p>After a long summer break, we are back at developing cirQWizard. This version introduces a new feature &#8211; tool library and fixes a number of bugs.</p>
 <p>Tool library lets you have a list of tool you commonly use with milling parameters specific for that particular tool. It&#8217;s a real time saver changing between different milling bits.</p>
 <p>Here are complete <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12700">release notes</a></p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.5.10]]></title>
-    <link href="http://cirqwizard.org//blog/2015/04/23/version-1-dot-5-10/"/>
-    <updated>2015-04-23T13:05:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2015/04/23/version-1-dot-5-10</id>
-    <content type="html"><![CDATA[<p>This release fixes just one bug introduced in the previous version &#8211; there was an issue with serial ports which made the program unusable under certain circumstances.</p>
-<p>Here are the <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12600">release notes</a></p>]]></content>
   </entry>
   
 </feed>
