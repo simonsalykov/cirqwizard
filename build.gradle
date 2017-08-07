@@ -17,6 +17,10 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: "edu.sc.seis.launch4j"
 
+subprojects {
+    apply plugin: 'java'
+}
+
 mainClassName = 'org.cirqwizard.fx.MainApplication'
 
 launch4j {
@@ -59,10 +63,6 @@ jar {
     version = releaseVersion
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
-}
-
 task updateVersionFile() {
     doLast() {
         def versionFile = new File("src/main/resources/version.number")
@@ -70,7 +70,7 @@ task updateVersionFile() {
     }
 }
 
-compileJava.dependsOn = ['updateVersionFile']
+compileJava.dependsOn updateVersionFile
 
 ant.mainClassName = mainClassName
 ant.fallbackClassName = 'com.javafx.main.NoJavaFXFallback'
