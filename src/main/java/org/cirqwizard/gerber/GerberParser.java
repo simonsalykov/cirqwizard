@@ -135,7 +135,7 @@ public class GerberParser
     {
         if (apertureMacro != null)
             parseApertureMacroDefinition(parameter);
-        if (parameter.startsWith("AD"))
+        else if (parameter.startsWith("AD"))
             parseApertureDefinition(parameter.substring(2));
         else if (parameter.startsWith("OF") || parameter.startsWith("IP"))
             LoggerFactory.getApplicationLogger().log(Level.FINE, "Ignoring obsolete gerber parameter");
@@ -183,11 +183,11 @@ public class GerberParser
         apertureMacros.put(macroName, apertureMacro);
     }
 
-    private final static Pattern PATTERN_MACRO_1 = Pattern.compile("1,(1|0),(\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.?\\d*)");
-    private final static Pattern PATTERN_MACRO_4 = Pattern.compile("4,(1|0),(\\d+),(.*),(-?\\d+.?\\d*)");
-    private final static Pattern PATTERN_MACRO_4_COORDINATE_PAIR = Pattern.compile("(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
-    private final static Pattern PATTERN_MACRO_20 = Pattern.compile("20,(1|0),(\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
-    private final static Pattern PATTERN_MACRO_21 = Pattern.compile("21,(1|0),(\\d+.\\d+),(\\d+.\\d+),(-?\\d+.?\\d*),(-?\\d+.?\\d*),(-?\\d+.?\\d*)");
+    private final static Pattern PATTERN_MACRO_1 = Pattern.compile("1,(1|0),(\\d*.\\d*),(-?\\d*.\\d*),(-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_4 = Pattern.compile("4,(1|0),(\\d*),(.*,)(-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_4_COORDINATE_PAIR = Pattern.compile("(-?\\d*.?\\d*),(-?\\d*.?\\d*),");
+    private final static Pattern PATTERN_MACRO_20 = Pattern.compile("20,(1|0),(\\d*.\\d*),(-?\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_21 = Pattern.compile("21,(1|0),(\\d*.\\d*),(\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
 
     private void parseApertureMacroDefinition(String str)
     {
@@ -342,7 +342,7 @@ public class GerberParser
             str = str.substring(1);
         while (str.length() < integerPlaces + decimalPlaces)
             str = omitLeadingZeros ? '0' + str : str + '0';
-        str = str.substring(0, integerPlaces) + "." + str.substring(integerPlaces, str.length());
+        str = str.substring(0, str.length() - decimalPlaces) + "." + str.substring(str.length() - decimalPlaces, str.length());
 
         return (int)(Double.valueOf(str) * unitConversionRatio) * (negative ? -1 : 1);
     }
