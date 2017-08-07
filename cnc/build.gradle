@@ -1,2 +1,6 @@
 apply plugin: 'java'
 
+jar {
+    baseName = 'cirqwizard-cnc'
+    version = releaseVersion
+}
