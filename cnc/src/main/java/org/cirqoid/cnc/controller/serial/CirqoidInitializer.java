@@ -15,8 +15,8 @@ import org.cirqwizard.logging.LoggerFactory;
  */
 public class CirqoidInitializer
 {
-    private static int SUPPORTED_FIRMWARE_MAJOR_VERSION = 1;
-    private static int SUPPORTED_FIRMWARE_MIDDLE_VERSION = 0;
+    private static int SUPPORTED_FIRMWARE_MAJOR_VERSION = 0;
+    private static int SUPPORTED_FIRMWARE_MIDDLE_VERSION = 3;
 
     public static void initDevice(SerialInterface serialInterface) throws SerialException
     {
