@@ -19,17 +19,23 @@ import org.cirqwizard.settings.ApplicationConstants;
 
 public enum PCBSize
 {
-    Small(75 * ApplicationConstants.RESOLUTION, 100 * ApplicationConstants.RESOLUTION, "75x100"),
-    Large(100 * ApplicationConstants.RESOLUTION, 160 * ApplicationConstants.RESOLUTION, "100x160");
+    Small(75 * ApplicationConstants.RESOLUTION, 100 * ApplicationConstants.RESOLUTION,
+            ApplicationConstants.getRegistrationPinsInset(), "75x100"),
+    Large(100 * ApplicationConstants.RESOLUTION, 160 * ApplicationConstants.RESOLUTION,
+            ApplicationConstants.getRegistrationPinsInset(), "100x160"),
+    XLarge(100 * ApplicationConstants.RESOLUTION, 205 * ApplicationConstants.RESOLUTION,
+            50 * ApplicationConstants.RESOLUTION, "100x205");
 
     private int width;
     private int height;
+    private int wcsYOffset;
     private String name;
 
-    PCBSize(int width, int height, String name)
+    PCBSize(int width, int height, int wcsYOffset, String name)
     {
         this.width = width;
         this.height = height;
+        this.wcsYOffset = wcsYOffset;
         this.name = name;
     }
 
@@ -41,6 +47,11 @@ public enum PCBSize
     public int getHeight()
     {
         return height;
+    }
+
+    public int getWcsYOffset()
+    {
+        return wcsYOffset;
     }
 
     @Override
