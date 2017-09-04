@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2017-09-04T13:04:25+02:00</updated>
+  <updated>2017-09-04T20:56:11+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.7.8]]></title>
+    <link href="http://cirqwizard.org//blog/2017/09/04/version-1-dot-7-8/"/>
+    <updated>2017-09-04T19:05:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2017/09/04/version-1-dot-7-8</id>
+    <content type="html"><![CDATA[<p>This version fixes macro outlines rotation issues.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.7.7]]></title>
@@ -195,14 +203,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
     <updated>2016-03-09T18:22:00+01:00</updated>
     <id>http://cirqwizard.org//blog/2016/03/09/version-1-dot-6-0</id>
     <content type="html"><![CDATA[<p>This version introduces a new feature &#8211; panels. Panels allow to place more than one board on the laminate. Preview also provides better feedback on the exact location of the boards with respect to the edges of the laminate and registration pins. Check out the updated documentation!</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.5.13]]></title>
-    <link href="http://cirqwizard.org//blog/2016/02/09/version-1-dot-5-13/"/>
-    <updated>2016-02-09T14:59:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2016/02/09/version-1-dot-5-13</id>
-    <content type="html"><![CDATA[<p>This version addresses an issue, which was causing cirQWizard to crash on Windows 10 under certain circumstances. Releases for other operating systems are not changed, comparing to the version 1.5.12.</p>]]></content>
   </entry>
   
 </feed>
