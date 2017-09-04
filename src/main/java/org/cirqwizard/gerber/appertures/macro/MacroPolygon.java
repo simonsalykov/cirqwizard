@@ -1,5 +1,8 @@
 package org.cirqwizard.gerber.appertures.macro;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import org.cirqwizard.generation.VectorToolPathGenerator;
 import org.cirqwizard.geom.Point;
 
 import java.util.ArrayList;
@@ -55,5 +58,21 @@ public class MacroPolygon extends MacroPrimitive
     {
         return new MacroPolygon(verticesCount, new Point(center.getX(), center.getY()),
                 diameter, getRotationAngle());
+    }
+
+    @Override
+    public Polygon createPolygon(int x, int y, int inflation)
+    {
+        List<Coordinate> coordinates = new ArrayList<>();
+        for (int i = 0; i < getPoints().size(); i++)
+        {
+            Point point = getPoints().get(i);
+            coordinates.add(new Coordinate(point.getX() + x, point.getY() + y));
+        }
+        coordinates.add(coordinates.get(0));
+
+        Coordinate[] c = new Coordinate[coordinates.size()];
+        coordinates.toArray(c);
+        return (Polygon) VectorToolPathGenerator.factory.createPolygon(c).buffer(inflation);
     }
 }
