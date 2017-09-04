@@ -268,7 +268,7 @@ public class GerberParser
 
         if (aperture.equals("C"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of circular aperture");
@@ -277,7 +277,7 @@ public class GerberParser
         }
         else if (aperture.equals("R"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)X(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)X(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of rectangular aperture");
@@ -287,7 +287,7 @@ public class GerberParser
         }
         else if (aperture.equals("OC8"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of octagonal aperture");
@@ -296,7 +296,7 @@ public class GerberParser
         }
         else if (aperture.equals("O"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)X(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)X(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of oval aperture");

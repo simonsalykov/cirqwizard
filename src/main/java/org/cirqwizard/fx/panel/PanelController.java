@@ -89,6 +89,8 @@ public class PanelController extends ScreenController implements Initializable
             panelPane.getPanel().setSize(newV);
             if (resetCacheOnChange)
                 panelPane.getPanel().resetCacheTimestamps();
+            getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
+                    newV.getWcsYOffset());
             savePanel();
             zoomToFit(true);
         });
@@ -157,8 +159,6 @@ public class PanelController extends ScreenController implements Initializable
         if (machineSettings.getReferencePinX().getValue() != null && machineSettings.getReferencePinY().getValue() != null)
         {
             getMainApplication().getContext().setG54X(machineSettings.getReferencePinX().getValue() -
-                    ApplicationConstants.getRegistrationPinsInset());
-            getMainApplication().getContext().setG54Y(machineSettings.getReferencePinY().getValue() -
                     ApplicationConstants.getRegistrationPinsInset());
         }
         validator = new PanelValidator(panelPane.getPanel(), errorBox, ignoreErrorCheckBox, () ->

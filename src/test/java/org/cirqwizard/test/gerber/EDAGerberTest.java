@@ -657,4 +657,37 @@ public class EDAGerberTest
         assertEquals(new Point(21016, 2001), region.getMin());
         assertEquals(new Point(85068, 55044), region.getMax());
     }
+
+    @Test
+    public void testCQ208() throws IOException
+    {
+        String fileContent = "%FSLAX25Y25*MOMM*%\n" +
+                "%IR0*IPPOS*OFA0.00000B0.00000*MIA0B0*SFA1.00000B1.00000*%\n" +
+                "%ADD31R,1.25X1.*%\n" +
+                "G54D31*\n" +
+                "X2815250Y1849500D03*\n" +
+                "Y2050000D03*\n" +
+                "M02*";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        List<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(2, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(28152, f.getPoint().getX());
+        assertEquals(18495, f.getPoint().getY());
+        assertEquals(1250, f.getAperture().getWidth());
+        assertEquals(1000, f.getAperture().getHeight());
+
+        p = elements.get(1);
+        assertEquals(Flash.class, p.getClass());
+        f = (Flash) p;
+        assertEquals(28152, f.getPoint().getX());
+        assertEquals(20500, f.getPoint().getY());
+        assertEquals(1250, f.getAperture().getWidth());
+        assertEquals(1000, f.getAperture().getHeight());
+    }
 }
