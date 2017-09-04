@@ -178,6 +178,22 @@ public class Flash extends GerberPrimitive
                     }
                     g.fill(polygon);
                 }
+                else if (p instanceof MacroPolygon)
+                {
+                    MacroPolygon poly = (MacroPolygon) p;
+                    double x = getX();
+                    double y = getY();
+
+                    Path2D polygon = new GeneralPath();
+                    org.cirqwizard.geom.Point point = poly.getPoints().get(0);
+                    polygon.moveTo(point.getX() + x, point.getY() + y);
+                    for (int i = 1; i < poly.getPoints().size(); i++)
+                    {
+                        point = poly.getPoints().get(i);
+                        polygon.lineTo(point.getX()  + x, point.getY() + y);
+                    }
+                    g.fill(polygon);
+                }
             }
         }
     }
@@ -280,6 +296,19 @@ public class Flash extends GerberPrimitive
                     Point point = outline.getTranslatedPoints().get(0);
                     g.moveTo(point.getX() + x, point.getY() + y);
                     outline.getTranslatedPoints().forEach(tp -> g.lineTo(tp.getX() + x, tp.getY() + y));
+                    g.closePath();
+                    g.fill();
+                }
+                else if (p instanceof MacroPolygon)
+                {
+                    MacroPolygon polygon = (MacroPolygon) p;
+                    double x = getX();
+                    double y = getY();
+
+                    g.beginPath();
+                    Point point = polygon.getPoints().get(0);
+                    g.moveTo(point.getX() + x, point.getY() + y);
+                    polygon.getPoints().forEach(tp -> g.lineTo(tp.getX() + x, tp.getY() + y));
                     g.closePath();
                     g.fill();
                 }

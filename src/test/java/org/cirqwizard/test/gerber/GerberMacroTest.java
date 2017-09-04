@@ -256,4 +256,39 @@ public class GerberMacroTest
         assertEquals(new Point(151455, 130857), f.getPoint());
     }
 
+    @Test
+    public void testMacroPolygon() throws IOException
+    {
+        String fileContent = "%MOIN*%\n" +
+                "%AMOUTLINE1*5,1,4,0,0,0.121622,-225.0*%\n" +
+                "%ADD87OUTLINE1*%\n" +
+                "%FSLAX26Y26*%\n" +
+                "D87*\n" +
+                "X256277Y2481510D3*\n" +
+                "M02*";
+
+        GerberParser parser = new GerberParser(new StringReader(fileContent));
+        List<GerberPrimitive> elements = parser.parse();
+
+        assertEquals(1, elements.size());
+
+        GerberPrimitive p = elements.get(0);
+        assertEquals(Flash.class, p.getClass());
+        Flash f = (Flash) p;
+        assertEquals(6509, f.getX());
+        assertEquals(63030, f.getY());
+
+        assertEquals(ApertureMacro.class, f.getAperture().getClass());
+        ApertureMacro macro = (ApertureMacro) f.getAperture();
+        assertEquals(1, macro.getPrimitives().size());
+        assertEquals(MacroPolygon.class, macro.getPrimitives().get(0).getClass());
+        MacroPolygon m = (MacroPolygon)macro.getPrimitives().get(0);
+        assertEquals(4, m.getVerticesCount());
+        assertEquals(0, m.getCenter().getX());
+        assertEquals(0, m.getCenter().getY());
+        assertEquals(3089, m.getDiameter());
+        assertEquals(-225, m.getRotationAngle());
+    }
+
+
 }
