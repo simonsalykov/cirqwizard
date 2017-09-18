@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2017-09-05T17:09:50+02:00</updated>
+  <updated>2017-09-18T21:39:07+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.7.9]]></title>
+    <link href="http://cirqwizard.org//blog/2017/09/18/version-1-dot-7-9/"/>
+    <updated>2017-09-18T21:37:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2017/09/18/version-1-dot-7-9</id>
+    <content type="html"><![CDATA[<p>This version takes care of the bug, which was unintentionally introduced in version 1.7.6 &#8211; under certain circumstances Y offset was not calculated and this lead to <strong>Run</strong> button being disabled on milling and drilling screens.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.7.8]]></title>
@@ -195,14 +203,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-178'>CQ-178</a>] &#8211;         Dispensing and rubout features don&#39;t work</li>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-179'>CQ-179</a>] &#8211;         Excellon import settings don&#39;t work</li>
 </ul>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.0]]></title>
-    <link href="http://cirqwizard.org//blog/2016/03/09/version-1-dot-6-0/"/>
-    <updated>2016-03-09T18:22:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2016/03/09/version-1-dot-6-0</id>
-    <content type="html"><![CDATA[<p>This version introduces a new feature &#8211; panels. Panels allow to place more than one board on the laminate. Preview also provides better feedback on the exact location of the boards with respect to the edges of the laminate and registration pins. Check out the updated documentation!</p>]]></content>
   </entry>
   
 </feed>
