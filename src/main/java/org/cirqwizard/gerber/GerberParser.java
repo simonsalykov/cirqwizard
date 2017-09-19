@@ -183,15 +183,22 @@ public class GerberParser
         apertureMacros.put(macroName, apertureMacro);
     }
 
-    private final static Pattern PATTERN_MACRO_1 = Pattern.compile("1,(1|0),(\\d*.\\d*),(-?\\d*.\\d*),(-?\\d*.?\\d*)");
-    private final static Pattern PATTERN_MACRO_4 = Pattern.compile("4,(1|0),(\\d*),(.*,)(-?\\d*.?\\d*)");
-    private final static Pattern PATTERN_MACRO_4_COORDINATE_PAIR = Pattern.compile("(-?\\d*.?\\d*),(-?\\d*.?\\d*),");
-    private final static Pattern PATTERN_MACRO_20 = Pattern.compile("20,(1|0),(\\d*.\\d*),(-?\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
-    private final static Pattern PATTERN_MACRO_21 = Pattern.compile("21,(1|0),(\\d*.\\d*),(\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_CIRCLE =
+            Pattern.compile("1,(1|0),(?<diameter>\\d*.\\d*),(?<x>-?\\d*.\\d*),(?<y>-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_OUTLINE =
+            Pattern.compile("4,(1|0),(?<count>\\d*),(?<vertices>.*,)(?<angle>-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_OUTLINE_COORDINATE_PAIR =
+            Pattern.compile("(?<x>-?\\d*.?\\d*),(?<y>-?\\d*.?\\d*),");
+    private final static Pattern PATTERN_MACRO_VECTOR_LINE =
+            Pattern.compile("20,(1|0),(?<width>\\d*.\\d*),(?<fromX>-?\\d*.\\d*),(?<fromY>-?\\d*.?\\d*),(?<toX>-?\\d*.?\\d*),(?<toY>-?\\d*.?\\d*),(?<angle>-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_CENTER_LINE =
+            Pattern.compile("21,(1|0),(\\d*.\\d*),(\\d*.\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*),(-?\\d*.?\\d*)");
+    private final static Pattern PATTERN_MACRO_POLYGON =
+            Pattern.compile("5,(1|0),(?<vertices>\\d+),(?<x>-?\\d*.?\\d*),(?<y>-?\\d*.?\\d*),(?<diameter>\\d*.?\\d*),(?<angle>-?\\d*.?\\d*)");
 
     private void parseApertureMacroDefinition(String str)
     {
-        Matcher matcher = PATTERN_MACRO_21.matcher(str);
+        Matcher matcher = PATTERN_MACRO_CENTER_LINE.matcher(str);
         if (matcher.find())
         {
             MacroCenterLine centerLine = new MacroCenterLine((int) (Double.valueOf(matcher.group(2)) * unitConversionRatio),
@@ -202,35 +209,51 @@ public class GerberParser
             return;
         }
 
-        matcher = PATTERN_MACRO_1.matcher(str);
+        matcher = PATTERN_MACRO_CIRCLE.matcher(str);
         if (matcher.find())
         {
-            MacroCircle circle = new MacroCircle((int) (Double.valueOf(matcher.group(2)) * unitConversionRatio),
-                    new Point((int) (Double.valueOf(matcher.group(3)) * unitConversionRatio), (int) (Double.valueOf(matcher.group(4)) * unitConversionRatio)));
+            MacroCircle circle = new MacroCircle((int) (Double.valueOf(matcher.group("diameter")) * unitConversionRatio),
+                    new Point((int) (Double.valueOf(matcher.group("x")) * unitConversionRatio),
+                            (int) (Double.valueOf(matcher.group("y")) * unitConversionRatio)));
             apertureMacro.addPrimitive(circle);
             return;
         }
 
-        matcher = PATTERN_MACRO_20.matcher(str);
+        matcher = PATTERN_MACRO_VECTOR_LINE.matcher(str);
         if (matcher.find())
         {
-            MacroVectorLine vectorLine = new MacroVectorLine((int) (Double.valueOf(matcher.group(2)) * unitConversionRatio),
-                    new Point((int) (Double.valueOf(matcher.group(3)) * unitConversionRatio), (int)(Double.valueOf(matcher.group(4)) * unitConversionRatio)),
-                    new Point((int) (Double.valueOf(matcher.group(5)) * unitConversionRatio), (int)(Double.valueOf(matcher.group(6)) * unitConversionRatio)),
-                    (int)(Double.valueOf(matcher.group(7)).doubleValue()));
+            MacroVectorLine vectorLine = new MacroVectorLine((int) (Double.valueOf(matcher.group("width")) * unitConversionRatio),
+                    new Point((int) (Double.valueOf(matcher.group("fromX")) * unitConversionRatio),
+                            (int)(Double.valueOf(matcher.group("fromY")) * unitConversionRatio)),
+                    new Point((int) (Double.valueOf(matcher.group("toX")) * unitConversionRatio),
+                            (int)(Double.valueOf(matcher.group("toY")) * unitConversionRatio)),
+                    (int)(Double.valueOf(matcher.group("angle")).doubleValue()));
             apertureMacro.addPrimitive(vectorLine);
             return;
         }
 
-        matcher = PATTERN_MACRO_4.matcher(str);
+        matcher = PATTERN_MACRO_POLYGON.matcher(str);
         if (matcher.find())
         {
-            int verticesCount = Integer.valueOf(matcher.group(2));
+            MacroPolygon polygon = new MacroPolygon(Integer.valueOf(matcher.group("vertices")),
+                    new Point((int)(Double.valueOf(matcher.group("x")) * unitConversionRatio),
+                            (int)(Double.valueOf(matcher.group("y")) * unitConversionRatio)),
+                    (int)(Double.valueOf(matcher.group("diameter")) * unitConversionRatio),
+                    (int)(Double.valueOf(matcher.group("angle")).doubleValue()));
+            apertureMacro.addPrimitive(polygon);
+            return;
+        }
+
+        matcher = PATTERN_MACRO_OUTLINE.matcher(str);
+        if (matcher.find())
+        {
+            int verticesCount = Integer.valueOf(matcher.group("count"));
             MacroOutline outline = new MacroOutline();
-            outline.setRotationAngle(new Double(matcher.group(4)).intValue());
-            matcher = PATTERN_MACRO_4_COORDINATE_PAIR.matcher(matcher.group(3));
+            outline.setRotationAngle(new Double(matcher.group("angle")).intValue());
+            matcher = PATTERN_MACRO_OUTLINE_COORDINATE_PAIR.matcher(matcher.group("vertices"));
             while (matcher.find())
-                outline.addPoint(new Point((int) (Double.valueOf(matcher.group(1)) * unitConversionRatio), (int) (Double.valueOf(matcher.group(2)) * unitConversionRatio)));
+                outline.addPoint(new Point((int) (Double.valueOf(matcher.group("x")) * unitConversionRatio),
+                        (int) (Double.valueOf(matcher.group("y")) * unitConversionRatio)));
             if (verticesCount != outline.getPoints().size() - 1)
                 LoggerFactory.getApplicationLogger().log(Level.WARNING, "Aperture macro vertices count does not match supplied coordinates: " + str);
             if (!outline.getPoints().get(0).equals(outline.getPoints().get(outline.getPoints().size() - 1)))
@@ -268,7 +291,7 @@ public class GerberParser
 
         if (aperture.equals("C"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of circular aperture");
@@ -277,7 +300,7 @@ public class GerberParser
         }
         else if (aperture.equals("R"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)X(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)X(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of rectangular aperture");
@@ -287,7 +310,7 @@ public class GerberParser
         }
         else if (aperture.equals("OC8"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of octagonal aperture");
@@ -296,7 +319,7 @@ public class GerberParser
         }
         else if (aperture.equals("O"))
         {
-            pattern = Pattern.compile(".*,(\\d*.\\d+)X(\\d*.\\d+)");
+            pattern = Pattern.compile(".*,(\\d*.\\d*)X(\\d*.\\d*)");
             matcher = pattern.matcher(str);
             if (!matcher.find())
                 throw new GerberParsingException("Invalid definition of oval aperture");

@@ -19,7 +19,6 @@ import org.cirqwizard.gerber.appertures.Aperture;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ApertureMacro extends Aperture
 {
@@ -43,7 +42,7 @@ public class ApertureMacro extends Aperture
         for (MacroPrimitive p : primitives)
         {
             p = p.clone();
-            p.setRotationAngle(p.getRotationAngle() + 90 * (clockwise ? 1 : -1));
+            p.setRotationAngle(p.getRotationAngle() + 90 * (clockwise ? -1 : 1));
             clone.addPrimitive(p);
         }
         return clone;

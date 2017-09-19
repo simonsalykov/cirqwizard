@@ -67,7 +67,7 @@ public class MacroOutline extends MacroPrimitive
         List<Coordinate> coordinates = new ArrayList<>();
         for (int i = 0; i < getTranslatedPoints().size(); i++)
         {
-            Point point = getPoints().get(i);
+            Point point = getTranslatedPoints().get(i);
             coordinates.add(new Coordinate(point.getX() + x, point.getY() + y));
         }
         coordinates.add(coordinates.get(0));
