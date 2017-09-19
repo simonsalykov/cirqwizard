@@ -160,6 +160,9 @@ public class PanelController extends ScreenController implements Initializable
         {
             getMainApplication().getContext().setG54X(machineSettings.getReferencePinX().getValue() -
                     ApplicationConstants.getRegistrationPinsInset());
+            if (sizeComboBox.getValue() != null)
+                getMainApplication().getContext().setG54Y(SettingsFactory.getMachineSettings().getReferencePinY().getValue() -
+                        sizeComboBox.getValue().getWcsYOffset());
         }
         validator = new PanelValidator(panelPane.getPanel(), errorBox, ignoreErrorCheckBox, () ->
         {
