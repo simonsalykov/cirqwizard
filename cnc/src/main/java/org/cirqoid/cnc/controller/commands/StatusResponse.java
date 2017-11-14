@@ -3,6 +3,7 @@ package org.cirqoid.cnc.controller.commands;
 import org.cirqoid.cnc.controller.settings.ApplicationConstants;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class StatusResponse extends Response
 {
@@ -27,5 +28,14 @@ public class StatusResponse extends Response
     public int[] getPositions()
     {
         return positions;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "StatusResponse{" +
+                "runLevel=" + runLevel +
+                ", positions=" + Arrays.toString(positions) +
+                '}';
     }
 }
