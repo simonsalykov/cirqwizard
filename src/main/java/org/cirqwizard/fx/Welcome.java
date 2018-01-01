@@ -99,6 +99,9 @@ public class Welcome extends ScreenController
         Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load file " + filename, ButtonType.OK);
         alert.setHeaderText("File not found");
         alert.show();
+
+        removeRecentFile(filename);
+        refresh();
     }
 
     public void openFile()
@@ -177,15 +180,17 @@ public class Welcome extends ScreenController
         return files;
     }
 
-    private void setRecentFile(String file)
+    private void saveRecentFiles(List<String> files)
     {
         Preferences preferences = Preferences.userRoot().node("org.cirqwizard");
-        List<String> files = getRecentFiles();
-        if (files.indexOf(file) >= 0)
-            files.remove(file);
-        files.add(0, file);
-        for (int i = 0; i < Math.min(files.size(), 5); i++)
-            preferences.put(PREFERENCE_NAME + "." + (i + 1), files.get(i));
+        for (int i = 0; i < 5; i++)
+        {
+            if (files.size() > i)
+                preferences.put(PREFERENCE_NAME + "." + (i + 1), files.get(i));
+            else
+                preferences.remove(PREFERENCE_NAME + "." + (i + 1));
+        }
+
         try
         {
             preferences.flush();
@@ -194,6 +199,24 @@ public class Welcome extends ScreenController
         {
             LoggerFactory.logException("Could not save preferences", e);
         }
+    }
+
+    private void setRecentFile(String file)
+    {
+        List<String> files = getRecentFiles();
+        if (files.indexOf(file) >= 0)
+            files.remove(file);
+        files.add(0, file);
+
+        saveRecentFiles(files);
+    }
+
+    private void removeRecentFile(String file)
+    {
+        List<String> files = getRecentFiles();
+        files.remove(file);
+
+        saveRecentFiles(files);
     }
 
     public void showSettings()
