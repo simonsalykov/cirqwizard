@@ -17,12 +17,15 @@ import org.cirqwizard.generation.toolpath.LinearToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.geom.Rect;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
 import org.cirqwizard.gerber.Region;
+import org.cirqwizard.gerber.appertures.CircularAperture;
 import org.cirqwizard.gerber.appertures.OvalAperture;
 import org.cirqwizard.gerber.appertures.RectangularAperture;
+import org.cirqwizard.gerber.appertures.macro.ApertureMacro;
 import org.cirqwizard.logging.LoggerFactory;
 import org.cirqwizard.math.MathUtil;
 
@@ -91,8 +94,40 @@ public class DispensingToolpathGenerator
                     }
                     fillRectangle(toolpaths, from, to, width, needleDiameter);
                 }
+                else if (flash.getAperture() instanceof CircularAperture)
+                {
+                    CircularAperture aperture = (CircularAperture) flash.getAperture();
+                    int width = aperture.getRectWidth();
+
+                    int passes = width / (needleDiameter * 2);
+                    for (int i = 0; i < passes; i++)
+                    {
+                        LinearToolpath toolpath;
+                        int x = (int) (flash.getX() - width / 2 + (double) width / (passes + 1) * (i + 1));
+                        int y = flash.getY() - width / 2 + needleDiameter;
+                        toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, flash.getY() + (width / 2) - needleDiameter));
+                        toolpaths.add(toolpath);
+                    }
+                }
+                else if(flash.getAperture() instanceof ApertureMacro)
+                {
+                    ApertureMacro aperture = (ApertureMacro) flash.getAperture();
+                    Rect rect =  aperture.getMinInsideRectangular();
+                    rect.setCenter(rect.getCenter().add(flash.getPoint()));
+
+                    Point apertureCenter = rect.getCenter();
+                    int passes = rect.getWidth() / (needleDiameter * 2);
+                    for (int i = 0; i < passes; i++)
+                    {
+                        LinearToolpath toolpath;
+                        int x = (int) (apertureCenter.getX() - rect.getWidth() / 2 + (double) rect.getWidth() / (passes + 1) * (i + 1));
+                        int y = apertureCenter.getY() - rect.getHeight() / 2 + needleDiameter;
+                        toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, apertureCenter.getY() + (rect.getHeight() / 2) - needleDiameter));
+                        toolpaths.add(toolpath);
+                    }
+                }
                 else
-                    System.out.println("Circular apertures not supported at the moment: " + flash.getAperture());
+                    System.out.println("The given aperture is not supported at the moment: " + flash.getAperture());
             }
             else if (element instanceof Region)
             {

@@ -13,6 +13,8 @@ This program is free software: you can redistribute it and/or modify
 */
 package org.cirqwizard.gerber.appertures.macro;
 
+import org.cirqwizard.geom.Point;
+import org.cirqwizard.geom.Rect;
 import org.cirqwizard.gerber.appertures.Aperture;
 
 import java.util.ArrayList;
@@ -68,5 +70,97 @@ public class ApertureMacro extends Aperture
     public int getCircumRadius()
     {
         return 2000;
+    }
+
+    public Rect getMinInsideRectangular()
+    {
+        List<Rect> rects = findMinRectsInPrimitives();
+
+        // find the rect with the biggest square
+        Rect biggestRect = rects.stream().max((r1, r2) ->
+                Integer.compare(r1.getWidth() * r2.getHeight(), r2.getWidth() * r2.getHeight())).get();
+
+        // connect the biggest rect with the smaller ones, check their common square
+        for(final Rect smallRect : rects)
+        {
+            if (smallRect == biggestRect)
+                continue;
+
+            int mergedLeftX, mergedRightX, mergedTopY, mergedBottomY;
+
+            // 4 cases, left, right, top, bottom
+            if (smallRect.getLeftX() > biggestRect.getLeftX() && smallRect.getRightX() > biggestRect.getRightX())
+            {
+                // right attachment
+                mergedLeftX = biggestRect.getLeftX();
+                mergedRightX = smallRect.getRightX();
+                mergedTopY = Math.min(biggestRect.getTopY(), smallRect.getTopY());
+                mergedBottomY = Math.max(biggestRect.getBottomY(), smallRect.getBottomY());;
+            }
+            else if (smallRect.getLeftX() < biggestRect.getLeftX() && smallRect.getRightX() < biggestRect.getRightX())
+            {
+                // left attachment
+                mergedLeftX = smallRect.getLeftX();
+                mergedRightX = biggestRect.getRightX();
+                mergedTopY = Math.min(biggestRect.getTopY(), smallRect.getTopY());
+                mergedBottomY = Math.max(biggestRect.getBottomY(), smallRect.getBottomY());
+            }
+            else if (smallRect.getTopY() > biggestRect.getTopY() && smallRect.getBottomY() > biggestRect.getBottomY())
+            {
+                // top attachment
+                mergedLeftX = Math.max(biggestRect.getLeftX(), smallRect.getLeftX());
+                mergedRightX = Math.min(biggestRect.getRightX(), smallRect.getRightX());
+                mergedTopY = smallRect.getTopY();
+                mergedBottomY = biggestRect.getBottomY();
+            }
+            else
+            {
+                // bottom attachment
+                mergedLeftX = Math.max(biggestRect.getLeftX(), smallRect.getRightX());
+                mergedRightX = Math.max(biggestRect.getRightX(), smallRect.getRightX());
+                mergedTopY = biggestRect.getTopY();
+                mergedBottomY = smallRect.getBottomY();
+            }
+
+            int mergedSquare = Math.abs(mergedRightX - mergedLeftX) * Math.abs(mergedBottomY - mergedTopY);
+            int currentSquare = biggestRect.getWidth() * biggestRect.getHeight();
+            if (mergedSquare > currentSquare)
+            {
+                Point mergedCenter = new Point((mergedLeftX + mergedRightX) / 2, (mergedTopY + mergedBottomY) / 2);
+                biggestRect = new Rect(mergedCenter, Math.abs(mergedRightX - mergedLeftX), Math.abs(mergedTopY - mergedBottomY));
+            }
+        }
+
+        return biggestRect;
+    }
+
+    private List<Rect> findMinRectsInPrimitives()
+    {
+        List<Rect> rects = new ArrayList(primitives.size());
+
+        for (MacroPrimitive macroPrimitive : primitives)
+        {
+            if (macroPrimitive instanceof MacroCenterLine)
+            {
+                MacroCenterLine macroCenterLine = (MacroCenterLine) macroPrimitive;
+                rects.add(new Rect(macroCenterLine.getCenter(),
+                        macroCenterLine.getWidth(),
+                        macroCenterLine.getHeight()));
+            }
+            else if (macroPrimitive instanceof MacroCircle)
+            {
+                MacroCircle macroCircle = (MacroCircle) macroPrimitive;
+                int diameter = macroCircle.getDiameter();
+                // pythagorean theorem
+                int width = (int) Math.sqrt(diameter * diameter / 2);
+                rects.add(new Rect(macroCircle.getCenter(), width, width));
+            }
+            else
+            {
+                System.out.println("Given macro primitive is not supported at the moment: " + macroPrimitive);
+            }
+        }
+
+        return rects;
     }
 }

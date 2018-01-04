@@ -70,4 +70,10 @@ public class CircularAperture extends Aperture
     {
         return diameter / 2;
     }
+
+    public int getRectWidth()
+    {
+        // pythagorean theorem
+        return (int) Math.sqrt(diameter * diameter / 2);
+    }
 }
