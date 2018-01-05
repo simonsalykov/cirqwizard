@@ -54,26 +54,7 @@ public class DispensingToolpathGenerator
                 {
                     RectangularAperture aperture = (RectangularAperture)flash.getAperture();
                     int[] dimensions = aperture.getDimensions();
-                    boolean vertical = dimensions[1] > dimensions[0];
-
-                    int passes = Math.max(1, dimensions[vertical ? 0 : 1] / (needleDiameter * 2));
-                    for (int i = 0; i < passes; i++)
-                    {
-                        LinearToolpath toolpath;
-                        if (vertical)
-                        {
-                            int x = (int)(flash.getX() - dimensions[0] / 2 + (double)dimensions[0] / (passes + 1) * (i + 1));
-                            int y = flash.getY() - dimensions[1] / 2 + needleDiameter;
-                            toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, flash.getY() + (dimensions[1] / 2) - needleDiameter));
-                        }
-                        else
-                        {
-                            int x = flash.getX() - dimensions[0] / 2 + needleDiameter;
-                            int y = (int)(flash.getY() - dimensions[1] / 2 + (double)dimensions[1] / (passes + 1) * (i + 1));
-                            toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(flash.getX() + (dimensions[0] / 2) - needleDiameter, y));
-                        }
-                        toolpaths.add(toolpath);
-                    }
+                    fillRectangle(toolpaths, flash.getPoint(), dimensions[0], dimensions[1], needleDiameter);
                 }
                 else if (flash.getAperture() instanceof OvalAperture)
                 {
@@ -92,39 +73,20 @@ public class DispensingToolpathGenerator
                         to = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() + aperture.getHeight() / 2 - (aperture.getWidth() / 2 - needleDiameter / 2));
                         width = aperture.getWidth();
                     }
-                    fillRectangle(toolpaths, from, to, width, needleDiameter);
+                    fillRectangleByAngle(toolpaths, from, to, width, needleDiameter);
                 }
                 else if (flash.getAperture() instanceof CircularAperture)
                 {
                     CircularAperture aperture = (CircularAperture) flash.getAperture();
                     int width = aperture.getRectWidth();
-
-                    int passes = width / (needleDiameter * 2);
-                    for (int i = 0; i < passes; i++)
-                    {
-                        LinearToolpath toolpath;
-                        int x = (int) (flash.getX() - width / 2 + (double) width / (passes + 1) * (i + 1));
-                        int y = flash.getY() - width / 2 + needleDiameter;
-                        toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, flash.getY() + (width / 2) - needleDiameter));
-                        toolpaths.add(toolpath);
-                    }
+                    fillRectangle(toolpaths, flash.getPoint(), width, width, needleDiameter);
                 }
                 else if(flash.getAperture() instanceof ApertureMacro)
                 {
                     ApertureMacro aperture = (ApertureMacro) flash.getAperture();
                     Rect rect =  aperture.getMinInsideRectangular();
                     rect.setCenter(rect.getCenter().add(flash.getPoint()));
-
-                    Point apertureCenter = rect.getCenter();
-                    int passes = rect.getWidth() / (needleDiameter * 2);
-                    for (int i = 0; i < passes; i++)
-                    {
-                        LinearToolpath toolpath;
-                        int x = (int) (apertureCenter.getX() - rect.getWidth() / 2 + (double) rect.getWidth() / (passes + 1) * (i + 1));
-                        int y = apertureCenter.getY() - rect.getHeight() / 2 + needleDiameter;
-                        toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, apertureCenter.getY() + (rect.getHeight() / 2) - needleDiameter));
-                        toolpaths.add(toolpath);
-                    }
+                    fillRectangle(toolpaths, rect.getCenter(), rect.getWidth(), rect.getHeight(), needleDiameter);
                 }
                 else
                     System.out.println("The given aperture is not supported at the moment: " + flash.getAperture());
@@ -160,7 +122,7 @@ public class DispensingToolpathGenerator
                     }
                 }
 
-                fillRectangle(toolpaths, longestSide.getFrom(), longestSide.getTo(), (int) largestWidth, needleDiameter);
+                fillRectangleByAngle(toolpaths, longestSide.getFrom(), longestSide.getTo(), (int) largestWidth, needleDiameter);
             }
             else if (element instanceof LinearShape)
             {
@@ -178,7 +140,7 @@ public class DispensingToolpathGenerator
                 angle += Math.PI / 2;
                 Point offset = new Point((int)(line.getAperture().getWidth() / 2 * Math.cos(angle)),
                         (int)(line.getAperture().getWidth() / 2 * Math.sin(angle)));
-                fillRectangle(toolpaths, l.getFrom().add(offset), l.getTo().add(offset), line.getAperture().getWidth(), needleDiameter);
+                fillRectangleByAngle(toolpaths, l.getFrom().add(offset), l.getTo().add(offset), line.getAperture().getWidth(), needleDiameter);
             }
             else
             {
@@ -188,7 +150,30 @@ public class DispensingToolpathGenerator
         return toolpaths;
     }
 
-    private void fillRectangle(List<Toolpath> toolpaths, Point from, Point to, int width, int needleDiameter)
+    private void fillRectangle(List<Toolpath> toolpaths, Point center, int width, int height, int needleDiameter)
+    {
+        boolean vertical = width < height;
+        int passes = Math.max(1, (vertical ? width : height) / (needleDiameter * 2));
+        for (int i = 0; i < passes; i++)
+        {
+            LinearToolpath toolpath;
+            if (vertical)
+            {
+                int x = (int)(center.getX() - width / 2 + (double)width / (passes + 1) * (i + 1));
+                int y = center.getY() - height / 2 + needleDiameter;
+                toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(x, center.getY() + (height / 2) - needleDiameter));
+            }
+            else
+            {
+                int x = center.getX() - width / 2 + needleDiameter;
+                int y = (int)(center.getY() - height / 2 + (double)height / (passes + 1) * (i + 1));
+                toolpath = new LinearToolpath(needleDiameter, new Point(x, y), new Point(center.getX() + (width / 2) - needleDiameter, y));
+            }
+            toolpaths.add(toolpath);
+        }
+    }
+
+    private void fillRectangleByAngle(List<Toolpath> toolpaths, Point from, Point to, int width, int needleDiameter)
     {
         // Shortening tool path for needle radius
         double angle = new Line(from, to).angleToX();
