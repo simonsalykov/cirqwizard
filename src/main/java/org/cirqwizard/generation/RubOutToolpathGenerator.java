@@ -35,6 +35,8 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
     private final static int WINDOWS_VERTICAL_OVERLAP = 500;
     private final static int OOM_RETRY_DELAY = 1000;
 
+    private int x;
+    private int y;
     private int width;
     private int height;
     private int toolDiameter;
@@ -43,9 +45,11 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
     private double scale = 1; // It has to go
     private BooleanProperty cancelledProperty;
 
-    public void init(int width, int height, int inflation, int toolDiameter, int overlap, List<GerberPrimitive> primitives, int threadCount,
-                     BooleanProperty cancelledProperty)
+    public void init(int x, int y, int width, int height, int inflation, int toolDiameter, int overlap, List<GerberPrimitive> primitives,
+                     int threadCount, BooleanProperty cancelledProperty)
     {
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
         this.inflation = inflation;
@@ -61,8 +65,8 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
         final Vector<Toolpath> segments = new Vector<>();
 
         ExecutorService pool = Executors.newFixedThreadPool(threadCount);
-        for (int x = 0; x < width; x += WINDOW_SIZE)
-            for (int y = 0; y < height; y += WINDOW_SIZE)
+        for (int x = this.x; x < this.x + width; x += WINDOW_SIZE)
+            for (int y = this.y; y < this.y + height; y += WINDOW_SIZE)
                 pool.submit(new WindowGeneratorThread(x > WINDOWS_HORIZONTAL_OVERLAP ? x - WINDOWS_HORIZONTAL_OVERLAP : x, y > WINDOWS_VERTICAL_OVERLAP ? y - WINDOWS_VERTICAL_OVERLAP : y, segments));
 
         try
@@ -102,8 +106,8 @@ public class RubOutToolpathGenerator extends AbstractToolpathGenerator
 
                 Point offset = new Point(x, y);
 
-                int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_HORIZONTAL_OVERLAP, width - x);
-                int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_VERTICAL_OVERLAP, height - y);
+                int windowWidth = Math.min(WINDOW_SIZE + 2 * WINDOWS_HORIZONTAL_OVERLAP, width);
+                int windowHeight = Math.min(WINDOW_SIZE + 2 * WINDOWS_VERTICAL_OVERLAP, height);
                 RasterWindow window = new RasterWindow(new Point(x, y), windowWidth, windowHeight, scale);
                 window.render(primitives, inflation + toolDiameter / 2);
 

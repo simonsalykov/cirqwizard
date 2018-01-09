@@ -43,7 +43,6 @@ public class RuboutToolpathGenerationService extends GenerationService
         RubOutSettings settings = SettingsFactory.getRubOutSettings();
         int diameter = settings.getToolDiameter().getValue();
         List<GerberPrimitive> elements = (List<GerberPrimitive>) getContext().getPanel().getCombinedElements(getLayer());
-        elements.addAll(createPinKeepout());
 
         List<Toolpath> toolpaths = new ArrayList<>();
         for (int pass = 0; pass < 2; pass++)
@@ -65,21 +64,27 @@ public class RuboutToolpathGenerationService extends GenerationService
         if (cancelledProperty().get())
             return null;
 
-        final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
-        generator.init(getContext().getPanel().getSize().getWidth() + 1, getContext().getPanel().getSize().getHeight() + 1,
-                settings.getInitialOffset().getValue(),
-                diameter, settings.getOverlap().getValue(), elements,
-                SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), cancelledProperty());
-        progressProperty().unbind();
-        progressProperty().bind(generator.progressProperty());
+        elements.addAll(createPinKeepout());
+        getContext().getPanel().getBoards().forEach(board ->
+        {
+            final RubOutToolpathGenerator generator = new RubOutToolpathGenerator();
+            progressProperty().unbind();
+            progressProperty().bind(generator.progressProperty());
+            generator.init(board.getX(), board.getY(), board.getBoard().getWidth() + 1, board.getBoard().getHeight() + 1,
+                    settings.getInitialOffset().getValue(),
+                    diameter, settings.getOverlap().getValue(), elements,
+                    SettingsFactory.getApplicationSettings().getProcessingThreads().getValue(), cancelledProperty());
 
-        List<Toolpath> t = generator.generate();
+            List<Toolpath> t = generator.generate();
+            if (cancelledProperty().get())
+                return;
+            final int mergeTolerance = diameter / 10;
+            if (t != null && t.size() > 0)
+                toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
+        });
+
         if (cancelledProperty().get())
             return null;
-        final int mergeTolerance = diameter / 10;
-        if (t != null && t.size() > 0)
-            toolpaths.addAll(new ToolpathMerger(t, mergeTolerance).merge());
-
         return new ChainDetector(toolpaths).detect();
     }
 
