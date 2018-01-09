@@ -16,6 +16,8 @@ public class SerialBuffer
 
     public void addBytes(byte[] b)
     {
+        if (b == null)
+            return;
         if (bufferPointer + b.length < MAX_PACKET_SIZE)
         {
             System.arraycopy(b, 0, buffer, bufferPointer, b.length);

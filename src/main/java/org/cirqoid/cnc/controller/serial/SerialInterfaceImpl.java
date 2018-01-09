@@ -92,6 +92,8 @@ public class SerialInterfaceImpl extends SerialInterface
             port.setEventsMask(SerialPort.MASK_RXCHAR);
             port.addEventListener(serialPortEvent ->
             {
+                if (!serialPortEvent.isRXCHAR())
+                    return;
                 try
                 {
                     buffer.addBytes(port.readBytes());
@@ -99,7 +101,7 @@ public class SerialInterfaceImpl extends SerialInterface
                     while ((p = buffer.parseBuffer()) != null)
                         processParsedPacket(p);
                 }
-                catch (SerialPortException e)
+                catch (Exception e)
                 {
                     LoggerFactory.logException("Exception caught while receiving data", e);
                     e.printStackTrace();
