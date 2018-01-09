@@ -85,7 +85,7 @@ public class CirqoidInitializer
         x.inverted = true;
         x.homingDirection = true;
         x.homingRate = 300_000;
-        x.seekAcceleration = 100.0f;
+        x.seekAcceleration = 75.0f;
         packet.setAxis(0, x);
 
         SetParametersCommand.Axis y = new SetParametersCommand.Axis();
@@ -97,7 +97,7 @@ public class CirqoidInitializer
         y.inverted = true;
         y.homingDirection = true;
         y.homingRate = 300_000;
-        y.seekAcceleration = 40.0f;
+        y.seekAcceleration = 30.0f;
         packet.setAxis(1, y);
 
         SetParametersCommand.Axis z = new SetParametersCommand.Axis();
