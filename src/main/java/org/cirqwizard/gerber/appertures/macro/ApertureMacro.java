@@ -14,6 +14,7 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.gerber.appertures.macro;
 
 import org.cirqwizard.geom.Point;
+import org.cirqwizard.geom.Polygon;
 import org.cirqwizard.geom.Rect;
 import org.cirqwizard.gerber.appertures.Aperture;
 
@@ -72,9 +73,18 @@ public class ApertureMacro extends Aperture
         return 2000;
     }
 
-    public Rect getMinInsideRectangular()
+    public Polygon getMinInsideRectangular()
     {
+        if (primitives.size() == 1 && primitives.get(0) instanceof MacroOutline)
+        {
+            MacroOutline macroOutline = (MacroOutline) primitives.get(0);
+            return new Polygon(macroOutline.getPoints());
+        }
+
         List<Rect> rects = findMinRectsInPrimitives();
+
+        if (rects.size() == 0)
+            return null;
 
         // find the rect with the biggest square
         Rect biggestRect = rects.stream().max((r1, r2) ->
@@ -131,7 +141,13 @@ public class ApertureMacro extends Aperture
             }
         }
 
-        return biggestRect;
+
+        Polygon polygon = new Polygon();
+        polygon.addVertice(new Point(biggestRect.getLeftX(), biggestRect.getTopY()));
+        polygon.addVertice(new Point(biggestRect.getRightX(), biggestRect.getTopY()));
+        polygon.addVertice(new Point(biggestRect.getRightX(), biggestRect.getBottomY()));
+        polygon.addVertice(new Point(biggestRect.getLeftX(), biggestRect.getBottomY()));
+        return polygon;
     }
 
     private List<Rect> findMinRectsInPrimitives()

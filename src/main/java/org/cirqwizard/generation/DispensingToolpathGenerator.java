@@ -17,7 +17,7 @@ import org.cirqwizard.generation.toolpath.LinearToolpath;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
-import org.cirqwizard.geom.Rect;
+import org.cirqwizard.geom.Polygon;
 import org.cirqwizard.gerber.Flash;
 import org.cirqwizard.gerber.GerberPrimitive;
 import org.cirqwizard.gerber.LinearShape;
@@ -84,9 +84,38 @@ public class DispensingToolpathGenerator
                 else if(flash.getAperture() instanceof ApertureMacro)
                 {
                     ApertureMacro aperture = (ApertureMacro) flash.getAperture();
-                    Rect rect =  aperture.getMinInsideRectangular();
-                    rect.setCenter(rect.getCenter().add(flash.getPoint()));
-                    fillRectangle(toolpaths, rect.getCenter(), rect.getWidth(), rect.getHeight(), needleDiameter);
+                    Polygon polygon =  aperture.getMinInsideRectangular();
+
+                    if (polygon != null)
+                    {
+                        polygon = polygon.transform(flash.getPoint());
+                        Line longestEdge = polygon.getLongestEdge();
+
+                        // need to move the needle by the angle, calculate offsets
+                        double angle = longestEdge.angleToX();
+                        double cos = Math.cos(angle);
+                        double sin = Math.sin(angle);
+                        Point needleOffset = new Point((int)(sin * needleDiameter / 2), (int)(cos * needleDiameter / -2));
+                        Point offsetVector = new Point((int)(sin * needleDiameter * 1.5), (int)(cos * needleDiameter * -1.5));
+
+                        Line pasteLine = new Line(longestEdge.getFrom().add(needleOffset), longestEdge.getTo().add(needleOffset));
+                        while (polygon.lineBelongsToPolygon(pasteLine))
+                        {
+                            Line adjustedLine = adjustLineSizeForOutline(polygon, pasteLine, needleDiameter, needleOffset);
+                            if (adjustedLine != null)
+                            {
+                                LinearToolpath toolpath = new LinearToolpath(needleDiameter, adjustedLine.getFrom(), adjustedLine.getTo());
+                                toolpaths.add(toolpath);
+                            }
+
+                            pasteLine.setFrom(pasteLine.getFrom().add(offsetVector));
+                            pasteLine.setTo(pasteLine.getTo().add(offsetVector));
+                        }
+                    }
+                    else
+                    {
+                        System.out.println("Rect area wasn't build for macro aperture, ignoring it.");
+                    }
                 }
                 else
                     System.out.println("The given aperture is not supported at the moment: " + flash.getAperture());
@@ -148,6 +177,51 @@ public class DispensingToolpathGenerator
             }
         }
         return toolpaths;
+    }
+
+    private Line adjustLineSizeForOutline(Polygon polygon, Line line, int needleDiameter, Point needleOffset)
+    {
+        Point firstPoint = line.getFrom();
+        Point secondPoint = line.getTo();
+        int precision = 100; // reduce by 1%
+
+        int stepX = (secondPoint.getX() - firstPoint.getX()) / precision;
+        int stepY = (secondPoint.getY() - firstPoint.getY()) / precision;
+        Point stepPoint = new Point(stepX, stepY);
+
+        int iterations = 0;
+        while((!polygon.pointBelongsToPolygon(firstPoint) ||
+              !polygon.pointBelongsToPolygon(firstPoint.add(needleOffset)) ||
+              !polygon.pointBelongsToPolygon(firstPoint.subtract(needleOffset))) &&
+              iterations < precision)
+        {
+            firstPoint = firstPoint.add(stepPoint);
+            ++iterations;
+        }
+
+        if (iterations >= precision)
+            return null;
+
+        iterations = 0;
+
+        while((!polygon.pointBelongsToPolygon(secondPoint) ||
+              !polygon.pointBelongsToPolygon(secondPoint.add(needleOffset)) ||
+              !polygon.pointBelongsToPolygon(secondPoint.subtract(needleOffset))) &&
+              iterations < precision)
+        {
+            secondPoint = secondPoint.subtract(stepPoint);
+            ++iterations;
+        }
+
+        if (iterations >= precision)
+            return null;
+
+        // here substract needle
+        Line result = new Line(firstPoint, secondPoint);
+        if (result.length() < needleDiameter * 2)
+            return result;
+
+        return result.offsetFrom(needleDiameter).offsetTo(needleDiameter);
     }
 
     private void fillRectangle(List<Toolpath> toolpaths, Point center, int width, int height, int needleDiameter)

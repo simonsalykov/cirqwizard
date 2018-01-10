@@ -22,7 +22,6 @@ public class Line extends Curve
     {
         this.from = from;
         this.to = to;
-
     }
 
     public Line reverse()
@@ -40,6 +39,33 @@ public class Line extends Curve
                 angleToX = -Math.PI;
         }
         return angleToX;
+    }
+
+    public Line offset(Point point)
+    {
+        return new Line(from.add(point), to.add(point));
+    }
+
+    public Line offsetFrom(int offset)
+    {
+        return new Line(offset(from, to, offset), to);
+    }
+
+    public Line offsetTo(int offset)
+    {
+        return new Line(from, offset(to, from, offset));
+    }
+
+    private Point offset(Point start, Point end, int offset)
+    {
+        double length = length();
+        if (offset >= length)
+            throw new IllegalArgumentException("Offset in line cannot be more or equal current distance");
+
+        double t = offset / length;
+        int toX = (int)((1 - t) * start.getX() + t * end.getX());
+        int toY = (int)((1 - t) * start.getY() + t * end.getY());
+        return new Point(toX, toY);
     }
 
     public double length()
