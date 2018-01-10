@@ -163,119 +163,23 @@
         <lastmod>2017-09-18T21:38:58+02:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//blog/archives/</loc>
-        <lastmod>2017-09-18T21:38:58+02:00</lastmod>
+        <loc>http://cirqwizard.org//blog/2018/01/10/version-1-dot-7-10/</loc>
+        <lastmod>2018-01-10T13:36:47+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//blog/</loc>
-        <lastmod>2017-09-18T21:38:58+02:00</lastmod>
+        <loc>http://cirqwizard.org//blog/2018/01/10/version-2-dot-0-0-rc3/</loc>
+        <lastmod>2018-01-10T13:38:24+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//docs/firmware.html</loc>
+        <loc>http://cirqwizard.org//</loc>
+        <lastmod>2018-01-10T13:38:24+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//features/milling.html</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//docs/first_start.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/gerber.html</loc>
-        <lastmod>2016-03-09T11:11:50+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/intro.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/operations/contour_milling.html</loc>
-        <lastmod>2016-03-09T17:42:17+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/operations/dispensing.html</loc>
-        <lastmod>2016-03-09T18:00:27+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/operations/drilling.html</loc>
-        <lastmod>2016-03-09T17:58:07+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/operations/milling.html</loc>
-        <lastmod>2016-03-09T17:57:05+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/operations/placement.html</loc>
-        <lastmod>2016-03-09T18:06:57+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/operations/rubout.html</loc>
-        <lastmod>2016-03-09T17:38:10+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/panel/panel-creating.html</loc>
-        <lastmod>2016-03-09T16:38:04+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/panel/panel-overview.html</loc>
-        <lastmod>2016-03-09T17:54:39+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/preparation/homing.html</loc>
-        <lastmod>2016-03-09T11:11:38+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/application.html</loc>
-        <lastmod>2015-10-28T23:10:40+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/contour_milling.html</loc>
-        <lastmod>2016-03-09T18:10:38+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/dispensing.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/drilling.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/import.html</loc>
-        <lastmod>2015-10-28T23:22:46+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/insulation_milling.html</loc>
-        <lastmod>2015-10-07T17:32:41+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/machine.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/placement.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/predefined_locations.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/settings/rubout.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//docs/ui_conventions.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//downloads/</loc>
-        <lastmod>2017-09-18T21:31:52+02:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//features/contour_milling.html</loc>
-        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//features/dispensing.html</loc>
+        <loc>http://cirqwizard.org//features/pp.html</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
     </url>
     <url>
@@ -287,20 +191,120 @@
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//features/milling.html</loc>
+        <loc>http://cirqwizard.org//features/contour_milling.html</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
     </url>
     <url>
-        <loc>http://cirqwizard.org//features/pp.html</loc>
+        <loc>http://cirqwizard.org//features/dispensing.html</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/placement.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/machine.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/import.html</loc>
+        <lastmod>2015-10-28T23:22:46+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/insulation_milling.html</loc>
+        <lastmod>2015-10-07T17:32:41+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/drilling.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/application.html</loc>
+        <lastmod>2015-10-28T23:10:40+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/contour_milling.html</loc>
+        <lastmod>2016-03-09T18:10:38+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/predefined_locations.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/rubout.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/settings/dispensing.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/ui_conventions.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/panel/panel-creating.html</loc>
+        <lastmod>2016-03-09T16:38:04+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/panel/panel-overview.html</loc>
+        <lastmod>2016-03-09T17:54:39+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/firmware.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/gerber.html</loc>
+        <lastmod>2016-03-09T11:11:50+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/operations/milling.html</loc>
+        <lastmod>2016-03-09T17:57:05+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/operations/placement.html</loc>
+        <lastmod>2016-03-09T18:06:57+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/operations/drilling.html</loc>
+        <lastmod>2016-03-09T17:58:07+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/operations/contour_milling.html</loc>
+        <lastmod>2016-03-09T17:42:17+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/operations/rubout.html</loc>
+        <lastmod>2016-03-09T17:38:10+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/operations/dispensing.html</loc>
+        <lastmod>2016-03-09T18:00:27+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/intro.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/first_start.html</loc>
+        <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//docs/preparation/homing.html</loc>
+        <lastmod>2016-03-09T11:11:38+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//blog/</loc>
+        <lastmod>2018-01-10T13:38:24+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//blog/archives/</loc>
+        <lastmod>2018-01-10T13:38:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//forum/</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://cirqwizard.org//</loc>
-        <lastmod>2017-09-18T21:38:58+02:00</lastmod>
     </url>
     <url>
         <loc>http://cirqwizard.org//</loc>
@@ -309,5 +313,9 @@
     <url>
         <loc>http://cirqwizard.org//robots.txt</loc>
         <lastmod>2014-10-28T13:05:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://cirqwizard.org//downloads/</loc>
+        <lastmod>2018-01-10T13:34:31+01:00</lastmod>
     </url>
 </urlset>

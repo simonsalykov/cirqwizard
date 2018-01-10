@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Version 1.5.11 - cirQWizard</title>
+  <title>cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//blog/2015/10/07/version-1-dot-5-11">
+  <link rel="canonical" href="http://cirqwizard.org//blog/page/5">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -102,13 +102,15 @@
 </nav>
   <div class="container">
     <div class="row-fluid">
-      
-<article class="hentry span9" role="article">
-
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header class="page-header">
     
-      <h1 class="entry-title">Version 1.5.11</h1>
+      <h1 class="entry-title"><a href="/blog/2014/03/25/issue-tracking-system-up-and-running/">Issue Tracking System Up and Running</a></h1>
     
     
       <p class="meta">
@@ -124,62 +126,70 @@
   
 
 
-<time datetime="2015-10-07T17:49:00+02:00" pubdate data-updated="true">Oct 7<span>th</span>, 2015</time>
+<time datetime="2014-03-25T00:13:00+01:00" pubdate data-updated="true">Mar 25<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>After a long summer break, we are back at developing cirQWizard. This version introduces a new feature &#8211; tool library and fixes a number of bugs.</p>
-<p>Tool library lets you have a list of tool you commonly use with milling parameters specific for that particular tool. It&#8217;s a real time saver changing between different milling bits.</p>
-<p>Here are complete <a href="https://cirqwizard.atlassian.net/projects/CQ/versions/12700">release notes</a></p></div>
-
-
-  <footer>
-    <p class="meta">
-      
+  <div class="entry-content"><p>As a next step in our effort to make cirQWizard even more open and transparent we&#8217;ve migrated to publicly available issue tracking system.</p>
+<p>The system can be accessed at <a href="https://cirqwizard.atlassian.net/">https://cirqwizard.atlassian.net/</a> There you can find detailed information about issues addressed in each release, issues scheduled for the next releases, new features we are thinking about and all those annoying bugs no one has time to fix ;)</p>
+<p>What&#8217;s even better, after simple registration procedure everyone can contribute to the project &#8211; you can comment on issues, vote for them so that we know which issues are important to you, create new issues reporting bugs you&#8217;ve encountered or suggesting new great features!</p>
+<p>Help us make cirQWizard even more awesome!</p></div>
+  
   
 
 
-
-
+    </article>
+  
+  
+    <article>
       
-
-
-    </p>
+  <header class="page-header">
     
-      <div class="sharing">
+      <h1 class="entry-title"><a href="/blog/2014/03/24/blog-goes-live-and-version-1-dot-2-2/">Blog Goes Live &amp; Version 1.2.2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-24T14:18:00+01:00" pubdate data-updated="true">Mar 24<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As the community of cirQWizard users grows, we feel it&#8217;s the right time to add another communication channel to keep everyone up to date on what we have done and what we are up to. So, from now on here we will be blogging about things happening to cirQWizard &#8211; new releases, known problems and workarounds, useful hints and whatever comes to our mind and we feel is appropriate to share.</p>
+<p>Needless to say, your comments are much appreciated! Feel free to share your thoughts in comments section below every article.</p>
+<p>So, today the news is that the version 1.2.2 is out. That&#8217;s a bug-fix release. The most important bug fixed there was the one that was causing missing segments of the tool paths during generation. This was caused by insufficient memory available to cirQWizard to utilize all of the available <span class="caps">CPU</span> cores. Now the application attempts to reprocess failed part of the board. You would see progress indicator jumping chaotically, as this happening. If this happens to you, you would know cirQWizard is running low on memory. Then it doesn&#8217;t make sense to run that many processing threads. To make more efficient use of your resources you can go to <strong>Settings&#8594;Application</strong> and decrease <strong>Processing threads</strong> value. With a bit of trial and error you can find a value, that would work well for you.</p>
+<p>We&#8217;re setting up a public access to the issue tracking system we use to develop cirQWizard. This would give everyone interested in depth information about what exactly was included in the released versions, as well as what we are working on at the moment and what we are thinking about. Stay tuned!</p></div>
   
   
+
+
+    </article>
   
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/blog/page/4/">Newer &rarr;</a>
+    
+  </div>
 </div>
-
-    
-    
-    <section>
-      <h1>Comments</h1>
-      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-    </section>
-    
-    <ul class="pager">
-      
-      <li class="previous"><a class="basic-alignment left"
-        href="/blog/2015/04/23/version-1-dot-5-10/" title="Previous Post:
-        Version 1.5.10">&laquo; Version 1.5.10</a></li>
-      
-      <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2015/10/28/version-1-dot-5-12/"
-        title="Next Post: Version 1.5.12">Version 1.5.12
-        &raquo;</a></li>
-      
-    </ul>
-  </footer>
-</article>
-
-<aside class="sidebar-nav span3">
+<aside class="sidebar">
   
     <section class="well">
   <ul id="recent_posts" class="nav nav-list">
@@ -215,7 +225,6 @@
   
 </aside>
 
-
     </div>
   </div>
   <footer role="contentinfo" class="page-footer"><hr>
@@ -231,10 +240,7 @@
       var disqus_shortname = 'cirqwizard';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://cirqwizard.org//blog/2015/10/07/version-1-dot-5-11/';
-        var disqus_url = 'http://cirqwizard.org//blog/2015/10/07/version-1-dot-5-11/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
