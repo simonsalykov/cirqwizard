@@ -41,7 +41,7 @@ public class Polygon implements Serializable
         int longestLineIndex = 0;
         double longestDistance = vertices.get(longestLineIndex).distanceTo(vertices.get(longestLineIndex + 1));
 
-        for (int i = 1; i < vertices.size() - 1; ++i)
+        for (int i = 0; i < vertices.size() - 1; ++i)
         {
             double distance = vertices.get(i).distanceTo(vertices.get((i + 1)));
             if (distance > longestDistance)
@@ -61,26 +61,14 @@ public class Polygon implements Serializable
 
         // +1 is a temporary solution, as we don't count collinear intersections as intersections
         // +1 helps to fix shapes when they have a vertex in the middle
-        Point midPoint = new Point((from.getX() + to.getX()) / 2, (to.getY() + from.getY()) / 2 + 1);
-        return pointBelongsToPolygon(midPoint);
-    }
-
-    public boolean lineBelongsToPolygon(Line line, Point offset)
-    {
-        // 1 Check left
-        Point leftFrom = line.getFrom().add(offset);
-        Point leftTo = line.getTo().add(offset);
-
-        // +1 is a temporary solution, as we don't count collinear intersections as intersections
-        // +1 helps to fix shapes when they have a vertex in the middle
-        Point midPoint = new Point((leftFrom.getX() + leftTo.getX()) / 2, (leftTo.getY() + leftFrom.getY()) / 2 + 1);
-        return pointBelongsToPolygon(midPoint);
+        Point midPoint = new Point((from.getX() + to.getX()) / 2, (to.getY() + from.getY()) / 2);
+        return pointBelongsToPolygon(midPoint) || pointBelongsToPolygon(from) || pointBelongsToPolygon(to);
     }
 
     // https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
     public boolean pointBelongsToPolygon(Point point)
     {
-        int biggestX = vertices.stream().max(Comparator.comparingInt(Point::getX)).get().getX() + 50;
+        int biggestX = vertices.stream().max(Comparator.comparingInt(Point::getX)).get().getX() + 1;
         Point infPoint = new Point(biggestX, point.getY());
 
         int count = 0, i = 0;
@@ -90,6 +78,13 @@ public class Polygon implements Serializable
 
             if (MathUtil.segmentsIntersect(vertices.get(i), vertices.get(next), point, infPoint))
             {
+                if (MathUtil.getOrientation(vertices.get(i), vertices.get(next), point) == 0)
+                    return MathUtil.pointOnLine(vertices.get(i), vertices.get(next), point);
+
+                // if the line crosses the vertice, we don't count it twice
+                if (vertices.get(i).getY() == point.getY())
+                    count -= 1;
+
                 count += 1;
             }
             i = next;

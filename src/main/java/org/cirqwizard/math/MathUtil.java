@@ -34,12 +34,14 @@ public class MathUtil
     // Returns -1 if 'c' is clockwise to segment (a, b), i.e right of line formed by the segment.
     // Returns +1 if 'c' is counter clockwise to segment (a, b), i.e left of line
     // formed by the segment.
-    private static int getOrientation(Point a, Point b, Point c)
+    public static int getOrientation(Point a, Point b, Point c)
     {
-        double value = (b.getY() - a.getY()) * (c.getX() - b.getX()) -
-                (b.getX() - a.getX()) * (c.getY() - b.getY());
-        if (Math.abs(value) < (EPS)) return 0;
-        return (value > 0) ? -1 : +1;
+        int first = (b.getY() - a.getY()) * (c.getX() - b.getX());
+        int second = (b.getX() - a.getX()) * (c.getY() - b.getY());
+
+        int val = first - second;
+        if (val == 0) return 0;
+        return (val > 0) ? -1 : +1;
     }
 
     public static boolean pointOnLine(Point a, Point b, Point c)
@@ -65,10 +67,10 @@ public class MathUtil
         if (o1 != o2 && o3 != o4) return true;
 
         // Collinear special cases
-        if (o1 == 0 && pointOnLine(p1, p2, p3)) return false;
-        if (o2 == 0 && pointOnLine(p1, p2, p4)) return false;
-        if (o3 == 0 && pointOnLine(p3, p4, p1)) return false;
-        if (o4 == 0 && pointOnLine(p3, p4, p2)) return false;
+        if (o1 == 0 && pointOnLine(p1, p2, p3)) return true;
+        if (o2 == 0 && pointOnLine(p1, p2, p4)) return true;
+        if (o3 == 0 && pointOnLine(p3, p4, p1)) return true;
+        if (o4 == 0 && pointOnLine(p3, p4, p2)) return true;
 
         return false;
     }

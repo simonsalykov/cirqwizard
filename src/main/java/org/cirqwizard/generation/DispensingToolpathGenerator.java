@@ -93,23 +93,49 @@ public class DispensingToolpathGenerator
 
                         // need to move the needle by the angle, calculate offsets
                         double angle = longestEdge.angleToX();
+                        angle = MathUtil.bindAngle(angle - Math.PI / 2);
                         double cos = Math.cos(angle);
                         double sin = Math.sin(angle);
-                        Point needleOffset = new Point((int)(sin * needleDiameter / 2), (int)(cos * needleDiameter / -2));
-                        Point offsetVector = new Point((int)(sin * needleDiameter * 1.5), (int)(cos * needleDiameter * -1.5));
 
-                        Line pasteLine = new Line(longestEdge.getFrom().add(needleOffset), longestEdge.getTo().add(needleOffset));
-                        while (polygon.lineBelongsToPolygon(pasteLine))
+                        Point needleOffset = new Point((int) (cos * needleDiameter / 2), (int) (sin * needleDiameter / 2));
+
+                        // going through the polygon and measure it's size
+                        Point estimateOffset = new Point((int) (cos * 50), (int) (sin * 50));
+                        Line estLine = longestEdge.clone();
+                        int width = 0;
+
+                        while (polygon.lineBelongsToPolygon(estLine))
                         {
-                            Line adjustedLine = adjustLineSizeForOutline(polygon, pasteLine, needleDiameter, needleOffset);
-                            if (adjustedLine != null)
+                            width = (int) new Line(longestEdge.getFrom(), estLine.getFrom()).length();
+
+                            estLine.setFrom(estLine.getFrom().add(estimateOffset));
+                            estLine.setTo(estLine.getTo().add(estimateOffset));
+                        }
+
+                        int passes = Math.max(1, Math.abs(width) / (needleDiameter + needleDiameter / 2));
+                        for (int i = 0; i < passes; i++)
+                        {
+                            // Offsetting
+                            int offset = width / (passes + 1) * (i + 1);
+                            Point offsetVector2 = new Point((int)(cos * offset), (int)(sin * offset));
+                            Line offsetLine = new Line(longestEdge.getFrom().add(offsetVector2), longestEdge.getTo().add(offsetVector2));
+
+                            if (passes > 1)
                             {
-                                LinearToolpath toolpath = new LinearToolpath(needleDiameter, adjustedLine.getFrom(), adjustedLine.getTo());
-                                toolpaths.add(toolpath);
+                                offsetLine = adjustLineSizeForOutline(polygon, offsetLine, needleDiameter, needleOffset);
+                            }
+                            else
+                            {
+                                // if the pass only one we need to fill it anyway
+                                if (offsetLine.length() >= needleDiameter)
+                                    offsetLine = offsetLine.offsetFrom(needleDiameter / 2).offsetTo(needleDiameter / 2);
                             }
 
-                            pasteLine.setFrom(pasteLine.getFrom().add(offsetVector));
-                            pasteLine.setTo(pasteLine.getTo().add(offsetVector));
+                            if (offsetLine != null)
+                            {
+                                LinearToolpath toolpath = new LinearToolpath(needleDiameter, offsetLine.getFrom(), offsetLine.getTo());
+                                toolpaths.add(toolpath);
+                            }
                         }
                     }
                     else

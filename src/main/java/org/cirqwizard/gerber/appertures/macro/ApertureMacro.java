@@ -78,7 +78,7 @@ public class ApertureMacro extends Aperture
         if (primitives.size() == 1 && primitives.get(0) instanceof MacroOutline)
         {
             MacroOutline macroOutline = (MacroOutline) primitives.get(0);
-            return new Polygon(macroOutline.getPoints());
+            return new Polygon(macroOutline.getTranslatedPoints());
         }
 
         List<Rect> rects = findMinRectsInPrimitives();
@@ -141,7 +141,6 @@ public class ApertureMacro extends Aperture
             }
         }
 
-
         Polygon polygon = new Polygon();
         polygon.addVertice(new Point(biggestRect.getLeftX(), biggestRect.getTopY()));
         polygon.addVertice(new Point(biggestRect.getRightX(), biggestRect.getTopY()));
@@ -159,9 +158,15 @@ public class ApertureMacro extends Aperture
             if (macroPrimitive instanceof MacroCenterLine)
             {
                 MacroCenterLine macroCenterLine = (MacroCenterLine) macroPrimitive;
-                rects.add(new Rect(macroCenterLine.getCenter(),
-                        macroCenterLine.getWidth(),
-                        macroCenterLine.getHeight()));
+                int width = macroCenterLine.getRotationAngle() == 90 ||  macroCenterLine.getRotationAngle() == 270 ?
+                         macroCenterLine.getHeight() : macroCenterLine.getWidth();
+
+                int height = macroCenterLine.getRotationAngle() == 90 ||  macroCenterLine.getRotationAngle() == 270 ?
+                        macroCenterLine.getWidth() : macroCenterLine.getHeight();
+
+                rects.add(new Rect(macroCenterLine.translate(macroCenterLine.getCenter()),
+                    width,
+                    height));
             }
             else if (macroPrimitive instanceof MacroCircle)
             {

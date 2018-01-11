@@ -14,7 +14,7 @@ This program is free software: you can redistribute it and/or modify
 
 package org.cirqwizard.geom;
 
-public class Line extends Curve
+public class Line extends Curve implements Cloneable
 {
     private Double angleToX = null;
 
@@ -81,5 +81,11 @@ public class Line extends Curve
                 ", to=" + getTo() +
                 ", ang=" + angleToX() +
                 '}';
+    }
+
+    @Override
+    public Line clone()
+    {
+        return new Line(new Point(from.getX(), from.getY()), new Point(to.getX(), to.getY()));
     }
 }
