@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class VectorToolPathGenerator extends AbstractToolpathGenerator
 {
-    private static final PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.FIXED);
+    private static final PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.FLOATING);
     public static final GeometryFactory factory = new GeometryFactory(precisionModel);
 
     private int toolDiameter;

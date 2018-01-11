@@ -144,10 +144,12 @@ public class AbstractToolpathGenerator
         GerberPrimitive.Polarity currentPolarity = primitives.get(0).getPolarity();
         List<Geometry> currentGeometryCollection = new ArrayList<>();
         Geometry resultingGeometry = null;
+        int i = 0;
         for (GerberPrimitive p : primitives)
         {
-            if (p.getPolarity() != currentPolarity)
+            if (p.getPolarity() != currentPolarity || i++ == 500)
             {
+                i = 0;
                 resultingGeometry = processGeometries(currentPolarity, resultingGeometry, currentGeometryCollection);
                 currentGeometryCollection = new ArrayList<>();
                 currentPolarity = p.getPolarity();
