@@ -127,7 +127,14 @@ public class CNCController
             for (Command c : commands)
                 send(c);
         }
-        catch (SerialException | ParsingException e)
+        catch (ParsingException e)
+        {
+            LoggerFactory.logException("Command parsing failed: " + str, e);
+            ExceptionAlert alert = new ExceptionAlert("Command error", "Command parsing failed with the following error: " + e.getMessage(),
+                    "Failed command: "  + str, e);
+            alert.showAndWait();
+        }
+        catch (SerialException e)
         {
             LoggerFactory.logException("Communication with controller failed: ", e);
             ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
