@@ -59,15 +59,38 @@ public class Polygon implements Serializable
         Point from = line.getFrom();
         Point to = line.getTo();
 
-        // +1 is a temporary solution, as we don't count collinear intersections as intersections
-        // +1 helps to fix shapes when they have a vertex in the middle
         Point midPoint = new Point((from.getX() + to.getX()) / 2, (to.getY() + from.getY()) / 2);
         return pointBelongsToPolygon(midPoint) || pointBelongsToPolygon(from) || pointBelongsToPolygon(to);
     }
 
+    private boolean pointBetweenVertices(Point point)
+    {
+        // improve performance
+        if (!vertices.stream().anyMatch(p -> p.getX() <= point.getX()))
+            return false;
+
+        if (!vertices.stream().anyMatch(p -> p.getX() >= point.getX()))
+            return false;
+
+        // improve performance
+        if (!vertices.stream().anyMatch(p -> p.getY() <= point.getY()))
+            return false;
+
+        if (!vertices.stream().anyMatch(p -> p.getY() >= point.getY()))
+            return false;
+
+        return true;
+    }
     // https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
+    // This algorith is not precise, it works only when points are located between the vertices.
+    // improve it by checking the point before passing to this algorithm
     public boolean pointBelongsToPolygon(Point point)
     {
+        if (!pointBetweenVertices(point))
+        {
+            return false;
+        }
+
         int biggestX = vertices.stream().max(Comparator.comparingInt(Point::getX)).get().getX() + 1;
         Point infPoint = new Point(biggestX, point.getY());
 

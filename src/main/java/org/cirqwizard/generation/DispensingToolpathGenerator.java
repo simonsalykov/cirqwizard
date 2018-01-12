@@ -63,14 +63,14 @@ public class DispensingToolpathGenerator
                     int width;
                     if (aperture.isHorizontal())
                     {
-                        from = new Point(flash.getX() - aperture.getWidth() / 2 + (aperture.getHeight() / 2 - needleDiameter / 2), flash.getY() + aperture.getHeight() / 2);
-                        to = new Point(flash.getX() + aperture.getWidth() / 2 - (aperture.getHeight() / 2 - needleDiameter / 2), flash.getY() + aperture.getHeight() / 2);
+                        from = new Point(flash.getX() - aperture.getWidth() / 2 + (aperture.getHeight() / 2 - needleDiameter), flash.getY() + aperture.getHeight() / 2);
+                        to = new Point(flash.getX() + aperture.getWidth() / 2 - (aperture.getHeight() / 2 - needleDiameter), flash.getY() + aperture.getHeight() / 2);
                         width = aperture.getHeight();
                     }
                     else
                     {
-                        from = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() - aperture.getHeight() / 2 + (aperture.getWidth() / 2 - needleDiameter / 2));
-                        to = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() + aperture.getHeight() / 2 - (aperture.getWidth() / 2 - needleDiameter / 2));
+                        from = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() - aperture.getHeight() / 2 + (aperture.getWidth() / 2 - needleDiameter));
+                        to = new Point(flash.getX() - aperture.getWidth() / 2, flash.getY() + aperture.getHeight() / 2 - (aperture.getWidth() / 2 - needleDiameter));
                         width = aperture.getWidth();
                     }
                     fillRectangleByAngle(toolpaths, from, to, width, needleDiameter);
@@ -97,7 +97,7 @@ public class DispensingToolpathGenerator
                         double cos = Math.cos(angle);
                         double sin = Math.sin(angle);
 
-                        Point needleOffset = new Point((int) (cos * needleDiameter / 2), (int) (sin * needleDiameter / 2));
+                        Point needleOffset = new Point((int) (cos * needleDiameter), (int) (sin * needleDiameter));
 
                         // going through the polygon and measure it's size
                         Point estimateOffset = new Point((int) (cos * 50), (int) (sin * 50));
@@ -106,13 +106,13 @@ public class DispensingToolpathGenerator
 
                         while (polygon.lineBelongsToPolygon(estLine))
                         {
-                            width = (int) new Line(longestEdge.getFrom(), estLine.getFrom()).length();
+                            width = (int) longestEdge.getFrom().distanceTo(estLine.getFrom());
 
                             estLine.setFrom(estLine.getFrom().add(estimateOffset));
                             estLine.setTo(estLine.getTo().add(estimateOffset));
                         }
 
-                        int passes = Math.max(1, Math.abs(width) / (needleDiameter + needleDiameter / 2));
+                        int passes = Math.max(1, Math.abs(width) / (2 * needleDiameter));
                         for (int i = 0; i < passes; i++)
                         {
                             // Offsetting
@@ -127,8 +127,8 @@ public class DispensingToolpathGenerator
                             else
                             {
                                 // if the pass only one we need to fill it anyway
-                                if (offsetLine.length() >= needleDiameter)
-                                    offsetLine = offsetLine.offsetFrom(needleDiameter / 2).offsetTo(needleDiameter / 2);
+                                if (offsetLine.length() > 2 * needleDiameter)
+                                    offsetLine = offsetLine.offsetFrom(needleDiameter).offsetTo(needleDiameter);
                             }
 
                             if (offsetLine != null)
@@ -277,11 +277,11 @@ public class DispensingToolpathGenerator
     {
         // Shortening tool path for needle radius
         double angle = new Line(from, to).angleToX();
-        from = from.add(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
-        to = to.subtract(new Point((int) (Math.cos(angle) * needleDiameter / 2), (int) (Math.sin(angle) * needleDiameter / 2)));
+        from = from.add(new Point((int) (Math.cos(angle) * needleDiameter), (int) (Math.sin(angle) * needleDiameter)));
+        to = to.subtract(new Point((int) (Math.cos(angle) * needleDiameter), (int) (Math.sin(angle) * needleDiameter)));
 
         angle = MathUtil.bindAngle(angle - Math.PI / 2);
-        int passes = Math.max(1, Math.abs(width) / (needleDiameter + needleDiameter / 2));
+        int passes = Math.max(1, Math.abs(width) / (needleDiameter + needleDiameter));
         for (int i = 0; i < passes; i++)
         {
             // Offsetting

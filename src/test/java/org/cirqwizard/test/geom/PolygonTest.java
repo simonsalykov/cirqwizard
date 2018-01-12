@@ -3,9 +3,8 @@ package org.cirqwizard.test.geom;
 import org.cirqwizard.geom.Line;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.geom.Polygon;
+import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 public class PolygonTest
 {
     @Test
-    public void testPointBelongsToPolygon() throws IOException
+    public void testPointBelongsToPolygon()
     {
         Polygon polygon = new Polygon();
         polygon.addVertice(new Point(0, 0));
@@ -35,7 +34,7 @@ public class PolygonTest
     }
 
     @Test
-    public void testPointBelongsToPolygon2() throws IOException
+    public void testPointBelongsToPolygon2()
     {
         Polygon polygon = new Polygon();
         polygon.addVertice(new Point(10, 10));
@@ -50,7 +49,7 @@ public class PolygonTest
     }
 
     @Test
-    public void testPointBelongsToPolygon3() throws IOException
+    public void testPointBelongsToPolygon3()
     {
         Polygon polygon = new Polygon();
         polygon.addVertice(new Point(8611, 66636));
@@ -65,7 +64,7 @@ public class PolygonTest
     }
 
     @Test
-    public void testLineBelongsToSmallPolygon() throws IOException
+    public void testLineBelongsToPolygon3()
     {
         Polygon polygon = new Polygon();
         polygon.addVertice(new Point(8611, 66636));
@@ -89,6 +88,19 @@ public class PolygonTest
         insideLine.setFrom(insideLine.getFrom().add(offset));
         insideLine.setTo(insideLine.getTo().add(offset));
         assertFalse(polygon.lineBelongsToPolygon(insideLine));
+    }
+
+    @Test
+    public void testLineBelongsToPolygon4()
+    {
+        Polygon polygon = new Polygon();
+        polygon.addVertice(new Point(28684, 75012));
+        polygon.addVertice(new Point(29131, 75011));
+        polygon.addVertice(new Point(29130, 74164));
+        polygon.addVertice(new Point(28683, 74165));
+
+        boolean belongs = polygon.pointBelongsToPolygon(new Point(27856, 74164));
+        Assert.assertFalse(belongs);
     }
 }
 
