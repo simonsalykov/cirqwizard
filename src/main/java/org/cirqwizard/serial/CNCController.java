@@ -49,6 +49,7 @@ public class CNCController
     private SerialInterface serial;
     private SimpleObjectProperty<Status> status = new SimpleObjectProperty<>();
     private long lastStatusUpdate = System.currentTimeMillis();
+    private boolean controllerErrorReceived;
 
     public CNCController(SerialInterface serial)
     {
@@ -58,9 +59,10 @@ public class CNCController
         {
             if (l.getCode().isExecutionError())
             {
-                try
+                LoggerFactory.getApplicationLogger().log(Level.SEVERE, "Command execution failed. Command id:  " + l.getPacketId() + ", code: " + l.getCode());
+                if (!controllerErrorReceived) // After the first error there's a storm of errors, doesn't make sense to display all of them
                 {
-                    LoggerFactory.getApplicationLogger().log(Level.SEVERE, "Command execution failed. Command id:  " + l.getPacketId() + ", code: " + l.getCode());
+                    controllerErrorReceived = true;
                     Platform.runLater(() ->
                     {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong while executing the command. " +
@@ -70,10 +72,6 @@ public class CNCController
                         alert.setTitle("Controller error");
                         alert.showAndWait();
                     });
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
                 }
             }
         });

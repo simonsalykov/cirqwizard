@@ -85,7 +85,7 @@ public class SerialInterfaceCommandsService extends Service
                     if (isCancelled())
                         throw new InterruptedException();
 
-                        mainApplication.getCNCController().send(commands.get(i));
+                    mainApplication.getCNCController().send(commands.get(i));
                     updateProgress(i, commands.size());
                     final String s = formatTime((System.currentTimeMillis() - executionStartTime) / 1000);
                     Platform.runLater(() -> executionTime.setValue(s));
@@ -94,7 +94,6 @@ public class SerialInterfaceCommandsService extends Service
             catch (SerialException e)
             {
                 LoggerFactory.logException("Error communicating with the controller", e);
-                mainApplication.getCNCController().interruptProgram();
                 ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
                         "Something went wrong while communicating with the controller. " +
                                 "The most sensible thing to do now would be to close the program and start over again. Sorry about that.", e);
