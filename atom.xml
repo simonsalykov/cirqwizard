@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2018-01-10T13:38:54+01:00</updated>
+  <updated>2018-01-15T23:54:37+01:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 2.0.0-RC4]]></title>
+    <link href="http://cirqwizard.org//blog/2018/01/15/version-2-dot-0-0-rc4/"/>
+    <updated>2018-01-15T23:50:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2018/01/15/version-2-dot-0-0-rc4</id>
+    <content type="html"><![CDATA[<p>Release candidate 4 improves controller and gcode error handling. In addition, it includes all the good stuff of the stable branch up to version 1.7.11</p>]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.7.11]]></title>
+    <link href="http://cirqwizard.org//blog/2018/01/15/version-1-dot-7-11/"/>
+    <updated>2018-01-15T23:49:00+01:00</updated>
+    <id>http://cirqwizard.org//blog/2018/01/15/version-1-dot-7-11</id>
+    <content type="html"><![CDATA[<p>This version addresses dispensing tool paths generation on pads defined using aperture macros</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 2.0.0-RC3]]></title>
@@ -181,22 +197,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
     <updated>2016-08-25T12:26:00+02:00</updated>
     <id>http://cirqwizard.org//blog/2016/08/25/version-1-dot-6-5</id>
     <content type="html"><![CDATA[<p>Hot on the heels of version 1.6.4, another bug-fixing release taking care of bugs <a href="https://cirqwizard.atlassian.net/browse/CQ-185">CQ-185</a> and <a href="https://cirqwizard.atlassian.net/browse/CQ-186">CQ-186</a> Enjoy!</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.4]]></title>
-    <link href="http://cirqwizard.org//blog/2016/08/23/version-1-dot-6-4/"/>
-    <updated>2016-08-23T17:08:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2016/08/23/version-1-dot-6-4</id>
-    <content type="html"><![CDATA[<p>Contour milling tool paths optimization introduced in version 1.5.12, sometimes seems to come up with solutions which are far worse than original non-optimized paths. Version 1.6.4 now checks if optimization actually resulted in improved milling time and applies the results only in this case.</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.3]]></title>
-    <link href="http://cirqwizard.org//blog/2016/07/18/version-1-dot-6-3/"/>
-    <updated>2016-07-18T13:07:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2016/07/18/version-1-dot-6-3</id>
-    <content type="html"><![CDATA[<p>Another quick fix of a bug in Excellon parser (<a href="https://cirqwizard.atlassian.net/browse/CQ-183">CQ-183</a>), they seem to be coming in swarms&#8230;</p>]]></content>
   </entry>
   
 </feed>

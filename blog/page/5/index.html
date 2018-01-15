@@ -110,6 +110,116 @@
       
   <header class="page-header">
     
+      <h1 class="entry-title"><a href="/blog/2014/04/08/version-1-dot-3-1-released/">Version 1.3.1 Released</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-08T19:24:00+02:00" pubdate data-updated="true">Apr 8<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Version 1.3.1 is mostly a bug fix release. Here is the list of things fixed in this version:</p>
+<h2>        Bug</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-17'>CQ-17</a>] &#8211;         Exception on start up when using autodetect</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-30'>CQ-30</a>] &#8211;         Select all command on drilling screen selects holes irrespective of their diameter</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-77'>CQ-77</a>] &#8211;         Tabbing out of &quot;Tool diameter&quot; on machining screen doesn&#39;t trigger regeneration</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-85'>CQ-85</a>] &#8211;         Tool paths cache invalidation is inconsistent</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-90'>CQ-90</a>] &#8211;         Tool paths not regenerated when changing number of passes</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-93'>CQ-93</a>] &#8211;         <span class="caps">NPE</span> in SerialInterfaceFactory.getSerialInterfaces()</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-96'>CQ-96</a>] &#8211;         Empty lines in excellon file cause parser to fail</li>
+</ul>
+<h2>        Improvement</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-70'>CQ-70</a>] &#8211;         Better visibility for &quot;Go&quot; button on machining screen</li>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-91'>CQ-91</a>] &#8211;         Relabel &quot;Lower &amp; Test&quot; button</li>
+</ul>
+<h2>        Task</h2>
+<ul>
+<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-95'>CQ-95</a>] &#8211;         Add target that runs the application to the build.xml</li>
+</ul></div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header class="page-header">
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/27/version-1-dot-3-0-released/">Version 1.3.0 Released</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-27T19:13:00+01:00" pubdate data-updated="true">Mar 27<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Version 1.3.0 is a feature release, which adds a possibility to request milling tool path generation algorithm to make several passes around traces (or only around pads). This hopefully should decrease the possibility of solder bridges between pads or between pads and ground plane.</p>
+<p>Additional passes considerably increase milling time, regardless of whether it&#8217;s pads only or entire traces. But hopefully, there will be more time gained by not having to troubleshoot bridges.</p>
+<p>The relevant settings in the <strong>Insulation milling</strong> tab are:</p>
+<table class="table table-bordered ">
+	<tr>
+		<th>Setting </th>
+		<th>Meaning </th>
+	</tr>
+	<tr>
+		<td> Additional passes </td>
+		<td> Number of additional passes to be generated </td>
+	</tr>
+	<tr>
+		<td> Additional passes overlap </td>
+		<td> The overlap between previous pass and each successive pass </td>
+	</tr>
+	<tr>
+		<td> Additional passes around pads only </td>
+		<td> Whether to generate additional passes around all traces, or around pads only </td>
+	</tr>
+</table>
+<p>For now, as this feature isn&#8217;t yet thoroughly tested, the default value for <strong>Additional passes</strong> is 0, which effectively disables it. Feel free to experiment and let us know which settings you like most!</p></div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header class="page-header">
+    
       <h1 class="entry-title"><a href="/blog/2014/03/25/issue-tracking-system-up-and-running/">Issue Tracking System Up and Running</a></h1>
     
     
@@ -196,6 +306,14 @@
     <li class="nav-header">Recent Posts</li>
     
       <li class="post">
+        <a href="/blog/2018/01/15/version-2-dot-0-0-rc4/">Version 2.0.0-RC4</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/01/15/version-1-dot-7-11/">Version 1.7.11</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2018/01/10/version-2-dot-0-0-rc3/">Version 2.0.0-RC3</a>
       </li>
     
@@ -205,14 +323,6 @@
     
       <li class="post">
         <a href="/blog/2017/09/18/version-1-dot-7-9/">Version 1.7.9</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2017/09/04/version-1-dot-7-8/">Version 1.7.8</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2017/09/04/version-1-dot-7-7/">Version 1.7.7</a>
       </li>
     
   </ul>
