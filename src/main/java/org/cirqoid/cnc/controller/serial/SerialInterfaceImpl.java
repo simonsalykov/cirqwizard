@@ -190,7 +190,7 @@ public class SerialInterfaceImpl extends SerialInterface
             if (logger != null)
                 logger.log(Level.FINE, ">>> " + packet);
             port.writeBytes(packet.serializePacket());
-            long timeout = System.currentTimeMillis() + 20000;
+            long timeout = System.currentTimeMillis() + 60000;
             while (!isShuttingDown && System.currentTimeMillis() < timeout && lastAcknowledgedPacket < packet.getId())
                 Thread.sleep(10);
             if (lastAcknowledgedPacket < packet.getId())
