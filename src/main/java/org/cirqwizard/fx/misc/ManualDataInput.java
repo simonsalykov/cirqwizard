@@ -15,12 +15,10 @@ This program is free software: you can redistribute it and/or modify
 package org.cirqwizard.fx.misc;
 
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.cirqoid.cnc.controller.commands.Command;
@@ -29,7 +27,6 @@ import org.cirqoid.cnc.controller.interpreter.Interpreter;
 import org.cirqoid.cnc.controller.interpreter.ParsingException;
 import org.cirqwizard.fx.ScreenController;
 import org.cirqwizard.fx.services.SerialInterfaceCommandsService;
-import org.cirqwizard.fx.services.SerialInterfaceService;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

@@ -22,12 +22,15 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.cirqoid.cnc.controller.commands.Command;
+import org.cirqoid.cnc.controller.interpreter.ParsingException;
 import org.cirqwizard.fx.Context;
 import org.cirqwizard.fx.PCBPane;
 import org.cirqwizard.fx.SettingsDependentScreenController;
-import org.cirqwizard.fx.services.SerialInterfaceService;
+import org.cirqwizard.fx.services.SerialInterfaceCommandsService;
 import org.cirqwizard.generation.toolpath.Toolpath;
 import org.cirqwizard.layers.Board;
+import org.cirqwizard.logging.LoggerFactory;
 
 import java.net.URL;
 import java.util.List;
@@ -52,7 +55,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     @FXML protected Label timeElapsedLabel;
 
 
-    private SerialInterfaceService serialService;
+    private SerialInterfaceCommandsService serialService;
 
     @Override
     protected String getFxmlName()
@@ -158,7 +161,7 @@ public abstract class Machining extends SettingsDependentScreenController implem
     public void refresh()
     {
         Context context = getMainApplication().getContext();
-        serialService = new SerialInterfaceService(getMainApplication());
+        serialService = new SerialInterfaceCommandsService(getMainApplication());
         if (!goButton.disableProperty().isBound())
             goButton.setDisable(isRunningDisabled());
         showGCodeButton.setDisable(isWcsDefined());
@@ -265,9 +268,22 @@ public abstract class Machining extends SettingsDependentScreenController implem
 
     public void executeProgram()
     {
-        veil.visibleProperty().bind(serialService.runningProperty());
-        serialService.setProgram(generateGCode());
-        serialService.restart();
+        try
+        {
+            List<Command> commands = getMainApplication().getCNCController().parseBlocks(generateGCode());
+            veil.visibleProperty().bind(serialService.runningProperty());
+            serialService.setCommands(commands);
+            serialService.restart();
+        }
+        catch (ParsingException e)
+        {
+            LoggerFactory.logException("Error parsing generated gcode", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error in generated gcode");
+            alert.setHeaderText(e.getMessage());
+            alert.setContentText("Failed command: " + e.getFailedBlock());
+            alert.showAndWait();
+        }
     }
 
     public void stopExecution()

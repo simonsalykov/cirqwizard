@@ -116,6 +116,11 @@ public class CNCController
         return status;
     }
 
+    public List<Command> parseBlocks(String str) throws ParsingException
+    {
+        return interpreter.interpretBlocks(str);
+    }
+
     public void send(String str, long timeout)
     {
         try
