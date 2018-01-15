@@ -81,4 +81,10 @@ public class CircularAperture extends Aperture
         return (Polygon) VectorToolPathGenerator.factory.createPoint(new Coordinate(x, y)).buffer(diameter / 2 + inflation,
                 diameter / 1000 * 5);
     }
+
+    public int getRectWidth()
+    {
+        // pythagorean theorem
+        return (int) Math.sqrt(diameter * diameter / 2);
+    }
 }
