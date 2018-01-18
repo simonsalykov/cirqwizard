@@ -188,6 +188,8 @@ public class MainApplication extends Application
                     addChild(new About()).setMainApplication(this).
                     addChild(new ManualDataInput().setMainApplication(this)));
 
+    private ScreenController firstRunWizard = new FirstRunWizard().setMainApplication(this);
+
     @Override
     public void start(Stage primaryStage) throws Exception
     {
@@ -196,14 +198,37 @@ public class MainApplication extends Application
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 
         this.primaryStage = primaryStage;
+
+        if (isFirstLaunch())
+            showFirstLaunchWizard();
+        else
+            showMainApplication();
+    }
+
+    public void showMainApplication()
+    {
         scene = new Scene(mainView.getView(), 800, 600);
         scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
         if(System.getProperty("os.name").startsWith("Linux"))
             scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(true);
         primaryStage.setTitle("cirQWizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         mainView.setScreen(root);
+        primaryStage.show();
+    }
+
+    private void showFirstLaunchWizard()
+    {
+        scene = new Scene(firstRunWizard.getView(), 600, 500);
+        scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
+        if(System.getProperty("os.name").startsWith("Linux"))
+            scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.setTitle("cirQWizard");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         primaryStage.show();
     }
 
@@ -289,6 +314,12 @@ public class MainApplication extends Application
                 }
             }
         }.start();
+    }
+
+    private boolean isFirstLaunch()
+    {
+        Integer currentYAxisDifference = SettingsFactory.getMachineSettings().getYAxisDifference().getValue();
+        return currentYAxisDifference == null;
     }
 
     @Override

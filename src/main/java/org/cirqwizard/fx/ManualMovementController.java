@@ -66,7 +66,7 @@ public class ManualMovementController extends ScreenController implements Initia
         zPositionTextField.setDisable(noMachineConnected);
     }
 
-    private class KeyboardHandler implements EventHandler<KeyEvent>
+    public static class KeyboardHandler implements EventHandler<KeyEvent>
     {
         @Override
         public void handle(KeyEvent event)
