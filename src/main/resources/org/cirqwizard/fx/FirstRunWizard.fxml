@@ -13,157 +13,168 @@
 <?import javafx.scene.text.Text?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane fx:id="view" maxHeight="500" maxWidth="600.0" minHeight="500" minWidth="600" stylesheets="@cirqwizard.css"
-            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="view" maxHeight="500" maxWidth="600.0" minHeight="500" minWidth="600" stylesheets="@cirqwizard.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <AnchorPane fx:id="firstStepPane" layoutY="85.0" prefHeight="225.0" prefWidth="600.0" visible="true">
-            <Text AnchorPane.leftAnchor="102.0" AnchorPane.topAnchor="92.0" styleClass="h1" text="Welcome to Cirqoid Wizard" textAlignment="CENTER"/>
-            <Text AnchorPane.leftAnchor="132.0" AnchorPane.topAnchor="142" styleClass="label" text="This wizard will help you set up your machine."/>
-            <Button AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="188.0" onAction="#toSecondStep" prefHeight="25.0" prefWidth="100" text="Start"/>
+            <Text styleClass="h1" text="Welcome to Cirqoid Wizard" textAlignment="CENTER" AnchorPane.leftAnchor="102.0" AnchorPane.topAnchor="92.0" />
+            <Text styleClass="label" text="This wizard will help you set up your machine." AnchorPane.leftAnchor="132.0" AnchorPane.topAnchor="142" />
+            <Button onAction="#toSecondStep" prefHeight="25.0" prefWidth="100" text="Start" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="188.0" />
         </AnchorPane>
 
-        <VBox fx:id="secondStepVBox" prefWidth="600" spacing="10" visible="truee">
+        <VBox fx:id="secondStepVBox" prefWidth="600" spacing="10" visible="false">
             <padding>
-                <Insets bottom="25" left="25" right="25" top="25"/>
+                <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
 
-            <Text styleClass="h1" text="Machine Set Up" textAlignment="CENTER" wrappingWidth="600"/>
+            <Text styleClass="h1" text="Machine Set Up" textAlignment="CENTER" wrappingWidth="600" />
 
-            <Text textAlignment="LEFT" wrappingWidth="564.0" styleClass="label" text="Find the following parameters in your cirqoid's documentation and fill them in. Please note, that every machine is unique and has different values.">
+            <Text styleClass="label" text="Find the following parameters in your cirqoid's documentation and fill them in. Please note, that every machine is unique and has different values." textAlignment="LEFT" wrappingWidth="564.0">
                 <VBox.margin>
-                    <Insets top="15.0"/>
+                    <Insets top="15.0" />
                 </VBox.margin>
             </Text>
 
             <GridPane hgap="10" vgap="5">
                 <VBox.margin>
-                    <Insets top="15.0"/>
+                    <Insets top="15.0" />
                 </VBox.margin>
 
-                <Label text="Y axis difference" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                <RealNumberTextField fx:id="yAxisDifferenceField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-                <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                <Label text="Y axis difference" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <RealNumberTextField fx:id="yAxisDifferenceField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="0" />
 
-                <Label text="Reference pin X" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                <RealNumberTextField fx:id="referencePinXField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                <Label text="Reference pin X" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <RealNumberTextField fx:id="referencePinXField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 
-                <Label text="Reference pin Y" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <RealNumberTextField fx:id="referencePinYField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                <Label text="Reference pin Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <RealNumberTextField fx:id="referencePinYField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             </GridPane>
 
             <VBox fx:id="serialPortVBox">
                 <VBox.margin>
-                    <Insets top="15.0"/>
+                    <Insets top="15.0" />
                 </VBox.margin>
 
-                <Text textAlignment="LEFT" wrappingWidth="564.0" styleClass="label" text="Connect your cirqoid machine via USB, install the drivers, after this, please select serial port."/>
+                <Text styleClass="label" text="Connect your cirqoid machine via USB, install the drivers, after this, please select serial port." textAlignment="LEFT" wrappingWidth="564.0" />
 
                 <GridPane hgap="10" prefWidth="500" vgap="5">
                     <VBox.margin>
-                        <Insets top="15"/>
+                        <Insets top="15" />
                     </VBox.margin>
 
-                    <Label prefHeight="25.0" prefWidth="124.0" text="Serial Port" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-                    <ComboBox fx:id="serialPortComboBox" prefHeight="25.0" prefWidth="119.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-                    <Button fx:id="homeButton" disable="true" onAction="#home" text="Home" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-                </GridPane>
+                    <Label prefHeight="25.0" prefWidth="124.0" text="Serial Port" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <ComboBox fx:id="serialPortComboBox" prefHeight="25.0" prefWidth="119.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+               </GridPane>
             </VBox>
 
             <HBox alignment="BASELINE_RIGHT">
                 <padding>
-                    <Insets bottom="0" left="50" right="50" top="0"/>
+                    <Insets bottom="0" left="50" right="50" top="0" />
                 </padding>
 
-                <Button fx:id="onThirdStepButton" disable="true" onAction="#toThirdStep" text="Next"/>
+                <Button fx:id="onHomingButton" disable="true" onAction="#toHoming" text="Next" />
+            </HBox>
+        </VBox>
+
+        <VBox fx:id="homingStep" prefWidth="600" spacing="10" visible="false">
+            <padding>
+                <Insets bottom="25" left="25" right="25" top="25" />
+            </padding>
+
+            <Text styleClass="h1" text="Homing" textAlignment="CENTER" wrappingWidth="600" />
+
+            <Text styleClass="label" text="Please press 'Home' button in order to align the positions of the motors." textAlignment="LEFT" wrappingWidth="564.0">
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </Text>
+
+            <Button fx:id="homeButton" onAction="#home" text="Home" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+
+            <HBox alignment="BASELINE_RIGHT">
+                <padding>
+                    <Insets bottom="0" left="50" right="50" top="0" />
+                </padding>
+
+                <Button fx:id="onThirdStepButton" disable="true" onAction="#toThirdStep" text="Next" />
             </HBox>
         </VBox>
 
         <VBox fx:id="thirdStepVBox" prefWidth="600" spacing="10" visible="false">
             <padding>
-                <Insets bottom="25" left="25" right="25" top="25"/>
+                <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
 
             <AnchorPane>
                 <VBox fx:id="isolatingMinerDescriptionVBox" visible="true">
-                    <Text textAlignment="CENTER" wrappingWidth="550" styleClass="h1" text="Isolation milling z offset"/>
+                    <Text styleClass="h1" text="Isolation milling z offset" textAlignment="CENTER" wrappingWidth="550" />
 
-                    <Text textAlignment="LEFT" wrappingWidth="550" styleClass="label" text="Put a PCB on the machine bed, Insert a V-Tool in the machine’s spindle, Insert a spindle in the machine, but don’t fix it with a screw, Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with a V-Tool.">
+                    <Text styleClass="label" text="• Put a PCB on the machine bed. &#13;• Insert a V-Tool in the machine’s spindle. &#13;• Insert a spindle in the machine, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with a V-Tool." textAlignment="LEFT" wrappingWidth="550">
                         <VBox.margin>
-                            <Insets top="15.0"/>
+                            <Insets top="15.0" />
                         </VBox.margin>
                     </Text>
                 </VBox>
 
                 <VBox fx:id="drillDescriptionVBox" visible="false">
-                    <Text textAlignment="CENTER" wrappingWidth="550" styleClass="h1" text="Drilling &amp; contour milling z offsets"/>
+                    <Text styleClass="h1" text="Drilling &amp; contour milling z offsets" textAlignment="CENTER" wrappingWidth="550" />
 
-                    <Text textAlignment="LEFT" wrappingWidth="550" styleClass="label" text="Put a spacer between a PCB and a machine bed. Insert a drill in the machine’s spindle, but don’t fix it with a screw, Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the drill.">
+                    <Text styleClass="label" text="&#13;• Put a spacer between a PCB and a machine bed. &#13;• Insert a drill in the machine’s spindle, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the drill." textAlignment="LEFT" wrappingWidth="550">
                         <VBox.margin>
-                            <Insets top="15.0"/>
+                            <Insets top="15.0" />
                         </VBox.margin>
                     </Text>
                 </VBox>
 
                 <VBox fx:id="dispenseDescriptionVBox" visible="false">
-                    <Text styleClass="h1" text="Dispensing z offset" textAlignment="CENTER" wrappingWidth="550"/>
+                    <Text styleClass="h1" text="Dispensing z offset" textAlignment="CENTER" wrappingWidth="550" />
 
-                    <Text textAlignment="LEFT" wrappingWidth="550" styleClass="label" text="Insert a dispensing tool in the machine’s spindle, but don’t fix it with a screw, Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the dispensing tool.">
+                    <Text styleClass="label" text="&#13;• Insert a dispensing tool in the machine’s spindle, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the dispensing tool." textAlignment="LEFT" wrappingWidth="550">
                         <VBox.margin>
-                            <Insets top="15.0"/>
+                            <Insets top="15.0" />
                         </VBox.margin>
                     </Text>
                 </VBox>
             </AnchorPane>
 
-            <Text styleClass="label" wrappingWidth="550" text="Select specific axis and use arrow keys to change the values, the spindle should move responding to your actions."/>
+            <Text styleClass="label" text="Select specific axis and use arrow keys to change the values, the spindle should move responding to your actions." wrappingWidth="550" />
 
             <VBox>
                 <GridPane alignment="TOP_CENTER" hgap="10" maxWidth="556.0" prefHeight="166.0" prefWidth="550.0" vgap="15">
                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
 
                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" prefWidth="100.0"/>
-                        <ColumnConstraints prefWidth="80.0"/>
-                        <ColumnConstraints/>
-                        <ColumnConstraints/>
+                        <ColumnConstraints halignment="CENTER" prefWidth="100.0" />
+                        <ColumnConstraints prefWidth="80.0" />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
                     </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                        <RowConstraints/>
-                    </rowConstraints>
                     <children>
-                        <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                        <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-                        <RealNumberTextField integerValue="0" onAction="#goToUpdatedCoordinates"  GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xTextField"/>
-                        <RealNumberTextField fx:id="yTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                        <RealNumberTextField fx:id="zTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                        <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...100" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                        <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...220" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                        <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="-26...0" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                        <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <RealNumberTextField integerValue="0" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xTextField" onAction="#goToUpdatedCoordinates"/>
+                        <RealNumberTextField fx:id="yTextField" integerValue="0" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#goToUpdatedCoordinates"/>
+                        <RealNumberTextField fx:id="zTextField" integerValue="0" GridPane.columnIndex="1" GridPane.rowIndex="3" onAction="#goToUpdatedCoordinates"/>
+                        <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...100" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...220" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="-26...0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
             </VBox>
 
             <HBox alignment="BASELINE_RIGHT">
                 <padding>
-                    <Insets bottom="0" left="0" right="10" top="0"/>
+                    <Insets bottom="0" left="0" right="10" top="0" />
                 </padding>
                 <AnchorPane>
-                    <Button fx:id="onDrillButton" alignment="BOTTOM_LEFT" onAction="#onDrill" text="Next"/>
-                    <Button fx:id="onDispenseButton" alignment="BOTTOM_LEFT" onAction="#onDispense" text="Next"
-                            visible="false"/>
-                    <Button fx:id="onFinishButton" alignment="BOTTOM_LEFT" onAction="#onFinish" text="Finish"
-                            visible="false"/>
+                    <Button fx:id="onDrillButton" alignment="BOTTOM_LEFT" onAction="#onDrill" text="Next" />
+                    <Button fx:id="onDispenseButton" alignment="BOTTOM_LEFT" onAction="#onDispense" text="Next" visible="false" />
+                    <Button fx:id="onFinishButton" alignment="BOTTOM_LEFT" onAction="#onFinish" text="Finish" visible="false" />
                 </AnchorPane>
             </HBox>
         </VBox>

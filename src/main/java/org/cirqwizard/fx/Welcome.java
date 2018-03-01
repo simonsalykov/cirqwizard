@@ -224,6 +224,11 @@ public class Welcome extends ScreenController
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(SettingsEditor.class));
     }
 
+    public void showSetupWizard()
+    {
+        getMainApplication().showFirstLaunchWizard();
+    }
+
     public void openMDI()
     {
         getMainApplication().setCurrentScreen(getMainApplication().getScreen(ManualDataInput.class));

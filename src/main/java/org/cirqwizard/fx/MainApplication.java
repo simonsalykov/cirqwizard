@@ -54,6 +54,7 @@ public class MainApplication extends Application
 {
     private Stage primaryStage;
     private Scene scene;
+    private Scene wizardScene;
 
     private Context context = new Context();
     private SerialInterface serialInterface;
@@ -191,7 +192,7 @@ public class MainApplication extends Application
     private ScreenController firstRunWizard = new FirstRunWizard().setMainApplication(this);
 
     @Override
-    public void start(Stage primaryStage) throws Exception
+    public void start(Stage primaryStage)
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
@@ -207,10 +208,13 @@ public class MainApplication extends Application
 
     public void showMainApplication()
     {
-        scene = new Scene(mainView.getView(), 800, 600);
-        scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
-        if(System.getProperty("os.name").startsWith("Linux"))
-            scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+        if (scene == null)
+        {
+            scene = new Scene(mainView.getView(), 800, 600);
+            scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
+            if (System.getProperty("os.name").startsWith("Linux"))
+                scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+        }
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.setTitle("cirQWizard");
@@ -219,13 +223,13 @@ public class MainApplication extends Application
         primaryStage.show();
     }
 
-    private void showFirstLaunchWizard()
+    public void showFirstLaunchWizard()
     {
-        scene = new Scene(firstRunWizard.getView(), 600, 500);
-        scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
+        wizardScene = new Scene(firstRunWizard.getView(), 600, 500);
+        wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
         if(System.getProperty("os.name").startsWith("Linux"))
-            scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
-        primaryStage.setScene(scene);
+            wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+        primaryStage.setScene(wizardScene);
         primaryStage.setResizable(false);
         primaryStage.setTitle("cirQWizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));

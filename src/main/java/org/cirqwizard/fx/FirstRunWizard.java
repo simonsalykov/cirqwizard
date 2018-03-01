@@ -1,6 +1,5 @@
 package org.cirqwizard.fx;
 
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,10 +30,12 @@ public class FirstRunWizard extends ScreenController implements Initializable
     @FXML private VBox drillDescriptionVBox;
     @FXML private VBox dispenseDescriptionVBox;
     @FXML private VBox serialPortVBox;
+    @FXML private VBox homingStep;
     @FXML private Button onDrillButton;
     @FXML private Button onDispenseButton;
     @FXML private Button onFinishButton;
     @FXML private Button onThirdStepButton;
+    @FXML private Button onHomingButton;
     @FXML private ComboBox serialPortComboBox;
 
     @FXML private RealNumberTextField yAxisDifferenceField;
@@ -66,11 +67,23 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
 
         serialPortComboBox.setOnAction(e -> {
-            if (serialPortComboBox.getValue() != null && !binded) {
-                homeButton.disableProperty().bind(Bindings.isEmpty(yAxisDifferenceField.textProperty())
-                        .or(Bindings.isEmpty(referencePinXField.textProperty()))
-                        .or(Bindings.isEmpty(referencePinYField.textProperty())));
-            }
+            onHomingButton.setDisable(thirdButtonDisabled());
+        });
+
+
+        yAxisDifferenceField.setOnKeyReleased(e -> {
+            saveMachineSettings();
+            onHomingButton.setDisable(thirdButtonDisabled());
+        });
+
+        referencePinXField.setOnKeyReleased(e -> {
+            saveMachineSettings();
+            onHomingButton.setDisable(thirdButtonDisabled());
+        });
+
+        referencePinYField.setOnKeyReleased(e -> {
+            saveMachineSettings();
+            onHomingButton.setDisable(thirdButtonDisabled());
         });
     }
 
@@ -80,18 +93,31 @@ public class FirstRunWizard extends ScreenController implements Initializable
         secondStepVBox.setVisible(true);
 
         List<String> interfaces = SerialInterfaceFactory.getSerialInterfaces(getMainApplication().getSerialInterface());
-        SettingsFactory.getApplicationSettings().getSerialPort();
+        UserPreference<String> port = SettingsFactory.getApplicationSettings().getSerialPort();
         serialPortComboBox.setItems(FXCollections.observableArrayList(interfaces));
+        serialPortComboBox.setValue(port.getValue());
+
+        yAxisDifferenceField.setIntegerValue(getYAxisDifference());
+        referencePinXField.setIntegerValue(getReferencePinXField());
+        referencePinYField.setIntegerValue(getReferencePinYField());
+
+        onHomingButton.setDisable(thirdButtonDisabled());
     }
 
     public void toThirdStep()
     {
         saveMachineSettings();
 
-        secondStepVBox.setVisible(false);
+        homingStep.setVisible(false);
         thirdStepVBox.setVisible(true);
 
         thirdStepChangeDescription(isolatingMinerDescriptionVBox, onDrillButton);
+    }
+
+    public void toHoming()
+    {
+        secondStepVBox.setVisible(false);
+        homingStep.setVisible(true);
     }
 
     private void thirdStepChangeDescription(VBox step, Button button)
@@ -140,7 +166,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
         alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
         {
             ToolLibrary toolLibrary = new ToolLibrary();
-            ToolSettings  toolSettings = ToolLibrary.getDefaultTool();
+            ToolSettings toolSettings = ToolLibrary.getDefaultTool();
             toolSettings.setZOffset(zTextField.getIntegerValue());
             toolLibrary.setToolSettings(new ToolSettings[]{toolSettings});
             toolLibrary.save();
@@ -180,24 +206,28 @@ public class FirstRunWizard extends ScreenController implements Initializable
     {
         try
         {
-            Object serialPort = serialPortComboBox.getValue();
-            getMainApplication().connectSerialPort(serialPort.toString());
-
-            for (int i = 0; i < 5 && getMainApplication().getCNCController() == null; ++i)
+            if (getMainApplication().getCNCController() != null)
             {
+                Object serialPort = serialPortComboBox.getValue();
+
+                getMainApplication().connectSerialPort(serialPort.toString());
                 TimeUnit.SECONDS.sleep(1);
-            }
 
-            if (getMainApplication().getCNCController() == null)
-            {
-                throw new Exception("Establishing connection with cirqoid has failed.");
+                for (int i = 0; i < 5 && getMainApplication().getCNCController() == null; ++i)
+                {
+                    TimeUnit.SECONDS.sleep(1);
+                }
+
+                if (getMainApplication().getCNCController() == null)
+                {
+                    throw new Exception("Establishing connection with cirqoid has failed.");
+                }
             }
 
             getMainApplication().getCNCController().home(yAxisDifferenceField.getIntegerValue());
-
             onThirdStepButton.setDisable(false);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LoggerFactory.logException("Communication with controller failed: ", ex);
             ExceptionAlert alert = new ExceptionAlert("Oops! That's embarrassing!", "Communication error",
@@ -210,11 +240,14 @@ public class FirstRunWizard extends ScreenController implements Initializable
     private void saveMachineSettings()
     {
         Object serialPort = serialPortComboBox.getValue();
-        ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
-        UserPreference serialPortPreference = applicationSettings.getSerialPort();
-        serialPortPreference.setValue(serialPort.toString());
-        applicationSettings.setSerialPort(serialPortPreference);
-        applicationSettings.save();
+        if (serialPort != null)
+        {
+            ApplicationSettings applicationSettings = SettingsFactory.getApplicationSettings();
+            UserPreference serialPortPreference = applicationSettings.getSerialPort();
+            serialPortPreference.setValue(serialPort.toString());
+            applicationSettings.setSerialPort(serialPortPreference);
+            applicationSettings.save();
+        }
 
         // saving settings
         MachineSettings machineSettings = SettingsFactory.getMachineSettings();
@@ -232,7 +265,46 @@ public class FirstRunWizard extends ScreenController implements Initializable
         machineSettings.setReferencePinX(referencePinX);
         machineSettings.setReferencePinY(referencePinY);
         machineSettings.save();
+    }
 
-        getMainApplication().connectSerialPort(serialPort.toString());
+    private Integer getYAxisDifference()
+    {
+        // saving settings
+        MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+
+        UserPreference yAxisDifference = machineSettings.getYAxisDifference();
+        return (Integer) yAxisDifference.getValue();
+    }
+
+    private Integer getReferencePinXField()
+    {
+        // saving settings
+        MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+
+        UserPreference referencePinX = machineSettings.getReferencePinX();
+        return (Integer) referencePinX.getValue();
+    }
+
+    private Integer getReferencePinYField()
+    {
+        // saving settings
+        MachineSettings machineSettings = SettingsFactory.getMachineSettings();
+
+        UserPreference referencePinY = machineSettings.getReferencePinY();
+        return (Integer) referencePinY.getValue();
+    }
+
+    private boolean thirdButtonDisabled()
+    {
+        return referencePinXField.getIntegerValue() == null || referencePinXField.getIntegerValue() == 0 ||
+               referencePinYField.getIntegerValue() == null || referencePinYField.getIntegerValue() == 0 ||
+               yAxisDifferenceField.getIntegerValue() == null || yAxisDifferenceField.getIntegerValue() == 0 ||
+               serialPortComboBox.getValue() == null;
+    }
+
+    public void goToUpdatedCoordinates()
+    {
+        getMainApplication().getCNCController().moveTo(xTextField.getIntegerValue(), yTextField.getIntegerValue(),
+                zTextField.getIntegerValue());
     }
 }
