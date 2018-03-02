@@ -206,7 +206,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
     {
         try
         {
-            if (getMainApplication().getCNCController() != null)
+            if (getMainApplication().getCNCController() == null)
             {
                 Object serialPort = serialPortComboBox.getValue();
 
