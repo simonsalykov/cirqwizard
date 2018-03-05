@@ -42,7 +42,7 @@ public class MacroPolygon extends MacroPrimitive
         for (int i = 0; i < verticesCount; i++)
         {
             double theta = angle / 180 * Math.PI;
-            Point p = center.add(new Point(diameter / 2, 0));
+            Point p = center.add(new Point(diameter, 0));
             points.add(new Point((int)(Math.cos(theta) * p.getX() - Math.sin(theta) * p.getY()),
                     (int)(Math.sin(theta) * p.getX() + Math.cos(theta) * p.getY())));
             angle += angularIncrement;
