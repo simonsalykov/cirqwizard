@@ -1,3 +1,5 @@
+import org.ajoberstar.grgit.*
+
 buildscript {
     repositories {
         maven {
@@ -6,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1"
+        classpath "org.ajoberstar:grgit:1.7.2"
     }
 }
 
@@ -45,8 +48,15 @@ repositories {
     }
 }
 
+def cncPath = file('cnc-java')
+if (!cncPath.exists()) {
+    Grgit.clone(dir: cncPath, uri: 'https://bitbucket.org/proximus-ondemand/cnc-java.git')
+    def gitRepo = Grgit.open(dir: cncPath)
+    gitRepo.checkout(branch: 'origin/master', createBranch: false);
+}
+
 dependencies {
-    compile project(':cnc')
+    compile project(':cnc-java')
     compile('org.bytedeco:javacv:1.3.2')
     if (project.hasProperty('javacpp.platform')) {
         runtime("org.bytedeco.javacpp-presets:opencv:3.2.0-1.3:${project.ext['javacpp.platform']}")
