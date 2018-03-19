@@ -3,12 +3,10 @@ package org.cirqwizard.fx;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.util.ExceptionAlert;
@@ -23,33 +21,38 @@ import java.util.concurrent.TimeUnit;
 
 public class FirstRunWizard extends ScreenController implements Initializable
 {
-    @FXML private AnchorPane firstStepPane;
-    @FXML private VBox secondStepVBox;
-    @FXML private VBox thirdStepVBox;
-    @FXML private VBox isolatingMinerDescriptionVBox;
-    @FXML private VBox drillDescriptionVBox;
-    @FXML private VBox dispenseDescriptionVBox;
-    @FXML private VBox serialPortVBox;
-    @FXML private VBox homingStep;
-    @FXML private Button onDrillButton;
-    @FXML private Button onDispenseButton;
-    @FXML private Button onFinishButton;
-    @FXML private Button onThirdStepButton;
-    @FXML private Button onHomingButton;
-    @FXML private ComboBox serialPortComboBox;
+    @FXML private AnchorPane welcomePane;
+    @FXML private VBox yAxisDifferenceVBox;
+    @FXML private VBox zOffsetsVBox;
 
-    @FXML private RealNumberTextField yAxisDifferenceField;
-    @FXML private RealNumberTextField referencePinXField;
-    @FXML private RealNumberTextField referencePinYField;
-
+    // z offsets layouts
+    @FXML private VBox isolatingMinerVBox;
+    @FXML private VBox drillingVBox;
+    @FXML private VBox dispenseVBox;
+    // control z offsets
     @FXML private RealNumberTextField xTextField;
     @FXML private RealNumberTextField yTextField;
     @FXML private RealNumberTextField zTextField;
+
+    // application settings
+    @FXML private VBox serialPortVBox;
+    @FXML private ComboBox serialPortComboBox;
+    @FXML private RealNumberTextField referencePinXField;
+    @FXML private RealNumberTextField referencePinYField;
+    @FXML private RealNumberTextField yAxisDifferenceField;
+
+    // homing
+    @FXML private VBox homingVBox;
     @FXML private Button homeButton;
 
-    private VBox currentStep;
-    private Button currentButton;
-    private boolean binded = false;
+    // general
+    @FXML private Hyperlink skipLink;
+    @FXML private Button nextButton;
+    @FXML private Button backButton;
+
+    private VBox thirdSubStep;
+    private Pane currentPane;
+    private Step currentStep;
 
     @Override
     protected String getFxmlName()
@@ -65,33 +68,122 @@ public class FirstRunWizard extends ScreenController implements Initializable
         yTextField.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
         zTextField.addEventFilter(KeyEvent.KEY_PRESSED, keyboardHandler);
 
-
         serialPortComboBox.setOnAction(e -> {
-            onHomingButton.setDisable(thirdButtonDisabled());
+            nextButton.setDisable(thirdButtonDisabled());
         });
-
 
         yAxisDifferenceField.setOnKeyReleased(e -> {
             saveMachineSettings();
-            onHomingButton.setDisable(thirdButtonDisabled());
+            nextButton.setDisable(thirdButtonDisabled());
         });
 
         referencePinXField.setOnKeyReleased(e -> {
             saveMachineSettings();
-            onHomingButton.setDisable(thirdButtonDisabled());
+            nextButton.setDisable(thirdButtonDisabled());
         });
 
         referencePinYField.setOnKeyReleased(e -> {
             saveMachineSettings();
-            onHomingButton.setDisable(thirdButtonDisabled());
+            nextButton.setDisable(thirdButtonDisabled());
         });
+
+        skipLink.setOnMouseClicked(e -> {
+            getMainApplication().showMainApplication();
+        });
+
+        onStepChange(Step.WELCOME);
     }
 
-    public void toSecondStep()
+    public void onNext()
     {
-        firstStepPane.setVisible(false);
-        secondStepVBox.setVisible(true);
+        // save settings if required
+        if(saveSettings())
+        {
+            onStepChange(Step.values()[currentStep.ordinal() + 1]);
+        }
+    }
 
+    public void onBack()
+    {
+        onStepChange(Step.values()[currentStep.ordinal() - 1]);
+    }
+
+    private void onStepChange(Step step)
+    {
+        currentStep = step;
+
+        // disable current step
+        if (currentPane != null)
+            currentPane.setVisible(false);
+
+        if (currentStep != Step.DISPENSE)
+            nextButton.setText("Next");
+
+        switch (currentStep)
+        {
+            case WELCOME:
+                backButton.setVisible(false);
+                currentPane = welcomePane;
+                break;
+            case Y_AXIS_DIFFERENCE:
+                backButton.setVisible(true);
+                currentPane = yAxisDifferenceVBox;
+                fillYAxisValues();
+                break;
+            case HOMING:
+                currentPane = homingVBox;
+                toHoming();
+                break;
+            case ISOLATING_MINER:
+                currentPane = zOffsetsVBox;
+                toZOffsetsStep();
+                thirdStepChangeDescription(isolatingMinerVBox);
+                break;
+            case DRILLING:
+                currentPane = zOffsetsVBox;
+                toZOffsetsStep();
+                thirdStepChangeDescription(drillingVBox);
+                break;
+            case DISPENSE:
+                currentPane = zOffsetsVBox;
+                toZOffsetsStep();
+                thirdStepChangeDescription(dispenseVBox);
+                nextButton.setText("Finish");
+                break;
+            case FINISH:
+                getMainApplication().showMainApplication();
+                break;
+        }
+
+        currentPane.setVisible(true);
+    }
+
+    private boolean saveSettings()
+    {
+        if (currentStep == null)
+            return true;
+
+        switch (currentStep)
+        {
+            case Y_AXIS_DIFFERENCE:
+                saveMachineSettings();
+                return true;
+            case ISOLATING_MINER:
+                saveIsolationMillingOffset();
+                return false;
+            case DRILLING:
+                saveDrillingCountourOffset();
+                return false;
+            case DISPENSE:
+                saveDispenseOffset();
+                return false;
+        }
+
+        return true;
+    }
+
+    public void fillYAxisValues()
+    {
         List<String> interfaces = SerialInterfaceFactory.getSerialInterfaces(getMainApplication().getSerialInterface());
         UserPreference<String> port = SettingsFactory.getApplicationSettings().getSerialPort();
         serialPortComboBox.setItems(FXCollections.observableArrayList(interfaces));
@@ -101,41 +193,31 @@ public class FirstRunWizard extends ScreenController implements Initializable
         referencePinXField.setIntegerValue(getReferencePinXField());
         referencePinYField.setIntegerValue(getReferencePinYField());
 
-        onHomingButton.setDisable(thirdButtonDisabled());
+        nextButton.setDisable(thirdButtonDisabled());
     }
 
-    public void toThirdStep()
+    public void toZOffsetsStep()
     {
-        saveMachineSettings();
-
-        homingStep.setVisible(false);
-        thirdStepVBox.setVisible(true);
-
-        thirdStepChangeDescription(isolatingMinerDescriptionVBox, onDrillButton);
+        thirdStepChangeDescription(isolatingMinerVBox);
     }
 
     public void toHoming()
     {
-        secondStepVBox.setVisible(false);
-        homingStep.setVisible(true);
+        yAxisDifferenceVBox.setVisible(false);
+        homingVBox.setVisible(true);
+        nextButton.setDisable(true);
     }
 
-    private void thirdStepChangeDescription(VBox step, Button button)
+    private void thirdStepChangeDescription(VBox step)
     {
-        if (currentStep != null)
-            currentStep.setVisible(false);
+        if (thirdSubStep != null)
+            thirdSubStep.setVisible(false);
 
-        currentStep = step;
-        currentStep.setVisible(true);
-
-        if (currentButton != null)
-            currentButton.setVisible(false);
-
-        currentButton = button;
-        currentButton.setVisible(true);
+        thirdSubStep = step;
+        thirdSubStep.setVisible(true);
     }
 
-    public void onFinish()
+    public void saveDispenseOffset()
     {
         double zOffset = Double.parseDouble(zTextField.getRealNumberText());
 
@@ -152,11 +234,11 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
             dispensingSettings.save();
 
-            getMainApplication().showMainApplication();
+            onStepChange(Step.values()[currentStep.ordinal() + 1]);
         });
     }
 
-    public void onDrill()
+    public void saveIsolationMillingOffset()
     {
         double zOffset = Double.parseDouble(zTextField.getRealNumberText());
 
@@ -171,11 +253,11 @@ public class FirstRunWizard extends ScreenController implements Initializable
             toolLibrary.setToolSettings(new ToolSettings[]{toolSettings});
             toolLibrary.save();
 
-            thirdStepChangeDescription(drillDescriptionVBox, onDispenseButton);
+            onStepChange(Step.values()[currentStep.ordinal() + 1]);
         });
     }
 
-    public void onDispense()
+    public void saveDrillingCountourOffset()
     {
         double zOffset = Double.parseDouble(zTextField.getRealNumberText());
 
@@ -198,7 +280,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
             contourMillingSettings.setZOffset(contourMillingZOffset);
             contourMillingSettings.save();
 
-            thirdStepChangeDescription(dispenseDescriptionVBox, onFinishButton);
+            onStepChange(Step.values()[currentStep.ordinal() + 1]);
         });
     }
 
@@ -225,7 +307,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
             }
 
             getMainApplication().getCNCController().home(yAxisDifferenceField.getIntegerValue());
-            onThirdStepButton.setDisable(false);
+            nextButton.setDisable(false);
         }
         catch (Exception ex)
         {
@@ -306,5 +388,20 @@ public class FirstRunWizard extends ScreenController implements Initializable
     {
         getMainApplication().getCNCController().moveTo(xTextField.getIntegerValue(), yTextField.getIntegerValue(),
                 zTextField.getIntegerValue());
+    }
+
+    private enum Step
+    {
+        WELCOME(0),
+        Y_AXIS_DIFFERENCE(1),
+        HOMING(2),
+        ISOLATING_MINER(3),
+        DRILLING(4),
+        DISPENSE(5),
+        FINISH(6);
+
+        private final int value;
+        Step(final int newValue) { value = newValue; }
+        public int getValue() { return value; }
     }
 }

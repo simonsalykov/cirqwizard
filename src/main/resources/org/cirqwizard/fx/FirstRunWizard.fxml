@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -15,13 +16,12 @@
 
 <AnchorPane fx:id="view" maxHeight="500" maxWidth="600.0" minHeight="500" minWidth="600" stylesheets="@cirqwizard.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <AnchorPane fx:id="firstStepPane" layoutY="85.0" prefHeight="225.0" prefWidth="600.0" visible="true">
+        <AnchorPane fx:id="welcomePane" layoutY="85.0" prefHeight="225.0" prefWidth="600.0" visible="true">
             <Text styleClass="h1" text="Welcome to Cirqoid Wizard" textAlignment="CENTER" AnchorPane.leftAnchor="102.0" AnchorPane.topAnchor="92.0" />
             <Text styleClass="label" text="This wizard will help you set up your machine." AnchorPane.leftAnchor="132.0" AnchorPane.topAnchor="142" />
-            <Button onAction="#toSecondStep" prefHeight="25.0" prefWidth="100" text="Start" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="188.0" />
         </AnchorPane>
 
-        <VBox fx:id="secondStepVBox" prefWidth="600" spacing="10" visible="false">
+        <VBox fx:id="yAxisDifferenceVBox" prefWidth="600" spacing="10" visible="false">
             <padding>
                 <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
@@ -50,6 +50,16 @@
                 <Label text="Reference pin Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                 <RealNumberTextField fx:id="referencePinYField" prefHeight="25.0" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <Label text="mm" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
             </GridPane>
 
             <VBox fx:id="serialPortVBox">
@@ -68,17 +78,9 @@
                     <ComboBox fx:id="serialPortComboBox" prefHeight="25.0" prefWidth="119.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                </GridPane>
             </VBox>
-
-            <HBox alignment="BASELINE_RIGHT">
-                <padding>
-                    <Insets bottom="0" left="50" right="50" top="0" />
-                </padding>
-
-                <Button fx:id="onHomingButton" disable="true" onAction="#toHoming" text="Next" />
-            </HBox>
         </VBox>
 
-        <VBox fx:id="homingStep" prefWidth="600" spacing="10" visible="false">
+        <VBox fx:id="homingVBox" prefWidth="600" spacing="10" visible="false">
             <padding>
                 <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
@@ -97,18 +99,16 @@
                 <padding>
                     <Insets bottom="0" left="50" right="50" top="0" />
                 </padding>
-
-                <Button fx:id="onThirdStepButton" disable="true" onAction="#toThirdStep" text="Next" />
             </HBox>
         </VBox>
 
-        <VBox fx:id="thirdStepVBox" prefWidth="600" spacing="10" visible="false">
+        <VBox fx:id="zOffsetsVBox" prefWidth="600" spacing="10" visible="false">
             <padding>
                 <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
 
             <AnchorPane>
-                <VBox fx:id="isolatingMinerDescriptionVBox" visible="true">
+                <VBox fx:id="isolatingMinerVBox" visible="false">
                     <Text styleClass="h1" text="Isolation milling z offset" textAlignment="CENTER" wrappingWidth="550" />
 
                     <Text styleClass="label" text="• Put a PCB on the machine bed. &#13;• Insert a V-Tool in the machine’s spindle. &#13;• Insert a spindle in the machine, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with a V-Tool." textAlignment="LEFT" wrappingWidth="550">
@@ -118,7 +118,7 @@
                     </Text>
                 </VBox>
 
-                <VBox fx:id="drillDescriptionVBox" visible="false">
+                <VBox fx:id="drillingVBox" visible="false">
                     <Text styleClass="h1" text="Drilling &amp; contour milling z offsets" textAlignment="CENTER" wrappingWidth="550" />
 
                     <Text styleClass="label" text="&#13;• Put a spacer between a PCB and a machine bed. &#13;• Insert a drill in the machine’s spindle, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the drill." textAlignment="LEFT" wrappingWidth="550">
@@ -128,7 +128,7 @@
                     </Text>
                 </VBox>
 
-                <VBox fx:id="dispenseDescriptionVBox" visible="false">
+                <VBox fx:id="dispenseVBox" visible="false">
                     <Text styleClass="h1" text="Dispensing z offset" textAlignment="CENTER" wrappingWidth="550" />
 
                     <Text styleClass="label" text="&#13;• Insert a dispensing tool in the machine’s spindle, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the dispensing tool." textAlignment="LEFT" wrappingWidth="550">
@@ -157,26 +157,18 @@
                         <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                         <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                         <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <RealNumberTextField integerValue="0" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xTextField" onAction="#goToUpdatedCoordinates"/>
-                        <RealNumberTextField fx:id="yTextField" integerValue="0" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#goToUpdatedCoordinates"/>
-                        <RealNumberTextField fx:id="zTextField" integerValue="0" GridPane.columnIndex="1" GridPane.rowIndex="3" onAction="#goToUpdatedCoordinates"/>
+                        <RealNumberTextField integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xTextField" />
+                        <RealNumberTextField fx:id="yTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <RealNumberTextField fx:id="zTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...100" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                         <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...220" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="-26...0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                     </children>
                 </GridPane>
             </VBox>
-
-            <HBox alignment="BASELINE_RIGHT">
-                <padding>
-                    <Insets bottom="0" left="0" right="10" top="0" />
-                </padding>
-                <AnchorPane>
-                    <Button fx:id="onDrillButton" alignment="BOTTOM_LEFT" onAction="#onDrill" text="Next" />
-                    <Button fx:id="onDispenseButton" alignment="BOTTOM_LEFT" onAction="#onDispense" text="Next" visible="false" />
-                    <Button fx:id="onFinishButton" alignment="BOTTOM_LEFT" onAction="#onFinish" text="Finish" visible="false" />
-                </AnchorPane>
-            </HBox>
         </VBox>
+      <Hyperlink fx:id="skipLink" layoutX="510.0" layoutY="14.0" text="Skip setup" />
+      <Button fx:id="nextButton" layoutX="523.0" layoutY="426.0" mnemonicParsing="false" onAction="#onNext" text="Next" />
+      <Button fx:id="backButton" layoutX="453.0" layoutY="426.0" mnemonicParsing="false" onAction="#onBack" text="Back" visible="false" />
     </children>
 </AnchorPane>

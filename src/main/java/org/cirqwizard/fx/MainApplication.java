@@ -189,8 +189,6 @@ public class MainApplication extends Application
                     addChild(new About()).setMainApplication(this).
                     addChild(new ManualDataInput().setMainApplication(this)));
 
-    private ScreenController firstRunWizard = new FirstRunWizard().setMainApplication(this);
-
     @Override
     public void start(Stage primaryStage)
     {
@@ -225,13 +223,14 @@ public class MainApplication extends Application
 
     public void showFirstLaunchWizard()
     {
+        ScreenController firstRunWizard = new FirstRunWizard().setMainApplication(this);
         wizardScene = new Scene(firstRunWizard.getView(), 600, 500);
         wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
         if(System.getProperty("os.name").startsWith("Linux"))
             wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
         primaryStage.setScene(wizardScene);
         primaryStage.setResizable(false);
-        primaryStage.setTitle("cirQWizard");
+        primaryStage.setTitle("Cirqoid Wizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         primaryStage.show();
     }
