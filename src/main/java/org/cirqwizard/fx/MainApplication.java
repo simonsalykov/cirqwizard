@@ -206,13 +206,13 @@ public class MainApplication extends Application
 
     public void showMainApplication()
     {
-        if (scene == null)
-        {
-            scene = new Scene(mainView.getView(), 800, 600);
-            scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
-            if (System.getProperty("os.name").startsWith("Linux"))
-                scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
-        }
+        // recreate scene again. fix for weird bug in mac os when links turn into buttons
+        mainView = (MainViewController) new MainViewController().setMainApplication(this);
+        scene = new Scene(mainView.getView(), 800, 600);
+        scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
+        if (System.getProperty("os.name").startsWith("Linux"))
+            scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.setTitle("cirQWizard");
