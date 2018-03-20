@@ -9,6 +9,7 @@
         <items>
             <Button text="Add" onAction="#addNewTool"/>
             <Button text="Delete" onAction="#deleteTool" fx:id="deleteButton"/>
+            <Button text="Reset library" onAction="#resetToolLibrary"/>
         </items>
     </ToolBar>
     <TableView fx:id="table" prefHeight="200" editable="true">

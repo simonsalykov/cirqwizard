@@ -38,6 +38,24 @@ public class ToolSettings
     @Element
     private boolean additionalPassesPadsOnly;
 
+    public ToolSettings()
+    {
+    }
+
+    public ToolSettings(String name, int diameter, int speed, int feedXY, int feedZ, int arcs, int zOffset, int additionalPasses, int additionalPassesOverlap, boolean additionalPassesPadsOnly)
+    {
+        this.name = name;
+        this.diameter = diameter;
+        this.speed = speed;
+        this.feedXY = feedXY;
+        this.feedZ = feedZ;
+        this.arcs = arcs;
+        this.zOffset = zOffset;
+        this.additionalPasses = additionalPasses;
+        this.additionalPassesOverlap = additionalPassesOverlap;
+        this.additionalPassesPadsOnly = additionalPassesPadsOnly;
+    }
+
     public String getName()
     {
         return name;
