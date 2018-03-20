@@ -207,6 +207,9 @@ public class MainApplication extends Application
     public void showMainApplication()
     {
         // recreate scene again. fix for weird bug in mac os when links turn into buttons
+        if (scene != null)
+            primaryStage.close();
+
         mainView = (MainViewController) new MainViewController().setMainApplication(this);
         scene = new Scene(mainView.getView(), 800, 600);
         scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
@@ -223,8 +226,11 @@ public class MainApplication extends Application
 
     public void showFirstLaunchWizard()
     {
+        if (scene != null)
+            primaryStage.close();
+
         ScreenController firstRunWizard = new FirstRunWizard().setMainApplication(this);
-        wizardScene = new Scene(firstRunWizard.getView(), 600, 500);
+        wizardScene = new Scene(firstRunWizard.getView(), 800, 600);
         wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
         if(System.getProperty("os.name").startsWith("Linux"))
             wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");

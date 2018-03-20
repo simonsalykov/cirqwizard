@@ -14,21 +14,21 @@
 <?import javafx.scene.text.Text?>
 <?import org.cirqwizard.fx.controls.RealNumberTextField?>
 
-<AnchorPane fx:id="view" maxHeight="500" maxWidth="600.0" minHeight="500" minWidth="600" stylesheets="@cirqwizard.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="view" maxHeight="600" maxWidth="800.0" minHeight="600" minWidth="800" stylesheets="@cirqwizard.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <AnchorPane fx:id="welcomePane" layoutY="85.0" prefHeight="225.0" prefWidth="600.0" visible="true">
-            <Text styleClass="h1" text="Welcome to Cirqoid Wizard" textAlignment="CENTER" AnchorPane.leftAnchor="102.0" AnchorPane.topAnchor="92.0" />
-            <Text styleClass="label" text="This wizard will help you set up your machine." AnchorPane.leftAnchor="132.0" AnchorPane.topAnchor="142" />
+            <Text layoutX="200.0" layoutY="125.0" styleClass="h1" text="Welcome to Cirqoid Wizard" textAlignment="CENTER" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="90.46875" />
+            <Text layoutX="246.0" layoutY="150.0" styleClass="label" text="This wizard will help you set up your machine." AnchorPane.leftAnchor="246.0" AnchorPane.topAnchor="132.734375" />
         </AnchorPane>
 
-        <VBox fx:id="yAxisDifferenceVBox" prefWidth="600" spacing="10" visible="false">
+        <VBox fx:id="yAxisDifferenceVBox" prefHeight="418.0" prefWidth="800.0" spacing="10" visible="false">
             <padding>
                 <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
 
             <Text styleClass="h1" text="Machine Set Up" textAlignment="CENTER" wrappingWidth="600" />
 
-            <Text styleClass="label" text="Find the following parameters in your cirqoid's documentation and fill them in. Please note, that every machine is unique and has different values." textAlignment="LEFT" wrappingWidth="564.0">
+            <Text styleClass="label" text="Find the following parameters in your cirqoid's documentation and fill them in. Please note, that every machine is unique and has different values." textAlignment="LEFT" wrappingWidth="761.0">
                 <VBox.margin>
                     <Insets top="15.0" />
                 </VBox.margin>
@@ -67,7 +67,7 @@
                     <Insets top="15.0" />
                 </VBox.margin>
 
-                <Text styleClass="label" text="Connect your cirqoid machine via USB, install the drivers, after this, please select serial port." textAlignment="LEFT" wrappingWidth="564.0" />
+                <Text styleClass="label" text="Connect your cirqoid machine via USB, install the drivers, after this, please select serial port." textAlignment="LEFT" wrappingWidth="760.0" />
 
                 <GridPane hgap="10" prefWidth="500" vgap="5">
                     <VBox.margin>
@@ -76,6 +76,13 @@
 
                     <Label prefHeight="25.0" prefWidth="124.0" text="Serial Port" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                     <ComboBox fx:id="serialPortComboBox" prefHeight="25.0" prefWidth="119.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+               </rowConstraints>
                </GridPane>
             </VBox>
         </VBox>
@@ -85,9 +92,9 @@
                 <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
 
-            <Text styleClass="h1" text="Homing" textAlignment="CENTER" wrappingWidth="600" />
+            <Text styleClass="h1" text="Homing" textAlignment="CENTER" wrappingWidth="750.0" />
 
-            <Text styleClass="label" text="Please press 'Home' button in order to align the positions of the motors." textAlignment="LEFT" wrappingWidth="564.0">
+            <Text styleClass="label" text="Please press 'Home' button in order to align the positions of the motors." textAlignment="LEFT" wrappingWidth="745.0">
                 <VBox.margin>
                     <Insets top="15.0" />
                 </VBox.margin>
@@ -102,14 +109,14 @@
             </HBox>
         </VBox>
 
-        <VBox fx:id="zOffsetsVBox" prefWidth="600" spacing="10" visible="false">
+        <VBox fx:id="zOffsetsVBox" prefWidth="800" spacing="10" visible="false">
             <padding>
                 <Insets bottom="25" left="25" right="25" top="25" />
             </padding>
 
             <AnchorPane>
                 <VBox fx:id="isolatingMinerVBox" visible="false">
-                    <Text styleClass="h1" text="Isolation milling z offset" textAlignment="CENTER" wrappingWidth="550" />
+                    <Text styleClass="h1" text="Isolation milling z offset" textAlignment="CENTER" wrappingWidth="750" />
 
                     <Text styleClass="label" text="• Put a PCB on the machine bed. &#13;• Insert a V-Tool in the machine’s spindle. &#13;• Insert a spindle in the machine, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with a V-Tool." textAlignment="LEFT" wrappingWidth="550">
                         <VBox.margin>
@@ -119,7 +126,7 @@
                 </VBox>
 
                 <VBox fx:id="drillingVBox" visible="false">
-                    <Text styleClass="h1" text="Drilling &amp; contour milling z offsets" textAlignment="CENTER" wrappingWidth="550" />
+                    <Text styleClass="h1" text="Drilling &amp; contour milling z offsets" textAlignment="CENTER" wrappingWidth="750" />
 
                     <Text styleClass="label" text="&#13;• Put a spacer between a PCB and a machine bed. &#13;• Insert a drill in the machine’s spindle, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the drill." textAlignment="LEFT" wrappingWidth="550">
                         <VBox.margin>
@@ -129,7 +136,7 @@
                 </VBox>
 
                 <VBox fx:id="dispenseVBox" visible="false">
-                    <Text styleClass="h1" text="Dispensing z offset" textAlignment="CENTER" wrappingWidth="550" />
+                    <Text styleClass="h1" text="Dispensing z offset" textAlignment="CENTER" wrappingWidth="750" />
 
                     <Text styleClass="label" text="&#13;• Insert a dispensing tool in the machine’s spindle, but don’t fix it with a screw. &#13;• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the dispensing tool." textAlignment="LEFT" wrappingWidth="550">
                         <VBox.margin>
@@ -139,10 +146,10 @@
                 </VBox>
             </AnchorPane>
 
-            <Text styleClass="label" text="Select specific axis and use arrow keys to change the values, the spindle should move responding to your actions." wrappingWidth="550" />
+            <Text styleClass="label" text="Select specific axis and use arrow keys to change the values, the spindle should move responding to your actions." wrappingWidth="749.0" />
 
             <VBox>
-                <GridPane alignment="TOP_CENTER" hgap="10" maxWidth="556.0" prefHeight="166.0" prefWidth="550.0" vgap="15">
+                <GridPane alignment="TOP_CENTER" hgap="10" maxWidth="750.0" prefHeight="166.0" prefWidth="750.0" vgap="15">
                     <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
@@ -164,11 +171,17 @@
                         <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...220" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                         <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="-26...0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                     </children>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
             </VBox>
         </VBox>
-      <Hyperlink fx:id="skipLink" layoutX="510.0" layoutY="14.0" text="Skip setup" />
-      <Button fx:id="nextButton" layoutX="523.0" layoutY="426.0" mnemonicParsing="false" onAction="#onNext" text="Next" />
-      <Button fx:id="backButton" layoutX="453.0" layoutY="426.0" mnemonicParsing="false" onAction="#onBack" text="Back" visible="false" />
+      <Hyperlink fx:id="skipLink" layoutX="704.0" layoutY="14.0" text="Skip setup" />
+      <Button fx:id="nextButton" layoutX="730.0" layoutY="549.0" mnemonicParsing="false" onAction="#onNext" text="Next" />
+      <Button fx:id="backButton" layoutX="663.0" layoutY="549.0" mnemonicParsing="false" onAction="#onBack" text="Back" visible="false" />
     </children>
 </AnchorPane>
