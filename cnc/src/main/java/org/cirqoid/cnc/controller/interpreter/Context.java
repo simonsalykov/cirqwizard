@@ -147,4 +147,9 @@ public class Context implements Cloneable
         return clone;
     }
 
+    public void resetContext()
+    {
+        for (int i = 0; i < arcCenterOffset.length; ++i)
+            arcCenterOffset[i] = 0;
+    }
 }

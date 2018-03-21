@@ -92,7 +92,8 @@ public class Interpreter
             {
                 if (!TravelRangeValidator.validate(context.getCurrentPosition(), HardwareSettings.getCirqoidSettings()))
                     throw new ParsingException("Axis overtravel");
-                    executionList.add(createInterpolationCommand(startPosition));
+                executionList.add(createInterpolationCommand(startPosition));
+                context.resetContext();
             }
         }
         catch (ParsingException e)
