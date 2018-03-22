@@ -185,4 +185,23 @@ public class SettingsToolTable implements Initializable
         library.save();
     }
 
+    public void resetToolLibrary()
+    {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "All user defined tools will be deleted.", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Reset confirmation");
+        alert.setHeaderText("Are you sure you want to reset tool library?");
+        alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
+        {
+            ToolLibrary.reset();
+            try
+            {
+                table.setItems(FXCollections.observableArrayList(ToolLibrary.load().getToolSettings()));
+            }
+            catch (Exception e)
+            {
+                LoggerFactory.logException("Couldn't load tool library", e);
+            }
+        });
+
+    }
 }
