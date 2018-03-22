@@ -187,9 +187,9 @@ public class SettingsToolTable implements Initializable
 
     public void resetToolLibrary()
     {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "All user defined tools will be deleted.", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Reset confirmation");
-        alert.setHeaderText("Are you sure you want to reset tool library?\nAll the user defined tools will be deleted.");
+        alert.setHeaderText("Are you sure you want to reset tool library?");
         alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
         {
             ToolLibrary.reset();
