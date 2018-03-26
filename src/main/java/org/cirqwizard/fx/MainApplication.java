@@ -217,7 +217,6 @@ public class MainApplication extends Application
             scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
 
         primaryStage.setScene(scene);
-        primaryStage.setResizable(true);
         primaryStage.setTitle("cirQWizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         mainView.setScreen(root);
@@ -235,7 +234,6 @@ public class MainApplication extends Application
         if(System.getProperty("os.name").startsWith("Linux"))
             wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
         primaryStage.setScene(wizardScene);
-        primaryStage.setResizable(false);
         primaryStage.setTitle("Cirqoid Wizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         primaryStage.show();

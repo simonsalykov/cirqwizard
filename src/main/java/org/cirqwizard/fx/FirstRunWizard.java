@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.controls.RealNumberTextField;
@@ -21,9 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 public class FirstRunWizard extends ScreenController implements Initializable
 {
-    @FXML private AnchorPane welcomePane;
-    @FXML private VBox yAxisDifferenceVBox;
-    @FXML private VBox zOffsetsVBox;
+    @FXML private Pane welcomePane;
+    @FXML private Pane yAxisDifferencePane;
+    @FXML private Pane zOffsetsPane;
 
     // z offsets layouts
     @FXML private VBox isolatingMinerVBox;
@@ -42,11 +41,11 @@ public class FirstRunWizard extends ScreenController implements Initializable
     @FXML private RealNumberTextField yAxisDifferenceField;
 
     // homing
-    @FXML private VBox homingVBox;
+    @FXML private Pane homingPane;
     @FXML private Button homeButton;
 
     // general
-    @FXML private Hyperlink skipLink;
+    @FXML private Button cancelButton;
     @FXML private Button nextButton;
     @FXML private Button backButton;
 
@@ -87,7 +86,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
             nextButton.setDisable(thirdButtonDisabled());
         });
 
-        skipLink.setOnMouseClicked(e -> {
+        cancelButton.setOnMouseClicked(e -> {
             getMainApplication().showMainApplication();
         });
 
@@ -127,25 +126,25 @@ public class FirstRunWizard extends ScreenController implements Initializable
                 break;
             case Y_AXIS_DIFFERENCE:
                 backButton.setVisible(true);
-                currentPane = yAxisDifferenceVBox;
+                currentPane = yAxisDifferencePane;
                 fillYAxisValues();
                 break;
             case HOMING:
-                currentPane = homingVBox;
+                currentPane = homingPane;
                 toHoming();
                 break;
             case ISOLATING_MINER:
-                currentPane = zOffsetsVBox;
+                currentPane = zOffsetsPane;
                 toZOffsetsStep();
                 thirdStepChangeDescription(isolatingMinerVBox);
                 break;
             case DRILLING:
-                currentPane = zOffsetsVBox;
+                currentPane = zOffsetsPane;
                 toZOffsetsStep();
                 thirdStepChangeDescription(drillingVBox);
                 break;
             case DISPENSE:
-                currentPane = zOffsetsVBox;
+                currentPane = zOffsetsPane;
                 toZOffsetsStep();
                 thirdStepChangeDescription(dispenseVBox);
                 nextButton.setText("Finish");
@@ -203,8 +202,8 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
     public void toHoming()
     {
-        yAxisDifferenceVBox.setVisible(false);
-        homingVBox.setVisible(true);
+        yAxisDifferencePane.setVisible(false);
+        homingPane.setVisible(true);
         nextButton.setDisable(true);
     }
 
