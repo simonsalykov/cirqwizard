@@ -113,7 +113,10 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
         // disable current step
         if (currentPane != null)
+        {
             currentPane.setVisible(false);
+            currentPane.setManaged(false);
+        }
 
         if (currentStep != Step.DISPENSE)
             nextButton.setText("Next");
@@ -155,6 +158,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
         }
 
         currentPane.setVisible(true);
+        currentPane.setManaged(true);
     }
 
     private boolean saveSettings()
