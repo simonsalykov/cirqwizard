@@ -79,73 +79,78 @@
         <Button fx:id="homeButton" onAction="#home" text="Home"/>
     </VBox>
 
-    <VBox fx:id="zOffsetsPane" spacing="10" visible="false"  managed="false">
+    <VBox fx:id="zOffsetsPane" spacing="10" visible="false"  managed="false" VBox.vgrow="ALWAYS">
         <padding>
             <Insets bottom="25" left="25" right="25" top="25" />
         </padding>
 
-        <GridPane>
-            <VBox fx:id="isolatingMinerVBox" visible="false">
-                <HBox alignment="CENTER">
-                    <Label styleClass="h1" text="Isolation milling Z offset" textAlignment="CENTER"/>
-                </HBox>
+        <HBox alignment="CENTER">
+            <Label styleClass="h1" fx:id="zOffsetPaneTitleLabel" textAlignment="CENTER"/>
+        </HBox>
 
-                <Label styleClass="label" wrapText="true" text="• Put a PCB on the machine bed" />
-                <Label styleClass="label" wrapText="true" text="• Insert a V-Tool in the machine’s spindle."/>
-                <Label styleClass="label" wrapText="true" text="• Insert a spindle in the machine, but don’t fix it with a screw."/>
-                <Label styleClass="label" wrapText="true" text="• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with a V-Tool."/>
+        <Label styleClass="label"  wrapText="true" text="The controls below allow to move machine's axes. You can either type a position and hit Enter key or use ↑ and ↓ arrow keys to move the axis by 0.1mm">
+            <padding>
+                <Insets top="25.0"/>
+            </padding>
+        </Label>
+
+        <GridPane alignment="TOP_CENTER" hgap="10" maxWidth="750.0" prefHeight="166.0" prefWidth="750.0" vgap="15">
+            <padding>
+                <Insets left="10.0" right="10.0" top="10.0" />
+            </padding>
+
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" prefWidth="100.0" />
+                <ColumnConstraints prefWidth="80.0" />
+                <ColumnConstraints prefWidth="89.0" />
+            </columnConstraints>
+            <Label styleClass="h3" text="Axis" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label styleClass="h3" text="Position" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <RealNumberTextField integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xTextField" />
+            <RealNumberTextField fx:id="yTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <RealNumberTextField fx:id="zTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label styleClass="h3" text="Range" GridPane.columnIndex="2" prefWidth="89.0" GridPane.rowIndex="0"  alignment="CENTER"/>
+            <Label alignment="CENTER" prefWidth="89.0" text="0...100" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Label alignment="CENTER" prefWidth="89.0" text="0...225" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Label alignment="CENTER" prefWidth="89.0" text="-25...0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        </GridPane>
+
+        <Label styleClass="label"  wrapText="true" text="Using these controls perform the following actions to establish Z offset:">
+            <padding>
+                <Insets top="25.0"/>
+            </padding>
+        </Label>
+
+        <StackPane>
+            <VBox fx:id="isolatingMillingVBox" visible="false">
+                <Label styleClass="label" wrapText="true" text="• Put a PCB on the machine bed"/>
+                <Label styleClass="label" wrapText="true" text="• Insert a V-Tool in the machine’s spindle"/>
+                <Label styleClass="label" wrapText="true" text="• Insert a spindle in the machine, but don’t fix it with a screw"/>
+                <Label styleClass="label" wrapText="true" text="• Put a piece of paper on the PCB"/>
+                <Label styleClass="label" wrapText="true" text="• Lower the spindle bit by bit until the paper gets pinned to the PCB with a V-Tool"/>
+                <Label styleClass="label" wrapText="true" text="• Press Next when the paper is pinned"/>
             </VBox>
 
             <VBox fx:id="drillingVBox" visible="false">
-                <HBox alignment="CENTER">
-                    <Label styleClass="h1" text="Drilling &amp; contour milling Z offsets" textAlignment="CENTER"/>
-                </HBox>
-
-                <Label styleClass="label" wrapText="true" text="• Put a spacer between a PCB and a machine bed."/>
-                <Label styleClass="label" wrapText="true" text="• Insert a drill in the machine’s spindle, but don’t fix it with a screw."/>
-                <Label styleClass="label" wrapText="true" text="• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the drill."/>
+                <Label styleClass="label" wrapText="true" text="• Put a spacer between a PCB and machine's bed."/>
+                <Label styleClass="label" wrapText="true" text="• Insert a drill in the spindle, but don’t fix it with a screw."/>
+                <Label styleClass="label" wrapText="true" text="• Put a piece of paper on the PCB"/>
+                <Label styleClass="label" wrapText="true" text="• Lower the spindle bit by bit until the paper gets pinned to the PCB with a drill"/>
+                <Label styleClass="label" wrapText="true" text="• Press Next when the paper is pinned"/>
             </VBox>
 
             <VBox fx:id="dispenseVBox" visible="false">
-                <HBox alignment="CENTER">
-                    <Label styleClass="h1" text="Dispensing z offset" textAlignment="CENTER"/>
-                </HBox>
-
-                <Label styleClass="label"  wrapText="true" text="• Insert a dispensing tool in the machine’s spindle, but don’t fix it with a screw."/>
-                <Label styleClass="label"  wrapText="true" text="• Put a piece of paper on the PCB and manually lower the spindle bit by bit until the paper gets pinned to the PCB with the dispensing tool."/>
+                <Label styleClass="label" wrapText="true" text="• Put a PCB without spacer on the machine bed"/>
+                <Label styleClass="label" wrapText="true" text="• Insert a dispensing add-on, but don’t fix it with a screw."/>
+                <Label styleClass="label" wrapText="true" text="• Put a piece of paper on the PCB"/>
+                <Label styleClass="label" wrapText="true" text="• Lower the Z axis bit by bit until the paper gets pinned to the PCB with a needle"/>
+                <Label styleClass="label" wrapText="true" text="• Press Next when the paper is pinned"/>
             </VBox>
+        </StackPane>
 
-            <columnConstraints>
-                <ColumnConstraints percentWidth="100"/>
-            </columnConstraints>
-
-        </GridPane>
-
-        <Label styleClass="label"  wrapText="true" text="Select specific axis and use arrow keys to change the values, the spindle should move responding to your actions."/>
-
-        <VBox>
-            <GridPane alignment="TOP_CENTER" hgap="10" maxWidth="750.0" prefHeight="166.0" prefWidth="750.0" vgap="15">
-                <padding>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                </padding>
-
-                <columnConstraints>
-                    <ColumnConstraints halignment="CENTER" prefWidth="100.0" />
-                    <ColumnConstraints prefWidth="80.0" />
-                    <ColumnConstraints />
-                    <ColumnConstraints />
-                </columnConstraints>
-                <Label text="X" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                <Label text="Y" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                <Label text="Z" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                <RealNumberTextField integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xTextField" />
-                <RealNumberTextField fx:id="yTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                <RealNumberTextField fx:id="zTextField" integerValue="0" onAction="#goToUpdatedCoordinates" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...100" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="0...220" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                <Label alignment="CENTER" prefHeight="25.0" prefWidth="89.0" text="-26...0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            </GridPane>
-        </VBox>
     </VBox>
 
     <HBox>
@@ -153,7 +158,7 @@
             <Insets bottom="15.0" left="25.0" right="25.0" top="15.0"/>
         </padding>
 
-        <Button fx:id="cancelButton" text="Cancel" alignment="CENTER_LEFT"/>
+        <Button fx:id="cancelButton" text="Cancel"/>
 
         <HBox alignment="CENTER_RIGHT" spacing="10" HBox.hgrow="ALWAYS">
             <Button fx:id="backButton" depthTest="DISABLE" onAction="#onBack" text="Back"/>

@@ -18,6 +18,11 @@
     -fx-font-weight: bold;
 }
 
+.h3 {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
 .pcb-top-trace {
     -fx-stroke: red;
     -fx-fill: red;

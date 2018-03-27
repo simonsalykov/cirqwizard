@@ -24,10 +24,12 @@ public class FirstRunWizard extends ScreenController implements Initializable
     @FXML private Pane yAxisDifferencePane;
     @FXML private Pane zOffsetsPane;
 
-    // z offsets layouts
-    @FXML private VBox isolatingMinerVBox;
+    // Z offsets layouts
+    @FXML private Label zOffsetPaneTitleLabel;
+    @FXML private VBox isolatingMillingVBox;
     @FXML private VBox drillingVBox;
     @FXML private VBox dispenseVBox;
+
     // control z offsets
     @FXML private RealNumberTextField xTextField;
     @FXML private RealNumberTextField yTextField;
@@ -136,18 +138,21 @@ public class FirstRunWizard extends ScreenController implements Initializable
                 currentPane = homingPane;
                 toHoming();
                 break;
-            case ISOLATING_MINER:
+            case ISOLATING_MILLING:
                 currentPane = zOffsetsPane;
+                zOffsetPaneTitleLabel.setText("Isolation milling Z offset");
                 toZOffsetsStep();
-                thirdStepChangeDescription(isolatingMinerVBox);
+                thirdStepChangeDescription(isolatingMillingVBox);
                 break;
             case DRILLING:
                 currentPane = zOffsetsPane;
+                zOffsetPaneTitleLabel.setText("Drilling & contour milling Z offsets");
                 toZOffsetsStep();
                 thirdStepChangeDescription(drillingVBox);
                 break;
             case DISPENSE:
                 currentPane = zOffsetsPane;
+                zOffsetPaneTitleLabel.setText("Dispensing Z offsets");
                 toZOffsetsStep();
                 thirdStepChangeDescription(dispenseVBox);
                 nextButton.setText("Finish");
@@ -171,7 +176,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
             case Y_AXIS_DIFFERENCE:
                 saveMachineSettings();
                 return true;
-            case ISOLATING_MINER:
+            case ISOLATING_MILLING:
                 saveIsolationMillingOffset();
                 return false;
             case DRILLING:
@@ -201,7 +206,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
     public void toZOffsetsStep()
     {
-        thirdStepChangeDescription(isolatingMinerVBox);
+        thirdStepChangeDescription(isolatingMillingVBox);
     }
 
     public void toHoming()
@@ -226,7 +231,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation");
-        alert.setHeaderText(String.format("Use %.2f as dispensing z offset?", zOffset));
+        alert.setHeaderText(String.format("Use %.2f as dispensing Z offset?", zOffset));
         alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
         {
             DispensingSettings dispensingSettings = SettingsFactory.getDispensingSettings();
@@ -247,7 +252,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation");
-        alert.setHeaderText(String.format("Use %.2f as isolation milling z offset?", zOffset));
+        alert.setHeaderText(String.format("Use %.2f as isolation milling Z offset?", zOffset));
         alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
         {
             ToolLibrary toolLibrary = new ToolLibrary();
@@ -255,6 +260,10 @@ public class FirstRunWizard extends ScreenController implements Initializable
             toolSettings.setZOffset(zTextField.getIntegerValue());
             toolLibrary.setToolSettings(new ToolSettings[]{toolSettings});
             toolLibrary.save();
+
+            RubOutSettings settings = SettingsFactory.getRubOutSettings();
+            settings.getZOffset().setValue(zTextField.getIntegerValue());
+            settings.save();
 
             onStepChange(Step.values()[currentStep.ordinal() + 1]);
         });
@@ -266,7 +275,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Confirmation");
-        alert.setHeaderText(String.format("Use %.2f as drilling and contour milling z offset?", zOffset));
+        alert.setHeaderText(String.format("Use %.2f as drilling and contour milling Z offset?", zOffset));
         alert.showAndWait().filter(response -> response == ButtonType.YES).ifPresent(response ->
         {
             DrillingSettings drillingSettings = SettingsFactory.getDrillingSettings();
@@ -305,7 +314,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
                 if (getMainApplication().getCNCController() == null)
                 {
-                    throw new Exception("Establishing connection with cirqoid has failed.");
+                    throw new Exception("Establishing connection with controller has failed.");
                 }
             }
 
@@ -398,7 +407,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
         WELCOME(0),
         Y_AXIS_DIFFERENCE(1),
         HOMING(2),
-        ISOLATING_MINER(3),
+        ISOLATING_MILLING(3),
         DRILLING(4),
         DISPENSE(5),
         FINISH(6);
