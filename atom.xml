@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2018-01-15T23:54:37+01:00</updated>
+  <updated>2018-03-27T23:56:52+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.8.0]]></title>
+    <link href="http://cirqwizard.org//blog/2018/03/27/version-1-dot-8-0/"/>
+    <updated>2018-03-27T23:22:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2018/03/27/version-1-dot-8-0</id>
+    <content type="html"><![CDATA[<p>Version 1.8.0 comes with a brand new setup wizard, which helps to go through the necessary settings for the first setup of the program.</p>
+<p>It also has included isolation milling tool library with all the default tools and their respective feeds and speeds.</p>
+<p>As usually, we&#8217;ve squashed a bug or two along the way.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 2.0.0-RC4]]></title>
@@ -189,14 +199,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
     <updated>2016-09-06T14:41:00+02:00</updated>
     <id>http://cirqwizard.org//blog/2016/09/06/version-1-dot-6-6</id>
     <content type="html"><![CDATA[<p>Version 1.6.6 is another bug-fixing release, addressing an issue with centroid file formats, bug <a href="https://cirqwizard.atlassian.net/browse/CQ-187">CQ-187</a>, to be specific.</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.5]]></title>
-    <link href="http://cirqwizard.org//blog/2016/08/25/version-1-dot-6-5/"/>
-    <updated>2016-08-25T12:26:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2016/08/25/version-1-dot-6-5</id>
-    <content type="html"><![CDATA[<p>Hot on the heels of version 1.6.4, another bug-fixing release taking care of bugs <a href="https://cirqwizard.atlassian.net/browse/CQ-185">CQ-185</a> and <a href="https://cirqwizard.atlassian.net/browse/CQ-186">CQ-186</a> Enjoy!</p>]]></content>
   </entry>
   
 </feed>
