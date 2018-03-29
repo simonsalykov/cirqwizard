@@ -160,6 +160,9 @@ public class CircularShape extends InterpolatingShape
                     arc.getCenter().getY() + (double)arc.getRadius() * Math.sin(angle)));
             angle += angularIncrement;
         }
+
+        coordinates.add(new Coordinate(getTo().getX(), getTo().getY()));
+
         return coordinates;
     }
 
