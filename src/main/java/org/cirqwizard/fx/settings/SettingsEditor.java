@@ -258,4 +258,9 @@ public class SettingsEditor extends ScreenController implements Initializable
             refresh();
         });
     }
+
+    public void goToSetupWizard()
+    {
+        getMainApplication().showFirstLaunchWizard();
+    }
 }

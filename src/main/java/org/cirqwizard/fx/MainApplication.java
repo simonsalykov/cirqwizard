@@ -57,6 +57,7 @@ public class MainApplication extends Application
 {
     private Stage primaryStage;
     private Scene scene;
+    private Scene wizardScene;
 
     private Context context = new Context();
     private SerialInterface serialInterface;
@@ -192,21 +193,52 @@ public class MainApplication extends Application
                     addChild(new ManualDataInput().setMainApplication(this)));
 
     @Override
-    public void start(Stage primaryStage) throws Exception
+    public void start(Stage primaryStage)
     {
         new Settings(Preferences.userRoot().node("org.cirqwizard")).export();
         LoggerFactory.getApplicationLogger().setLevel(SettingsFactory.getApplicationSettings().getLogLevel().getValue());
         connectSerialPort(SettingsFactory.getApplicationSettings().getSerialPort().getValue());
 
         this.primaryStage = primaryStage;
+
+        if (isFirstLaunch())
+            showFirstLaunchWizard();
+        else
+            showMainApplication();
+    }
+
+    public void showMainApplication()
+    {
+        // recreate scene again. fix for weird bug in mac os when links turn into buttons
+        if (scene != null)
+            primaryStage.close();
+
+        mainView = (MainViewController) new MainViewController().setMainApplication(this);
         scene = new Scene(mainView.getView(), 800, 600);
         scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
-        if(System.getProperty("os.name").startsWith("Linux"))
+        if (System.getProperty("os.name").startsWith("Linux"))
             scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+
         primaryStage.setScene(scene);
         primaryStage.setTitle("cirQWizard");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         mainView.setScreen(root);
+        primaryStage.show();
+    }
+
+    public void showFirstLaunchWizard()
+    {
+        if (scene != null)
+            primaryStage.close();
+
+        ScreenController firstRunWizard = new FirstRunWizard().setMainApplication(this);
+        wizardScene = new Scene(firstRunWizard.getView(), 800, 600);
+        wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
+        if(System.getProperty("os.name").startsWith("Linux"))
+            wizardScene.getStylesheets().add("org/cirqwizard/fx/cirqwizard-linux.css");
+        primaryStage.setScene(wizardScene);
+        primaryStage.setTitle("Cirqoid Wizard");
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/application.png")));
         primaryStage.show();
     }
 
@@ -289,6 +321,12 @@ public class MainApplication extends Application
         });
         t.setDaemon(true);
         t.start();
+    }
+
+    private boolean isFirstLaunch()
+    {
+        Integer currentYAxisDifference = SettingsFactory.getMachineSettings().getYAxisDifference().getValue();
+        return currentYAxisDifference == null;
     }
 
     @Override

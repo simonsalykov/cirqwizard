@@ -33,7 +33,7 @@
         <VBox styleClass="error-box">
             <TextFlow>
                 <Text text="Some mandatory settings are not specified. Not all functions will be available or work as expected." styleClass="label"/>
-                <Hyperlink text="Check settings..." onAction="#showSettings"/>
+                <Hyperlink text="Check settings" onAction="#showSettings"/><Text text=" or go through " styleClass="label"/> <Hyperlink text="Setup wizard" onAction="#showSetupWizard"/>
             </TextFlow>
         </VBox>
         <VBox minHeight="30"/>

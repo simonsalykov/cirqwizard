@@ -27,7 +27,20 @@ import java.nio.file.Paths;
 public class ToolLibrary
 {
     @ElementArray
-    private ToolSettings[] toolSettings = new ToolSettings[] {getDefaultTool()};
+    private ToolSettings[] toolSettings = new ToolSettings[]
+    {
+        new ToolSettings("15 deg. 0.10mm end mill", 130, 1390, 75_000, 50_000, 30, 0, 0, 50, false),
+        new ToolSettings("15 deg. 0.13mm end mill", 160, 1390, 150_000, 75_000, 30, 0, 0, 50, false),
+        new ToolSettings("15 deg. 0.18mm end mill", 210, 1390, 400_000, 150_000, 30, 0, 0, 50, false),
+        new ToolSettings("15 deg. 0.254mm end mill", 284, 1390, 1000_000, 300_000, 30, 0, 0, 50, false),
+        new ToolSettings("V tool 0.1-0.15mm", 120, 1390, 300_000, 100_000, 30, 0, 0, 50, false),
+        new ToolSettings("V tool 0.2-0.5mm", 300, 1390, 800_000, 300_000, 30, 0, 0, 50, false),
+        new ToolSettings("0.4mm rub out end mill", 430, 1390, 800_000, 250_000, 30, 0, 0, 50, false),
+        new ToolSettings("0.8mm rub out end mill", 830, 1390, 1000_000, 50_000, 30, 0, 0, 50, false),
+        new ToolSettings("1.0mm rub out end mill", 1_030, 1390, 1000_000, 300_000, 30, 0, 0, 50, false),
+        new ToolSettings("1.5mm rub out end mill", 1_530, 1390, 1000_000, 300_000, 30, 0, 0, 50, false),
+        new ToolSettings("2.0mm rub out end mill", 2_030, 1390, 1000_000, 300_000, 30, 0, 0, 50, false),
+    };
 
     public ToolSettings[] getToolSettings()
     {
@@ -45,6 +58,20 @@ public class ToolLibrary
         if (!Files.exists(file))
             return new ToolLibrary();
         return (new Persister()).read(ToolLibrary.class, file.toFile());
+    }
+
+    public static void reset()
+    {
+        try
+        {
+            Path file = Paths.get(System.getProperty("user.home"), ".cirqwizard", "tool table.xml");
+            if (Files.exists(file))
+                Files.delete(file);
+        }
+        catch (Exception e)
+        {
+            LoggerFactory.logException("Could not delete tool table", e);
+        }
     }
 
     public void save()
