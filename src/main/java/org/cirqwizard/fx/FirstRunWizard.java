@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import org.cirqwizard.fx.controls.RealNumberTextField;
 import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
-import org.cirqwizard.serial.SerialInterfaceFactory;
+import org.cirqoid.cnc.controller.serial.SerialInterfaceFactory;
 import org.cirqwizard.settings.*;
 
 import java.net.URL;
