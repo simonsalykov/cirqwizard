@@ -175,7 +175,7 @@ public class FirstRunWizard extends ScreenController implements Initializable
         {
             case Y_AXIS_DIFFERENCE:
                 saveMachineSettings();
-                return true;
+                return connectToCirqoid();
             case ISOLATING_MILLING:
                 saveIsolationMillingOffset();
                 return false;
@@ -300,24 +300,6 @@ public class FirstRunWizard extends ScreenController implements Initializable
     {
         try
         {
-            if (getMainApplication().getCNCController() == null)
-            {
-                Object serialPort = serialPortComboBox.getValue();
-
-                getMainApplication().connectSerialPort(serialPort.toString());
-                TimeUnit.SECONDS.sleep(1);
-
-                for (int i = 0; i < 5 && getMainApplication().getCNCController() == null; ++i)
-                {
-                    TimeUnit.SECONDS.sleep(1);
-                }
-
-                if (getMainApplication().getCNCController() == null)
-                {
-                    throw new Exception("Establishing connection with controller has failed.");
-                }
-            }
-
             getMainApplication().getCNCController().home(yAxisDifferenceField.getIntegerValue());
             nextButton.setDisable(false);
         }
@@ -361,6 +343,38 @@ public class FirstRunWizard extends ScreenController implements Initializable
         machineSettings.save();
     }
 
+    private boolean connectToCirqoid()
+    {
+        try
+        {
+            Object serialPort = serialPortComboBox.getValue();
+            if (getMainApplication().getCNCController() == null)
+            {
+                getMainApplication().connectSerialPort(serialPort.toString());
+                TimeUnit.SECONDS.sleep(1);
+
+                for (int i = 0; i < 5 && getMainApplication().getCNCController() == null; ++i)
+                {
+                    TimeUnit.SECONDS.sleep(1);
+                }
+
+                if (getMainApplication().getCNCController() == null)
+                {
+                    throw new Exception("Establishing connection with controller has failed.");
+                }
+            }
+            return true;
+        }
+        catch(Exception ex)
+        {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Error");
+            alert.setHeaderText("Cannot establish connection to your Cirqoid machine");
+        }
+
+        return false;
+    }
+
     private Integer getYAxisDifference()
     {
         // saving settings
@@ -398,8 +412,9 @@ public class FirstRunWizard extends ScreenController implements Initializable
 
     public void goToUpdatedCoordinates()
     {
-        getMainApplication().getCNCController().moveTo(xTextField.getIntegerValue(), yTextField.getIntegerValue(),
-                zTextField.getIntegerValue());
+        getMainApplication().getCNCController().moveTo(xTextField.getIntegerValue(),
+                                                       yTextField.getIntegerValue(),
+                                                       zTextField.getIntegerValue());
     }
 
     private enum Step
