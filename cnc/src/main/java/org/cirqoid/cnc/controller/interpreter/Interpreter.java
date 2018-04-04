@@ -59,6 +59,8 @@ public class Interpreter
 
         try
         {
+            int[] arcCenterPoint = new int[3];
+
             while (!tokens.isEmpty())
             {
                 Token t = tokens.remove(0);
@@ -79,7 +81,7 @@ public class Interpreter
                 {
                     int axis = ParsingUtil.getAxisNumber(t.getLetter());
                     if (ParsingUtil.isCenterOffsetLetter(t.getLetter()))
-                        context.setArcCenterOffset(axis, ParsingUtil.toInteger(t.getDecimalParameter()));
+                        arcCenterPoint[axis] = ParsingUtil.toInteger(t.getDecimalParameter());
                     else if (ParsingUtil.isAxisLetter(t.getLetter()))
                     {
                         interpolationCommanded = true;
@@ -92,7 +94,7 @@ public class Interpreter
             {
                 if (!TravelRangeValidator.validate(context.getCurrentPosition(), HardwareSettings.getCirqoidSettings()))
                     throw new ParsingException("Axis overtravel");
-                    executionList.add(createInterpolationCommand(startPosition));
+                executionList.add(createInterpolationCommand(startPosition, arcCenterPoint));
             }
         }
         catch (ParsingException e)
@@ -109,7 +111,7 @@ public class Interpreter
         return coordinate + context.getOffset(context.getCurrentWcs(), axis);
     }
 
-    private Command createInterpolationCommand(int[] originalPosition) throws ParsingException
+    private Command createInterpolationCommand(int[] originalPosition, int[] arcCenterPoint) throws ParsingException
     {
         int[] target = new int[ApplicationConstants.MAX_AXES_COUNT];
         System.arraycopy(context.getCurrentPosition(), 0, target, 0, target.length);
@@ -133,8 +135,8 @@ public class Interpreter
                     case YZ: axes = new int[] {1, 2, 0}; break;
                     case XZ: axes = new int[] {0, 2, 1}; break;
                 }
-                int[] centerCoordinates = new int[] {originalPosition[axes[0]] + context.getArcCenterOffset(axes[0]),
-                    originalPosition[axes[1]] + context.getArcCenterOffset(axes[1])};
+                int[] centerCoordinates = new int[] {originalPosition[axes[0]] + arcCenterPoint[axes[0]],
+                    originalPosition[axes[1]] + arcCenterPoint[axes[1]]};
                 int radius = (int) Math.hypot(context.getCurrentPosition(axes[0]) - centerCoordinates[0],
                         context.getCurrentPosition(axes[1]) - centerCoordinates[1]);
                 return new CircularInterpolationCommand(target, radius, centerCoordinates, context.getPlane(),

@@ -28,7 +28,6 @@ public class Context implements Cloneable
     private int offsets[][] = new int[ApplicationConstants.WCS_COUNT][ApplicationConstants.MAX_AXES_COUNT + 1];
     private int currentPosition[] = new int[ApplicationConstants.MAX_AXES_COUNT];
     private Plane plane = Plane.XY;
-    private int arcCenterOffset[] = new int[3];
     private Integer feed = null;
     private Integer speed = null;
     private int relaysStatus;
@@ -88,16 +87,6 @@ public class Context implements Cloneable
         this.plane = plane;
     }
 
-    public int getArcCenterOffset(int axis)
-    {
-        return arcCenterOffset[axis];
-    }
-
-    public void setArcCenterOffset(int axis, int offset)
-    {
-        arcCenterOffset[axis] = offset;
-    }
-
     public Integer getFeed()
     {
         return feed;
@@ -146,5 +135,4 @@ public class Context implements Cloneable
         clone.feed = this.feed;
         return clone;
     }
-
 }
