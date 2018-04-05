@@ -214,7 +214,8 @@ public class MainApplication extends Application
             primaryStage.close();
 
         mainView = (MainViewController) new MainViewController().setMainApplication(this);
-        mainView.addStatusUpdateHook(cncController);
+        if (cncController != null)
+            mainView.addStatusUpdateHook(cncController);
 
         scene = new Scene(mainView.getView(), 800, 600);
         scene.getStylesheets().add("org/cirqwizard/fx/cirqwizard.css");
