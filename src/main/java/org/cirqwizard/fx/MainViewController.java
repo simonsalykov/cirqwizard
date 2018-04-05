@@ -193,7 +193,10 @@ public class MainViewController extends ScreenController
 
     public void addStatusUpdateHook(CNCController controller)
     {
-        setStatus(controller.getStatus());
+        Platform.runLater(() ->
+        {
+             setStatus(controller.getStatus());
+        });
 
         controller.statusProperty().addListener((v, oldV, newV) ->
         {
