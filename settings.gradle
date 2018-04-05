@@ -1,1 +1,37 @@
+import org.ajoberstar.grgit.*
+
+cncJavaBranch='master'
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1"
+        classpath "org.ajoberstar:grgit:1.7.2"
+    }
+}
+
+///////////////////////////////////////
+// Start checking out cnc-java code
+// Checkout the same branch as the main rep if cncJavaBranch is not specified
+///////////////////////////////////////
+def cncPath = file('cnc-java')
+if (!cncPath.exists()) {
+    Grgit.clone(dir: cncPath, uri: 'https://github.com/cirqoid/cnc-java.git')
+}
+
+def gitRepo = Grgit.open(dir: cncPath)
+
+if(gitRepo.branch.list().find { it.name == cncJavaBranch })
+    gitRepo.checkout(branch: cncJavaBranch)
+else
+    gitRepo.checkout(branch: cncJavaBranch, startPoint: 'origin/' + cncJavaBranch, createBranch: true)
+///////////////////////////////////////
+// End cnc-java
+///////////////////////////////////////
+
+
 include ":cnc-java"
