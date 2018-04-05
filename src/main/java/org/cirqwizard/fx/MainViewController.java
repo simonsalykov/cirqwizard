@@ -193,14 +193,23 @@ public class MainViewController extends ScreenController
 
     public void addStatusUpdateHook(CNCController controller)
     {
+        Platform.runLater(() ->
+        {
+             setStatus(controller.getStatus());
+        });
+
         controller.statusProperty().addListener((v, oldV, newV) ->
         {
             Platform.runLater(() ->
             {
-                statusIndicator.setStatus(newV);
-                manualControlLink.setDisable(newV == CNCController.Status.ERROR || newV == CNCController.Status.NOT_CONNECTED);
+                setStatus(newV);
             });
         });
     }
 
+    private void setStatus(CNCController.Status status)
+    {
+        statusIndicator.setStatus(status);
+        manualControlLink.setDisable(status == CNCController.Status.ERROR || status == CNCController.Status.NOT_CONNECTED);
+    }
 }
