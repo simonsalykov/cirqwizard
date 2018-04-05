@@ -1,1 +1,1 @@
-include ':cnc'
+include ":cnc-java"
