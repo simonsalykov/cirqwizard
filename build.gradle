@@ -1,5 +1,3 @@
-import org.ajoberstar.grgit.*
-
 buildscript {
     repositories {
         maven {
@@ -8,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1"
-        classpath "org.ajoberstar:grgit:1.7.2"
+        classpath "org.ajoberstar:grgit:1.7.2" // Idea will not highlight the import red in settings.gradle
     }
 }
 
@@ -47,29 +45,6 @@ repositories {
         url "http://maven.openimaj.org"
     }
 }
-///////////////////////////////////////
-// Start checking out cnc-java code
-// Checkout the same branch as the main rep if cncJavaBranch is not specified
-///////////////////////////////////////
-def cncPath = file('cnc-java')
-if (!cncPath.exists()) {
-    Grgit.clone(dir: cncPath, uri: 'https://github.com/cirqoid/cnc-java.git')
-}
-
-def gitRepo = Grgit.open(dir: cncPath)
-def mainRepo = Grgit.open(dir: project.file('.'))
-
-def checkoutBranch = mainRepo.branch.getCurrent().name
-if (project.hasProperty('cncJavaBranch'))
-    checkoutBranch = project.getProperty('cncJavaBranch')
-
-if(gitRepo.branch.list().find { it.name == checkoutBranch })
-    gitRepo.checkout(branch: checkoutBranch)
-else
-    gitRepo.checkout(branch: checkoutBranch, startPoint: 'origin/' + checkoutBranch, createBranch: true)
-///////////////////////////////////////
-// End cnc-java
-///////////////////////////////////////
 
 dependencies {
     compile project(':cnc-java')
