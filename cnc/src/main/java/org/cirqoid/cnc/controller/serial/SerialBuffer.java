@@ -45,7 +45,7 @@ public class SerialBuffer
             return null;
         ByteBuffer b = ByteBuffer.wrap(buffer, 10, 4);
         int expectedLength = b.getInt() + 2 + 4 + 4 + 4 + 4;
-        if (expectedLength > MAX_PACKET_SIZE)
+        if (expectedLength < 2 || expectedLength > MAX_PACKET_SIZE)
         {
             bufferPointer = 0;
             return null;
