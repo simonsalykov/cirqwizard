@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2018-03-27T23:56:52+02:00</updated>
+  <updated>2018-04-08T20:56:55+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 2.0.0-RC5]]></title>
+    <link href="http://cirqwizard.org//blog/2018/04/08/version-2-dot-0-0-rc5/"/>
+    <updated>2018-04-08T20:54:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2018/04/08/version-2-dot-0-0-rc5</id>
+    <content type="html"><![CDATA[<p>Version 2.0.0-RC5 includes all the new features and bug fixes from the stable branch version 1.8.0, plus fixes a couple of bugs related to tool path generation introduced in the 2.0.x branch.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 1.8.0]]></title>
@@ -191,14 +199,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
     <updated>2016-09-29T14:01:00+02:00</updated>
     <id>http://cirqwizard.org//blog/2016/09/29/version-1-dot-6-7</id>
     <content type="html"><![CDATA[<p>Another bug squashed &#8211; <a href="https://cirqwizard.atlassian.net/browse/CQ-188">CQ-188</a> One by one, they&#8217;ll be all gone!</p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.6]]></title>
-    <link href="http://cirqwizard.org//blog/2016/09/06/version-1-dot-6-6/"/>
-    <updated>2016-09-06T14:41:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2016/09/06/version-1-dot-6-6</id>
-    <content type="html"><![CDATA[<p>Version 1.6.6 is another bug-fixing release, addressing an issue with centroid file formats, bug <a href="https://cirqwizard.atlassian.net/browse/CQ-187">CQ-187</a>, to be specific.</p>]]></content>
   </entry>
   
 </feed>
