@@ -18,6 +18,7 @@ import javafx.scene.canvas.GraphicsContext;
 import org.cirqwizard.geom.Point;
 import org.cirqwizard.layers.LayerElement;
 import org.cirqwizard.pp.ComponentId;
+import org.cirqwizard.settings.ApplicationConstants;
 
 
 public class PPPoint implements LayerElement
@@ -99,14 +100,14 @@ public class PPPoint implements LayerElement
         if (clockwise)
         {
             point = new Point(point.getY(), -point.getX());
-            angle += 90;
+            angle += 90 * ApplicationConstants.RESOLUTION;
         }
         else
         {
             point = new Point(-point.getY(), point.getX());
-            angle -= 90;
+            angle -= 90 * ApplicationConstants.RESOLUTION;
         }
-        angle %= 360;
+        angle %= 360 * ApplicationConstants.RESOLUTION;
     }
 
     @Override
