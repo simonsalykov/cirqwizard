@@ -25,10 +25,6 @@ import org.cirqwizard.fx.MainApplication;
 import org.cirqwizard.fx.util.ExceptionAlert;
 import org.cirqwizard.logging.LoggerFactory;
 
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -83,7 +79,15 @@ public class SerialInterfaceCommandsService extends Service
                 for (int i = 0; i < commands.size(); i++)
                 {
                     if (isCancelled())
+                    {
+                        if (i > 0)
+                        {
+                            Command lastCommand = commands.get( i - 1);
+                            mainApplication.getCNCController().getInterpreter().setContext(lastCommand.getContext());
+                        }
+
                         throw new InterruptedException();
+                    }
 
                     mainApplication.getCNCController().send(commands.get(i));
                     updateProgress(i, commands.size());
