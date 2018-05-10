@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2018-04-08T20:56:55+02:00</updated>
+  <updated>2018-05-11T01:44:11+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 2.0.0-RC6]]></title>
+    <link href="http://cirqwizard.org//blog/2018/05/11/version-2-dot-0-0-rc6/"/>
+    <updated>2018-05-11T01:42:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2018/05/11/version-2-dot-0-0-rc6</id>
+    <content type="html"><![CDATA[<p>This version resolves a bug, which would cause spindle to move in all three axes in once after milling operation was stopped. Also, X travel range restored to its normal values (it has been broken along the way).</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 2.0.0-RC5]]></title>
@@ -191,14 +199,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
     <updated>2016-12-01T20:49:00+01:00</updated>
     <id>http://cirqwizard.org//blog/2016/12/01/version-1-dot-6-8</id>
     <content type="html"><![CDATA[<p>Still cleaning up some bugs here and there &#8211; <a href="https://cirqwizard.atlassian.net/browse/CQ-189">CQ-189</a> and <a href="https://cirqwizard.atlassian.net/browse/CQ-190">CQ-190</a></p>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.7]]></title>
-    <link href="http://cirqwizard.org//blog/2016/09/29/version-1-dot-6-7/"/>
-    <updated>2016-09-29T14:01:00+02:00</updated>
-    <id>http://cirqwizard.org//blog/2016/09/29/version-1-dot-6-7</id>
-    <content type="html"><![CDATA[<p>Another bug squashed &#8211; <a href="https://cirqwizard.atlassian.net/browse/CQ-188">CQ-188</a> One by one, they&#8217;ll be all gone!</p>]]></content>
   </entry>
   
 </feed>
