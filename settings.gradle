@@ -1,6 +1,6 @@
 import org.ajoberstar.grgit.*
 
-cncJavaBranch='master'
+cncJavaBranch='v2.0.0-RC6'
 
 buildscript {
     repositories {
@@ -28,7 +28,7 @@ def gitRepo = Grgit.open(dir: cncPath)
 if(gitRepo.branch.list().find { it.name == cncJavaBranch })
     gitRepo.checkout(branch: cncJavaBranch)
 else
-    gitRepo.checkout(branch: cncJavaBranch, startPoint: 'origin/' + cncJavaBranch, createBranch: true)
+    gitRepo.checkout(branch: cncJavaBranch, startPoint: cncJavaBranch, createBranch: true)
 ///////////////////////////////////////
 // End cnc-java
 ///////////////////////////////////////
