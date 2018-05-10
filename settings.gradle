@@ -1,6 +1,6 @@
 import org.ajoberstar.grgit.*
 
-cncJavaBranch='CQ-226'
+cncJavaBranch='master'
 
 buildscript {
     repositories {
