@@ -109,8 +109,21 @@ public class ContourMilling extends Machining
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
         int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
         MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+        String generatedGCode = generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
                 settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
                 settings.getSpeed().getValue());
+
+        StringBuilder sb = new StringBuilder();
+        double ratio = 1;
+
+        if (settings.getWorkingStepHeight().getValue() > 0)
+            ratio = (double)settings.getWorkingHeight().getValue() / (double)settings.getWorkingStepHeight().getValue();
+
+        for (double i = 0; i < Math.abs(ratio); ++i)
+        {
+            sb.append(generatedGCode);
+        }
+
+        return sb.toString();
     }
 }
