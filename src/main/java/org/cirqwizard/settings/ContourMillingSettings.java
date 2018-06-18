@@ -67,7 +67,7 @@ public class ContourMillingSettings extends SettingsGroup
 
     @PersistentPreference
     @PreferenceGroup(name = "Heights")
-    private UserPreference<Integer> workingStepHeight = new UserPreference<>("Working step height", 0, "mm");
+    private UserPreference<Integer> maxStepDown = new UserPreference<>("Max step down", 0, "mm");
 
     @Override
     public String getName()
@@ -201,13 +201,13 @@ public class ContourMillingSettings extends SettingsGroup
         this.workingHeight = workingHeight;
     }
 
-    public UserPreference<Integer> getWorkingStepHeight()
+    public UserPreference<Integer> getMaxStepDown()
     {
-        return workingStepHeight;
+        return maxStepDown;
     }
 
-    public void setWorkingStepHeight(UserPreference<Integer> workingStepHeight)
+    public void setMaxStepDown(UserPreference<Integer> maxStepDown)
     {
-        this.workingStepHeight = workingStepHeight;
+        this.maxStepDown = maxStepDown;
     }
 }

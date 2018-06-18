@@ -113,7 +113,7 @@ public class ContourMilling extends Machining
         StringBuilder sb = new StringBuilder();
         double stepNumber = 1;
 
-        int workingStepHeight = settings.getWorkingStepHeight().getValue();
+        int workingStepHeight = settings.getMaxStepDown().getValue();
         if (workingStepHeight > 0)
             stepNumber = Math.ceil(Math.abs((double)settings.getWorkingHeight().getValue() / workingStepHeight));
 
