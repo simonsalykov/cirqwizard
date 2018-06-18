@@ -109,8 +109,29 @@ public class ContourMilling extends Machining
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
         int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
         MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-        return generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
-                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
-                settings.getSpeed().getValue());
+
+        StringBuilder sb = new StringBuilder();
+        double stepNumber = 1;
+
+        int workingStepHeight = settings.getMaxStepDown().getValue();
+        if (workingStepHeight > 0)
+            stepNumber = Math.ceil(Math.abs((double)settings.getWorkingHeight().getValue() / workingStepHeight));
+
+        int roundedStepHeight = (int)(settings.getWorkingHeight().getValue() / stepNumber);
+
+        int currentHeight = settings.getWorkingHeight().getValue();
+        currentHeight -=  (stepNumber - 1) * roundedStepHeight;
+
+        for (int i = 0; i < stepNumber; ++i)
+        {
+            String generatedGCode = generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+                    settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), currentHeight, settings.getSpeed().getValue());
+
+            sb.append(generatedGCode);
+
+            currentHeight += roundedStepHeight;
+        }
+
+        return sb.toString();
     }
 }
