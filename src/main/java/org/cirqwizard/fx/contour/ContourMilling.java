@@ -109,19 +109,27 @@ public class ContourMilling extends Machining
         ContourMillingSettings settings = SettingsFactory.getContourMillingSettings();
         int arcFeed = (settings.getFeedXY().getValue() * settings.getFeedArcs().getValue() / 100);
         MillingGCodeGenerator generator = new MillingGCodeGenerator(getMainApplication().getContext());
-        String generatedGCode = generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
-                settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), settings.getWorkingHeight().getValue(),
-                settings.getSpeed().getValue());
 
         StringBuilder sb = new StringBuilder();
-        double ratio = 1;
+        double stepNumber = 1;
 
-        if (settings.getWorkingStepHeight().getValue() > 0)
-            ratio = (double)settings.getWorkingHeight().getValue() / (double)settings.getWorkingStepHeight().getValue();
+        int workingStepHeight = settings.getWorkingStepHeight().getValue();
+        if (workingStepHeight > 0)
+            stepNumber = Math.ceil(Math.abs((double)settings.getWorkingHeight().getValue() / workingStepHeight));
 
-        for (double i = 0; i < Math.abs(ratio); ++i)
+        int roundedStepHeight = (int)(settings.getWorkingHeight().getValue() / stepNumber);
+
+        int currentHeight = settings.getWorkingHeight().getValue();
+        currentHeight -=  (stepNumber - 1) * roundedStepHeight;
+
+        for (int i = 0; i < stepNumber; ++i)
         {
+            String generatedGCode = generator.generate(new RTPostprocessor(), settings.getFeedXY().getValue(), settings.getFeedZ().getValue(), arcFeed,
+                    settings.getClearance().getValue(), settings.getSafetyHeight().getValue(), currentHeight, settings.getSpeed().getValue());
+
             sb.append(generatedGCode);
+
+            currentHeight += roundedStepHeight;
         }
 
         return sb.toString();
