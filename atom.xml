@@ -4,7 +4,7 @@
   <title><![CDATA[cirQWizard]]></title>
   <link href="http://cirqwizard.org//atom.xml" rel="self"/>
   <link href="http://cirqwizard.org//"/>
-  <updated>2018-05-15T22:25:22+02:00</updated>
+  <updated>2018-06-18T22:09:25+02:00</updated>
   <id>http://cirqwizard.org//</id>
   <author>
     <name><![CDATA[Simon Salykov]]></name>
@@ -12,6 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Version 1.8.1]]></title>
+    <link href="http://cirqwizard.org//blog/2018/06/18/version-1-dot-8-1/"/>
+    <updated>2018-06-18T22:03:00+02:00</updated>
+    <id>http://cirqwizard.org//blog/2018/06/18/version-1-dot-8-1</id>
+    <content type="html"><![CDATA[<p>Version 1.8.1 adds a new feature, which comes handy when working with aluminium core laminates &#8211; it allows to mill the contour of the board in several passes (along the Z axis). There&#8217;s a new parameter <strong>Max step</strong> in Contour milling settings &#8211; it specifies how deep the end mill can go in one pass. Code generator will then generate as many passes as needed to reach the specified Z level. Default value of 0 means the entire depth is milled in one pass.</p>]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Version 2.0.0-RC6]]></title>
@@ -191,14 +199,6 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.7.1
 <ul>
 <li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-194'>CQ-194</a>] &#8211;         Keep out area around locating pins</li>
 </ul>]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Version 1.6.8]]></title>
-    <link href="http://cirqwizard.org//blog/2016/12/01/version-1-dot-6-8/"/>
-    <updated>2016-12-01T20:49:00+01:00</updated>
-    <id>http://cirqwizard.org//blog/2016/12/01/version-1-dot-6-8</id>
-    <content type="html"><![CDATA[<p>Still cleaning up some bugs here and there &#8211; <a href="https://cirqwizard.atlassian.net/browse/CQ-189">CQ-189</a> and <a href="https://cirqwizard.atlassian.net/browse/CQ-190">CQ-190</a></p>]]></content>
   </entry>
   
 </feed>

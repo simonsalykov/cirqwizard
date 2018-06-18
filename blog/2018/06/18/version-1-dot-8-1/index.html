@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Version 1.5.1 - cirQWizard</title>
+  <title>Version 1.8.1 - cirQWizard</title>
   <meta name="author" content="Simon Salykov">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1">
+  <link rel="canonical" href="http://cirqwizard.org//blog/2018/06/18/version-1-dot-8-1">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/bootstrap/bootstrap.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/stylesheets/bootstrap/responsive.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -108,7 +108,7 @@
   
   <header class="page-header">
     
-      <h1 class="entry-title">Version 1.5.1</h1>
+      <h1 class="entry-title">Version 1.8.1</h1>
     
     
       <p class="meta">
@@ -124,28 +124,14 @@
   
 
 
-<time datetime="2014-09-29T17:48:00+02:00" pubdate data-updated="true">Sep 29<span>th</span>, 2014</time>
+<time datetime="2018-06-18T22:03:00+02:00" pubdate data-updated="true">Jun 18<span>th</span>, 2018</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Version 1.5.1 is mostly a bugfix release. Below are release notes with the links to the exact issues fixed:</p>
-Release Notes &#8211; cirQWizard &#8211; Version 1.5.1
-
-<h2>        Bug</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-92'>CQ-92</a>] &#8211;         Stop button on tool paths generation pane doesn&#39;t stop generation</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-130'>CQ-130</a>] &#8211;         Firmware update instability</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-131'>CQ-131</a>] &#8211;         Check for non-empty settings is broken</li>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-134'>CQ-134</a>] &#8211;         ExcellonParser fails with <span class="caps">NPE</span> if no tool is specified</li>
-</ul>
-
-<h2>        New Feature</h2>
-<ul>
-<li>[<a href='https://cirqwizard.atlassian.net/browse/CQ-133'>CQ-133</a>] &#8211;         Support for R command in Excellon files</li>
-</ul></div>
+<div class="entry-content"><p>Version 1.8.1 adds a new feature, which comes handy when working with aluminium core laminates &#8211; it allows to mill the contour of the board in several passes (along the Z axis). There&#8217;s a new parameter <strong>Max step</strong> in Contour milling settings &#8211; it specifies how deep the end mill can go in one pass. Code generator will then generate as many passes as needed to reach the specified Z level. Default value of 0 means the entire depth is milled in one pass.</p></div>
 
 
   <footer>
@@ -178,14 +164,10 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.1
     <ul class="pager">
       
       <li class="previous"><a class="basic-alignment left"
-        href="/blog/2014/08/21/version-1-dot-5-0-copper-rub-out-feature/" title="Previous Post:
-        Version 1.5.0 - copper rub out feature">&laquo; Version 1.5.0 - copper rub out feature</a></li>
+        href="/blog/2018/05/11/version-2-dot-0-0-rc6/" title="Previous Post:
+        Version 2.0.0-RC6">&laquo; Version 2.0.0-RC6</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
-      
-      <li class="next"><a class="basic-alignment right" href="/blog/2014/10/06/version-1-dot-5-2/"
-        title="Next Post: Version 1.5.2">Version 1.5.2
-        &raquo;</a></li>
       
     </ul>
   </footer>
@@ -244,8 +226,8 @@ Release Notes &#8211; cirQWizard &#8211; Version 1.5.1
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1/';
-        var disqus_url = 'http://cirqwizard.org//blog/2014/09/29/version-1-dot-5-1/';
+        var disqus_identifier = 'http://cirqwizard.org//blog/2018/06/18/version-1-dot-8-1/';
+        var disqus_url = 'http://cirqwizard.org//blog/2018/06/18/version-1-dot-8-1/';
         var disqus_script = 'embed.js';
       
     (function () {
