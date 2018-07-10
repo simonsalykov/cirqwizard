@@ -111,9 +111,10 @@ public class GerberParser
     {
         StringBuilder sb = new StringBuilder();
         int i;
+        boolean inCommentSection = false;
         while ((i = reader.read()) != -1)
         {
-            if (i == '%')
+            if (i == '%' && !inCommentSection)
             {
                 parameterMode = !parameterMode;
                 apertureMacro = null;
@@ -125,6 +126,9 @@ public class GerberParser
             }
             else if (!Character.isWhitespace(i))
                 sb.append((char)i);
+
+            if (sb.length() == 3 && sb.toString().equals("G04"))
+                inCommentSection = true;
         }
         if (sb.length() == 0)
             return null;
